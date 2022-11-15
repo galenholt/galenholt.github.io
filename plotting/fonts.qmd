@@ -1,0 +1,216 @@
+---
+title: "Fonts"
+format:
+  html:
+    df-print: paged
+---
+
+```{r setup}
+
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+
+```
+
+Using `knitr::inline_expr(r message = FALSE, warning = FALSE)` hopefully stops it printing all the package messages
+
+```{r}
+#| message = FALSE,
+#| warning = FALSE
+library(tidyverse) # Overkill, but easier than picking and choosing
+
+```
+
+These are mostly little plot tweaks and small things that I find and forget all the time.
+
+# Accessing fonts
+
+In the past, I've used `extrafonts` to use fonts within figures, but it's failing for me ('No FontName, skipping' error as in https://github.com/wch/extrafont/issues/88).
+
+Try sysfonts. Actually, `showtext` on top of `sysfonts`. First, look at how it finds the fonts.
+
+```{r}
+library(showtext)
+
+fontsIhave <- font_files()
+fontsIhave
+str(fontsIhave)
+```
+
+I should be able to use font_add
+
+First, what fonts are CURRENTLY available in R?
+
+```{r}
+windowsFonts()
+font_families()
+```
+
+Test with one of the
+
+```{r}
+font_add('Bookman Old Style', regular = 'BOOKOS.TTF', 
+         italic = 'BOOKOSI.TTF', 
+         bold = 'BOOKOSB.TTF', 
+         bolditalic = 'BOOKOSBI.TTF')
+
+windowsFonts()
+font_families()
+```
+
+I'm not quite understanding how this object is organised. What is that last line? are the \$xxxx the defaults?
+
+To test, let's make a plot and try to change font.
+
+The help (https://cran.rstudio.com/web/packages/showtext/vignettes/introduction.html) says we need to tell R to use showtext for text.
+
+```{r}
+showtext_auto()
+```
+
+```{r}
+baseiris <- ggplot(iris, aes(x = Sepal.Length, y = Petal.Width, color = Species)) +
+  geom_point()
+baseiris + theme(axis.title = element_text(family = 'Bookman Old Style'),
+                 legend.title = element_text(family = 'Bookman Old Style', face = 'bold.italic'))
+```
+
+That seems to work. Can I feed in all the fonts on my system automaticallly? Is that a bad idea? Might be if it takes a while and we only want one.
+
+First, though, can I give it a font name as a character and it load all of the faces automatically?
+
+Note: some of the fonts I have have weird faces. For now, just fail on those and stick with the ones supported by `showtext`. That should be fine.
+
+```{r}
+unique(fontsIhave$face)
+```
+
+This is a) a useful thing to simplify adding single fonts, and b) precursor to loading them all.
+
+```{r}
+# chosen more or less at random for testing
+familyname <- 'Candara'
+
+# I could use dplyr but this seems better to just use base logical indexing.
+# fontsIhave %>%
+#   filter(family == familyname & face == 'Regular') %>%
+#   select(file) %>%
+#   pull()
+
+# Could do all the indexing in the function call to font_add(), but it just gets ridiculous
+regfile <- fontsIhave[which(fontsIhave$family == familyname &
+                   fontsIhave$face == 'Regular'), 'file']
+
+italfile <- fontsIhave[which(fontsIhave$family == familyname &
+                   fontsIhave$face == 'Italic'), 'file']
+
+boldfile <- fontsIhave[which(fontsIhave$family == familyname &
+                   fontsIhave$face == 'Bold'), 'file']
+
+bifile <- fontsIhave[which(fontsIhave$family == familyname &
+                   fontsIhave$face == 'Bold Italic'), 'file']
+
+
+# NEED TO TEST WHEN THE FACE DOESN'T EXIST AND THROW NULL
+  # If not there, the value will be character(0). testing for that and returning NULL (which is what the function needs) is a bit tricky:
+noface <- function(x) {ifelse(rlang::is_empty(x), return(NULL), return(x))}
+
+font_add(familyname, 
+         regular = noface(regfile), 
+         italic = noface(italfile), 
+         bold = noface(boldfile), 
+         bolditalic = noface(bifile))
+
+```
+
+Test that with a figure
+
+```{r}
+baseiris + theme(axis.title.x = element_text(family = familyname, face = 'italic'),
+                 axis.title.y = element_text(family = familyname, face = 'bold'),
+                 legend.text = element_text(family = familyname),
+                 legend.title = element_text(family = familyname, face = 'bold.italic'))
+```
+
+How bad an idea is it to just read them ALL in at once?
+
+Easy enough to feed the `font_add` above in a loop. Probably vectorizable too, but why bother?
+
+Write it as a function, then it will work for *all* fonts or a subset if that's a bad idea. Either feed it a dataframe of fonts or just use `font_files()` directly. It can also take NULL for fontvec, in which case it loads all the fonts.
+
+```{r}
+loadfonts <- function(fontvec = NULL, fontframe = NULL) {
+  
+  # Get all fonts if no fontframe
+  if (is.null(fontframe)) {
+    fontframe <- font_files()
+  }
+  
+  # Load all fonts if no fontvec
+  if (is.null(fontvec)) {
+    fontvec <- unique(fontframe$family)
+  }
+  
+  # Loop over the font families
+  for (i in 1:length(fontvec)) {
+    familyname <- fontvec[i]
+    regfile <- fontframe[which(fontframe$family == familyname &
+                   fontframe$face == 'Regular'), 'file']
+
+    italfile <- fontframe[which(fontframe$family == familyname &
+                       fontframe$face == 'Italic'), 'file']
+    
+    boldfile <- fontframe[which(fontframe$family == familyname &
+                       fontframe$face == 'Bold'), 'file']
+    
+    bifile <- fontframe[which(fontframe$family == familyname &
+                       fontframe$face == 'Bold Italic'), 'file']
+    
+## TODO: THROW A TRYCATCH ON HERE TO BYPASS AND ALERT FOR FAILURES
+    # For example, Berlin Sans FB Demi has no 'regular' and so fails. let's just skip those, this isn't supposed to be the most robust thing ever that handles all cases flawlessly.
+    try(font_add(fontvec[i], 
+         regular = noface(regfile), 
+         italic = noface(italfile), 
+         bold = noface(boldfile), 
+         bolditalic = noface(bifile)))
+    
+    # To avoid unforeseen carryover through the loop
+    rm(familyname, regfile, italfile, boldfile, bifile)
+  }
+  
+}
+```
+
+Let's try just reading everything in. Use `try` in the function above because there are failures for a few reasons, and instead of dealing with them I just want to quickly read in what's easy to read in. I don't have a ton of interest here in figuring out corner cases for weird fonts.
+
+Test the function with a vector of fontnames first, because can't do that after try with everything
+
+```{r}
+loadfonts(fontvec = c('Consolas', 'Comic Sans MS', 'Tahoma'))
+font_families()
+```
+
+Now, go for it with everything. There are a million errors, so I've turned error reporting off for this code chunk.
+
+```{r}
+#| message = FALSE,
+#| warning = FALSE,
+#| results = "hide"
+system.time(loadfonts())
+```
+
+That was pretty quick. What do I have?
+
+```{r}
+font_families()
+```
+
+I'm sure if there were something that got bypassed that I really needed I could get it directly with font_add(), but this is sure quick to get them all. Test a couple of the new ones.
+
+```{r}
+baseiris + theme(axis.title.x = element_text(family = 'Poor Richard', face = 'italic'),
+                 axis.title.y = element_text(family = 'Stencil', face = 'bold'),
+                 legend.text = element_text(family = 'Papyrus'),
+                 legend.title = element_text(family = 'Onyx', face = 'bold.italic'))
+```
+
+I have also put `loadfonts` in the functions folder so I can use it elsewhere.

@@ -1,11 +1,7 @@
 ---
-title: "galen_website"
+title: "Home"
 ---
 
-This is a Quarto website.
+This is a placeholder. I am a community ecologist with a focus on aquatic ecology. My background is in theoretical community ecology, though I also do fieldwork in aquatic systems and develop management-focused models. I have a particular interest in scaling, probabalistic modeling, and climate impacts.
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
-
-```{r}
-1 + 1
-```
+Postdoctoral researcher in the [QAEL Lab](https://www.qael.org/) at Deakin University.

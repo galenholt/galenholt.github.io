@@ -1,0 +1,502 @@
+---
+title: "hcl exploration"
+format:
+  html:
+    df-print: paged
+---
+
+```{r setup}
+
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+
+```
+
+Using `knitr::inline_expr(r message = FALSE, warning = FALSE)` hopefully stops it printing all the package messages
+
+```{r}
+#| message = FALSE,
+#| warning = FALSE
+library(tidyverse) # Overkill, but easier than picking and choosing
+library(colorspace)
+```
+
+Finding colors to use for a given plot can be a pain. I'm trying to find some good color ramps for a project, and also sort out manipulating those colors to allow fading. This is me playing around to try to understand how to do those manipulations and looking at the various potential color palettes.
+
+Colorspace (https://colorspace.r-forge.r-project.org/index.html) is a particularly useful package (though it is not the only color package I use).
+
+Colorspace uses a hue-chroma-luminance specification for colors that is really powerful. It also has built-in palettes. For some other work, I was interested in exploring moving along those dimensions and generating color palettes for plotting.
+
+Previously (for the project that gave rise to looking at fading colors), I was using purples and emerald, so let's start there. But for simplicity switch to greens so constant hue.
+
+```{r}
+swatchplot(
+  'Purples' = sequential_hcl(8, 'Purples'),
+  'Greens' = sequential_hcl(8, 'Greens'))
+```
+
+I actually like those single-hue fades a lot for showing more or less of something. But it SHOULD be possible to do a hue shift from green to purple for one axis? will that make sense?
+
+## Hue sequences
+
+I'd like to be able to specify the endpoints of a hue sequence and just shift along that axis. I'll try it out with the purple and green above.
+
+First, I want to try to get the hue values (and the L and C as well) to make the endpoints. I can't find a straightforward extraction in `colorspace` to get the HCLs though. So, since I know the endpoints are coming from those palettes above, I want their values. Make the palette, turn it into RGB, then turn the RGB into polarLUV to get the three axis values. Here, rows are the 8 fades in the palettes above.
+
+```{r}
+rgbpurps <- hex2RGB(sequential_hcl(8, 'Purples'))
+
+luvpurps <- as(rgbpurps, 'polarLUV')
+luvpurps
+```
+
+That's sure roundabout, going palette that's polarLUV under the hood but returns in hex to rgb and then back to polarLUV. Seems to work though.
+
+```{r}
+swatchplot(hex(luvpurps))
+```
+
+```{r}
+rgbgrns <- hex2RGB(sequential_hcl(8, 'Greens'))
+
+luvgrns <- as(rgbgrns, 'polarLUV')
+luvgrns
+
+
+```
+
+I can swatchplot them up together.
+
+```{r}
+swatchplot(hex(luvpurps), hex(luvgrns))
+```
+
+Now, the goal is actually to identify those dark colors and transition between them. Now, can I get from purple to green? The L and C are quite different, unfortunately. Pick something the middle?
+
+Hardcode numbers for now, though ideally we'll get to a function that takes a start and end value.
+
+```{r}
+pg <- polarLUV(L = 20, C = 40, H = seq(from = 130, to = 275, length.out = 8))
+swatchplot(hex(pg))
+```
+
+That fails. So, now we learned the ranges of the other axes matter. Likely chroma?
+
+```{r}
+# Fails
+max_chroma(h = seq(from = 130, to = 275, length.out = 8), l = 20)
+
+
+```
+
+Can I just use the minimum max_chroma? Not really...
+
+```{r}
+# Guessing I can't just go with 16, but let's try
+pg <- polarLUV(L = 20, C = 16, H = seq(from = 130, to = 275, length.out = 8))
+swatchplot(hex(pg))
+```
+
+If I try to fix how dark that is with chroma, it doesn't work very well and I still lose one.
+
+```{r}
+pg <- polarLUV(L = 20, 
+               C = max_chroma(h = seq(from = 130, to = 275, length.out = 8), l = 20),
+               H = seq(from = 130, to = 275, length.out = 8))
+swatchplot(hex(pg))
+```
+
+Using a matrix isn't the answer- same thing, though a floor argument puts the missing color back
+
+```{r}
+hclmat <- cbind(20, max_chroma(h = seq(from = 130, to = 275, length.out = 8), l = 20, floor = TRUE),
+      seq(from = 130, to = 275, length.out = 8))
+
+pg <- polarLUV(hclmat)
+swatchplot(hex(pg))
+```
+
+Guessing I don't want to just turn up luminance, but let's see what that does to get a better sense how this all works.
+
+```{r}
+hclmat <- cbind(80, max_chroma(h = seq(from = 130, to = 275, length.out = 8), l = 80, floor = TRUE),
+                seq(from = 130, to = 275, length.out = 8))
+
+pg <- polarLUV(hclmat)
+swatchplot(hex(pg))
+```
+
+Lower luminance does work OK, but it's still 'darker' in the middle and the shift to blue on the right is abrupt. The darker middle is likely why a lot of the colorspace palettes have triangular luminance. I don't particularly want to get so fine-tuned here. I was looking for a way to programatically define these sequences, and getting into tweaking luminance in a nonlinear and nonmonotonic way could get very bespoke very quickly. Likely better to just use the built-in palettes where someone who understands color theory has already done that.
+
+```{r}
+hclmat <- cbind(50, max_chroma(h = seq(from = 130, to = 275, length.out = 8), l = 50, floor = TRUE),
+                seq(from = 130, to = 275, length.out = 8))
+
+pg <- polarLUV(hclmat)
+swatchplot(hex(pg))
+```
+
+## Fading
+
+I also want to make faded versions of palettes, and control levels of fade. The particular use I have in mind is to illustrate levels of uncertainty, but it could be any bivariate outcomes.
+
+I originally thought that I would need to manually adjust the chroma and luminance manually. But the exploration above suggests they interact and so it's unlikely to just shift one or the other. Still, colorspace provides `lighten`, `darken` (which both shift luminance), and `desaturate`, which shifts chroma. I should be able to play with these to see how they work using either a homebrew base palette as above or the inbuilt ones.
+
+In either case, we need the hex values
+
+```{r}
+hexcols <- hex(pg)
+
+```
+
+Lighten (increase luminance)
+
+```{r}
+swatchplot('orig' = hexcols,
+           '25' = lighten(hexcols, amount = 0.25),
+           '50' = lighten(hexcols, amount = 0.5),
+           '75' = lighten(hexcols, amount = 0.75),
+           '100' = lighten(hexcols, amount = 1))
+```
+
+Darken (decrease luminance)
+
+```{r}
+swatchplot('orig' = hexcols,
+           '25' = darken(hexcols, amount = 0.25),
+           '50' = darken(hexcols, amount = 0.5),
+           '75' = darken(hexcols, amount = 0.75),
+           '100' = darken(hexcols, amount = 1))
+```
+
+Desaturate (adjust chroma)
+
+```{r}
+swatchplot('orig' = hexcols,
+           '25' = desaturate(hexcols, amount = 0.25),
+           '50' = desaturate(hexcols, amount = 0.5),
+           '75' = desaturate(hexcols, amount = 0.75),
+           '100' = desaturate(hexcols, amount = 1))
+```
+
+For my particular use, I like desaturating better, in that it implies less information. But it also makes the values look more similar across the range, and we don't want that. That gets captured better by lightening.
+
+As a bit of an aside, the ends of the lightened versions are effectively 'Purples' and 'Greens', reading down instead of across. What does it look like if I desaturate those built-in palettes?
+
+```{r}
+purp8 <- sequential_hcl(8, 'Purples')
+swatchplot('orig' = purp8,
+           '25' = desaturate(purp8, amount = 0.25),
+           '50' = desaturate(purp8, amount = 0.5),
+           '75' = desaturate(purp8, amount = 0.75),
+           '100' = desaturate(purp8, amount = 1))
+
+```
+
+It does remove color, but it perceptually darkens as well, which is NOT what I want.
+
+What about choosing a pre-built set of colors and lightening/darkening? Start with viridis, we know it has good properties in greyscale, etc.
+
+```{r}
+vir8 <- sequential_hcl(8, 'Viridis')
+swatchplot('orig' = vir8,
+                 '25' = lighten(vir8, amount = 0.25),
+                 '50' = lighten(vir8, amount = 0.5),
+                 '75' = lighten(vir8, amount = 0.75),
+                 '100' = lighten(vir8, amount = 1))
+```
+
+That actually works pretty well, even though the original had a luminance ramp on it already (https://colorspace.r-forge.r-project.org/articles/approximations.html), this just shifts it each time, I think. We can compare using `specplot`.
+
+```{r}
+specplot(vir8, lighten(vir8, amount = 0.75))
+```
+
+What does a desaturated viridis look like?
+
+```{r}
+swatchplot('orig' = vir8,
+           '25' = desaturate(vir8, amount = 0.25),
+           '50' = desaturate(vir8, amount = 0.5),
+           '75' = desaturate(vir8, amount = 0.75),
+           '100' = desaturate(vir8, amount = 1))
+```
+
+Again, makes them more similar, though the underlying luminance ramp helps. I don't like that the first level still ends up darker though.
+
+### Interacting chroma and luminance
+
+So, changing luminance makes colors brighter or darker, while adjusting chroma removes color but tends to make them darker. Neither is exactly what I want- a color ramp that look the same, just "faded". Is the answer to control this interaction? Does a simultaneous lighten and desaturate give me what I want by avoiding the perceptual darkening from the desaturation?
+
+```{r}
+swatchplot('orig' = vir8,
+           '25' = desaturate(vir8, amount = 0.25) %>%
+             lighten(amount = 0.25),
+           '50' = desaturate(vir8, amount = 0.5) %>%
+             lighten(amount = 0.5),
+           '75' = desaturate(vir8, amount = 0.75) %>%
+             lighten(amount = 0.75),
+           '100' = desaturate(vir8, amount = 1) %>%
+             lighten(amount = 1))
+```
+
+That works really well, actually. Does the order of operations matter? No:
+
+```{r}
+swatchplot('orig' = vir8,
+           '25' = lighten(vir8, amount = 0.25) %>%
+             desaturate(amount = 0.25),
+           '50' = lighten(vir8, amount = 0.5) %>%
+             desaturate(amount = 0.5),
+           '75' = lighten(vir8, amount = 0.75) %>%
+             desaturate(amount = 0.75),
+           '100' = lighten(vir8, amount = 1) %>%
+             desaturate(amount = 1))
+```
+
+Did I just get lucky with viridis, or does it work with other palettes too? how about my ramp that I made from green to purple? Seems to:
+
+```{r}
+swatchplot('orig' = hexcols,
+           '25' = lighten(hexcols, amount = 0.25) %>%
+             desaturate(amount = 0.25),
+           '50' = lighten(hexcols, amount = 0.5) %>%
+             desaturate(amount = 0.5),
+           '75' = lighten(hexcols, amount = 0.75) %>%
+             desaturate(amount = 0.75),
+           '100' = lighten(hexcols, amount = 1) %>%
+             desaturate(amount = 1))
+```
+
+Does the lighten and desat work for the single-hue scales? Seems like it shouldn't because they're already changing along those axes.
+
+```{r}
+swatchplot('orig' = purp8,
+           '25' = lighten(purp8, amount = 0.25) %>%
+             desaturate(amount = 0.25),
+           '50' = lighten(purp8, amount = 0.5) %>%
+             desaturate(amount = 0.5),
+           '75' = lighten(purp8, amount = 0.75) %>%
+             desaturate(amount = 0.75),
+           '100' = lighten(purp8, amount = 1) %>%
+             desaturate(amount = 1))
+```
+
+Not really. It basically does what it should, but the light end is just always light and so doesn't contain info in the faded dimension and very similar colors appear in both dimensions- values at row *n* and col *m* are frequently very similar to row *n* + 1 and col *m* - 1.
+
+I suppose that might be OK for particular situations, but still not ideal. Might work ok though if we limited that lower end? ie don't let it fall all the way to white in the original? Getting pretty hacky at that point and the diagonals are still too similar.
+
+```{r}
+swatchplot('orig' = purp8[1:6],
+           '25' = lighten(purp8[1:6], amount = 0.25) %>%
+             desaturate(amount = 0.25),
+           '50' = lighten(purp8[1:6], amount = 0.5) %>%
+             desaturate(amount = 0.5),
+           '75' = lighten(purp8[1:6], amount = 0.75) %>%
+             desaturate(amount = 0.75),
+           '100' = lighten(purp8[1:6], amount = 1) %>%
+             desaturate(amount = 1))
+```
+
+#### Testing with other palettes
+
+Viridis and the one I made are both fine, but look at a couple other palettes too. This is not comprehensive, mostly looking at those that have greens and purples for the use I have in mind.
+
+Write a little function to do the fade and make this less cut and paste
+
+```{r}
+palcheck <- function(palname, n = 8) {
+ pal8 <- sequential_hcl(n, palname)
+ 
+ swatchplot('orig' = pal8,
+            '25' = lighten(pal8, amount = 0.25) %>%
+              desaturate(amount = 0.25),
+            '50' = lighten(pal8, amount = 0.5) %>%
+              desaturate(amount = 0.5),
+            '75' = lighten(pal8, amount = 0.75) %>%
+              desaturate(amount = 0.75),
+            '100' = lighten(pal8, amount = 1) %>%
+              desaturate(amount = 1))
+ 
+}
+```
+
+Plasma
+
+```{r}
+palcheck('Plasma')
+```
+
+*Green-based*
+
+ag_GrnYl is OK, but does get a bit of the diagonal issue
+
+```{r}
+palcheck('ag_GrnYl')
+```
+
+ditto Emrld, but might work?
+
+```{r}
+palcheck('Emrld')
+```
+
+Terrains might be OK? 2 is less gaudy
+
+```{r}
+palcheck('Terrain')
+palcheck('Terrain2')
+```
+
+mints and TealGrn fail diagonal test
+
+```{r}
+palcheck('Dark Mint')
+palcheck('Mint')
+
+palcheck('TealGrn')
+```
+
+YlGn is pretty good, actually.
+
+```{r}
+palcheck('YlGn')
+```
+
+For the specific use, keep in mind that it will be two levels of fade, and so I can do something like orig and 75% and it'll be pretty different. But here I'm trying to be fairly general.
+
+Meh
+
+```{r}
+palcheck('BluGrn')
+```
+
+as expected, batlow and Hawaii are extreme, though might be OK?
+
+```{r}
+palcheck('Batlow')
+palcheck('Hawaii')
+```
+
+*Purple-based*
+
+single hue doesn't work
+
+```{r}
+palcheck('Purples')
+palcheck('Purples 3')
+```
+
+these are all maybes with tricky diagonals
+
+```{r}
+palcheck('Purple-Blu')
+
+palcheck('Purple-Ora')
+palcheck('Purp')
+palcheck('PurpOr')
+palcheck('Sunset')
+palcheck('Magenta')
+palcheck('SunsetDark')
+```
+
+pretty good, but have a fair amount of green in, so could be confusing
+
+```{r}
+palcheck('Purple-Yellow')
+
+palcheck('Viridis')
+
+palcheck('Mako')
+
+```
+
+Plasma pretty good
+
+```{r}
+palcheck('Plasma')
+```
+
+Inferno might actually be pretty good if I cut off the first one
+
+```{r}
+palcheck('Inferno')
+```
+
+ag_Sunset is better on the diagonals than similar hue sequences
+
+```{r}
+palcheck('ag_Sunset')
+```
+
+Good, but would need to cut the last one; too white. It is less gaudy/ more obviously a hue ramp than ag sunset. Diagonals are tricky too
+
+```{r}
+palcheck('RdPu')
+```
+
+Pretty good, but blue could be an issue getting confused with water for this project.
+
+```{r}
+palcheck('BuPu')
+```
+
+### Continuous hue from specified palettes
+
+If I want to map values to colors continously, that gets tricky using the specified palettes because sequential_hcl takes an `n` argument.
+
+Can I get the endpoints and make my own (as I did above with green and purple?)
+
+does the one I'm using use a linear hue scale
+
+```{r}
+specplot(sequential_hcl(8, 'ag_Sunset'))
+```
+
+It does, but doesn't use linear chroma. and it has luminance shift too.
+
+Can I extract the hue from the ends? The same way I did right at the beginning for the greens and purples.
+
+```{r}
+specplot(sequential_hcl(2, 'ag_Sunset'))
+rgbsun <- hex2RGB(sequential_hcl(8, 'ag_Sunset'))
+
+luvsun <- as(rgbsun, 'polarLUV')
+luvsun
+```
+
+This generates the wrong thing (roughly, viridis) because the hue crosses 0
+
+```{r}
+sunmat <- cbind(seq(from = 85, to = 25, length.out = 8), 
+                max_chroma(h = seq(from = 69, to = 275, length.out = 8), 
+                           l = seq(from = 85, to = 25, length.out = 8), 
+                           floor = TRUE),
+                seq(from = 69, to = 275, length.out = 8))
+
+pgsun <- polarLUV(sunmat)
+swatchplot(hex(pgsun))
+```
+
+Can I fix the zero-crossing? I'm sure there's a polar coord package, but for now, add a 360 and take it off
+
+```{r}
+hvec <- seq(from = luvsun@coords[1, 3], to = 360+luvsun@coords[8,3], length.out = 8)
+hvec[hvec > 360] <- hvec[hvec>360]-360
+
+lvec <- seq(from = luvsun@coords[1, 1], to = luvsun@coords[8, 1], length.out = 8)
+```
+
+The max_chroma is intense, but not sure how else to choose the chromas if we're trying to build a continuous ramp. Could just use n = 1000 or something to get pseudo-continuous
+
+```{r}
+sunmat <- cbind(lvec, 
+                max_chroma(h = hvec, 
+                           l = lvec, 
+                           floor = TRUE),
+                hvec)
+
+pgsun <- polarLUV(sunmat)
+swatchplot(hex(pgsun))
+```
+
+So, one option is just treating the built-in palettes as their endmembers like that and then doing it as I did before. But it does lose the actual built-in palettes, especially chroma or nonlinearity. Likely better to just use a large n for now and call it good.

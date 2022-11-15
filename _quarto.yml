@@ -2,12 +2,43 @@ project:
   type: website
 
 website:
-  title: "galen_website"
+  title: "Galen"
   navbar:
+    backgroud: primary
+    search: true
     left:
       - href: index.qmd
         text: Home
-      - about.qmd
+      - research.qmd
+      - code_demos.qmd
+
+  sidebar:
+    - title: "Research"
+      style: 'floating'
+      background: light
+      contents:
+        - research.qmd
+    
+    - title: "Code Demos"
+      contents:
+        - code_demos.qmd
+        - section: "Plotting"
+          contents:
+            - href: smallpieces.qmd
+              text: "Bits and pieces"
+            - href: plotting/tweaks_tricks.qmd
+              text: "Saving and themeing plots"
+            - href: plotting/hcl_exploration.qmd
+              text: "Exploring HCL colorspace"
+            - plotting/fonts.qmd
+            - href: plotting/faded_colors.qmd
+              text: "Faded 2d colour ramps"
+        - section: "Theory and simulation"
+          contents:
+            - href: simmodelling/twoDautocorr.qmd
+              text: "Generate 2d autocorrelation"
+      
+      
 
 format:
   html:

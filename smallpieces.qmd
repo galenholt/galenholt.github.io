@@ -1,0 +1,139 @@
+---
+title: "Small pieces"
+format:
+  html:
+    df-print: paged
+---
+
+## What is this?
+
+This is mostly quick little code snippets to copy-paste and avoid re-writing. load tidyverse and get going.
+
+```{r}
+#| warning: false
+#| message: false
+library(tidyverse)
+```
+
+### Rmarkdown/quarto with rproject directory as root
+
+I can't figure out how to avoid this setup chunk. It's leftover Rmarkdown format, and works fine in quarto too, even if it's not documented. But converting from Rmarkdown to quarto with `knitr::convert_chunk_header` kills it, and it's annoying to always have the header. It seems like setting the project to use the Project directory should do it, and it does for `Run all`, but not for `render`.
+
+```{r setup}
+#| echo: fenced
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```
+
+I thought it'd be easiest to set in the global options, but that doesn't seem to persist to `render`.
+
+![](images/paste-4D3CEEB1.png)
+
+### Create a directory if doesn't exist
+
+```{r}
+newdir <- file.path('output', 'testdir')
+if (!dir.exists(newdir)) {dir.create(newdir, recursive = TRUE)}
+```
+
+### Look at all duplicate values
+
+Functions like `duplicated` give the second (and greater) values that match. e.g.
+
+```{r}
+x <- c(1,2,1,3,4,2)
+duplicated(x)
+```
+
+But we often want to grab all values that are repeated- ie if everything matches in one column what's going on in the others. do do that we can use `group_by` and `filter` to get those with \> 1 row.
+
+IE, let's compare cars with duplicated mpg values
+
+```{r}
+mtcars %>%
+  dplyr::group_by(mpg) %>%
+  dplyr::filter(n() > 1) %>%
+  dplyr::arrange(mpg) # makes the comparisons easier
+```
+
+Why is that useful? We can see not only that these aren't fully duplicated rows (which we also could have done with `duplicated` on the whole table), but also actually look at what differs easily.
+
+### Changing the column type on readr
+
+Sometimes with long csvs, readr's guess of col type based on the first thousand rows is wrong. But only for some cols. If we want to not have to specify all of them, we can use `.default` and only specify the offending col.
+
+First, save dummy data
+
+```{r}
+dumtib <- tibble(c1 = 1:3000, c2 = rep(letters, length.out = 3000), c3 = c(c1[1:2000], c2[2001:3000]))
+
+write_csv(dumtib, file = file.path(newdir, 'colspectest.csv'))
+```
+
+If we read in without the cols, it assumes c3 is numeric and we get errors. But it doesn't. why not? It keeps getting me elsewhere, but now I can't create the problem. FIgure this out later, I guess
+
+```{r}
+filein <- read_csv(file.path(newdir, 'colspectest.csv'), guess_max = 100)
+```
+
+Tell it the third col is character.
+
+```{r}
+filein <- readr::read_csv(file.path(newdir, 'colspectest.csv'), col_types = cols(.default = "?", c3 = "c"))
+```
+
+### Sourcing all files in a directory
+
+Yes, we *should* be building as a library in this case, but it's often easier at least initially to not deal with the overhead. If, for example, all functions are in the 'functions' directory,
+
+```{r}
+# Location-setting header
+# source everything in the functions folder. This really is turning into a package
+funfiles <- list.files('functions')
+for (s in 1:length(funfiles)) {
+  source(file.path('functions', funfiles[s])) 
+}
+```
+
+### Render big dfs in html
+
+Render in quarto defaults to making dfs text, and so often we can't see all the columns (or rows), or access them. setting the `df-print` option to paged allows them to work. The header should look like this (commented out because this isn't a header)
+
+```{r}
+# title: "TITLE"
+# author: "AUTHOR"
+# format:
+#   html:
+#     df-print: paged
+```
+
+### Convert all rmd to qmd
+
+`convert_chunk_headers` is the main thing, but I want to apply it to a full directory. Let's get the dir for here.
+
+```{r}
+allrmd <- list.files(rprojroot::find_rstudio_root_file(), pattern = '.Rmd', recursive = TRUE, full.names = TRUE)
+
+allrmd <- allrmd[!stringr::str_detect(allrmd, 'renv')]
+
+allqmd <- stringr::str_replace(allrmd, '.Rmd', '.qmd')
+```
+
+Can I vectorize? No, but a loop works. Git commit first!
+
+```{r}
+#| eval: false
+#| error: false
+for (i in 1:length(allrmd)) {
+  knitr::convert_chunk_header(input = allrmd[i], output = allqmd[i])
+}
+
+```
+
+Now, if you want to really go for it, delete the rmds. That makes git happier because then it can treat this as a rename and keep tracking the files.
+
+*Dangerous*- make sure you've git-committed. I'm commenting out and eval: false ing this
+
+```{r}
+#| eval: false
+# file.remove(allrmd)
+```
