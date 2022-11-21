@@ -34,6 +34,8 @@ website:
             - plotting/fonts.qmd
             - href: plotting/faded_colors.qmd
               text: "Faded 2d colour ramps"
+            - href: plotting/math_in_ggplot.qmd
+              text: "Latex in ggplot with latex2exp"
         - section: "Theory and simulation"
           contents:
             - href: simmodelling/twoDautocorr.qmd
