@@ -33,3 +33,7 @@ And do I keep using other R versions elsewhere? Seem to. For now, this should do
 ## Installing rtools
 
 We need rtools to install packages with compiled components. R 4.2 has updated to Rtools 42 (from 40), and so using previous versions of R need older Rtools. The telltale is when trying to install a package, we get errors about 'make' not being found. The rig documents imply that `rig system update-rtools40` should work, but I get "Error: the system cannot find the path specified". I'm not sure what path that is, so hard to fix. So, I seem to be OK until I need something that needs 'make', and then I'm out of luck.
+
+### The solution
+
+To install Rtools40, needed for R 4.0- 4.1, run `rig add rtools40`. Seems to be all it took, now I can compile. I assume there's a similar command for even older Rtools if need to downgrade to R 3.x, but haven't tried.
