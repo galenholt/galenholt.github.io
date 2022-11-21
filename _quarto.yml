@@ -37,6 +37,24 @@ website:
           contents:
             - href: simmodelling/twoDautocorr.qmd
               text: "Generate 2d autocorrelation"
+        - section: "R and python"
+          contents:
+            - href: RpyEnvs/python_setup.qmd
+              text: "Python environments with pyenv and poetry"
+            - href: RpyEnvs/python_updated_functions.qmd
+              text: "Small python bits"
+            - href: RpyEnvs/RandPython.qmd
+              text: "Using R and python together"
+            - href: RpyEnvs/R_py_shared_projects.qmd
+              text: "Shared R-py project structure"
+        - section: "Setting things up"
+          contents:
+            - href: RpyEnvs/rig.qmd
+              text: "Managing old R versions with rig"
+            - href: RpyEnvs/quarto_website_github.qmd
+              text: "Getting this website working"
+            - href: RpyEnvs/managingprivate.qmd
+              text: "Private data for website repo"
       
       
 

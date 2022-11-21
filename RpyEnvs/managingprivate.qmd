@@ -1,0 +1,22 @@
+---
+title: "Private data and website"
+author: "Galen Holt"
+format: html
+editor: visual
+---
+
+## The issue
+
+I'm getting set up to use github pages to host a website. But some content I (might) host needs to be private. A clear option is to simply mock-up data matching that private data, and that's the way I'll go. But because a large part of the content here will be sorting through issues, the initial sort-through will likely depend on figuring out what it is about the private data that needs to be mocked-up, and some portion of the testing will depend on that data. And I want all of that to be *version controlled*, but not shared publicly. In short, I need a private development location, and then go through, make a clean version based on mocked-up data, and publish that. So, how?
+
+The first thing that came to mind is to just have a local-only branch that I keep private. I could have a `private/` folder, where I do dev, with that folder ignored in the `master` `.gitignore`. And have a different `.gitignore` in another branch so development would be tracked in that other branch. Then, as things were ready to make public, I could just drop them over. However, because github requires the whole github pages repo to be public, I would never be able to push this branch. Sure, people would be unlikely to poke around in it, but it would all be there. And if I ever forgot the process, I would expose things. And I don't want to lose a cloud-hosted version- only storing locally isn't so great, even if it is backed up or dropboxed.
+
+I'm now leaning towards having a second, private repo for development, and then drag and drop into the github pages repo once the doc I'm working on is clean. That's basically the same idea as the internal `private/` folder, but as a whole different repo, and so could actually be held as a private repo on github. There are two main catches that I can see with this approach at the outset-
+
+1.  The actual development history of files won't be available on the public repo. That's kind of the point, but it is a bit annoying
+
+2.  Keeping the two repos synced will be a pain. If I make a small change to a file that's already public in the public repo, I'd need to get it back into the other. The obvious solution is to do everything in the private, and then move things over. But if I make a small change to a file that's already moved to the public repo in the private repo, I need to make sure it moves.
+
+    1.  I think I've dealt with this issue before, but can't remember the details. I had a repo as a fork of another that was `upstream` or something. Will need to sort that out. It's essentially a repo-diff, but needing to check what *should* be diff (still private), vs. what shouldn't be a diff (a change that needs to move over).
+
+Is there a better solution that allows building from somewhere other than github pages, and so could use a private repo? Netlify would work. And might be better anyway. But if the whole point is to make messy code public, then we want it on a public repo, right? And just hold the private stuff back/ do it elsewhere.

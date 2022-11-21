@@ -1,0 +1,50 @@
+---
+title: "Quarto website"
+author: "Galen Holt"
+format: html
+editor: visual
+---
+
+## Working on setting up a quarto website
+
+I want to use quarto to build a website hosted on github pages. I have a few goals for it, but step one is to figure out how to do it.
+
+I've already started a github pages repo, and had started putting things in it before I realised I was probably not working in the best way (and some things needed to be private). So before any commits, I moved the work out and want to just start clean and see how to do it. I'll walk through the process here.
+
+I'll start by following [the quarto docs](https://quarto.org/docs/websites/), but may diverge. Using the Rstudio version, but will likely use a bit of VS too for python.
+
+## Set up github pages
+
+I did this a while ago, will come back to it.
+
+Clone the repo locally.
+
+## Start as a website project
+
+Could I have converted from a normal project? Probably. And I could only get to the 'quarto website' option if I made a new directory. So even though I already cloned the repo from github, I put the project in a new dir, and then will copy it into the repo (I guess?).
+
+I actually made it in a dir, then started a git repo in that dir and set its remote to hit the url of my github.io repo following the instructions on github for starting a local repo and pointing it to github.
+
+Project seems to work when I click render, though it renders in browser not in Viewer pane (which is actually nicer, just not what the docs say).
+
+I had my repo in dropbox, as that seems like it usually works fine for other repos and gives another layer of backup. But it was failing here with lots of errors about files being in use by other processes. Moved it to Documents and seems to work fine.
+
+## Setting up nav
+
+I'm not entirely sure what I want the structure to be, but likely a brief home page, navbar at top with things like 'Research', 'About', 'Code examples', etc. Lots of options [here](https://quarto.org/docs/websites/website-navigation.html), I guess just cobble something together quickly.
+
+One question I have is what happens when I start committing to git. Does it auto-publish? It looks like no, according to [quarto](https://quarto.org/docs/publishing/github-pages.html), if I set up to render to docs and don't push `master`. Or if I publish from a `gh-pages` branch though that's not working on windows.
+
+The `.yaml` seems to be where all the website structure goes- nav bars, search, etc.
+
+I think I'm going to end up with something fairly complex for nav, but for now, maybe try broad categories across the top, then specifics down the side. Add additional nesting later.
+
+Seems reasonably ok, with ability to have `section`s within `contents` in the sidebar (I think).
+
+## Questions
+
+If I `render` a single file, does it render the whole website? seems like yes. If I want to render single pages (like to test them without having to re-render everything), can use the terminal `quarto render filename.qmd` or a subdir `quarto render subdir/`. The output ends up in the `_site` directory.
+
+## Pushing to github
+
+The publishing the `gh-pages` branch seems the nicest, but there's a bit warning not to do that on Windows. So, I guess I'll do the render to docs way.

@@ -1,0 +1,32 @@
+---
+title: "R and python envs in same project"
+author: "Galen Holt"
+format: html
+editor: visual
+---
+
+## The issue
+
+Both renv and poetry want to set up project structures and work within them. And I want to do both in the same git repo because I'm using both for the same project. And have access to both everywhere within the project (ie I want to be able to use `reticulate`, but more importantly I want the different parts of the project to be able to have both py and R components.
+
+I've done a bit getting them to [work in the same *script*](RandPython.qmd)*,* and setting up [clean python environments with poetry](python_setyup.qmd). With the shared scripts, I did it with a subdirectory, and that sort of worked for testing, but won't work for a project where they're both used a fair amount and in both places.
+
+### Init in existing
+
+Can I just initiate them both in the base git directory? I know i can with `renv`, but does poetry let us stick a project in an existing repo? When I was sorting out `poetry`, I always made a new dir with `poetry new dirname`.
+
+It [looks like](https://www.pythoncheatsheet.org/blog/python-projects-with-poetry-and-vscode-part-3) py code should be in the inner directory of the poetry structure. Let's assume that. Which roughly matches R structure, where we'll have code in an `R/` dir if it's a package or in some other dir structure. IE, if we can just get the environment management into the outer dir of the repo, and then all other code inside. I'm not sure though that I'll want to split py from R at present. Think about that.
+
+So, really, the question is whether I can `poetry new` and `poetry install` in a dir that already exists.
+
+Maybe `poetry init` instead of `poetry new`? Asks a bunch of questions.
+
+It creates a pyproject.toml file, and then `poetry install` creates the `poetry.lock`and `.venv`, but the rest of the structure's not there (tests dir, second level of the project dir). Will it work? Probably. Do we want that structure? Probably.
+
+### New and copy over
+
+So, maybe better to `poetry new` somewhere else and drag over, then `poetry install`. Does that work? I copied over everything *inside* the outer dir, since I want the whole project to share the outer dir. It makes the lock and venv, but I get '*dirname* does not contain any element'. I'm guessing because I made a poetry env with a different name. Try using the same name, then again copying over the internals.
+
+That seems to work. Now to build the env so everything actually works. But that's about project details, so I'll leave this here.
+
+That seemed to have made vs code happy- it can find a venv in the workspace and use it. It didn't do that automatically when the venv was in a subdir. (I had to command palette- select python interpreter).

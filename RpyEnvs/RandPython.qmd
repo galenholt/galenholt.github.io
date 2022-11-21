@@ -1,0 +1,96 @@
+---
+title: "Using R and python together"
+format: html
+editor: visual
+engine: knitr
+---
+
+```{r setup}
+#| warning: false
+#| message: false
+
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+
+```
+
+## The issue
+
+I have a project primarily in R, but needs some python. For the big python work, I'll have a directory with a `poetry` environment and python code. But I've run into the issue that I want to run just one or two lines of python from R. The specific case is that I have python code for extracting river gauge data, and I've filtered some river gauges in R for something else, and rather than do the finding of the gauges again in python, I'd rather just do the extraction in R. I think that means I have to sort out {reticulate}, but also how to point reticulate at my python environment. The situation I have is a `poetry` project inside a directory with an Rproj (which probably needs to be split up, but it's what I have now).
+
+My `python_setup.qmd` sets up a very similar situation, so let's see if I can use it.
+
+## Set up reticulate from R
+
+Point reticulate at the venv. See [stackoverflow](https://stackoverflow.com/questions/59715101/how-to-get-reticulate-to-access-virtual-environment).
+
+```{r}
+reticulate::use_virtualenv(file.path('RpyEnvs', 'pytesting', '.venv'), required = TRUE)
+```
+
+Load the library. Interestingly, the python code chunks will run without loading the library, but I can't access their values using `py$pythonobject` unless I load it.
+
+```{r}
+# library(reticulate)
+```
+
+## R
+
+First, let's create some things in R.
+
+```{r}
+
+a <- 1
+b <- 2
+```
+
+## Python
+
+Does not just inherit the values from R, but runs.
+
+```{python}
+a = 1
+b = 2
+a+b
+
+```
+
+Do I have access to packages? Yes.
+
+```{python}
+import numpy as np
+
+x = np.arange(15, dtype=np.int64).reshape(3, 5)
+x[1:, ::2] = -99
+x
+```
+
+Does access to python objects persist? Yes
+
+```{python}
+x.max(axis=1)
+```
+
+## Moving data back and forth
+
+### Python to R
+
+Can I access objects with R? Yes, but not quite directly. Have to use the `py$pythonObject` notation. But *only* if I've loaded `library(reticulate)` *or* specified with `reticulate::py`. That's a pain, so probably almost always better to load the library. Even though the python chunks run fine without explictly loading it, I can't seem to access `py` without loading it.
+
+```{r}
+# x
+reticulate::py$x
+```
+
+### R to python
+
+Similar to python objects being in `py`, R objects are in `r`, and are accessed with `.` instead of `$`.
+
+```{r}
+c <- 17
+```
+
+Interestingly, the `r.` notation to get R into python does *not* need `reticulate::` on it. Which I guess makes some sense- this block is actually running in python and python doesn't know what `reticulate` is. But it does know what `r.` is, somehow. Pretty cool.
+
+```{python}
+r.c + b
+```
