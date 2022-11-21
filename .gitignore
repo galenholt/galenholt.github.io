@@ -1,6 +1,6 @@
 .Rproj.user
 .Rhistory
-.RData
+*.RData
 .Ruserdata
 /.quarto/
 _site
@@ -12,3 +12,7 @@ output/
 *.pyc
 
 /_*.local
+
+*.rdb
+
+*.rdx
