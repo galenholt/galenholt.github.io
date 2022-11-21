@@ -54,4 +54,8 @@ add `output-dir: docs` to the `_quarto.yml` and then create a `.nojekyll` file. 
     execute:
       cache: true
 
-to cache output and avoid long re-renders ( I hope).
+to cache output and avoid long re-renders ( I hope). Seems to- re-clicking render was much faster.
+
+To set to `docs`, go to repo, then settings --\> Pages (on left) --\> deploy from a branch, and choose the branch (likely Main) and `/docs` instead of `/root`.
+
+So, I've been developing on `dev`, I guess I'll merge main and see what happens.

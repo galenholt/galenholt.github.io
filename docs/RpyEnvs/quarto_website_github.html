@@ -302,7 +302,9 @@ ul.task-list li input[type="checkbox"] {
 <p>add <code>output-dir: docs</code> to the <code>_quarto.yml</code> and then create a <code>.nojekyll</code> file. Then <code>quarto render</code> to render to docs. I think I’ll also add a <code>_quarto.yml.local</code> with</p>
 <pre><code>execute:
   cache: true</code></pre>
-<p>to cache output and avoid long re-renders ( I hope).</p>
+<p>to cache output and avoid long re-renders ( I hope). Seems to- re-clicking render was much faster.</p>
+<p>To set to <code>docs</code>, go to repo, then settings –&gt; Pages (on left) –&gt; deploy from a branch, and choose the branch (likely Main) and <code>/docs</code> instead of <code>/root</code>.</p>
+<p>So, I’ve been developing on <code>dev</code>, I guess I’ll merge main and see what happens.</p>
 
 
 </section>

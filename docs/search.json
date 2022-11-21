@@ -207,7 +207,7 @@
     "href": "RpyEnvs/quarto_website_github.html#pushing-to-github",
     "title": "Quarto website",
     "section": "Pushing to github",
-    "text": "Pushing to github\nThe publishing the gh-pages branch seems the nicest, but there’s a bit warning not to do that on Windows. So, I guess I’ll do the render to docs way.\nadd output-dir: docs to the _quarto.yml and then create a .nojekyll file. Then quarto render to render to docs. I think I’ll also add a _quarto.yml.local with\nexecute:\n  cache: true\nto cache output and avoid long re-renders ( I hope)."
+    "text": "Pushing to github\nThe publishing the gh-pages branch seems the nicest, but there’s a bit warning not to do that on Windows. So, I guess I’ll do the render to docs way.\nadd output-dir: docs to the _quarto.yml and then create a .nojekyll file. Then quarto render to render to docs. I think I’ll also add a _quarto.yml.local with\nexecute:\n  cache: true\nto cache output and avoid long re-renders ( I hope). Seems to- re-clicking render was much faster.\nTo set to docs, go to repo, then settings –> Pages (on left) –> deploy from a branch, and choose the branch (likely Main) and /docs instead of /root.\nSo, I’ve been developing on dev, I guess I’ll merge main and see what happens."
   },
   {
     "objectID": "RpyEnvs/RandPython.html",
