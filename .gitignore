@@ -9,8 +9,6 @@ data
 
 output/
 
-*.png
-
 *.pyc
 
 /_*.local
