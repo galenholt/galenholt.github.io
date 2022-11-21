@@ -48,3 +48,10 @@ If I `render` a single file, does it render the whole website? seems like yes. I
 ## Pushing to github
 
 The publishing the `gh-pages` branch seems the nicest, but there's a bit warning not to do that on Windows. So, I guess I'll do the render to docs way.
+
+add `output-dir: docs` to the `_quarto.yml` and then create a `.nojekyll` file. Then `quarto render` to render to docs. I think I'll also add a `_quarto.yml.local` with
+
+    execute:
+      cache: true
+
+to cache output and avoid long re-renders ( I hope).

@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Galen - Fonts</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+<link href="../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Galen</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../research.html">
+ <span class="menu-text">Research</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../code_demos.html" aria-current="page">
+ <span class="menu-text">Code Demos</span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Fonts</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code_demos.html" class="sidebar-item-text sidebar-link">Code Demos</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Plotting</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../smallpieces.html" class="sidebar-item-text sidebar-link">Bits and pieces</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/tweaks_tricks.html" class="sidebar-item-text sidebar-link">Saving and themeing plots</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/hcl_exploration.html" class="sidebar-item-text sidebar-link">Exploring HCL colorspace</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/fonts.html" class="sidebar-item-text sidebar-link active">Fonts</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/faded_colors.html" class="sidebar-item-text sidebar-link">Faded 2d colour ramps</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Theory and simulation</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../simmodelling/twoDautocorr.html" class="sidebar-item-text sidebar-link">Generate 2d autocorrelation</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">R and python</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/python_setup.html" class="sidebar-item-text sidebar-link">Python environments with pyenv and poetry</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/python_updated_functions.html" class="sidebar-item-text sidebar-link">Small python bits</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/RandPython.html" class="sidebar-item-text sidebar-link">Using R and python together</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/R_py_shared_projects.html" class="sidebar-item-text sidebar-link">Shared R-py project structure</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">Setting things up</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/rig.html" class="sidebar-item-text sidebar-link">Managing old R versions with rig</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/quarto_website_github.html" class="sidebar-item-text sidebar-link">Getting this website working</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/managingprivate.html" class="sidebar-item-text sidebar-link">Private data for website repo</a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#accessing-fonts" id="toc-accessing-fonts" class="nav-link active" data-scroll-target="#accessing-fonts">Accessing fonts</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Fonts</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_knit<span class="sc">$</span><span class="fu">set</span>(<span class="at">root.dir =</span> rprojroot<span class="sc">::</span><span class="fu">find_rstudio_root_file</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Using <code>knitr::inline_expr(r message = FALSE, warning = FALSE)</code> hopefully stops it printing all the package messages</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># Overkill, but easier than picking and choosing</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>These are mostly little plot tweaks and small things that I find and forget all the time.</p>
+<section id="accessing-fonts" class="level1">
+<h1>Accessing fonts</h1>
+<p>In the past, I’ve used <code>extrafonts</code> to use fonts within figures, but it’s failing for me (‘No FontName, skipping’ error as in https://github.com/wch/extrafont/issues/88).</p>
+<p>Try sysfonts. Actually, <code>showtext</code> on top of <code>sysfonts</code>. First, look at how it finds the fonts.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(showtext)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'showtext' was built under R version 4.2.2</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: sysfonts</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'sysfonts' was built under R version 4.2.2</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: showtextdb</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'showtextdb' was built under R version 4.2.2</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fontsIhave <span class="ot">&lt;-</span> <span class="fu">font_files</span>()</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>fontsIhave</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["path"],"name":[1],"type":["chr"],"align":["left"]},{"label":["file"],"name":[2],"type":["chr"],"align":["left"]},{"label":["family"],"name":[3],"type":["chr"],"align":["left"]},{"label":["face"],"name":[4],"type":["chr"],"align":["left"]},{"label":["version"],"name":[5],"type":["chr"],"align":["left"]},{"label":["ps_name"],"name":[6],"type":["chr"],"align":["left"]}],"data":[{"1":"C:/Windows/Fonts","2":"AGENCYB.TTF","3":"Agency FB","4":"Bold","5":"Version 1.01","6":"AgencyFB-Bold"},{"1":"C:/Windows/Fonts","2":"AGENCYR.TTF","3":"Agency FB","4":"Regular","5":"Version 1.01","6":"AgencyFB-Reg"},{"1":"C:/Windows/Fonts","2":"ALGER.TTF","3":"Algerian","4":"Regular","5":"Version 1.57","6":"Algerian"},{"1":"C:/Windows/Fonts","2":"ANTQUAB.TTF","3":"Book Antiqua","4":"Bold","5":"Version 2.35","6":"BookAntiqua-Bold"},{"1":"C:/Windows/Fonts","2":"ANTQUABI.TTF","3":"Book Antiqua","4":"Bold Italic","5":"Version 2.35","6":"BookAntiqua-BoldItalic"},{"1":"C:/Windows/Fonts","2":"ANTQUAI.TTF","3":"Book Antiqua","4":"Italic","5":"Version 2.35","6":"BookAntiqua-Italic"},{"1":"C:/Windows/Fonts","2":"arial.ttf","3":"Arial","4":"Regular","5":"Version 7.01","6":"ArialMT"},{"1":"C:/Windows/Fonts","2":"arialbd.ttf","3":"Arial","4":"Bold","5":"Version 7.01","6":"Arial-BoldMT"},{"1":"C:/Windows/Fonts","2":"arialbi.ttf","3":"Arial","4":"Bold Italic","5":"Version 7.01","6":"Arial-BoldItalicMT"},{"1":"C:/Windows/Fonts","2":"ariali.ttf","3":"Arial","4":"Italic","5":"Version 7.01","6":"Arial-ItalicMT"},{"1":"C:/Windows/Fonts","2":"ARIALN.TTF","3":"Arial Narrow","4":"Regular","5":"Version 2.40","6":"ArialNarrow"},{"1":"C:/Windows/Fonts","2":"ARIALNB.TTF","3":"Arial Narrow","4":"Bold","5":"Version 2.40","6":"ArialNarrow-Bold"},{"1":"C:/Windows/Fonts","2":"ARIALNBI.TTF","3":"Arial Narrow","4":"Bold Italic","5":"Version 2.40","6":"ArialNarrow-BoldItalic"},{"1":"C:/Windows/Fonts","2":"ARIALNI.TTF","3":"Arial Narrow","4":"Italic","5":"Version 2.40","6":"ArialNarrow-Italic"},{"1":"C:/Windows/Fonts","2":"ariblk.ttf","3":"Arial Black","4":"Regular","5":"Version 5.23","6":"Arial-Black"},{"1":"C:/Windows/Fonts","2":"ARLRDBD.TTF","3":"Arial Rounded MT Bold","4":"Regular","5":"Version 1.51","6":"ArialRoundedMTBold"},{"1":"C:/Windows/Fonts","2":"bahnschrift.ttf","3":"Bahnschrift","4":"Regular","5":"Version 2.07;210929233650","6":"Bahnschrift"},{"1":"C:/Windows/Fonts","2":"BASKVILL.TTF","3":"Baskerville Old Face","4":"Regular","5":"Version 1.51","6":"BaskOldFace"},{"1":"C:/Windows/Fonts","2":"BAUHS93.TTF","3":"Bauhaus 93","4":"Regular","5":"Version 1.53","6":"Bauhaus93"},{"1":"C:/Windows/Fonts","2":"BELL.TTF","3":"Bell MT","4":"Regular","5":"Version 1.51","6":"BellMT"},{"1":"C:/Windows/Fonts","2":"BELLB.TTF","3":"Bell MT","4":"Bold","5":"Version 1.51","6":"BellMTBold"},{"1":"C:/Windows/Fonts","2":"BELLI.TTF","3":"Bell MT","4":"Italic","5":"Version 1.51","6":"BellMTItalic"},{"1":"C:/Windows/Fonts","2":"BERNHC.TTF","3":"Bernard MT Condensed","4":"Regular","5":"Version 1.51","6":"BernardMT-Condensed"},{"1":"C:/Windows/Fonts","2":"BKANT.TTF","3":"Book Antiqua","4":"Regular","5":"Version 2.35","6":"BookAntiqua"},{"1":"C:/Windows/Fonts","2":"BOD_B.TTF","3":"Bodoni MT","4":"Bold","5":"Version 2.10","6":"BodoniMT-Bold"},{"1":"C:/Windows/Fonts","2":"BOD_BI.TTF","3":"Bodoni MT","4":"Bold Italic","5":"Version 2.10","6":"BodoniMT-BoldItalic"},{"1":"C:/Windows/Fonts","2":"BOD_BLAI.TTF","3":"Bodoni MT Black","4":"Italic","5":"Version 2.10","6":"BodoniMTBlack-Italic"},{"1":"C:/Windows/Fonts","2":"BOD_BLAR.TTF","3":"Bodoni MT Black","4":"Regular","5":"Version 2.10","6":"BodoniMTBlack"},{"1":"C:/Windows/Fonts","2":"BOD_CB.TTF","3":"Bodoni MT Condensed","4":"Bold","5":"Version 2.10","6":"BodoniMTCondensed-Bold"},{"1":"C:/Windows/Fonts","2":"BOD_CBI.TTF","3":"Bodoni MT Condensed","4":"Bold Italic","5":"Version 2.10","6":"BodoniMTCondensed-BoldItalic"},{"1":"C:/Windows/Fonts","2":"BOD_CI.TTF","3":"Bodoni MT Condensed","4":"Italic","5":"Version 2.10","6":"BodoniMTCondensed-Italic"},{"1":"C:/Windows/Fonts","2":"BOD_CR.TTF","3":"Bodoni MT Condensed","4":"Regular","5":"Version 2.10","6":"BodoniMTCondensed"},{"1":"C:/Windows/Fonts","2":"BOD_I.TTF","3":"Bodoni MT","4":"Italic","5":"Version 2.10","6":"BodoniMT-Italic"},{"1":"C:/Windows/Fonts","2":"BOD_PSTC.TTF","3":"Bodoni MT Poster Compressed","4":"Regular","5":"Version 2.10","6":"BodoniMTPosterCompressed"},{"1":"C:/Windows/Fonts","2":"BOD_R.TTF","3":"Bodoni MT","4":"Regular","5":"Version 2.10","6":"BodoniMT"},{"1":"C:/Windows/Fonts","2":"BOOKOS.TTF","3":"Bookman Old Style","4":"Regular","5":"Version 2.35","6":"BookmanOldStyle"},{"1":"C:/Windows/Fonts","2":"BOOKOSB.TTF","3":"Bookman Old Style","4":"Bold","5":"Version 2.35","6":"BookmanOldStyle-Bold"},{"1":"C:/Windows/Fonts","2":"BOOKOSBI.TTF","3":"Bookman Old Style","4":"Bold Italic","5":"Version 2.35","6":"BookmanOldStyle-BoldItalic"},{"1":"C:/Windows/Fonts","2":"BOOKOSI.TTF","3":"Bookman Old Style","4":"Italic","5":"Version 2.36","6":"BookmanOldStyle-Italic"},{"1":"C:/Windows/Fonts","2":"BRADHITC.TTF","3":"Bradley Hand ITC","4":"Regular","5":"Version 1.05","6":"BradleyHandITC"},{"1":"C:/Windows/Fonts","2":"BRITANIC.TTF","3":"Britannic Bold","4":"Regular","5":"Version 1.51","6":"BritannicBold"},{"1":"C:/Windows/Fonts","2":"BRLNSB.TTF","3":"Berlin Sans FB","4":"Bold","5":"Version 1.00","6":"BerlinSansFB-Bold"},{"1":"C:/Windows/Fonts","2":"BRLNSDB.TTF","3":"Berlin Sans FB Demi","4":"Bold","5":"Version 1.00","6":"BerlinSansFBDemi-Bold"},{"1":"C:/Windows/Fonts","2":"BRLNSR.TTF","3":"Berlin Sans FB","4":"Regular","5":"Version 1.00","6":"BerlinSansFB-Reg"},{"1":"C:/Windows/Fonts","2":"BROADW.TTF","3":"Broadway","4":"Regular","5":"Version 1.55","6":"Broadway"},{"1":"C:/Windows/Fonts","2":"BRUSHSCI.TTF","3":"Brush Script MT","4":"Italic","5":"Version 1.52","6":"BrushScriptMT"},{"1":"C:/Windows/Fonts","2":"BSSYM7.TTF","3":"Bookshelf Symbol 7","4":"Regular","5":"Version 1.03","6":"BookshelfSymbolSeven"},{"1":"C:/Windows/Fonts","2":"calibri.ttf","3":"Calibri","4":"Regular","5":"Version 6.26","6":"Calibri"},{"1":"C:/Windows/Fonts","2":"calibrib.ttf","3":"Calibri","4":"Bold","5":"Version 6.26","6":"Calibri-Bold"},{"1":"C:/Windows/Fonts","2":"calibrii.ttf","3":"Calibri","4":"Italic","5":"Version 6.26","6":"Calibri-Italic"},{"1":"C:/Windows/Fonts","2":"calibril.ttf","3":"Calibri Light","4":"Regular","5":"Version 6.26","6":"Calibri-Light"},{"1":"C:/Windows/Fonts","2":"calibrili.ttf","3":"Calibri Light","4":"Italic","5":"Version 6.26","6":"Calibri-LightItalic"},{"1":"C:/Windows/Fonts","2":"calibriz.ttf","3":"Calibri","4":"Bold Italic","5":"Version 6.26","6":"Calibri-BoldItalic"},{"1":"C:/Windows/Fonts","2":"CALIFB.TTF","3":"Californian FB","4":"Bold","5":"Version 1.00","6":"CalifornianFB-Bold"},{"1":"C:/Windows/Fonts","2":"CALIFI.TTF","3":"Californian FB","4":"Italic","5":"Version 1.00","6":"CalifornianFB-Italic"},{"1":"C:/Windows/Fonts","2":"CALIFR.TTF","3":"Californian FB","4":"Regular","5":"Version 1.00","6":"CalifornianFB-Reg"},{"1":"C:/Windows/Fonts","2":"CALIST.TTF","3":"Calisto MT","4":"Regular","5":"Version 1.62","6":"CalistoMT"},{"1":"C:/Windows/Fonts","2":"CALISTB.TTF","3":"Calisto MT","4":"Bold","5":"Version 1.62","6":"CalisMTBol"},{"1":"C:/Windows/Fonts","2":"CALISTBI.TTF","3":"Calisto MT","4":"Bold Italic","5":"Version 1.62","6":"CalistoMT-BoldItalic"},{"1":"C:/Windows/Fonts","2":"CALISTI.TTF","3":"Calisto MT","4":"Italic","5":"Version 1.62","6":"CalistoMT-Italic"},{"1":"C:/Windows/Fonts","2":"cambria.ttc","3":"Cambria","4":"Regular","5":"Version 6.99","6":"Cambria"},{"1":"C:/Windows/Fonts","2":"cambriab.ttf","3":"Cambria","4":"Bold","5":"Version 6.98","6":"Cambria-Bold"},{"1":"C:/Windows/Fonts","2":"cambriai.ttf","3":"Cambria","4":"Italic","5":"Version 6.98","6":"Cambria-Italic"},{"1":"C:/Windows/Fonts","2":"cambriaz.ttf","3":"Cambria","4":"Bold Italic","5":"Version 6.98","6":"Cambria-BoldItalic"},{"1":"C:/Windows/Fonts","2":"Candara.ttf","3":"Candara","4":"Regular","5":"Version 5.62","6":"Candara"},{"1":"C:/Windows/Fonts","2":"Candarab.ttf","3":"Candara","4":"Bold","5":"Version 5.62","6":"Candara-Bold"},{"1":"C:/Windows/Fonts","2":"Candarai.ttf","3":"Candara","4":"Italic","5":"Version 5.62","6":"Candara-Italic"},{"1":"C:/Windows/Fonts","2":"Candaral.ttf","3":"Candara Light","4":"Regular","5":"Version 5.63","6":"Candara-Light"},{"1":"C:/Windows/Fonts","2":"Candarali.ttf","3":"Candara Light","4":"Italic","5":"Version 5.63","6":"Candara-LightItalic"},{"1":"C:/Windows/Fonts","2":"Candaraz.ttf","3":"Candara","4":"Bold Italic","5":"Version 5.62","6":"Candara-BoldItalic"},{"1":"C:/Windows/Fonts","2":"CascadiaCode.ttf","3":"Cascadia Code","4":"Regular","5":"Version 2102.025","6":"CascadiaCode-Roman"},{"1":"C:/Windows/Fonts","2":"CascadiaMono.ttf","3":"Cascadia Mono","4":"Regular","5":"Version 2102.025","6":"CascadiaMono-Roman"},{"1":"C:/Windows/Fonts","2":"CASTELAR.TTF","3":"Castellar","4":"Regular","5":"Version 1.55","6":"Castellar"},{"1":"C:/Windows/Fonts","2":"CENSCBK.TTF","3":"Century Schoolbook","4":"Regular","5":"Version 2.35","6":"CenturySchoolbook"},{"1":"C:/Windows/Fonts","2":"CENTAUR.TTF","3":"Centaur","4":"Regular","5":"Version 1.55","6":"Centaur"},{"1":"C:/Windows/Fonts","2":"CENTURY.TTF","3":"Century","4":"Regular","5":"Version 1.20","6":"Century"},{"1":"C:/Windows/Fonts","2":"CHILLER.TTF","3":"Chiller","4":"Regular","5":"Version 1.05","6":"Chiller-Regular"},{"1":"C:/Windows/Fonts","2":"COLONNA.TTF","3":"Colonna MT","4":"Regular","5":"Version 1.51","6":"ColonnaMT"},{"1":"C:/Windows/Fonts","2":"comic.ttf","3":"Comic Sans MS","4":"Regular","5":"Version 5.14","6":"ComicSansMS"},{"1":"C:/Windows/Fonts","2":"comicbd.ttf","3":"Comic Sans MS","4":"Bold","5":"Version 5.14","6":"ComicSansMS-Bold"},{"1":"C:/Windows/Fonts","2":"comici.ttf","3":"Comic Sans MS","4":"Italic","5":"Version 5.14","6":"ComicSansMS-Italic"},{"1":"C:/Windows/Fonts","2":"comicz.ttf","3":"Comic Sans MS","4":"Bold Italic","5":"Version 5.14","6":"ComicSansMS-BoldItalic"},{"1":"C:/Windows/Fonts","2":"consola.ttf","3":"Consolas","4":"Regular","5":"Version 7.00","6":"Consolas"},{"1":"C:/Windows/Fonts","2":"consolab.ttf","3":"Consolas","4":"Bold","5":"Version 7.00","6":"Consolas-Bold"},{"1":"C:/Windows/Fonts","2":"consolai.ttf","3":"Consolas","4":"Italic","5":"Version 7.00","6":"Consolas-Italic"},{"1":"C:/Windows/Fonts","2":"consolaz.ttf","3":"Consolas","4":"Bold Italic","5":"Version 7.00","6":"Consolas-BoldItalic"},{"1":"C:/Windows/Fonts","2":"constan.ttf","3":"Constantia","4":"Regular","5":"Version 5.93","6":"Constantia"},{"1":"C:/Windows/Fonts","2":"constanb.ttf","3":"Constantia","4":"Bold","5":"Version 5.93","6":"Constantia-Bold"},{"1":"C:/Windows/Fonts","2":"constani.ttf","3":"Constantia","4":"Italic","5":"Version 5.93","6":"Constantia-Italic"},{"1":"C:/Windows/Fonts","2":"constanz.ttf","3":"Constantia","4":"Bold Italic","5":"Version 5.93","6":"Constantia-BoldItalic"},{"1":"C:/Windows/Fonts","2":"COOPBL.TTF","3":"Cooper Black","4":"Regular","5":"Version 1.51","6":"CooperBlack"},{"1":"C:/Windows/Fonts","2":"COPRGTB.TTF","3":"Copperplate Gothic Bold","4":"Regular","5":"Version 1.51","6":"CopperplateGothic-Bold"},{"1":"C:/Windows/Fonts","2":"COPRGTL.TTF","3":"Copperplate Gothic Light","4":"Regular","5":"Version 1.51","6":"CopperplateGothic-Light"},{"1":"C:/Windows/Fonts","2":"corbel.ttf","3":"Corbel","4":"Regular","5":"Version 6.01","6":"Corbel"},{"1":"C:/Windows/Fonts","2":"corbelb.ttf","3":"Corbel","4":"Bold","5":"Version 6.01","6":"Corbel-Bold"},{"1":"C:/Windows/Fonts","2":"corbeli.ttf","3":"Corbel","4":"Italic","5":"Version 6.01","6":"Corbel-Italic"},{"1":"C:/Windows/Fonts","2":"corbell.ttf","3":"Corbel Light","4":"Regular","5":"Version 6.01","6":"CorbelLight"},{"1":"C:/Windows/Fonts","2":"corbelli.ttf","3":"Corbel Light","4":"Italic","5":"Version 6.01","6":"CorbelLight-Italic"},{"1":"C:/Windows/Fonts","2":"corbelz.ttf","3":"Corbel","4":"Bold Italic","5":"Version 6.01","6":"Corbel-BoldItalic"},{"1":"C:/Windows/Fonts","2":"cour.ttf","3":"Courier New","4":"Regular","5":"Version 6.92","6":"CourierNewPSMT"},{"1":"C:/Windows/Fonts","2":"courbd.ttf","3":"Courier New","4":"Bold","5":"Version 6.92","6":"CourierNewPS-BoldMT"},{"1":"C:/Windows/Fonts","2":"courbi.ttf","3":"Courier New","4":"Bold Italic","5":"Version 6.91","6":"CourierNewPS-BoldItalicMT"},{"1":"C:/Windows/Fonts","2":"couri.ttf","3":"Courier New","4":"Italic","5":"Version 6.91","6":"CourierNewPS-ItalicMT"},{"1":"C:/Windows/Fonts","2":"CURLZ___.TTF","3":"Curlz MT","4":"Regular","5":"Version 1.02","6":"CurlzMT"},{"1":"C:/Windows/Fonts","2":"DUBAI-BOLD.TTF","3":"Dubai","4":"Bold","5":"Version 1.10","6":"Dubai-Bold"},{"1":"C:/Windows/Fonts","2":"DUBAI-LIGHT.TTF","3":"Dubai Light","4":"Regular","5":"Version 1.10","6":"Dubai-Light"},{"1":"C:/Windows/Fonts","2":"DUBAI-MEDIUM.TTF","3":"Dubai Medium","4":"Regular","5":"Version 1.10","6":"Dubai-Medium"},{"1":"C:/Windows/Fonts","2":"DUBAI-REGULAR.TTF","3":"Dubai","4":"Regular","5":"Version 1.10","6":"Dubai-Regular"},{"1":"C:/Windows/Fonts","2":"ebrima.ttf","3":"Ebrima","4":"Regular","5":"Version 5.16","6":"Ebrima"},{"1":"C:/Windows/Fonts","2":"ebrimabd.ttf","3":"Ebrima","4":"Bold","5":"Version 5.16","6":"Ebrima-Bold"},{"1":"C:/Windows/Fonts","2":"ELEPHNT.TTF","3":"Elephant","4":"Regular","5":"Version 1.51","6":"Elephant-Regular"},{"1":"C:/Windows/Fonts","2":"ELEPHNTI.TTF","3":"Elephant","4":"Italic","5":"Version 1.51","6":"Elephant-Italic"},{"1":"C:/Windows/Fonts","2":"ENGR.TTF","3":"Engravers MT","4":"Regular","5":"Version 1.60","6":"EngraversMT"},{"1":"C:/Windows/Fonts","2":"ERASBD.TTF","3":"Eras Bold ITC","4":"Regular","5":"Version 1.01","6":"ErasITC-Bold"},{"1":"C:/Windows/Fonts","2":"ERASDEMI.TTF","3":"Eras Demi ITC","4":"Regular","5":"Version 1.01","6":"ErasITC-Demi"},{"1":"C:/Windows/Fonts","2":"ERASLGHT.TTF","3":"Eras Light ITC","4":"Regular","5":"Version 1.01","6":"ErasITC-Light"},{"1":"C:/Windows/Fonts","2":"ERASMD.TTF","3":"Eras Medium ITC","4":"Regular","5":"Version 1.01","6":"ErasITC-Medium"},{"1":"C:/Windows/Fonts","2":"FELIXTI.TTF","3":"Felix Titling","4":"Regular","5":"Version 1.51","6":"FelixTitlingMT"},{"1":"C:/Windows/Fonts","2":"FORTE.TTF","3":"Forte","4":"Regular","5":"Version 1.60","6":"ForteMT"},{"1":"C:/Windows/Fonts","2":"FRABK.TTF","3":"Franklin Gothic Book","4":"Regular","5":"Version 2.01","6":"FranklinGothic-Book"},{"1":"C:/Windows/Fonts","2":"FRABKIT.TTF","3":"Franklin Gothic Book","4":"Italic","5":"Version 2.01","6":"FranklinGothic-BookItalic"},{"1":"C:/Windows/Fonts","2":"FRADM.TTF","3":"Franklin Gothic Demi","4":"Regular","5":"Version 2.00","6":"FranklinGothic-Demi"},{"1":"C:/Windows/Fonts","2":"FRADMCN.TTF","3":"Franklin Gothic Demi Cond","4":"Regular","5":"Version 2.00","6":"FranklinGothic-DemiCond"},{"1":"C:/Windows/Fonts","2":"FRADMIT.TTF","3":"Franklin Gothic Demi","4":"Italic","5":"Version 2.00","6":"FranklinGothic-DemiItalic"},{"1":"C:/Windows/Fonts","2":"FRAHV.TTF","3":"Franklin Gothic Heavy","4":"Regular","5":"Version 2.00","6":"FranklinGothic-Heavy"},{"1":"C:/Windows/Fonts","2":"FRAHVIT.TTF","3":"Franklin Gothic Heavy","4":"Italic","5":"Version 2.00","6":"FranklinGothic-HeavyItalic"},{"1":"C:/Windows/Fonts","2":"framd.ttf","3":"Franklin Gothic Medium","4":"Regular","5":"Version 5.02","6":"FranklinGothic-Medium"},{"1":"C:/Windows/Fonts","2":"FRAMDCN.TTF","3":"Franklin Gothic Medium Cond","4":"Regular","5":"Version 2.00","6":"FranklinGothic-MediumCond"},{"1":"C:/Windows/Fonts","2":"framdit.ttf","3":"Franklin Gothic Medium","4":"Italic","5":"Version 5.01","6":"FranklinGothic-MediumItalic"},{"1":"C:/Windows/Fonts","2":"FREESCPT.TTF","3":"Freestyle Script","4":"Regular","5":"Version 1.05","6":"FreestyleScript-Regular"},{"1":"C:/Windows/Fonts","2":"FRSCRIPT.TTF","3":"French Script MT","4":"Regular","5":"Version 1.02","6":"FrenchScriptMT"},{"1":"C:/Windows/Fonts","2":"FTLTLT.TTF","3":"Footlight MT Light","4":"Regular","5":"Version 1.51","6":"FootlightMTLight"},{"1":"C:/Windows/Fonts","2":"Gabriola.ttf","3":"Gabriola","4":"Regular","5":"Version 5.93","6":"Gabriola"},{"1":"C:/Windows/Fonts","2":"gadugi.ttf","3":"Gadugi","4":"Regular","5":"Version 1.13","6":"Gadugi"},{"1":"C:/Windows/Fonts","2":"gadugib.ttf","3":"Gadugi","4":"Bold","5":"Version 1.13","6":"Gadugi-Bold"},{"1":"C:/Windows/Fonts","2":"GARA.TTF","3":"Garamond","4":"Regular","5":"Version 2.40","6":"Garamond"},{"1":"C:/Windows/Fonts","2":"GARABD.TTF","3":"Garamond","4":"Bold","5":"Version 2.40","6":"Garamond-Bold"},{"1":"C:/Windows/Fonts","2":"GARAIT.TTF","3":"Garamond","4":"Italic","5":"Version 2.40","6":"Garamond-Italic"},{"1":"C:/Windows/Fonts","2":"georgia.ttf","3":"Georgia","4":"Regular","5":"Version 5.59","6":"Georgia"},{"1":"C:/Windows/Fonts","2":"georgiab.ttf","3":"Georgia","4":"Bold","5":"Version 5.59","6":"Georgia-Bold"},{"1":"C:/Windows/Fonts","2":"georgiai.ttf","3":"Georgia","4":"Italic","5":"Version 5.59","6":"Georgia-Italic"},{"1":"C:/Windows/Fonts","2":"georgiaz.ttf","3":"Georgia","4":"Bold Italic","5":"Version 5.59","6":"Georgia-BoldItalic"},{"1":"C:/Windows/Fonts","2":"GIGI.TTF","3":"Gigi","4":"Regular","5":"Version 1.05","6":"Gigi-Regular"},{"1":"C:/Windows/Fonts","2":"GIL_____.TTF","3":"Gill Sans MT","4":"Regular","5":"Version 1.65","6":"GillSansMT"},{"1":"C:/Windows/Fonts","2":"GILB____.TTF","3":"Gill Sans MT","4":"Bold","5":"Version 1.65","6":"GillSansMT-Bold"},{"1":"C:/Windows/Fonts","2":"GILBI___.TTF","3":"Gill Sans MT","4":"Bold Italic","5":"Version 1.65","6":"GillSansMT-BoldItalic"},{"1":"C:/Windows/Fonts","2":"GILC____.TTF","3":"Gill Sans MT Condensed","4":"Regular","5":"Version 1.65","6":"GillSansMT-Condensed"},{"1":"C:/Windows/Fonts","2":"GILI____.TTF","3":"Gill Sans MT","4":"Italic","5":"Version 1.65","6":"GillSansMT-Italic"},{"1":"C:/Windows/Fonts","2":"GILLUBCD.TTF","3":"Gill Sans Ultra Bold Condensed","4":"Regular","5":"Version 1.65","6":"GillSans-UltraBoldCondensed"},{"1":"C:/Windows/Fonts","2":"GILSANUB.TTF","3":"Gill Sans Ultra Bold","4":"Regular","5":"Version 1.65","6":"GillSans-UltraBold"},{"1":"C:/Windows/Fonts","2":"GLECB.TTF","3":"Gloucester MT Extra Condensed","4":"Regular","5":"Version 1.51","6":"GloucesterMT-ExtraCondensed"},{"1":"C:/Windows/Fonts","2":"GLSNECB.TTF","3":"Gill Sans MT Ext Condensed Bold","4":"Regular","5":"Version 1.65","6":"GillSansMT-ExtraCondensedBold"},{"1":"C:/Windows/Fonts","2":"GOTHIC.TTF","3":"Century Gothic","4":"Regular","5":"Version 2.35","6":"CenturyGothic"},{"1":"C:/Windows/Fonts","2":"GOTHICB.TTF","3":"Century Gothic","4":"Bold","5":"Version 2.35","6":"CenturyGothic-Bold"},{"1":"C:/Windows/Fonts","2":"GOTHICBI.TTF","3":"Century Gothic","4":"Bold Italic","5":"Version 2.35","6":"CenturyGothic-BoldItalic"},{"1":"C:/Windows/Fonts","2":"GOTHICI.TTF","3":"Century Gothic","4":"Italic","5":"Version 2.35","6":"CenturyGothic-Italic"},{"1":"C:/Windows/Fonts","2":"GOUDOS.TTF","3":"Goudy Old Style","4":"Regular","5":"Version 1.51","6":"GoudyOldStyleT-Regular"},{"1":"C:/Windows/Fonts","2":"GOUDOSB.TTF","3":"Goudy Old Style","4":"Bold","5":"Version 1.51","6":"GoudyOldStyleT-Bold"},{"1":"C:/Windows/Fonts","2":"GOUDOSI.TTF","3":"Goudy Old Style","4":"Italic","5":"Version 1.51","6":"GoudyOldStyleT-Italic"},{"1":"C:/Windows/Fonts","2":"GOUDYSTO.TTF","3":"Goudy Stout","4":"Regular","5":"Version 1.80","6":"GoudyStout"},{"1":"C:/Windows/Fonts","2":"HARLOWSI.TTF","3":"Harlow Solid Italic","4":"Italic","5":"Version 1.66","6":"HarlowSolid"},{"1":"C:/Windows/Fonts","2":"HARNGTON.TTF","3":"Harrington","4":"Regular","5":"Version 1.51","6":"Harrington"},{"1":"C:/Windows/Fonts","2":"HATTEN.TTF","3":"Haettenschweiler","4":"Regular","5":"Version 2.30","6":"Haettenschweiler"},{"1":"C:/Windows/Fonts","2":"himalaya.ttf","3":"Microsoft Himalaya","4":"Regular","5":"Version 5.23","6":"Microsoft Himalaya"},{"1":"C:/Windows/Fonts","2":"holomdl2.ttf","3":"HoloLens MDL2 Assets","4":"Regular","5":"Version 2.02","6":"HoloLensMDL2Assets"},{"1":"C:/Windows/Fonts","2":"HPSimplified.ttf","3":"HP Simplified","4":"Bold","5":"Version 1.100","6":"HPSimplified-Bold"},{"1":"C:/Windows/Fonts","2":"HPSimplified_BdIt.ttf","3":"HP Simplified","4":"Bold Italic","5":"Version 1.100","6":"HPSimplified-BoldItalic"},{"1":"C:/Windows/Fonts","2":"HPSimplified_It.ttf","3":"HP Simplified","4":"Italic","5":"Version 1.100","6":"HPSimplified-Italic"},{"1":"C:/Windows/Fonts","2":"HPSimplified_Lt.ttf","3":"HP Simplified Light","4":"Regular","5":"Version 1.100","6":"HPSimplified-Light"},{"1":"C:/Windows/Fonts","2":"HPSimplified_LtIt.ttf","3":"HP Simplified Light","4":"Italic","5":"Version 1.100","6":"HPSimplified-LightItalic"},{"1":"C:/Windows/Fonts","2":"HPSimplified_Rg.ttf","3":"HP Simplified","4":"Regular","5":"Version 1.100","6":"HPSimplified-Regular"},{"1":"C:/Windows/Fonts","2":"hpsimplifiedhans-light.ttf","3":"HP Simplified Hans Light","4":"Regular","5":"Version 1.000","6":"HPSimplifiedHans-Light"},{"1":"C:/Windows/Fonts","2":"hpsimplifiedhans-regular.ttf","3":"HP Simplified Hans","4":"Regular","5":"Version 1.10","6":"HPSimplifiedHans-Regular"},{"1":"C:/Windows/Fonts","2":"hpsimplifiedjpan-light.ttf","3":"HP Simplified Jpan Light","4":"Regular","5":"Version 2.100","6":"HPSimplifiedJpan-Light"},{"1":"C:/Windows/Fonts","2":"hpsimplifiedjpan-regular.ttf","3":"HP Simplified Jpan","4":"Regular","5":"Version 2.100","6":"HPSimplifiedJpan-Regular"},{"1":"C:/Windows/Fonts","2":"HTOWERT.TTF","3":"High Tower Text","4":"Regular","5":"Version 1.00","6":"HighTowerText-Reg"},{"1":"C:/Windows/Fonts","2":"HTOWERTI.TTF","3":"High Tower Text","4":"Italic","5":"Version 1.00","6":"HighTowerText-Italic"},{"1":"C:/Windows/Fonts","2":"impact.ttf","3":"Impact","4":"Regular","5":"Version 5.11","6":"Impact"},{"1":"C:/Windows/Fonts","2":"IMPRISHA.TTF","3":"Imprint MT Shadow","4":"Regular","5":"Version 1.51","6":"ImprintMT-Shadow"},{"1":"C:/Windows/Fonts","2":"INFROMAN.TTF","3":"Informal Roman","4":"Regular","5":"Version 1.05","6":"InformalRoman-Regular"},{"1":"C:/Windows/Fonts","2":"Inkfree.ttf","3":"Ink Free","4":"Regular","5":"Version 2.00","6":"InkFree"},{"1":"C:/Windows/Fonts","2":"ITCBLKAD.TTF","3":"Blackadder ITC","4":"Regular","5":"Version 1.05","6":"BlackadderITC-Regular"},{"1":"C:/Windows/Fonts","2":"ITCEDSCR.TTF","3":"Edwardian Script ITC","4":"Regular","5":"Version 1.05","6":"EdwardianScriptITC"},{"1":"C:/Windows/Fonts","2":"ITCKRIST.TTF","3":"Kristen ITC","4":"Regular","5":"Version 1.05","6":"KristenITC-Regular"},{"1":"C:/Windows/Fonts","2":"javatext.ttf","3":"Javanese Text","4":"Regular","5":"Version 1.10","6":"JavaneseText"},{"1":"C:/Windows/Fonts","2":"JOKERMAN.TTF","3":"Jokerman","4":"Regular","5":"Version 1.05","6":"Jokerman-Regular"},{"1":"C:/Windows/Fonts","2":"JUICE___.TTF","3":"Juice ITC","4":"Regular","5":"Version 1.05","6":"JuiceITC-Regular"},{"1":"C:/Windows/Fonts","2":"KUNSTLER.TTF","3":"Kunstler Script","4":"Regular","5":"Version 1.05","6":"KunstlerScript"},{"1":"C:/Windows/Fonts","2":"l_10646.ttf","3":"Lucida Sans Unicode","4":"Regular","5":"Version 5.01","6":"LucidaSansUnicode"},{"1":"C:/Windows/Fonts","2":"LATINWD.TTF","3":"Wide Latin","4":"Regular","5":"Version 1.51","6":"LatinWide"},{"1":"C:/Windows/Fonts","2":"LBRITE.TTF","3":"Lucida Bright","4":"Regular","5":"Version 1.67","6":"LucidaBright"},{"1":"C:/Windows/Fonts","2":"LBRITED.TTF","3":"Lucida Bright","4":"Demibold","5":"Version 1.67","6":"LucidaBright-Demi"},{"1":"C:/Windows/Fonts","2":"LBRITEDI.TTF","3":"Lucida Bright","4":"Demibold Italic","5":"Version 1.67","6":"LucidaBright-DemiItalic"},{"1":"C:/Windows/Fonts","2":"LBRITEI.TTF","3":"Lucida Bright","4":"Italic","5":"Version 1.67","6":"LucidaBright-Italic"},{"1":"C:/Windows/Fonts","2":"LCALLIG.TTF","3":"Lucida Calligraphy","4":"Italic","5":"Version 1.67","6":"LucidaCalligraphy-Italic"},{"1":"C:/Windows/Fonts","2":"LeelaUIb.ttf","3":"Leelawadee UI","4":"Bold","5":"Version 5.05","6":"LeelawadeeUI-Bold"},{"1":"C:/Windows/Fonts","2":"LeelawUI.ttf","3":"Leelawadee UI","4":"Regular","5":"Version 5.05","6":"LeelawadeeUI"},{"1":"C:/Windows/Fonts","2":"LeelUIsl.ttf","3":"Leelawadee UI Semilight","4":"Regular","5":"Version 5.05","6":"LeelawadeeUI-Semilight"},{"1":"C:/Windows/Fonts","2":"LFAX.TTF","3":"Lucida Fax","4":"Regular","5":"Version 1.67","6":"LucidaFax"},{"1":"C:/Windows/Fonts","2":"LFAXD.TTF","3":"Lucida Fax","4":"Demibold","5":"Version 1.67","6":"LucidaFax-Demi"},{"1":"C:/Windows/Fonts","2":"LFAXDI.TTF","3":"Lucida Fax","4":"Demibold Italic","5":"Version 1.67","6":"LucidaFax-DemiItalic"},{"1":"C:/Windows/Fonts","2":"LFAXI.TTF","3":"Lucida Fax","4":"Italic","5":"Version 1.67","6":"LucidaFax-Italic"},{"1":"C:/Windows/Fonts","2":"LHANDW.TTF","3":"Lucida Handwriting","4":"Italic","5":"Version 1.67","6":"LucidaHandwriting-Italic"},{"1":"C:/Windows/Fonts","2":"LSANS.TTF","3":"Lucida Sans","4":"Regular","5":"Version 1.67","6":"LucidaSans"},{"1":"C:/Windows/Fonts","2":"LSANSD.TTF","3":"Lucida Sans","4":"Demibold Roman","5":"Version 1.67","6":"LucidaSans-Demi"},{"1":"C:/Windows/Fonts","2":"LSANSDI.TTF","3":"Lucida Sans","4":"Demibold Italic","5":"Version 1.67","6":"LucidaSans-DemiItalic"},{"1":"C:/Windows/Fonts","2":"LSANSI.TTF","3":"Lucida Sans","4":"Italic","5":"Version 1.67","6":"LucidaSans-Italic"},{"1":"C:/Windows/Fonts","2":"LTYPE.TTF","3":"Lucida Sans Typewriter","4":"Regular","5":"Version 1.67","6":"LucidaSans-Typewriter"},{"1":"C:/Windows/Fonts","2":"LTYPEB.TTF","3":"Lucida Sans Typewriter","4":"Bold","5":"Version 1.67","6":"LucidaSans-TypewriterBold"},{"1":"C:/Windows/Fonts","2":"LTYPEBO.TTF","3":"Lucida Sans Typewriter","4":"Bold Oblique","5":"Version 1.67","6":"LucidaSans-TypewriterBoldOblique"},{"1":"C:/Windows/Fonts","2":"LTYPEO.TTF","3":"Lucida Sans Typewriter","4":"Oblique","5":"Version 1.67","6":"LucidaSans-TypewriterOblique"},{"1":"C:/Windows/Fonts","2":"lucon.ttf","3":"Lucida Console","4":"Regular","5":"Version 5.01","6":"LucidaConsole"},{"1":"C:/Windows/Fonts","2":"MAGNETOB.TTF","3":"Magneto","4":"Bold","5":"Version 1.00","6":"Magneto-Bold"},{"1":"C:/Windows/Fonts","2":"MAIAN.TTF","3":"Maiandra GD","4":"Regular","5":"Version 1.76","6":"MaiandraGD-Regular"},{"1":"C:/Windows/Fonts","2":"malgun.ttf","3":"Malgun Gothic","4":"Regular","5":"Version 6.68","6":"MalgunGothic"},{"1":"C:/Windows/Fonts","2":"malgunbd.ttf","3":"Malgun Gothic","4":"Bold","5":"Version 6.68","6":"MalgunGothicBold"},{"1":"C:/Windows/Fonts","2":"malgunsl.ttf","3":"Malgun Gothic Semilight","4":"Regular","5":"Version 6.68","6":"MalgunGothic-Semilight"},{"1":"C:/Windows/Fonts","2":"marlett.ttf","3":"Marlett","4":"Regular","5":"Version 5.01","6":"Marlett"},{"1":"C:/Windows/Fonts","2":"MATURASC.TTF","3":"Matura MT Script Capitals","4":"Regular","5":"Version 1.51","6":"MaturaMTScriptCapitals"},{"1":"C:/Windows/Fonts","2":"micross.ttf","3":"Microsoft Sans Serif","4":"Regular","5":"Version 7.02","6":"MicrosoftSansSerif"},{"1":"C:/Windows/Fonts","2":"mingliub.ttc","3":"MingLiU-ExtB","4":"Regular","5":"Version 7.02","6":"MingLiU-ExtB"},{"1":"C:/Windows/Fonts","2":"MISTRAL.TTF","3":"Mistral","4":"Regular","5":"Version 2.10","6":"Mistral"},{"1":"C:/Windows/Fonts","2":"mmrtext.ttf","3":"Myanmar Text","4":"Regular","5":"Version 1.20","6":"MyanmarText"},{"1":"C:/Windows/Fonts","2":"mmrtextb.ttf","3":"Myanmar Text","4":"Bold","5":"Version 1.20","6":"MyanmarText-Bold"},{"1":"C:/Windows/Fonts","2":"MOD20.TTF","3":"Modern No. 20","4":"Regular","5":"Version 1.51","6":"Modern-Regular"},{"1":"C:/Windows/Fonts","2":"monbaiti.ttf","3":"Mongolian Baiti","4":"Regular","5":"Version 5.53","6":"MongolianBaiti"},{"1":"C:/Windows/Fonts","2":"msgothic.ttc","3":"MS Gothic","4":"Regular","5":"Version 5.32","6":"MS-Gothic"},{"1":"C:/Windows/Fonts","2":"msjh.ttc","3":"Microsoft JhengHei","4":"Regular","5":"Version 6.14","6":"MicrosoftJhengHeiRegular"},{"1":"C:/Windows/Fonts","2":"msjhbd.ttc","3":"Microsoft JhengHei","4":"Bold","5":"Version 6.15","6":"MicrosoftJhengHeiBold"},{"1":"C:/Windows/Fonts","2":"msjhl.ttc","3":"Microsoft JhengHei Light","4":"Regular","5":"Version 6.14","6":"MicrosoftJhengHeiLight"},{"1":"C:/Windows/Fonts","2":"msyh.ttc","3":"Microsoft YaHei","4":"Regular","5":"Version 6.25","6":"MicrosoftYaHei"},{"1":"C:/Windows/Fonts","2":"msyhbd.ttc","3":"Microsoft YaHei","4":"Bold","5":"Version 6.25","6":"MicrosoftYaHei-Bold"},{"1":"C:/Windows/Fonts","2":"msyhl.ttc","3":"Microsoft YaHei Light","4":"Regular","5":"Version 6.23","6":"MicrosoftYaHeiLight"},{"1":"C:/Windows/Fonts","2":"msyi.ttf","3":"Microsoft Yi Baiti","4":"Regular","5":"Version 6.00","6":"Microsoft-Yi-Baiti"},{"1":"C:/Windows/Fonts","2":"MTCORSVA.TTF","3":"Monotype Corsiva","4":"Regular","5":"Version 2.35","6":"MonotypeCorsiva"},{"1":"C:/Windows/Fonts","2":"MTEXTRA.TTF","3":"MT Extra","4":"Regular","5":"Version 3.01;O365","6":"MT-Extra"},{"1":"C:/Windows/Fonts","2":"mvboli.ttf","3":"MV Boli","4":"Regular","5":"Version 6.85","6":"MVBoli"},{"1":"C:/Windows/Fonts","2":"NIAGENG.TTF","3":"Niagara Engraved","4":"Regular","5":"Version 1.00","6":"NiagaraEngraved-Reg"},{"1":"C:/Windows/Fonts","2":"NIAGSOL.TTF","3":"Niagara Solid","4":"Regular","5":"Version 1.00","6":"NiagaraSolid-Reg"},{"1":"C:/Windows/Fonts","2":"Nirmala.ttf","3":"Nirmala UI","4":"Regular","5":"Version 1.45","6":"NirmalaUI"},{"1":"C:/Windows/Fonts","2":"NirmalaB.ttf","3":"Nirmala UI","4":"Bold","5":"Version 1.45","6":"NirmalaUI-Bold"},{"1":"C:/Windows/Fonts","2":"NirmalaS.ttf","3":"Nirmala UI Semilight","4":"Regular","5":"Version 1.45","6":"NirmalaUI-Semilight"},{"1":"C:/Windows/Fonts","2":"ntailu.ttf","3":"Microsoft New Tai Lue","4":"Regular","5":"Version 5.99","6":"MicrosoftNewTaiLue"},{"1":"C:/Windows/Fonts","2":"ntailub.ttf","3":"Microsoft New Tai Lue","4":"Bold","5":"Version 5.99","6":"MicrosoftNewTaiLue-Bold"},{"1":"C:/Windows/Fonts","2":"OCRAEXT.TTF","3":"OCR A Extended","4":"Regular","5":"Version 1.80","6":"OCRAExtended"},{"1":"C:/Windows/Fonts","2":"OLDENGL.TTF","3":"Old English Text MT","4":"Regular","5":"Version 1.55","6":"OldEnglishTextMT"},{"1":"C:/Windows/Fonts","2":"ONYX.TTF","3":"Onyx","4":"Regular","5":"Version 1.51","6":"Onyx"},{"1":"C:/Windows/Fonts","2":"OUTLOOK.TTF","3":"MS Outlook","4":"Regular","5":"Version 1.17","6":"MSOutlook"},{"1":"C:/Windows/Fonts","2":"pala.ttf","3":"Palatino Linotype","4":"Regular","5":"Version 5.03","6":"PalatinoLinotype-Roman"},{"1":"C:/Windows/Fonts","2":"palab.ttf","3":"Palatino Linotype","4":"Bold","5":"Version 5.03","6":"PalatinoLinotype-Bold"},{"1":"C:/Windows/Fonts","2":"palabi.ttf","3":"Palatino Linotype","4":"Bold Italic","5":"Version 5.03","6":"PalatinoLinotype-BoldItalic"},{"1":"C:/Windows/Fonts","2":"palai.ttf","3":"Palatino Linotype","4":"Italic","5":"Version 5.03","6":"PalatinoLinotype-Italic"},{"1":"C:/Windows/Fonts","2":"PALSCRI.TTF","3":"Palace Script MT","4":"Regular","5":"Version 1.60","6":"PalaceScriptMT"},{"1":"C:/Windows/Fonts","2":"PAPYRUS.TTF","3":"Papyrus","4":"Regular","5":"Version 1.11","6":"Papyrus-Regular"},{"1":"C:/Windows/Fonts","2":"PARCHM.TTF","3":"Parchment","4":"Regular","5":"Version 1.05","6":"Parchment-Regular"},{"1":"C:/Windows/Fonts","2":"PER_____.TTF","3":"Perpetua","4":"Regular","5":"Version 1.76","6":"Perpetua"},{"1":"C:/Windows/Fonts","2":"PERB____.TTF","3":"Perpetua","4":"Bold","5":"Version 1.76","6":"Perpetua-Bold"},{"1":"C:/Windows/Fonts","2":"PERBI___.TTF","3":"Perpetua","4":"Bold Italic","5":"Version 1.76","6":"Perpetua-BoldItalic"},{"1":"C:/Windows/Fonts","2":"PERI____.TTF","3":"Perpetua","4":"Italic","5":"Version 1.76","6":"Perpetua-Italic"},{"1":"C:/Windows/Fonts","2":"PERTIBD.TTF","3":"Perpetua Titling MT","4":"Bold","5":"Version 1.76","6":"PerpetuaTitlingMT-Bold"},{"1":"C:/Windows/Fonts","2":"PERTILI.TTF","3":"Perpetua Titling MT","4":"Light","5":"Version 1.76","6":"PerpetuaTitlingMT-Light"},{"1":"C:/Windows/Fonts","2":"phagspa.ttf","3":"Microsoft PhagsPa","4":"Regular","5":"Version 6.00","6":"MicrosoftPhagsPa"},{"1":"C:/Windows/Fonts","2":"phagspab.ttf","3":"Microsoft PhagsPa","4":"Bold","5":"Version 6.00","6":"MicrosoftPhagsPa-Bold"},{"1":"C:/Windows/Fonts","2":"PLAYBILL.TTF","3":"Playbill","4":"Regular","5":"Version 1.51","6":"Playbill"},{"1":"C:/Windows/Fonts","2":"POORICH.TTF","3":"Poor Richard","4":"Regular","5":"Version 1.05","6":"PoorRichard-Regular"},{"1":"C:/Windows/Fonts","2":"PRISTINA.TTF","3":"Pristina","4":"Regular","5":"Version 1.05","6":"Pristina-Regular"},{"1":"C:/Windows/Fonts","2":"RAGE.TTF","3":"Rage Italic","4":"Regular","5":"Version 1.02","6":"RageItalic"},{"1":"C:/Windows/Fonts","2":"RAVIE.TTF","3":"Ravie","4":"Regular","5":"Version 1.00","6":"Ravie"},{"1":"C:/Windows/Fonts","2":"REFSAN.TTF","3":"MS Reference Sans Serif","4":"Regular","5":"Version 2.00","6":"MSReferenceSansSerif"},{"1":"C:/Windows/Fonts","2":"REFSPCL.TTF","3":"MS Reference Specialty","4":"Regular","5":"Version 1.00","6":"MSReferenceSpecialty"},{"1":"C:/Windows/Fonts","2":"ROCC____.TTF","3":"Rockwell Condensed","4":"Regular","5":"Version 1.65","6":"Rockwell-Condensed"},{"1":"C:/Windows/Fonts","2":"ROCCB___.TTF","3":"Rockwell Condensed","4":"Bold","5":"Version 1.65","6":"Rockwell-CondensedBold"},{"1":"C:/Windows/Fonts","2":"ROCK.TTF","3":"Rockwell","4":"Regular","5":"Version 1.65","6":"Rockwell"},{"1":"C:/Windows/Fonts","2":"ROCKB.TTF","3":"Rockwell","4":"Bold","5":"Version 1.65","6":"Rockwell-Bold"},{"1":"C:/Windows/Fonts","2":"ROCKBI.TTF","3":"Rockwell","4":"Bold Italic","5":"Version 1.65","6":"Rockwell-BoldItalic"},{"1":"C:/Windows/Fonts","2":"ROCKEB.TTF","3":"Rockwell Extra Bold","4":"Regular","5":"Version 1.65","6":"Rockwell-ExtraBold"},{"1":"C:/Windows/Fonts","2":"ROCKI.TTF","3":"Rockwell","4":"Italic","5":"Version 1.65","6":"Rockwell-Italic"},{"1":"C:/Windows/Fonts","2":"SansSerifCollection.ttf","3":"Sans Serif Collection","4":"Regular","5":"Version 0.90","6":"SansSerifCollection"},{"1":"C:/Windows/Fonts","2":"SCHLBKB.TTF","3":"Century Schoolbook","4":"Bold","5":"Version 2.35","6":"CenturySchoolbook-Bold"},{"1":"C:/Windows/Fonts","2":"SCHLBKBI.TTF","3":"Century Schoolbook","4":"Bold Italic","5":"Version 2.35","6":"CenturySchoolbook-BoldItalic"},{"1":"C:/Windows/Fonts","2":"SCHLBKI.TTF","3":"Century Schoolbook","4":"Italic","5":"Version 2.35","6":"CenturySchoolbook-Italic"},{"1":"C:/Windows/Fonts","2":"SCRIPTBL.TTF","3":"Script MT Bold","4":"Regular","5":"Version 1.02","6":"ScriptMTBold"},{"1":"C:/Windows/Fonts","2":"segmdl2.ttf","3":"Segoe MDL2 Assets","4":"Regular","5":"Version 1.86","6":"SegoeMDL2Assets"},{"1":"C:/Windows/Fonts","2":"SegoeIcons.ttf","3":"Segoe Fluent Icons","4":"Regular","5":"Version 1.06","6":"SegoeFluentIcons"},{"1":"C:/Windows/Fonts","2":"segoepr.ttf","3":"Segoe Print","4":"Regular","5":"Version 5.04","6":"SegoePrint"},{"1":"C:/Windows/Fonts","2":"segoeprb.ttf","3":"Segoe Print","4":"Bold","5":"Version 5.04","6":"SegoePrint-Bold"},{"1":"C:/Windows/Fonts","2":"segoesc.ttf","3":"Segoe Script","4":"Regular","5":"Version 5.03","6":"SegoeScript"},{"1":"C:/Windows/Fonts","2":"segoescb.ttf","3":"Segoe Script","4":"Bold","5":"Version 5.03","6":"SegoeScript-Bold"},{"1":"C:/Windows/Fonts","2":"segoeui.ttf","3":"Segoe UI","4":"Regular","5":"Version 5.65","6":"SegoeUI"},{"1":"C:/Windows/Fonts","2":"segoeuib.ttf","3":"Segoe UI","4":"Bold","5":"Version 5.65","6":"SegoeUI-Bold"},{"1":"C:/Windows/Fonts","2":"segoeuii.ttf","3":"Segoe UI","4":"Italic","5":"Version 5.65","6":"SegoeUI-Italic"},{"1":"C:/Windows/Fonts","2":"segoeuil.ttf","3":"Segoe UI Light","4":"Regular","5":"Version 5.65","6":"SegoeUI-Light"},{"1":"C:/Windows/Fonts","2":"segoeuisl.ttf","3":"Segoe UI Semilight","4":"Regular","5":"Version 5.65","6":"SegoeUI-Semilight"},{"1":"C:/Windows/Fonts","2":"segoeuiz.ttf","3":"Segoe UI","4":"Bold Italic","5":"Version 5.65","6":"SegoeUI-BoldItalic"},{"1":"C:/Windows/Fonts","2":"seguibl.ttf","3":"Segoe UI Black","4":"Regular","5":"Version 2.02","6":"SegoeUIBlack"},{"1":"C:/Windows/Fonts","2":"seguibli.ttf","3":"Segoe UI Black","4":"Italic","5":"Version 2.02","6":"SegoeUIBlack-Italic"},{"1":"C:/Windows/Fonts","2":"seguiemj.ttf","3":"Segoe UI Emoji","4":"Regular","5":"Version 1.35","6":"SegoeUIEmoji"},{"1":"C:/Windows/Fonts","2":"seguihis.ttf","3":"Segoe UI Historic","4":"Regular","5":"Version 1.07","6":"SegoeUIHistoric"},{"1":"C:/Windows/Fonts","2":"seguili.ttf","3":"Segoe UI Light","4":"Italic","5":"Version 5.65","6":"SegoeUI-LightItalic"},{"1":"C:/Windows/Fonts","2":"seguisb.ttf","3":"Segoe UI Semibold","4":"Regular","5":"Version 5.65","6":"SegoeUI-Semibold"},{"1":"C:/Windows/Fonts","2":"seguisbi.ttf","3":"Segoe UI Semibold","4":"Italic","5":"Version 5.65","6":"SegoeUI-SemiboldItalic"},{"1":"C:/Windows/Fonts","2":"seguisli.ttf","3":"Segoe UI Semilight","4":"Italic","5":"Version 5.65","6":"SegoeUI-SemilightItalic"},{"1":"C:/Windows/Fonts","2":"seguisym.ttf","3":"Segoe UI Symbol","4":"Regular","5":"Version 6.23","6":"SegoeUISymbol"},{"1":"C:/Windows/Fonts","2":"SegUIVar.ttf","3":"Segoe UI Variable","4":"Regular","5":"Version 2.03","6":"SegoeUIVariable"},{"1":"C:/Windows/Fonts","2":"SHOWG.TTF","3":"Showcard Gothic","4":"Regular","5":"Version 1.00","6":"ShowcardGothic-Reg"},{"1":"C:/Windows/Fonts","2":"simsun.ttc","3":"SimSun","4":"Regular","5":"Version 5.18","6":"SimSun"},{"1":"C:/Windows/Fonts","2":"simsunb.ttf","3":"SimSun-ExtB","4":"Regular","5":"Version 5.04","6":"SimSun-ExtB"},{"1":"C:/Windows/Fonts","2":"SitkaVF-Italic.ttf","3":"Sitka Text","4":"Italic","5":"Version 2.00","6":"SitkaTextItalic"},{"1":"C:/Windows/Fonts","2":"SitkaVF.ttf","3":"Sitka Text","4":"Regular","5":"Version 2.00","6":"SitkaText"},{"1":"C:/Windows/Fonts","2":"SNAP____.TTF","3":"Snap ITC","4":"Regular","5":"Version 1.05","6":"SnapITC-Regular"},{"1":"C:/Windows/Fonts","2":"STENCIL.TTF","3":"Stencil","4":"Regular","5":"Version 1.52","6":"Stencil"},{"1":"C:/Windows/Fonts","2":"sylfaen.ttf","3":"Sylfaen","4":"Regular","5":"Version 5.07","6":"Sylfaen"},{"1":"C:/Windows/Fonts","2":"symbol.ttf","3":"Symbol","4":"Regular","5":"Version 5.01","6":"SymbolMT"},{"1":"C:/Windows/Fonts","2":"tahoma.ttf","3":"Tahoma","4":"Regular","5":"Version 7.01","6":"Tahoma"},{"1":"C:/Windows/Fonts","2":"tahomabd.ttf","3":"Tahoma","4":"Bold","5":"Version 7.01","6":"Tahoma-Bold"},{"1":"C:/Windows/Fonts","2":"taile.ttf","3":"Microsoft Tai Le","4":"Regular","5":"Version 6.00","6":"MicrosoftTaiLe"},{"1":"C:/Windows/Fonts","2":"taileb.ttf","3":"Microsoft Tai Le","4":"Bold","5":"Version 6.00","6":"MicrosoftTaiLe-Bold"},{"1":"C:/Windows/Fonts","2":"TCB_____.TTF","3":"Tw Cen MT","4":"Bold","5":"Version 1.02","6":"TwCenMT-Bold"},{"1":"C:/Windows/Fonts","2":"TCBI____.TTF","3":"Tw Cen MT","4":"Bold Italic","5":"Version 1.02","6":"TwCenMT-BoldItalic"},{"1":"C:/Windows/Fonts","2":"TCCB____.TTF","3":"Tw Cen MT Condensed","4":"Bold","5":"Version 1.02","6":"TwCenMT-CondensedBold"},{"1":"C:/Windows/Fonts","2":"TCCEB.TTF","3":"Tw Cen MT Condensed Extra Bold","4":"Regular","5":"Version 1.03","6":"TwCenMT-CondensedExtraBold"},{"1":"C:/Windows/Fonts","2":"TCCM____.TTF","3":"Tw Cen MT Condensed","4":"Regular","5":"Version 1.02","6":"TwCenMT-Condensed"},{"1":"C:/Windows/Fonts","2":"TCM_____.TTF","3":"Tw Cen MT","4":"Regular","5":"Version 1.02","6":"TwCenMT-Regular"},{"1":"C:/Windows/Fonts","2":"TCMI____.TTF","3":"Tw Cen MT","4":"Italic","5":"Version 1.02","6":"TwCenMT-Italic"},{"1":"C:/Windows/Fonts","2":"TEMPSITC.TTF","3":"Tempus Sans ITC","4":"Regular","5":"Version 1.05","6":"TempusSansITC"},{"1":"C:/Windows/Fonts","2":"times.ttf","3":"Times New Roman","4":"Regular","5":"Version 7.03","6":"TimesNewRomanPSMT"},{"1":"C:/Windows/Fonts","2":"timesbd.ttf","3":"Times New Roman","4":"Bold","5":"Version 7.03","6":"TimesNewRomanPS-BoldMT"},{"1":"C:/Windows/Fonts","2":"timesbi.ttf","3":"Times New Roman","4":"Bold Italic","5":"Version 7.03","6":"TimesNewRomanPS-BoldItalicMT"},{"1":"C:/Windows/Fonts","2":"timesi.ttf","3":"Times New Roman","4":"Italic","5":"Version 7.03","6":"TimesNewRomanPS-ItalicMT"},{"1":"C:/Windows/Fonts","2":"trebuc.ttf","3":"Trebuchet MS","4":"Regular","5":"Version 5.15","6":"TrebuchetMS"},{"1":"C:/Windows/Fonts","2":"trebucbd.ttf","3":"Trebuchet MS","4":"Bold","5":"Version 5.15","6":"TrebuchetMS-Bold"},{"1":"C:/Windows/Fonts","2":"trebucbi.ttf","3":"Trebuchet MS","4":"Bold Italic","5":"Version 5.15","6":"Trebuchet-BoldItalic"},{"1":"C:/Windows/Fonts","2":"trebucit.ttf","3":"Trebuchet MS","4":"Italic","5":"Version 5.15","6":"TrebuchetMS-Italic"},{"1":"C:/Windows/Fonts","2":"verdana.ttf","3":"Verdana","4":"Regular","5":"Version 5.33","6":"Verdana"},{"1":"C:/Windows/Fonts","2":"verdanab.ttf","3":"Verdana","4":"Bold","5":"Version 5.33","6":"Verdana-Bold"},{"1":"C:/Windows/Fonts","2":"verdanai.ttf","3":"Verdana","4":"Italic","5":"Version 5.33","6":"Verdana-Italic"},{"1":"C:/Windows/Fonts","2":"verdanaz.ttf","3":"Verdana","4":"Bold Italic","5":"Version 5.33","6":"Verdana-BoldItalic"},{"1":"C:/Windows/Fonts","2":"VINERITC.TTF","3":"Viner Hand ITC","4":"Regular","5":"Version 1.05","6":"VinerHandITC"},{"1":"C:/Windows/Fonts","2":"VIVALDII.TTF","3":"Vivaldi","4":"Italic","5":"Version 1.56","6":"Vivaldii"},{"1":"C:/Windows/Fonts","2":"VLADIMIR.TTF","3":"Vladimir Script","4":"Regular","5":"Version 1.05","6":"VladimirScript"},{"1":"C:/Windows/Fonts","2":"webdings.ttf","3":"Webdings","4":"Regular","5":"Version 5.01","6":"Webdings"},{"1":"C:/Windows/Fonts","2":"wingding.ttf","3":"Wingdings","4":"Regular","5":"Version 5.01","6":"Wingdings-Regular"},{"1":"C:/Windows/Fonts","2":"WINGDNG2.TTF","3":"Wingdings 2","4":"Regular","5":"Version 1.55","6":"Wingdings2"},{"1":"C:/Windows/Fonts","2":"WINGDNG3.TTF","3":"Wingdings 3","4":"Regular","5":"Version 1.55","6":"Wingdings3"},{"1":"C:/Windows/Fonts","2":"YuGothB.ttc","3":"Yu Gothic","4":"Bold","5":"Version 1.93","6":"YuGothic-Bold"},{"1":"C:/Windows/Fonts","2":"YuGothL.ttc","3":"Yu Gothic Light","4":"Regular","5":"Version 1.93","6":"YuGothic-Light"},{"1":"C:/Windows/Fonts","2":"YuGothM.ttc","3":"Yu Gothic Medium","4":"Regular","5":"Version 1.93","6":"YuGothic-Medium"},{"1":"C:/Windows/Fonts","2":"YuGothR.ttc","3":"Yu Gothic","4":"Regular","5":"Version 1.93","6":"YuGothic-Regular"},{"1":"C:/Windows/Fonts","2":"ZWAdobeF.TTF","3":"ZWAdobeF","4":"Regular","5":"2003; 1.0, initial release","6":"ZWAdobeF"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(fontsIhave)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   349 obs. of  6 variables:
+ $ path   : chr  "C:/Windows/Fonts" "C:/Windows/Fonts" "C:/Windows/Fonts" "C:/Windows/Fonts" ...
+ $ file   : chr  "AGENCYB.TTF" "AGENCYR.TTF" "ALGER.TTF" "ANTQUAB.TTF" ...
+ $ family : chr  "Agency FB" "Agency FB" "Algerian" "Book Antiqua" ...
+ $ face   : chr  "Bold" "Regular" "Regular" "Bold" ...
+ $ version: chr  "Version 1.01" "Version 1.01" "Version 1.57" "Version 2.35" ...
+ $ ps_name: chr  "AgencyFB-Bold" "AgencyFB-Reg" "Algerian" "BookAntiqua-Bold" ...</code></pre>
+</div>
+</div>
+<p>I should be able to use font_add</p>
+<p>First, what fonts are CURRENTLY available in R?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">windowsFonts</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$serif
+[1] "TT Times New Roman"
+
+$sans
+[1] "TT Arial"
+
+$mono
+[1] "TT Courier New"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">font_families</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "sans"         "serif"        "mono"         "wqy-microhei"</code></pre>
+</div>
+</div>
+<p>Test with one of the</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">font_add</span>(<span class="st">'Bookman Old Style'</span>, <span class="at">regular =</span> <span class="st">'BOOKOS.TTF'</span>, </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">italic =</span> <span class="st">'BOOKOSI.TTF'</span>, </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">bold =</span> <span class="st">'BOOKOSB.TTF'</span>, </span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">bolditalic =</span> <span class="st">'BOOKOSBI.TTF'</span>)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="fu">windowsFonts</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$serif
+[1] "TT Times New Roman"
+
+$sans
+[1] "TT Arial"
+
+$mono
+[1] "TT Courier New"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">font_families</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "sans"              "serif"             "mono"             
+[4] "wqy-microhei"      "Bookman Old Style"</code></pre>
+</div>
+</div>
+<p>I’m not quite understanding how this object is organised. What is that last line? are the $xxxx the defaults?</p>
+<p>To test, let’s make a plot and try to change font.</p>
+<p>The help (https://cran.rstudio.com/web/packages/showtext/vignettes/introduction.html) says we need to tell R to use showtext for text.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">showtext_auto</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>baseiris <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(iris, <span class="fu">aes</span>(<span class="at">x =</span> Sepal.Length, <span class="at">y =</span> Petal.Width, <span class="at">color =</span> Species)) <span class="sc">+</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>baseiris <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">'Bookman Old Style'</span>),</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">'Bookman Old Style'</span>, <span class="at">face =</span> <span class="st">'bold.italic'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="fonts_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>That seems to work. Can I feed in all the fonts on my system automaticallly? Is that a bad idea? Might be if it takes a while and we only want one.</p>
+<p>First, though, can I give it a font name as a character and it load all of the faces automatically?</p>
+<p>Note: some of the fonts I have have weird faces. For now, just fail on those and stick with the ones supported by <code>showtext</code>. That should be fine.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(fontsIhave<span class="sc">$</span>face)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "Bold"            "Regular"         "Bold Italic"     "Italic"         
+ [5] "Demibold"        "Demibold Italic" "Demibold Roman"  "Bold Oblique"   
+ [9] "Oblique"         "Light"          </code></pre>
+</div>
+</div>
+<p>This is a) a useful thing to simplify adding single fonts, and b) precursor to loading them all.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># chosen more or less at random for testing</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>familyname <span class="ot">&lt;-</span> <span class="st">'Candara'</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co"># I could use dplyr but this seems better to just use base logical indexing.</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="co"># fontsIhave %&gt;%</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   filter(family == familyname &amp; face == 'Regular') %&gt;%</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   select(file) %&gt;%</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="co">#   pull()</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Could do all the indexing in the function call to font_add(), but it just gets ridiculous</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>regfile <span class="ot">&lt;-</span> fontsIhave[<span class="fu">which</span>(fontsIhave<span class="sc">$</span>family <span class="sc">==</span> familyname <span class="sc">&amp;</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>                   fontsIhave<span class="sc">$</span>face <span class="sc">==</span> <span class="st">'Regular'</span>), <span class="st">'file'</span>]</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>italfile <span class="ot">&lt;-</span> fontsIhave[<span class="fu">which</span>(fontsIhave<span class="sc">$</span>family <span class="sc">==</span> familyname <span class="sc">&amp;</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>                   fontsIhave<span class="sc">$</span>face <span class="sc">==</span> <span class="st">'Italic'</span>), <span class="st">'file'</span>]</span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>boldfile <span class="ot">&lt;-</span> fontsIhave[<span class="fu">which</span>(fontsIhave<span class="sc">$</span>family <span class="sc">==</span> familyname <span class="sc">&amp;</span></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>                   fontsIhave<span class="sc">$</span>face <span class="sc">==</span> <span class="st">'Bold'</span>), <span class="st">'file'</span>]</span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>bifile <span class="ot">&lt;-</span> fontsIhave[<span class="fu">which</span>(fontsIhave<span class="sc">$</span>family <span class="sc">==</span> familyname <span class="sc">&amp;</span></span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>                   fontsIhave<span class="sc">$</span>face <span class="sc">==</span> <span class="st">'Bold Italic'</span>), <span class="st">'file'</span>]</span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a><span class="co"># NEED TO </span><span class="al">TEST</span><span class="co"> WHEN THE FACE DOESN'T EXIST AND THROW NULL</span></span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a>  <span class="co"># If not there, the value will be character(0). testing for that and returning NULL (which is what the function needs) is a bit tricky:</span></span>
+<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a>noface <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {<span class="fu">ifelse</span>(rlang<span class="sc">::</span><span class="fu">is_empty</span>(x), <span class="fu">return</span>(<span class="cn">NULL</span>), <span class="fu">return</span>(x))}</span>
+<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a><span class="fu">font_add</span>(familyname, </span>
+<span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a>         <span class="at">regular =</span> <span class="fu">noface</span>(regfile), </span>
+<span id="cb24-30"><a href="#cb24-30" aria-hidden="true" tabindex="-1"></a>         <span class="at">italic =</span> <span class="fu">noface</span>(italfile), </span>
+<span id="cb24-31"><a href="#cb24-31" aria-hidden="true" tabindex="-1"></a>         <span class="at">bold =</span> <span class="fu">noface</span>(boldfile), </span>
+<span id="cb24-32"><a href="#cb24-32" aria-hidden="true" tabindex="-1"></a>         <span class="at">bolditalic =</span> <span class="fu">noface</span>(bifile))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Test that with a figure</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>baseiris <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">axis.title.x =</span> <span class="fu">element_text</span>(<span class="at">family =</span> familyname, <span class="at">face =</span> <span class="st">'italic'</span>),</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">axis.title.y =</span> <span class="fu">element_text</span>(<span class="at">family =</span> familyname, <span class="at">face =</span> <span class="st">'bold'</span>),</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> familyname),</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">family =</span> familyname, <span class="at">face =</span> <span class="st">'bold.italic'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="fonts_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>How bad an idea is it to just read them ALL in at once?</p>
+<p>Easy enough to feed the <code>font_add</code> above in a loop. Probably vectorizable too, but why bother?</p>
+<p>Write it as a function, then it will work for <em>all</em> fonts or a subset if that’s a bad idea. Either feed it a dataframe of fonts or just use <code>font_files()</code> directly. It can also take NULL for fontvec, in which case it loads all the fonts.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>loadfonts <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">fontvec =</span> <span class="cn">NULL</span>, <span class="at">fontframe =</span> <span class="cn">NULL</span>) {</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Get all fonts if no fontframe</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.null</span>(fontframe)) {</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    fontframe <span class="ot">&lt;-</span> <span class="fu">font_files</span>()</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Load all fonts if no fontvec</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.null</span>(fontvec)) {</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>    fontvec <span class="ot">&lt;-</span> <span class="fu">unique</span>(fontframe<span class="sc">$</span>family)</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Loop over the font families</span></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(fontvec)) {</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>    familyname <span class="ot">&lt;-</span> fontvec[i]</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>    regfile <span class="ot">&lt;-</span> fontframe[<span class="fu">which</span>(fontframe<span class="sc">$</span>family <span class="sc">==</span> familyname <span class="sc">&amp;</span></span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>                   fontframe<span class="sc">$</span>face <span class="sc">==</span> <span class="st">'Regular'</span>), <span class="st">'file'</span>]</span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>    italfile <span class="ot">&lt;-</span> fontframe[<span class="fu">which</span>(fontframe<span class="sc">$</span>family <span class="sc">==</span> familyname <span class="sc">&amp;</span></span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>                       fontframe<span class="sc">$</span>face <span class="sc">==</span> <span class="st">'Italic'</span>), <span class="st">'file'</span>]</span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>    boldfile <span class="ot">&lt;-</span> fontframe[<span class="fu">which</span>(fontframe<span class="sc">$</span>family <span class="sc">==</span> familyname <span class="sc">&amp;</span></span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a>                       fontframe<span class="sc">$</span>face <span class="sc">==</span> <span class="st">'Bold'</span>), <span class="st">'file'</span>]</span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a>    bifile <span class="ot">&lt;-</span> fontframe[<span class="fu">which</span>(fontframe<span class="sc">$</span>family <span class="sc">==</span> familyname <span class="sc">&amp;</span></span>
+<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a>                       fontframe<span class="sc">$</span>face <span class="sc">==</span> <span class="st">'Bold Italic'</span>), <span class="st">'file'</span>]</span>
+<span id="cb26-27"><a href="#cb26-27" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb26-28"><a href="#cb26-28" aria-hidden="true" tabindex="-1"></a><span class="do">## </span><span class="al">TODO</span><span class="do">: THROW A TRYCATCH ON HERE TO BYPASS AND </span><span class="al">ALERT</span><span class="do"> FOR FAILURES</span></span>
+<span id="cb26-29"><a href="#cb26-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># For example, Berlin Sans FB Demi has no 'regular' and so fails. let's just skip those, this isn't supposed to be the most robust thing ever that handles all cases flawlessly.</span></span>
+<span id="cb26-30"><a href="#cb26-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">try</span>(<span class="fu">font_add</span>(fontvec[i], </span>
+<span id="cb26-31"><a href="#cb26-31" aria-hidden="true" tabindex="-1"></a>         <span class="at">regular =</span> <span class="fu">noface</span>(regfile), </span>
+<span id="cb26-32"><a href="#cb26-32" aria-hidden="true" tabindex="-1"></a>         <span class="at">italic =</span> <span class="fu">noface</span>(italfile), </span>
+<span id="cb26-33"><a href="#cb26-33" aria-hidden="true" tabindex="-1"></a>         <span class="at">bold =</span> <span class="fu">noface</span>(boldfile), </span>
+<span id="cb26-34"><a href="#cb26-34" aria-hidden="true" tabindex="-1"></a>         <span class="at">bolditalic =</span> <span class="fu">noface</span>(bifile)))</span>
+<span id="cb26-35"><a href="#cb26-35" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb26-36"><a href="#cb26-36" aria-hidden="true" tabindex="-1"></a>    <span class="co"># To avoid unforeseen carryover through the loop</span></span>
+<span id="cb26-37"><a href="#cb26-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rm</span>(familyname, regfile, italfile, boldfile, bifile)</span>
+<span id="cb26-38"><a href="#cb26-38" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb26-39"><a href="#cb26-39" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb26-40"><a href="#cb26-40" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s try just reading everything in. Use <code>try</code> in the function above because there are failures for a few reasons, and instead of dealing with them I just want to quickly read in what’s easy to read in. I don’t have a ton of interest here in figuring out corner cases for weird fonts.</p>
+<p>Test the function with a vector of fontnames first, because can’t do that after try with everything</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">loadfonts</span>(<span class="at">fontvec =</span> <span class="fu">c</span>(<span class="st">'Consolas'</span>, <span class="st">'Comic Sans MS'</span>, <span class="st">'Tahoma'</span>))</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">font_families</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "sans"              "serif"             "mono"             
+[4] "wqy-microhei"      "Bookman Old Style" "Candara"          
+[7] "Consolas"          "Comic Sans MS"     "Tahoma"           </code></pre>
+</div>
+</div>
+<p>Now, go for it with everything. There are a million errors, so I’ve turned error reporting off for this code chunk.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(<span class="fu">loadfonts</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>That was pretty quick. What do I have?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">font_families</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  [1] "sans"                            "serif"                          
+  [3] "mono"                            "wqy-microhei"                   
+  [5] "Bookman Old Style"               "Candara"                        
+  [7] "Consolas"                        "Comic Sans MS"                  
+  [9] "Tahoma"                          "Agency FB"                      
+ [11] "Algerian"                        "Book Antiqua"                   
+ [13] "Arial"                           "Arial Narrow"                   
+ [15] "Arial Black"                     "Arial Rounded MT Bold"          
+ [17] "Bahnschrift"                     "Baskerville Old Face"           
+ [19] "Bauhaus 93"                      "Bell MT"                        
+ [21] "Bernard MT Condensed"            "Bodoni MT"                      
+ [23] "Bodoni MT Black"                 "Bodoni MT Condensed"            
+ [25] "Bodoni MT Poster Compressed"     "Bradley Hand ITC"               
+ [27] "Britannic Bold"                  "Berlin Sans FB"                 
+ [29] "Broadway"                        "Bookshelf Symbol 7"             
+ [31] "Calibri"                         "Calibri Light"                  
+ [33] "Californian FB"                  "Calisto MT"                     
+ [35] "Cambria"                         "Candara Light"                  
+ [37] "Cascadia Code"                   "Cascadia Mono"                  
+ [39] "Castellar"                       "Century Schoolbook"             
+ [41] "Centaur"                         "Century"                        
+ [43] "Chiller"                         "Colonna MT"                     
+ [45] "Constantia"                      "Cooper Black"                   
+ [47] "Copperplate Gothic Bold"         "Copperplate Gothic Light"       
+ [49] "Corbel"                          "Corbel Light"                   
+ [51] "Courier New"                     "Curlz MT"                       
+ [53] "Dubai"                           "Dubai Light"                    
+ [55] "Dubai Medium"                    "Ebrima"                         
+ [57] "Elephant"                        "Engravers MT"                   
+ [59] "Eras Bold ITC"                   "Eras Demi ITC"                  
+ [61] "Eras Light ITC"                  "Eras Medium ITC"                
+ [63] "Felix Titling"                   "Forte"                          
+ [65] "Franklin Gothic Book"            "Franklin Gothic Demi"           
+ [67] "Franklin Gothic Demi Cond"       "Franklin Gothic Heavy"          
+ [69] "Franklin Gothic Medium"          "Franklin Gothic Medium Cond"    
+ [71] "Freestyle Script"                "French Script MT"               
+ [73] "Footlight MT Light"              "Gabriola"                       
+ [75] "Gadugi"                          "Garamond"                       
+ [77] "Georgia"                         "Gigi"                           
+ [79] "Gill Sans MT"                    "Gill Sans MT Condensed"         
+ [81] "Gill Sans Ultra Bold Condensed"  "Gill Sans Ultra Bold"           
+ [83] "Gloucester MT Extra Condensed"   "Gill Sans MT Ext Condensed Bold"
+ [85] "Century Gothic"                  "Goudy Old Style"                
+ [87] "Goudy Stout"                     "Harrington"                     
+ [89] "Haettenschweiler"                "Microsoft Himalaya"             
+ [91] "HoloLens MDL2 Assets"            "HP Simplified"                  
+ [93] "HP Simplified Light"             "HP Simplified Hans Light"       
+ [95] "HP Simplified Hans"              "HP Simplified Jpan Light"       
+ [97] "HP Simplified Jpan"              "High Tower Text"                
+ [99] "Impact"                          "Imprint MT Shadow"              
+[101] "Informal Roman"                  "Ink Free"                       
+[103] "Blackadder ITC"                  "Edwardian Script ITC"           
+[105] "Kristen ITC"                     "Javanese Text"                  
+[107] "Jokerman"                        "Juice ITC"                      
+[109] "Kunstler Script"                 "Lucida Sans Unicode"            
+[111] "Wide Latin"                      "Lucida Bright"                  
+[113] "Leelawadee UI"                   "Leelawadee UI Semilight"        
+[115] "Lucida Fax"                      "Lucida Sans"                    
+[117] "Lucida Sans Typewriter"          "Lucida Console"                 
+[119] "Maiandra GD"                     "Malgun Gothic"                  
+[121] "Malgun Gothic Semilight"         "Marlett"                        
+[123] "Matura MT Script Capitals"       "Microsoft Sans Serif"           
+[125] "MingLiU-ExtB"                    "Mistral"                        
+[127] "Myanmar Text"                    "Modern No. 20"                  
+[129] "Mongolian Baiti"                 "MS Gothic"                      
+[131] "Microsoft JhengHei"              "Microsoft JhengHei Light"       
+[133] "Microsoft YaHei"                 "Microsoft YaHei Light"          
+[135] "Microsoft Yi Baiti"              "Monotype Corsiva"               
+[137] "MT Extra"                        "MV Boli"                        
+[139] "Niagara Engraved"                "Niagara Solid"                  
+[141] "Nirmala UI"                      "Nirmala UI Semilight"           
+[143] "Microsoft New Tai Lue"           "OCR A Extended"                 
+[145] "Old English Text MT"             "Onyx"                           
+[147] "MS Outlook"                      "Palatino Linotype"              
+[149] "Palace Script MT"                "Papyrus"                        
+[151] "Parchment"                       "Perpetua"                       
+[153] "Microsoft PhagsPa"               "Playbill"                       
+[155] "Poor Richard"                    "Pristina"                       
+[157] "Rage Italic"                     "Ravie"                          
+[159] "MS Reference Sans Serif"         "MS Reference Specialty"         
+[161] "Rockwell Condensed"              "Rockwell"                       
+[163] "Rockwell Extra Bold"             "Sans Serif Collection"          
+[165] "Script MT Bold"                  "Segoe MDL2 Assets"              
+[167] "Segoe Fluent Icons"              "Segoe Print"                    
+[169] "Segoe Script"                    "Segoe UI"                       
+[171] "Segoe UI Light"                  "Segoe UI Semilight"             
+[173] "Segoe UI Black"                  "Segoe UI Emoji"                 
+[175] "Segoe UI Historic"               "Segoe UI Semibold"              
+[177] "Segoe UI Symbol"                 "Segoe UI Variable"              
+[179] "Showcard Gothic"                 "SimSun"                         
+[181] "SimSun-ExtB"                     "Sitka Text"                     
+[183] "Snap ITC"                        "Stencil"                        
+[185] "Sylfaen"                         "Symbol"                         
+[187] "Microsoft Tai Le"                "Tw Cen MT"                      
+[189] "Tw Cen MT Condensed"             "Tw Cen MT Condensed Extra Bold" 
+[191] "Tempus Sans ITC"                 "Times New Roman"                
+[193] "Trebuchet MS"                    "Verdana"                        
+[195] "Viner Hand ITC"                  "Vladimir Script"                
+[197] "Webdings"                        "Wingdings"                      
+[199] "Wingdings 2"                     "Wingdings 3"                    
+[201] "Yu Gothic"                       "Yu Gothic Light"                
+[203] "Yu Gothic Medium"                "ZWAdobeF"                       </code></pre>
+</div>
+</div>
+<p>I’m sure if there were something that got bypassed that I really needed I could get it directly with font_add(), but this is sure quick to get them all. Test a couple of the new ones.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>baseiris <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">axis.title.x =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">'Poor Richard'</span>, <span class="at">face =</span> <span class="st">'italic'</span>),</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">axis.title.y =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">'Stencil'</span>, <span class="at">face =</span> <span class="st">'bold'</span>),</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">'Papyrus'</span>),</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">'Onyx'</span>, <span class="at">face =</span> <span class="st">'bold.italic'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="fonts_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>I have also put <code>loadfonts</code> in the functions folder so I can use it elsewhere.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

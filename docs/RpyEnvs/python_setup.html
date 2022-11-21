@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Galen Holt">
+
+<title>Galen - Python setup</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Galen</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../research.html">
+ <span class="menu-text">Research</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../code_demos.html" aria-current="page">
+ <span class="menu-text">Code Demos</span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Python setup</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code_demos.html" class="sidebar-item-text sidebar-link">Code Demos</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Plotting</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../smallpieces.html" class="sidebar-item-text sidebar-link">Bits and pieces</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/tweaks_tricks.html" class="sidebar-item-text sidebar-link">Saving and themeing plots</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/hcl_exploration.html" class="sidebar-item-text sidebar-link">Exploring HCL colorspace</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/fonts.html" class="sidebar-item-text sidebar-link">Fonts</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/faded_colors.html" class="sidebar-item-text sidebar-link">Faded 2d colour ramps</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Theory and simulation</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../simmodelling/twoDautocorr.html" class="sidebar-item-text sidebar-link">Generate 2d autocorrelation</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">R and python</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/python_setup.html" class="sidebar-item-text sidebar-link active">Python environments with pyenv and poetry</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/python_updated_functions.html" class="sidebar-item-text sidebar-link">Small python bits</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/RandPython.html" class="sidebar-item-text sidebar-link">Using R and python together</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/R_py_shared_projects.html" class="sidebar-item-text sidebar-link">Shared R-py project structure</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">Setting things up</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/rig.html" class="sidebar-item-text sidebar-link">Managing old R versions with rig</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/quarto_website_github.html" class="sidebar-item-text sidebar-link">Getting this website working</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/managingprivate.html" class="sidebar-item-text sidebar-link">Private data for website repo</a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#the-issue" id="toc-the-issue" class="nav-link active" data-scroll-target="#the-issue">The issue</a>
+  <ul class="collapse">
+  <li><a href="#the-intention" id="toc-the-intention" class="nav-link" data-scroll-target="#the-intention">The intention</a></li>
+  </ul></li>
+  <li><a href="#getting-started--systemwide-installations" id="toc-getting-started--systemwide-installations" class="nav-link" data-scroll-target="#getting-started--systemwide-installations">Getting started- systemwide installations</a>
+  <ul class="collapse">
+  <li><a href="#pyenv" id="toc-pyenv" class="nav-link" data-scroll-target="#pyenv">pyenv</a></li>
+  <li><a href="#poetry" id="toc-poetry" class="nav-link" data-scroll-target="#poetry">poetry</a></li>
+  </ul></li>
+  <li><a href="#setting-up-a-project" id="toc-setting-up-a-project" class="nav-link" data-scroll-target="#setting-up-a-project">Setting up a project</a>
+  <ul class="collapse">
+  <li><a href="#create-the-project" id="toc-create-the-project" class="nav-link" data-scroll-target="#create-the-project">Create the project</a></li>
+  <li><a href="#set-the-python-version" id="toc-set-the-python-version" class="nav-link" data-scroll-target="#set-the-python-version">Set the python version</a></li>
+  <li><a href="#set-poetry" id="toc-set-poetry" class="nav-link" data-scroll-target="#set-poetry">Set poetry</a></li>
+  <li><a href="#using-poetry-for-dependencies" id="toc-using-poetry-for-dependencies" class="nav-link" data-scroll-target="#using-poetry-for-dependencies">Using poetry for dependencies</a></li>
+  <li><a href="#vs-code-note" id="toc-vs-code-note" class="nav-link" data-scroll-target="#vs-code-note">VS code note</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Python setup</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Galen Holt </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="the-issue" class="level2">
+<h2 class="anchored" data-anchor-id="the-issue">The issue</h2>
+<p>I’m working on a Python project, and trying to figure out how to set up and get started. I’m used to R, where most simply, all I have to do is download R, Rstudio, and then start coding. R doesn’t need any environment manager to get going, but I do tend to use <code>renv</code> to manage packages, but that’s pretty lightweight and straightforward. And I can start coding without it.</p>
+<p>Python, on the other hand, is more opaque. In part it’s because I’m new to it, but a bit of googling suggests I’m not the only one. It’s likely also because there’s no one dedicated IDE/workflow that almost everyone uses, a la Rstudio (maybe that will change with the Rstudio–&gt; Posit move?).</p>
+<p>So, I’m going to work out getting setup to code in Python (I sorta did it before, but I’m trying a new way with fewer black boxes). And using this as a place to write notes/what I did as I go. That means this might end up being less a tutorial and more a series of pitfalls, but we’ll see how it goes.</p>
+<section id="the-intention" class="level3">
+<h3 class="anchored" data-anchor-id="the-intention">The intention</h3>
+<p>I’m trying to get set up to manage Python versions themselves with <code>pyenv</code> and packages with <code>poetry</code>. As far as I can tell, <code>poetry</code> does approximately similar things to <code>renv</code> (but more complicated because python). And I haven’t used something similar to <code>pyenv</code> to manage R versions themselves, but I am about to have to figure that out too because a lot of packages broke when I moved to R 4.2. Will probably try <code>rig</code>, and write another one of these. I’m assuming I’ll code primarily in VS Code, unless Posit suddenly runs python like R (without <code>reticulate</code>). Even then, remote work will all use VS Code for the time being. I’m loosely following <a href="https://briansunter.com/blog/python-setup-pyenv-poetry" class="uri">https://briansunter.com/blog/python-setup-pyenv-poetry</a> and <a href="https://www.adaltas.com/en/2021/06/09/pyrepo-project-initialization/" class="uri">https://www.adaltas.com/en/2021/06/09/pyrepo-project-initialization/</a>, and doing all the actual setup in VS Code, not Rstudio.</p>
+<p><em>Realising after I wrote this that I probably could have actually done all of this inside quarto- I think I can run powershell/system code in code blocks?</em></p>
+</section>
+</section>
+<section id="getting-started--systemwide-installations" class="level2">
+<h2 class="anchored" data-anchor-id="getting-started--systemwide-installations">Getting started- systemwide installations</h2>
+<p>Both those websites are working on Unix and Mac, so while step 1 is install <code>pyenv</code>, we aren’t going to <code>apt-get</code> or <code>brew install</code>. In fact, the <code>pyenv</code><a href="https://github.com/pyenv/pyenv">github</a> says we need to use a <a href="https://github.com/pyenv-win/pyenv-win">windows fork</a>. Things already getting nonstandard. Should I just run everything in Windows Subsystem for Linux? Maybe, but I’d like to just use windows if possible, as much as I like WSL.</p>
+<section id="pyenv" class="level3">
+<h3 class="anchored" data-anchor-id="pyenv">pyenv</h3>
+<p>Guess I’ll just start at Quick start. Going to use powershell directly rather than inside vs code here, because vs code likes to open in recent directories instead of globally, and I think I want <code>pyenv</code> system-wide.</p>
+<p>Step 1- install in powershell with <code>Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &amp;"./install-pyenv-win.ps1"</code></p>
+<p>Can’t run scripts (new computer). Sends me to <a href="https:/go.microsoft.com/fwlink/?LinkID=135170" class="uri">https:/go.microsoft.com/fwlink/?LinkID=135170</a>.</p>
+<p><img src="images/paste-D16AD2CD.png" class="img-fluid"></p>
+<p>Setting the policy to just the running process. Will probably regret that when I next try to run a script, but for now I don’t really want universal unrestricted powershell scripts.</p>
+<section id="powershell-script-permissions" class="level4">
+<h4 class="anchored" data-anchor-id="powershell-script-permissions">Powershell script permissions</h4>
+<p>Aside- it starts to get really annoying because <code>pyenv</code> runs scripts, so will need to fix. Get an error when I try to change <code>Scope</code> to <code>CurrentUser</code> because of a group policy. Setting it to <code>Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope LocalMachine</code> seems to work, despite apparently being a larger set than my User.</p>
+<p>It says it wasn’t installed successfully, but when I try again it says it’s there. I guess push on?</p>
+<p><img src="images/paste-6C6EC238.png" class="img-fluid"></p>
+<p>Step 2 was just to shut down and reopen powershell</p>
+<p>Step 3- Run <code>pyenv --version</code>. If you haven’t changed policy to something larger than <code>Process</code>, this will fail because of the <code>ExecutionPolicy</code>. Guess I need to turn it back on. I kept doing one-offs for a while until I got annoyed and then set it to <code>LocalMachine</code> (see above).</p>
+<p>Step 4, <code>pyenv install -l</code> lists a million python versions. Seems like a good thing. I’m going to need older versions in projects, but for now, let’s install the latest.</p>
+<p>Step 5- the install of python. There’s a <code>3.12.a1</code>, which I’m assuming means alpha, so I’ll go with <code>pyenv install 3.11.0</code>, which is the most recent without the <code>.a1</code>.</p>
+<p>The install seems to have worked.</p>
+<p>Step 6- set global <code>pyenv global 3.11.0</code></p>
+<p>Step 7- check it worked <code>pyenv version</code> <img src="images/paste-D8748707.png" class="img-fluid"></p>
+<p>Step 8- check python with <code>python -c "import sys; print(sys.executable)"</code></p>
+<p>works, gives me the path, <code>\.pyenv\pyenv-win\versions\3.11.0\python.exe</code></p>
+<p>Now it says to validate by closing and reopening- do that. Now <code>pyenv --version</code> gives the version, while <code>pyenv</code> alone tells us the commands. They’re also all at the github page I’m following.</p>
+<p>Then try in a vs code terminal, also works. Note that using the git bash terminal instead of powershell bypasses the script permissions issue if it hasn’t been set larger than <code>Process</code>.</p>
+<p>Now, we have Python 3.11 as the global python version, but should be able to install other versions and use them in local projects. Assuming I’ll get there once I set up poetry.</p>
+</section>
+</section>
+<section id="poetry" class="level3">
+<h3 class="anchored" data-anchor-id="poetry">poetry</h3>
+<p>Once again, the websites I’m following have commands for mac/unix, so back to the <a href="https://python-poetry.org/">main poetry page</a> to sort this out on windows.</p>
+<p>Again, powershell command on windows. Could I use the git bash in vs? Maybe? Just stick with powershell. <code>(Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | python -</code>.</p>
+<p>The instructions say that last bit should be <code>py</code> instead of <code>python</code> if python not installed from Microsoft Store, but had to use <code>python</code> anyway.</p>
+<p>seems to have worked- <img src="images/paste-3DE4F9FA.png" class="img-fluid"></p>
+<p>The instructions then have an advanced section I’m skipping, but that install message above seems to match step 3, where we add Poetry to the PATH in order to run Poetry by just running <code>poetry</code> and not the full path.</p>
+<p>I could change it with powershell, but the instructions I found involved a bunch of regex. Instead, search for “Advanced System Settings”, then in the bottom right, click <em>Environment Variables</em>, then in the <em>System Variables</em> box, click on <em>Path</em>, then <em>Edit</em> button, then <em>New</em>. That creates a blank line, paste in the path from poetry install, or use the one from their website, <code>%APPDATA%\Python\Scripts</code>. OK out of all the system settings boxes.</p>
+<p>Shut down powershell, then fire it back up and run <code>poetry --version</code>. If the path setting failed, it won’t be able to find <code>poetry</code>, if it worked, it’ll give the version number.</p>
+<p>That worked for me once, but now isn’t working the next day. Actually, it works in powershell, but not vs code powershell. It wasn’t unpacking the %APPDATA% correctly - running <code>(Get-ChildItem env:path).Value</code> lists %APPDATA% instead of the expanded directory. I stuffed the full path as in the screenshot above in the PATH, restarted VS Code and it works. Interestingly though, I left the %APPDATA% version there too, and it’s now unpacked when I run <code>(Get-ChildItem env:path).Value</code>.</p>
+</section>
+</section>
+<section id="setting-up-a-project" class="level2">
+<h2 class="anchored" data-anchor-id="setting-up-a-project">Setting up a project</h2>
+<p>Let’s first say we’re going to use a different-than-standard version of python, so install that with <code>pyenv</code>. For this test, let’s just use 3.8.9. Not really any particular reason. So, run <code>pyenv install 3.8.9</code></p>
+<p>Now, <code>pyenv versions</code> (NO FLAGS- the “--” flag will give the version of pyenv) shwos two versions with an asterisk by global.</p>
+<p><img src="images/paste-DFDCD3BD.png" class="img-fluid"></p>
+<section id="create-the-project" class="level3">
+<h3 class="anchored" data-anchor-id="create-the-project">Create the project</h3>
+<p>Just need a directory and cd inside it, I think. I’ll make it inside the directory with this qmd. <code>mkdir pytesting</code>, <code>cd pytesting</code>. Actually, this yields too much nesting. <code>poetry</code> builds a directory for the project, and another directory in that, so this just yields annoying levels of nesting. Call <code>poetry new</code> (see below) from the directory you want to contain the main project directory.</p>
+</section>
+<section id="set-the-python-version" class="level3">
+<h3 class="anchored" data-anchor-id="set-the-python-version">Set the python version</h3>
+<p>I think just <code>pyenv local 3.8.9</code>. That creates a <code>.python-version</code> file in the directory, which seems to be the idea.</p>
+</section>
+<section id="set-poetry" class="level3">
+<h3 class="anchored" data-anchor-id="set-poetry">Set poetry</h3>
+<p>Am I going to completely screw up my R project having this inside it? Guess we’ll find out.</p>
+<p><code>poetry new pytesting</code> then creates another directory and returns “Created package pytesting in pytesting”. It builds the outer directory, so don’t make one first or the nesting gets silly.</p>
+<p>That directory seems to be establishing a standard package structure and the lockfiles etc. Opening the <code>.toml</code> looks like it didn’t pick up the python version though- it’s using 3.11. Hmmm. Tried killing and restarting powershell and it’s still doing that. Not sure why it’s not picking up the local python.</p>
+<p>If I move up a directory, the <code>pyenv versions</code> returns back to 3.11. So <code>pyenv</code> seems to be working, but poetry’s not picking it up. I guess I can change in manually, but that’s annoying.</p>
+<p>Seems to be a long-running known issue- recent posts here <a href="https://github.com/python-poetry/poetry/issues/651" class="uri">https://github.com/python-poetry/poetry/issues/651</a>. Ignore for now, maybe fix manually if it becomes an issue. I tried the solution in the last post (<code>poetry config virtualenvs.prefer-active-python true</code>), and it didn’t fix it. Tried completely starting over a few times. No luck. Worry about that later. I guess that means the <code>pyenv</code> stuff might be useless for the moment- will need to use the version poetry thinks it has in the directory. It does look like can reinstall poetry, but that seems like a pain. (No one else seems to have issues with the config above).</p>
+<p>So, I’ve just set the pyenv to the global for now, and moving ahead with poetry for the project. I guess I could change <code>pyenv global</code> each time I switch projects as an annoying workaround if it becomes an issue. An answer might be <code>poetry env use</code> , see <a href="https://python-poetry.org/docs/managing-environments/" class="uri">https://python-poetry.org/docs/managing-environments/</a>.</p>
+</section>
+<section id="using-poetry-for-dependencies" class="level3">
+<h3 class="anchored" data-anchor-id="using-poetry-for-dependencies">Using poetry for dependencies</h3>
+<p>Much like <code>renv</code> can install all dependencies from info in <code>renv.lock</code>, we could build the project with dependencies from <code>pyproject.toml</code>. Or, also like <code>renv</code>, as we’re developing a project, we can add iteratively. Let’s do that, since that’s what we’re doing.</p>
+<p>There seems to be an intermediate step here though, running <code>poetry install</code> to initialise a virtual environment from the <code>.toml</code>. I assume this would install whatever’s in the <code>toml</code>, but we don’t have anything at present. That apparently creates a virtual environment somewhere globally (<code>.cache/</code>, according to <a href="https://www.adaltas.com/en/2021/06/09/pyrepo-project-initialization/" class="uri">https://www.adaltas.com/en/2021/06/09/pyrepo-project-initialization/</a>).</p>
+<p>And now I have <code>poetry.lock</code> . According to the docs, this takes precedence over the <code>.toml</code>, though I doubt that’s true for python version itself. This is what gets committed to share the project.</p>
+<p>Typing <code>poetry shell</code> at the command line activates the environment. But how do we activate it for a VS code session?</p>
+<p>Seems to just be active once we open a <code>.py</code> file in that directory (e.g.&nbsp;if we open the file, then a powershell at that location, it appears with <code>pyenv shell</code> already going.</p>
+<p>To test adding a dependency, i’ll try <code>numpy</code>. First, I can run simply python code- <code>a = 1</code> etc. But <code>import numpy as np</code> fails (as expected)- ModuleNotFoundError: No module named ‘numpy’. So, click back to the powershell terminal, and try <code>poetry add numpy</code>. It resolves dependencies and writes a lock file.</p>
+<p>And yet, if I try <code>import numpy as np</code>, same error. The <code>poetry show</code> command lists it as installed.</p>
+<p>So, it’s because VScode doesn’t know where to find the venvs. On a one-off basis, can use <code>poetry env info --path</code> to get the path, then in VS code select interpreter (<code>ctrl-shift-p</code> for the search thingy), then paste in that path. But that’s annoying.</p>
+<p>I’m trying getting to the search thing, then User settings, then adding <code>C:\Users\galen\AppData\Local\pypoetry\Cache\virtualenvs\</code> to the venv Folders. That seems to work, but it may just be remembering from last time.</p>
+<p>The most robust option might be to <em>not</em> keep the venvs in <code>.cache</code> but instead local to the project, as described <a href="https://stackoverflow.com/questions/59882884/vscode-doesnt-show-poetry-virtualenvs-in-select-interpreter-option">here</a>. Looks like that’s done with <code>poetry config virtualenvs.in-project true</code> at the very outset, and then rebuilding the project (and it should persist for future projects).</p>
+<p>And that’s what we’re doing in the project I’m doing this for. So let’s do that. First, run <code>poetry env list</code> to get the name, then <code>poetry env remove NAME</code> to delete. But it failed, seemingly partway. So also go to <code>AppData\Local\pypoetry\Cache\virtualenvs</code> and delete the folder. Restart vs and now <code>poetry env list</code> doesn’t return anything.</p>
+<p>To set the config, <code>poetry config virtualenvs.in-project true</code> . I believe that’s global (I ran it outside the project).</p>
+<p>Now rebuild from <code>.toml</code> in the project with <code>poetry install</code>. The <code>.venv</code> is there now, but VS still can’t find it.</p>
+<p>OK, shut everything down, and instead of opening VS again as usual, I opened it and then opened a new window, and now it works. It was somehow setting the root based on where VS happened to open, rather than based on where files were. That probably makes sense for a git repo with just python, but broke here. I assume we need to add the <code>venv</code> directory to the gitignore.</p>
+<p>Just did <code>poetry add pandas</code> and it works and I immediately have access to it in a python script.</p>
+</section>
+<section id="vs-code-note" class="level3">
+<h3 class="anchored" data-anchor-id="vs-code-note">VS code note</h3>
+<p>Sometimes VS seems to find the poetry venv and use it, and other times (I think if it’s not at the head dir of the workspace?) it needs to be pointed at the python.exe. To do that, open the command palette, (ctrl-shift-p), select python interpreter, then <code>.venv\scripts\python.exe</code> wherever that venv is.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

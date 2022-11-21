@@ -12,3 +12,5 @@ output/
 *.png
 
 *.pyc
+
+/_*.local
