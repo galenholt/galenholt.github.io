@@ -51,9 +51,11 @@ testplot <- testplot +
 testplot
 ```
 
-Can I use `amsmath` in latex? Maybe, but not for linebreaks.
+Can I use `amsmath` in latex? Maybe, but not for linebreaks- this errors.
 
 ```{r}
+#| error: false
+#| eval: false
 testplot <- testplot + 
   labs(x = TeX(r'(Words and greek $\Delta_1$)'),
        y = TeX(r'($\frac{1-\alpha}{\rho}$)'),

@@ -12,6 +12,8 @@ I really don't like how faint the selection colours are for all of the dark them
 
 I went to [this massive list of themes](https://tmtheme-editor.herokuapp.com/#!/editor/theme/Tomorrow-Night), clicked 'gallery', chose the one I wanted (just a simple edit of Tomorrow Night, will save a more complex hunt for another day). Then the pane in the middle lets us change all the colours. I clicked the 'General' tab, and changed the `lineHighlight` and `selection` to a nice blue. I also changed the comment colour to green, not sure if I like that or not.
 
+![](images/paste-9273013E.png)
+
 Then, go to the 'Info' tab and change the name before downloading. Otherwise Rstudio won't find it under a new name.
 
 Download. This saves as a `.tmTheme` file, which I think might just be able to be used directly (see new [Posit documentation](https://posit.co/blog/rstudio-ide-custom-theme-support/), but I was looking at something old and so used `rstudioapi::convertTheme('setup/Tomorrow Night HL.tmTheme', outputLocation = 'setup')` to create a `.rstheme` file.

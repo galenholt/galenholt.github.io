@@ -23,10 +23,14 @@ website:
     - title: "Code Demos"
       contents:
         - code_demos.qmd
-        - section: "Plotting"
+        - section: "Small how-tos"
           contents:
             - href: smallpieces.qmd
               text: "Bits and pieces"
+            - href: setup/rstudio_themes.qmd
+              text: "Editing Rstudio themes"
+        - section: "Plotting"
+          contents:
             - href: plotting/tweaks_tricks.qmd
               text: "Saving and themeing plots"
             - href: plotting/hcl_exploration.qmd
