@@ -1,6 +1,9 @@
 ---
 title: "Math and greek in legends"
 author: "Galen Holt"
+output:
+  html:
+    extra_dependencies: ['amsmath']
 editor: visual
 ---
 
@@ -44,6 +47,17 @@ testplot <- testplot +
   labs(x = TeX(r'(Words and greek $\Delta_1$)'),
        y = TeX(r'($\frac{1-\alpha}{\rho})'),
        color = TeX(r'($\left{ \int_0^\inf \exp{\eta x} dx \right})'))
+
+testplot
+```
+
+Can I use `amsmath` in latex? Maybe, but not for linebreaks.
+
+```{r}
+testplot <- testplot + 
+  labs(x = TeX(r'(Words and greek $\Delta_1$)'),
+       y = TeX(r'($\frac{1-\alpha}{\rho}$)'),
+       color = TeX(r'($\begin{split}\left{ \int_0^\inf \\ \exp{\eta x} dx \right}\end{split}$)'))
 
 testplot
 ```
