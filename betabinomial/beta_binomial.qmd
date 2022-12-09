@@ -1,0 +1,18 @@
+---
+title: "Beta-binomial model testing"
+author: "Galen Holt"
+editor: visual
+---
+
+```{r setup}
+
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+
+```
+
+```{r}
+library(tidyverse)
+library(lme4)
+library(lmerTest)
+library(spaMM)
+```
