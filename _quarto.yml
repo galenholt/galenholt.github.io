@@ -25,7 +25,7 @@ website:
         - code_demos.qmd
         - section: "Small how-tos"
           contents:
-            - href: smallpieces.qmd
+            - href: small_helpers/smallpieces.qmd
               text: "Bits and pieces"
             - href: setup/rstudio_themes.qmd
               text: "Editing Rstudio themes"
