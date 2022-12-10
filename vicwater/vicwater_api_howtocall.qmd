@@ -1,0 +1,837 @@
+---
+title: "Vicwater api crude testing"
+author: "Galen Holt"
+format: html
+editor: visual
+---
+
+```{r setup}
+#| warning: false
+#| message: false
+
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+
+```
+
+# This file
+
+This is VERY early-stage crude working through how to call the vicwater API. Lots of the code chunks fail because it's testing.
+
+But, it has some potentially useful successes and checks.
+
+## Access Victoria water data through API
+
+We want to access [victorian water data](https://data.water.vic.gov.au/static.htm) for a set of sites. That requires using the api at **https://data.water.vic.gov.au/cgi/webservice.exe?\[JSON_request\]** , but it's poorly documented, and I've maybe done one API call ever. Time to figure this out. Will start by piggybacking on the `mdba-gauge-getter` python that gets water levels as a starting point and then try to get other data.
+
+First, how do we make an API request? Most tutorials use twitter or github, which are well-documented. But let's try something similar.
+
+`purrr` conflicts with `jsonlite::flatten`, so don't load `tidyverse`.
+
+```{r}
+library(ggplot2)
+library(tibble)
+library(dplyr)
+library(httr)
+library(jsonlite)
+
+# Actually end up using
+library(httr2)
+
+```
+
+Looks like the first thing is the base url. The web says it's this, and the mdba-gauge-getter uses the same, and then appends json_data
+
+```{r}
+vicurl <- "https://data.water.vic.gov.au/cgi/webservice.exe?"
+```
+
+I guess I need to specify something to get. But there is no documentation I can find for what the parameters are. The gauge-getter has a few, so I guess start picking things apart.
+
+```{r}
+params <- list("site_list" = '232202')
+```
+
+```{r}
+response <- GET(vicurl, query = params)
+response
+
+```
+
+Following the R api [vignette](https://cran.r-project.org/web/packages/httr/vignettes/api-packages.html),
+
+```{r}
+parsed <- fromJSON(content(response, 'text'), simplifyVector = FALSE)
+parsed
+```
+
+Interesting. It looked like it returned 200 (good) when I printed response and when I look at it in the View, but actually had errors. Where ARE these results?
+
+so, can we add those missing 'top-level' items? I see now that the gauge-getter has a two-level dict
+
+```{r}
+#| error: false
+#| eval: false
+params <- list("version" = '2')
+response <- GET(vicurl, params = params)
+parsed <- fromJSON(content(response, 'text'), simplifyVector = FALSE)
+parsed
+```
+
+Try the example. can't get it to even be a character vector
+
+```{r}
+# demourl <- https://data.water.vic.gov.au/cgi/webservice.exe?{"function":"get_db_info","version":"3","params":{"table_name":"site","return_type":"hash","filter_values":{"station":"221001"}}}
+```
+
+```{r}
+params <- list("function" = 'get_db_info',
+               "version" = "3")
+response <- GET(vicurl, query = params)
+parsed <- fromJSON(content(response, 'text'), simplifyVector = FALSE)
+parsed
+```
+
+Well, that's a start. at least I'm not getting the top-level errors. Can i just smash that whole demo into a single params list? without the sublists of 'params' and 'filter_values'?
+
+```{r}
+# params <- list("function" = 'get_db_info',
+#                "version" = "3",
+#                "table_name" = "site",
+#                "station" = "221001")
+# response <- GET(vicurl, query = params)
+# 
+# # The parsed barfs
+# # parsed <- fromJSON(content(response, 'text'), simplifyVector = FALSE)
+# # parsed
+# 
+# response
+```
+
+What am I actually asking for here? `GET` is using `modify_url`
+
+```{r}
+modify_url(vicurl, query = params)
+```
+
+So that's using the ['conventional parameter pairs](https://kisters.com.au/doco/Configuring%20and%20Using%20Web%20Services.htm)' option here, not the json . How do I generate some json so I can see if I'm matching the format? `auto_unbox = TRUE` is needed to not wrap the second values in brackets.
+
+```{r}
+toJSON(params, auto_unbox = TRUE)
+```
+
+OK, so that looks vaguely right, but not leveled. Can we do lists of lists?
+
+```{r}
+nestparams <- list("function" = 'get_db_info',
+               "version" = "3",
+               "params" = list("table_name" = "site",
+                               "return_type" = "hash",
+                               "filter_values" = list("station" = "221001")))
+toJSON(nestparams, auto_unbox = TRUE)
+
+```
+
+Whoa! that looks right. Now, let's try it. It immediately fails to just use `GET`. try looking at `modify_url` to see why.
+
+```{r}
+jsonbit <- toJSON(nestparams, auto_unbox = TRUE)
+```
+
+```{r}
+modify_url(vicurl, query = jsonbit)
+```
+
+```{r}
+modify_url(vicurl, path = jsonbit)
+```
+
+Getting a lot of slashes. does it matter? Maybe?
+
+```{r}
+modify_url(vicurl, scheme = nestparams)
+```
+
+Is `httpbin` a way to test?
+
+```{r}
+binurl <- "http://httpbin.org/get"
+
+binr <- GET(binurl, query = jsonbit)
+binr
+```
+
+```{r}
+parsedB <- fromJSON(content(binr, 'text'), simplifyVector = FALSE)
+parsedB
+```
+
+That call looks right.
+
+```{r}
+response <- GET(vicurl, query = jsonbit, encode = 'json')
+response
+
+```
+
+```{r}
+parsed <- fromJSON(content(response, 'text'), simplifyVector = FALSE)
+parsed
+```
+
+I pasted it in to notebook++ and it's *exactly* the same as the example. So, why isn't it working?
+
+```{r}
+modurl <- modify_url(vicurl, query = jsonbit)
+response <- GET(modurl)
+response
+
+```
+
+```{r}
+parsed <- fromJSON(content(response, 'text'), simplifyVector = FALSE)
+parsed
+```
+
+## httr2
+
+Hmmm. I see Hadley has released a v2. And it has a `req_body_json`. See if that works
+
+```{r}
+library(httr2)
+```
+
+The `req_dry_run` lets us see what it's passing. THat looks right? I think?
+
+```{r}
+req <- request(vicurl)
+req %>% 
+  req_body_json(nestparams) %>% 
+  req_dry_run()
+```
+
+```{r}
+resp <- req %>% 
+  req_body_json(nestparams) %>% 
+  req_perform()
+```
+
+```{r}
+resp %>% resp_raw()
+```
+
+I thought it was json? but `resp_body_json` fails with defaults
+
+```{r}
+rj <- resp %>% resp_body_json(check_type = FALSE)
+rj
+```
+
+If I hack it together to check, first note that the resp_body is raw, as we see in the `str` of `resp_raw` and in `resp_body_raw`
+
+```{r}
+resp %>% resp_raw() %>% str()
+```
+
+```{r}
+resp %>% resp_body_raw()
+```
+
+So, if we get the raw, convert to char, then pass to JSON, it looks the same as what I'm getting out of `resp_body_json`.
+
+```{r}
+resp %>% resp_body_raw() %>% rawToChar() %>% fromJSON()
+```
+
+Now can I clean that up? THere's a lot of nesting but some of it is pointless?
+
+```{r}
+names(rj)
+```
+
+and we know error_num is a single int from the str above. And `$return` is length 1 with only `rows` and rows only has the gauge number. After that there's actually some data.
+
+```{r}
+names(rj$return)
+names(rj$return$rows)
+names(rj$return$rows$`221001`)
+```
+
+Now, can we put that in a dataframe? Is each one length 1?
+
+```{r}
+actualdata <- rj$return$rows$`221001`
+
+all(purrr::map_int(actualdata, length) == 1)
+```
+
+```{r}
+tibout <- as_tibble(actualdata)
+tibout
+```
+
+and toss cols with no data
+
+```{r}
+tibout %>% select(where(~!all(. == '')))
+```
+
+Cool, I have data and can do stuff with it. NOW, how do I get the data I actually want, vs the data that happens to be in the one demo on the website?
+
+# Testing queries
+
+Sure would be nice if there were documentation....
+
+First, let's set up a clean call that gets us to a place we can see the output
+
+```{r}
+vicurl <- "https://data.water.vic.gov.au/cgi/webservice.exe?"
+
+
+```
+
+As above
+
+```{r}
+
+nestparams <- list("function" = 'get_db_info',
+               "version" = "3",
+               "params" = list("table_name" = "site",
+                               "return_type" = "hash",
+                               "filter_values" = list("station" = "221001")))
+
+req <- request(vicurl)
+
+req %>% 
+  req_body_json(nestparams) %>% 
+  req_dry_run()
+
+resp <- req %>% 
+  req_body_json(nestparams) %>% 
+  req_perform()
+
+rbody <- resp %>% resp_body_json(check_type = FALSE)
+
+str(rbody)
+
+```
+
+What happens if I don't filter to site? Errors if no return_type. Runs for a long time then errors.
+
+Try multiple stations. separate list items doesn't work (`list("station" = "221001", "station" = "233217")` Also doesn't seem to work to do `list("station" = c("221001","233217")`, though that does generate something that looks right. THe 233217 gauge does work on its own.
+
+```{r}
+
+nestparams <- list("function" = 'get_db_info',
+               "version" = "3",
+               "params" = list("table_name" = "site",
+                               "return_type" = "hash",
+                               "filter_values" = list("station" = c("221001",
+                                                                    "233217"))))
+
+req <- request(vicurl)
+
+req %>% 
+  req_body_json(nestparams) %>% 
+  req_dry_run()
+
+resp <- req %>% 
+  req_body_json(nestparams) %>% 
+  req_perform()
+
+rbody <- resp %>% resp_body_json(check_type = FALSE)
+
+str(rbody)
+
+```
+
+Try `get_ts_traces` . Use the barwon 233217. Trying to copy from mdba getter, but guessing. Version can't be 3 for `get_ts_traces`. WHat do the datasources mean? And what are the varfrom and varto? THey aren't what I expected
+
+```{r}
+nestparams <- list("function" = 'get_ts_traces',
+               "version" = "2",
+               "params" = list("site_list" = "233217",
+                               "start_time" = "20200101000000",
+                               "varfrom" = "100",
+                               "interval" = "day",
+                               "varto" = "141", # guessing
+                               "datasource" = "A", # no idea. getter has CP
+                               "end_time" = "20201231000000",
+                               "data_type" = "mean",
+                               "multiplier" = "1"))
+
+req <- request(vicurl)
+
+req %>% 
+  req_body_json(nestparams) %>% 
+  req_dry_run()
+
+resp <- req %>% 
+  req_body_json(nestparams) %>% 
+  req_perform()
+
+rbody <- resp %>% resp_body_json(check_type = FALSE)
+
+str(rbody)
+
+```
+
+And the trace length is right
+
+```{r}
+length(rbody$return$traces[[1]]$trace)
+```
+
+So, how do we actually get what we want?
+
+# How does the API work?
+
+I finally found a couple sources of documentation that will hopefully be helpful: <https://kisters.com.au/doco/hydllp.htm> and <https://water-monitoring.information.qld.gov.au/wini/Documents/RDMW_API_doco.pdf>. According to the QLD pdf, the datasource distinguishes things like Archive and Telemetry. Not sure what they are in Vic. And the different variables can be in a `var_list` or `varto` and `varfrom`. The numbers are for different variables, but again, no guarantee they're the same in Vic.
+
+The kisters site though looks like `get_datasources_by_site` and `get_variable_list` might tell me what the options are?
+
+## Querying options
+
+Before we go get data, we need to figure out what we can ask for. First, sort out *those* functions.
+
+### Datasources
+
+Let's try `get_datasources_by_site`. Takes `site_list` params. Dunno what versions it works for? Tried 2, gave error says has to be 1. I assume the "A" datasource means archive here, since that's what it means in QLD.
+
+```{r}
+ds_s_params <- list("function" = 'get_datasources_by_site',
+               "version" = "1",
+               "params" = list("site_list" = "233217"))
+
+# req <- request(vicurl)
+
+req %>% 
+  req_body_json(ds_s_params) %>% 
+  req_dry_run()
+
+resp_ds_s <- req %>% 
+  req_body_json(ds_s_params) %>% 
+  req_perform()
+
+rbody_ds_s <- resp_ds_s %>% resp_body_json(check_type = FALSE)
+
+str(rbody_ds_s)
+
+```
+
+### Sitelist
+
+Ok, I could make that into a tibble easily enough. It tells me what that site has for datasources, how about another? Can I figure out how to use a sitelist? That'd be really nice, and applies in a lot of places. Cool. I had tried to do `"sitelist" = c('site', 'site')` , and that failed. But it works to have `"site, site"`
+
+```{r}
+ds_s_params <- list("function" = 'get_datasources_by_site',
+               "version" = "1",
+               "params" = list("site_list" = "233217, 405328"))
+
+# req <- request(vicurl)
+
+req %>% 
+  req_body_json(ds_s_params) %>% 
+  req_dry_run()
+
+resp_ds_s <- req %>% 
+  req_body_json(ds_s_params) %>% 
+  req_perform()
+
+rbody_ds_s <- resp_ds_s %>% resp_body_json(check_type = FALSE)
+
+str(rbody_ds_s)
+
+```
+
+### Variables
+
+Now, for a given site, we want to know what variables are available. (and I also eventually want to know what all possible variables are, and what happens if we ask for variables that aren't there). Let's start with the same two sites. I'm
+
+```{r}
+v_s_params <- list("function" = 'get_variable_list',
+               "version" = "1",
+               "params" = list("site_list" = "233217, 405328",
+                               "datasource" = "A"))
+
+req <- request(vicurl)
+
+req %>% 
+  req_body_json(v_s_params) %>% 
+  req_dry_run()
+
+resp_v_s <- req %>% 
+  req_body_json(v_s_params) %>% 
+  req_perform()
+
+rbody_v_s <- resp_v_s %>% resp_body_json(check_type = FALSE)
+
+str(rbody_v_s)
+
+```
+
+So, that gives me the number *and name* of each variable at each site. But it does *not* give derived variables (discharge being the main one).
+
+## Location etc
+
+So, `get_db_info` seems like it should be useful, but kind of isn't (see above). Maybe I'll come back to that. It does let us do geofilters, but they seem both crude and complex. I think I'd *probably* rather do geofiltering myself and then turn that into a `site_list`. But might come back to this. The `complex_filter` might be useful if we can use it to choose sites based on something. But again, I'd probably do that myself? Again, come back to this maybe?
+
+### Can we get a list of all sites and all variables?
+
+Maybe? Do we want to?
+
+## Getting timeseries
+
+Now, let's go back to get timeseries, now we know what the variables are. Just for the Barwon at first, and way fewer days. There's a `var_list` option, or `varfrom` and `varto`. It's unclear whether the from and to version is numerivally inclusive- ie if we have 100 and 10000, does it get everything? I'll try with `varto = 820`, since that's the highest number avail at the barwon. Gives cryptic error. Try 210? Also, why isn't 141 available in teh lsit above? Again, cryptic "Assumed fail to reload varcon for 233217: 100.00-\> 210.00, as we failed loading it last time". does it work for 141? Yes.
+
+```{r}
+bparams <- list("function" = 'get_ts_traces',
+               "version" = "2",
+               "params" = list("site_list" = "233217",
+                               "start_time" = "20200101000000",
+                               "varfrom" = "100",
+                               "interval" = "day",
+                               "varto" = "141",
+                               "datasource" = "A", 
+                               "end_time" = "20200115000000",
+                               "data_type" = "mean",
+                               "multiplier" = "1"))
+
+req <- request(vicurl)
+
+req %>% 
+  req_body_json(bparams) %>% 
+  req_dry_run()
+
+respb <- req %>% 
+  req_body_json(bparams) %>% 
+  req_perform()
+
+rbodyb <- respb %>% resp_body_json(check_type = FALSE)
+
+str(rbodyb)
+```
+
+Do the other vars work if we ask for them separately? Try pH (which failed above)
+
+```{r}
+bparams <- list("function" = 'get_ts_traces',
+               "version" = "2",
+               "params" = list("site_list" = "233217",
+                               "start_time" = "20200101000000",
+                               "varfrom" = "210",
+                               "interval" = "day",
+                               "varto" = "210",
+                               "datasource" = "A", 
+                               "end_time" = "20200115000000",
+                               "data_type" = "mean",
+                               "multiplier" = "1"))
+
+req <- request(vicurl)
+
+req %>% 
+  req_body_json(bparams) %>% 
+  req_dry_run()
+
+respb <- req %>% 
+  req_body_json(bparams) %>% 
+  req_perform()
+
+rbodyb <- respb %>% resp_body_json(check_type = FALSE)
+
+str(rbodyb)
+```
+
+Interesting. How about a `var_list`?
+
+```{r}
+bparams <- list("function" = 'get_ts_traces',
+               "version" = "2",
+               "params" = list("site_list" = "233217",
+                               "start_time" = "20200101000000",
+                               "var_list" = "100,210",
+                               "interval" = "day",
+                               "datasource" = "A", 
+                               "end_time" = "20200115000000",
+                               "data_type" = "mean",
+                               "multiplier" = "1"))
+
+req <- request(vicurl)
+
+req %>% 
+  req_body_json(bparams) %>% 
+  req_dry_run()
+
+respb <- req %>% 
+  req_body_json(bparams) %>% 
+  req_perform()
+
+rbodyb <- respb %>% resp_body_json(check_type = FALSE)
+
+str(rbodyb)
+```
+
+That works, seems to set the varfrom and varto to each value in the list. I wonder if things like 141 are done in the from/to way because they are derived from 100. But how do we find them when they don't appear in the `get_variable_list`? Can I include them in `var_list`? Hmm. No. what's going on? *see table 3 in qld doc- they are derived, and it gives numbers*. Is there a `get_available_varcons` or similar?
+
+```{r}
+bparams <- list("function" = 'get_ts_traces',
+               "version" = "2",
+               "params" = list("site_list" = "233217",
+                               "start_time" = "20200101000000",
+                               "var_list" = "100,141,210",
+                               "interval" = "day",
+                               "datasource" = "A",
+                               "end_time" = "20200115000000",
+                               "data_type" = "mean",
+                               "multiplier" = "1"))
+
+req <- request(vicurl)
+
+req %>% 
+  req_body_json(bparams) %>% 
+  req_dry_run()
+
+respb <- req %>% 
+  req_body_json(bparams) %>% 
+  req_perform()
+
+rbodyb <- respb %>% resp_body_json(check_type = FALSE)
+
+str(rbodyb)
+```
+
+How about asking for variables that don't exist- ie can we just ask for all of them, and it just gives us whatever's available? The other site (Steavenson, 405328) only has variable 100, so ask for some others. Just gives 100.
+
+```{r}
+sparams <- list("function" = 'get_ts_traces',
+               "version" = "2",
+               "params" = list("site_list" = "405328",
+                               "start_time" = "20200101000000",
+                               "var_list" = "100,210",
+                               "interval" = "day",
+                               "datasource" = "A", 
+                               "end_time" = "20200115000000",
+                               "data_type" = "mean",
+                               "multiplier" = "1"))
+
+req <- request(vicurl)
+
+req %>% 
+  req_body_json(sparams) %>% 
+  req_dry_run()
+
+resps <- req %>% 
+  req_body_json(sparams) %>% 
+  req_perform()
+
+rbodys <- resps %>% resp_body_json(check_type = FALSE)
+
+str(rbodys)
+```
+
+### Can we get derived (141, etc) with varlist
+
+It looks like it's really just 140 (cumecs) and 141 (ML/d) we'd want, if Vic matches QLD. There are a couple other varcons, but they're about groundwater.
+
+Let's see what `get_varcon` gives us. I can't get this not to error, and the examples online have square brackets mixed in the json. I think some combo of `c` and `list` might do it but not worth it.
+
+```{r}
+vc_params <- list("function" = 'get_varcon',
+               "version" = "2",
+               "params" = list("varcons" = list("varfrom" = "100",
+                               "varto" = "141",
+                               "site_list" = "233217, 405328",
+                               "datasource" = "A",
+                               "requests" = list("qf1" = "1", 
+                                                 "t1" = "20200101000000",
+                                                 "t2" = "20200131000000"))))
+
+req <- request(vicurl)
+
+req %>% 
+  req_body_json(vc_params) %>% 
+  req_dry_run()
+
+resp_vc <- req %>% 
+  req_body_json(vc_params) %>% 
+  req_perform()
+
+rbody_vc <- resp_vc %>% resp_body_json(check_type = FALSE)
+
+str(rbody_vc)
+```
+
+This isn't worth it. If we ask for 141 or 140, just do another round with varfrom and varto. Or always get 100, 140, 141, then only sometimes get the others if asked?
+
+## Geolocation
+
+So, `get_db_info` seems to have a way to get sites by radius or bounding box.. And the flipside is we might want to get sites within a polygon, and so need their locations, which should be available as geoJSON. Try to figure both those out.
+
+I think `get_site_geojson` is going to be simpler. start there. Not sure why the `site_list` *can't* have a `c()`, but the `fields` *has to* use it. Works though, gives a feature list. I think those are readable by `sf`, so that's good. Not sure what the fields even are though. The help says "Any field that is part of the site table". So I guess we need to sort that out. On to `get_db_info`.
+
+```{r}
+g_j_params <- list("function" = 'get_site_geojson',
+               "version" = "2",
+               "params" = list("site_list" = "233217, 405328",
+                               "get_elev" = "1",
+                               "fields" = c("zone","region")))
+
+req <- request(vicurl)
+
+req %>% 
+  req_body_json(g_j_params) %>% 
+  req_dry_run()
+
+resp_g_j <- req %>% 
+  req_body_json(g_j_params) %>% 
+  req_perform()
+
+rbody_g_j <- resp_g_j %>% resp_body_json(check_type = FALSE)
+
+str(rbody_g_j)
+```
+
+## DB info
+
+I was using `get_db_info` to test above, so let's just go back to that as a start and think a bit more about what we want. look at the barown. Cannot feed it a list of sites for `fitler_values`. It does give lat/long/northing, etc, so could use this instead of geoJSON, but geoJSON probably better if we want geo. Using `return_type = hash` is not noticably different than `return_type = array`. All examples use hash, so I guess keep using that moving forward. I think we can filter on lots of things in this list, both here and in the geojson.
+
+```{r}
+
+dbparams <- list("function" = 'get_db_info',
+               "version" = "3",
+               "params" = list("table_name" = "site",
+                               "return_type" = "array",
+                               "filter_values" = list("station" = "233217")))
+
+req <- request(vicurl)
+
+req %>% 
+  req_body_json(dbparams) %>% 
+  req_dry_run()
+
+respdb <- req %>% 
+  req_body_json(dbparams) %>% 
+  req_perform()
+
+rbodydb <- respdb %>% resp_body_json(check_type = FALSE)
+
+str(rbodydb)
+```
+
+### Geofiltering the db to select sites
+
+OK, so there are lots of ways to filter (sitename, date, name, etc). Some of those like Name or region or active might be useful, but for now let's try the geo filters (boudning box and radius).
+
+Try circle (lat, long, radius in degrees)- use the Barwon lat/long.
+
+Keeps crashing with timeouts. is it just too much to ask for? Or is the json not right?
+
+```{r}
+# dbparams <- list("function" = 'get_db_info',
+#                "version" = "3",
+#                "params" = list("table_name" = "site",
+#                                "return_type" = "hash",
+#                                "geo_filter" = list("circle" = c("-38.16", "144.35", "0.25"))))
+# 
+# req <- request(vicurl)
+# 
+# req %>% 
+#   req_body_json(dbparams) %>% 
+#   req_dry_run()
+# 
+# respdb <- req %>% 
+#   req_body_json(dbparams) %>% 
+#   req_perform()
+# 
+# rbodydb <- respdb %>% resp_body_json(check_type = FALSE)
+# 
+# str(rbodydb)
+```
+
+Let's try one of the other geofilters. Otherwise this will work better to write my own if I can et the geojson of all the sites.
+
+Ugh. the rectangle (and region) need nested square brackets. I can make one with c(),
+
+```{r}
+dbparams <- list("function" = 'get_db_info',
+               "version" = "3",
+               "params" = list("table_name" = "site",
+                               "return_type" = "hash",
+                               "geo_filter" = list("rectangle" = 
+                                                     c(c("-38.126", "144.282"),
+                                                       c("-38.223", "144.406")))))
+
+req <- request(vicurl)
+
+req %>% 
+  req_body_json(dbparams) %>% 
+  req_dry_run()
+# 
+# respdb <- req %>% 
+#   req_body_json(dbparams) %>% 
+#   req_perform()
+# 
+# rbodydb <- respdb %>% resp_body_json(check_type = FALSE)
+# 
+# str(rbodydb)
+```
+
+the locations of all guages it'd be
+
+OK, generating the json for these geo selections is horrible. If I can pull faster to do it myself.
+
+Can I get a complete gaugelist, nad then pull geojson?
+
+## Get all gauges
+
+What's the best way? with get_db_info? With `get_sites_by_datasource`? The latter would assume we know all datasources. We probably *do* just want those in 'A' but not positive.
+
+So, how about db_info, but maybe not *all* columns? Tempted to get lat/long or easting/northing.
+
+Takes a while, but it does run. 189,464 sites??? Yikes. WHY? Clearly i need to filter on *something*.
+
+```{r}
+dbparams <- list("function" = 'get_db_info',
+               "version" = "3",
+               "params" = list("table_name" = "site",
+                               "return_type" = "array",
+                               "field_list" = c("station", "stname", "shortname")))
+
+req <- request(vicurl)
+
+req %>% 
+  req_body_json(dbparams) %>% 
+  req_dry_run()
+
+respdb <- req %>% 
+  req_body_json(dbparams) %>% 
+  req_perform()
+
+rbodydb <- respdb %>% resp_body_json(check_type = FALSE)
+
+str(rbodydb)
+```
+
+what are the variables at some of those sites? Can we figure out what's up that way? I have a feeling some are groundewater, but there's no obvious field for that.
+
+```{r}
+v_s_params <- list("function" = 'get_variable_list',
+               "version" = "1",
+               "params" = list("site_list" = "100089, 100079",
+                               "datasource" = "A"))
+
+req <- request(vicurl)
+
+req %>% 
+  req_body_json(v_s_params) %>% 
+  req_dry_run()
+
+resp_v_s <- req %>% 
+  req_body_json(v_s_params) %>% 
+  req_perform()
+
+rbody_v_s <- resp_v_s %>% resp_body_json(check_type = FALSE)
+
+str(rbody_v_s)
+```
+
+Uhhh, those have no variables? WHat's going on here?
