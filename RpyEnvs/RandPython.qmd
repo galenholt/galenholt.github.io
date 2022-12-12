@@ -17,11 +17,11 @@ knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 
 I have a project primarily in R, but needs some python. For the big python work, I'll have a directory with a `poetry` environment and python code. But I've run into the issue that I want to run just one or two lines of python from R. The specific case is that I have python code for extracting river gauge data, and I've filtered some river gauges in R for something else, and rather than do the finding of the gauges again in python, I'd rather just do the extraction in R. I think that means I have to sort out {reticulate}, but also how to point reticulate at my python environment. The situation I have is a `poetry` project inside a directory with an Rproj (which probably needs to be split up, but it's what I have now).
 
-My `python_setup.qmd` sets up a very similar situation, so let's see if I can use it.
+My [python_setup](RpyEnvs/python_setup.qmd) sets up a very similar situation, so let's see if I can use it.
 
 ## Set up reticulate from R
 
-Point reticulate at the venv. See [stackoverflow](https://stackoverflow.com/questions/59715101/how-to-get-reticulate-to-access-virtual-environment).
+Point reticulate at the venv. See [stackoverflow](https://stackoverflow.com/questions/59715101/how-to-get-reticulate-to-access-virtual-environment). This *seems* to not be necessary if the `.venv` is in the outer project directory.
 
 ```{r}
 reticulate::use_virtualenv(file.path('RpyEnvs', 'pytesting', '.venv'), required = TRUE)
