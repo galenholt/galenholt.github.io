@@ -127,7 +127,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <link rel="stylesheet" href="../styles.css">
 </head>
 
-<body class="nav-fixed">
+<body class="nav-sidebar floating nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -152,7 +152,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
  <span class="menu-text">Research</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../code_demos.html">
+    <a class="nav-link active" href="../code_demos.html" aria-current="page">
  <span class="menu-text">Code Demos</span></a>
   </li>  
 </ul>
@@ -160,10 +160,199 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div> <!-- /navcollapse -->
       </div> <!-- /container-fluid -->
     </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Creating a package</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
 </header>
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code_demos.html" class="sidebar-item-text sidebar-link">Code Demos</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Small how-tos</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/smallpieces.html" class="sidebar-item-text sidebar-link">Bits and pieces</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../setup/rstudio_themes.html" class="sidebar-item-text sidebar-link">Editing Rstudio themes</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/zip_downloading.html" class="sidebar-item-text sidebar-link">Download and unpack zips</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Plotting</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/tweaks_tricks.html" class="sidebar-item-text sidebar-link">Saving and themeing plots</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/hcl_exploration.html" class="sidebar-item-text sidebar-link">Exploring HCL colorspace</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/fonts.html" class="sidebar-item-text sidebar-link">Fonts</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/faded_colors.html" class="sidebar-item-text sidebar-link">Faded 2d colour ramps</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/math_in_ggplot.html" class="sidebar-item-text sidebar-link">Latex in ggplot with latex2exp</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">Theory and simulation</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../simmodelling/twoDautocorr.html" class="sidebar-item-text sidebar-link">Generate 2d autocorrelation</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">R and python</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/python_setup.html" class="sidebar-item-text sidebar-link">Python environments with pyenv and poetry</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/python_updated_functions.html" class="sidebar-item-text sidebar-link">Small python bits</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/RandPython.html" class="sidebar-item-text sidebar-link">Using R and python together</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/R_py_shared_projects.html" class="sidebar-item-text sidebar-link">Shared R-py project structure</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">Setting things up</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/rig.html" class="sidebar-item-text sidebar-link">Managing old R versions with rig</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/quarto_website_github.html" class="sidebar-item-text sidebar-link">Getting this website working</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/managingprivate.html" class="sidebar-item-text sidebar-link">Private data for website repo</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">Building packages</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../package/package_creation.html" class="sidebar-item-text sidebar-link active">First pass at building a package</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../vicwater/vicwater_testing.html" class="sidebar-item-text sidebar-link">Testing VicWater API</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">Data</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data_acquisition/bom_gauges.html" class="sidebar-item-text sidebar-link">BOM gauge locations with httr2</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../vicwater/vicwater_api_howtocall.html" class="sidebar-item-text sidebar-link">Experimenting with API calls for {vicwater}</a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
@@ -179,9 +368,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#trying-it-out" id="toc-trying-it-out" class="nav-link" data-scroll-target="#trying-it-out">Trying it out</a></li>
   <li><a href="#documentation" id="toc-documentation" class="nav-link" data-scroll-target="#documentation">Documentation</a></li>
   <li><a href="#vignettes" id="toc-vignettes" class="nav-link" data-scroll-target="#vignettes">Vignettes</a></li>
+  <li><a href="#testing" id="toc-testing" class="nav-link" data-scroll-target="#testing">Testing</a></li>
   </ul></li>
   <li><a href="#issues" id="toc-issues" class="nav-link" data-scroll-target="#issues">Issues</a></li>
   <li><a href="#installing" id="toc-installing" class="nav-link" data-scroll-target="#installing">Installing</a></li>
+  <li><a href="#checking-building-etc" id="toc-checking-building-etc" class="nav-link" data-scroll-target="#checking-building-etc">Checking, building, etc</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -191,7 +382,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Creating a package</h1>
+<h1 class="title d-none d-lg-block">Creating a package</h1>
 </div>
 
 
@@ -252,43 +443,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <p>R is also out of date (at the time of writing). <a href="RpyEnvs/rig.qmd">Fix it with</a> <code>rig</code>, then re-run and update the packages.</p>
-<div class="cell" data-hash="package_creation_cache/html/unnamed-chunk-2_c1582490ab2eef624cf41d333b006525">
+<div class="cell" data-hash="package_creation_cache/html/unnamed-chunk-2_70ba5ccb74cd111a7d880e993721b78f">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">update_packages</span>(<span class="st">'devtools'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>jsonlite (1.8.3 -&gt; 1.8.4) [CRAN]
-stringr  (1.4.1 -&gt; 1.5.0) [CRAN]
-openssl  (2.0.4 -&gt; 2.0.5) [CRAN]
-whisker  (0.4   -&gt; 0.4.1) [CRAN]
-gert     (1.9.1 -&gt; 1.9.2) [CRAN]</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Installing 5 packages: jsonlite, stringr, openssl, whisker, gert</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Installing packages into 'C:/Users/galen/Documents/Website/galen_website/renv/library/R-4.2/x86_64-w64-mingw32'
-(as 'lib' is unspecified)</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-  There are binary versions available but the source versions are later:
-         binary source needs_compilation
-jsonlite  1.8.3  1.8.4              TRUE
-openssl   2.0.4  2.0.5              TRUE
-
-package 'stringr' successfully unpacked and MD5 sums checked
-package 'whisker' successfully unpacked and MD5 sums checked
-package 'gert' successfully unpacked and MD5 sums checked
-
-The downloaded binary packages are in
-    C:\Users\galen\AppData\Local\Temp\Rtmpyk8VhM\downloaded_packages</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>installing the source packages 'jsonlite', 'openssl'</code></pre>
-</div>
 </div>
 <p>Check the name I used works.</p>
 <div class="cell" data-hash="package_creation_cache/html/unnamed-chunk-3_8a18bba5cf4b281abe94040d4c793f10">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>available<span class="sc">::</span><span class="fu">available</span>(<span class="st">'vicwater'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>available<span class="sc">::</span><span class="fu">available</span>(<span class="st">'vicwater'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: package 'tidytext' was built under R version 4.2.2</code></pre>
 </div>
@@ -309,7 +469,7 @@ Sentiment:???</code></pre>
 <p><strong>Answer</strong>- I just needed to read a bit further. Rstudio has <code>devtools</code> and Rprojects working together. So calling <code>usethis::create_package()</code> builds the project and puts all the scaffolding where it needs to be. I’ll need to cross the existing complex Rproj –&gt; package bridge with another project later, but this is fairly straightforward here.</p>
 <p>So, let’s create the package.</p>
 <div class="cell" data-hash="package_creation_cache/html/unnamed-chunk-4_05536f1719101e89bde1c4aff4ca856c">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>usethis<span class="sc">::</span><span class="fu">create_package</span>(<span class="st">'~Galen/Documents/vicwater'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>usethis<span class="sc">::</span><span class="fu">create_package</span>(<span class="st">'~Galen/Documents/vicwater'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>And that worked with an existing directory. Was kind of worried about that. And it auto-opens a new Rstudio session.</p>
 <p>Now I’m mostly moving over there, but I ran <code>usethis::use_mit_license()</code> to set the license. Looks like description and namespace need work, but do that later.</p>
@@ -328,7 +488,7 @@ Sentiment:???</code></pre>
 <section id="trying-it-out" class="level3">
 <h3 class="anchored" data-anchor-id="trying-it-out">Trying it out</h3>
 <p>So, I think usually the thing to do is run <code>devtools::load_all()</code> <em>within</em> the package project. I’m sure I’ll end up doing that. But it is also be possible to run it here, just passing the path, e.g.&nbsp;<code>devtools::load_all("path/to/package/dir")</code>. That lets me work on test and development qmds and scripts here. For a bit. But why? For one, seems like vignettes have to use rmd <a href="https://github.com/r-lib/pkgdown/issues/2154">at least at present</a>. And it keeps all the trial and error out of that repo.</p>
-<p>I’m not entirely sure how to actually <em>install</em> the package once I have it on github. That’ll take some poking.</p>
+<p>I got hung up here for a while trying to pre-figure out how I’d install it once it was on github. Turns out it’s super straightforward (see below). It ends up just working as long as the thing on github has basic package structure.</p>
 </section>
 <section id="documentation" class="level3">
 <h3 class="anchored" data-anchor-id="documentation">Documentation</h3>
@@ -338,44 +498,49 @@ Sentiment:???</code></pre>
 <h3 class="anchored" data-anchor-id="vignettes">Vignettes</h3>
 <p>I like having actual demonstrations of the code, rather than just function docs, so using <code>usethis::use_vignette</code> to start building some. They have to be in rmd, not qmd. But the visual editor still works, which is nice. Just going to have to re-remember rmd chunk headers.</p>
 <p>I can’t get df_print: paged to work. I think it might be a difference between html and html_vignette, but it is listed as an option in the <a href="https://www.rdocumentation.org/packages/rmarkdown/versions/1.3/topics/html_vignette">help</a>. For now using kable even though it’s huge for tables.</p>
+<p>I ended up using the main vignette as an example in the primary github readme. To do that, I did <code>usethis::use_readme_rmd()</code>. Would be good to sort out {pkgdown}, or maybe there’s a streamlined quarto version that builds a website?</p>
+</section>
+<section id="testing" class="level3">
+<h3 class="anchored" data-anchor-id="testing">Testing</h3>
+<p>Using <code>usethis::use_testthat(3)</code> and writing tests was fairly straighforward, but I think there will be a learning curve about what and how to test. I tend to look very granularly at ad-hoc tests, i.e.&nbsp;scanning for weird NA, types, etc. But <code>testthat</code> and the <code>expect_*</code> functions lend themselves to simpler checks.</p>
+<p>It gets sort of cumbersome if a function takes a while and generates something complex. In that case, I built tests that run the function (and so are fragile to the function just erroring out), and then run multiple different <code>expect_*</code> tests against it to make sure the output is right. As an example,</p>
+<div class="cell" data-hash="package_creation_cache/html/unnamed-chunk-5_035cba26486af6290bd97621284fce37">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">"derived variables work for ts"</span>, {</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  s3 <span class="ot">&lt;-</span> <span class="fu">get_response</span>(<span class="st">"https://data.water.vic.gov.au/cgi/webservice.exe?"</span>,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">paramlist =</span> <span class="fu">list</span>(<span class="st">"function"</span> <span class="ot">=</span> <span class="st">'get_ts_traces'</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>                                      <span class="st">"version"</span> <span class="ot">=</span> <span class="st">"2"</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>                                      <span class="st">"params"</span> <span class="ot">=</span> <span class="fu">list</span>(<span class="st">"site_list"</span> <span class="ot">=</span> <span class="st">'233217'</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>                                                      <span class="st">"start_time"</span> <span class="ot">=</span> <span class="dv">20200101</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>                                                      <span class="st">"varfrom"</span> <span class="ot">=</span> <span class="st">"100"</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>                                                      <span class="st">"varto"</span> <span class="ot">=</span> <span class="st">"140"</span>,</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>                                                      <span class="st">"interval"</span> <span class="ot">=</span> <span class="st">"day"</span>,</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>                                                      <span class="st">"datasource"</span> <span class="ot">=</span> <span class="st">"A"</span>,</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>                                                      <span class="st">"end_time"</span> <span class="ot">=</span> <span class="dv">20200105</span>,</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>                                                      <span class="st">"data_type"</span> <span class="ot">=</span> <span class="st">"mean"</span>,</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>                                                      <span class="st">"multiplier"</span> <span class="ot">=</span> <span class="dv">1</span>)))</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expect_equal</span>(<span class="fu">class</span>(s3), <span class="st">'list'</span>)</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expect_equal</span>(s3[[<span class="dv">1</span>]], <span class="dv">0</span>)</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>And then, if I want to hit the function with edge cases, etc, I have to do that over and over. There’s likely a better way, but I’ll need to experiment.</p>
 </section>
 </section>
 <section id="issues" class="level2">
 <h2 class="anchored" data-anchor-id="issues">Issues</h2>
-<p>Trying to use %dopar%, but can’t get foreach::%dopar% to work, or with backticks. Putting it in a roxygen comment as <code>@importFrom foreach %dopar%</code> failed too. Seems to have worked to do <code>usethis::use_import_from('foreach', '%dopar%')</code>, which built some new files.</p>
-<p>Having a hard time testing with doFuture, since it can’t find this package. pause that for a while</p>
+<p>Trying to use <code>%dopar%</code>, but can’t get <code>foreach::%dopar%</code> to work, or with backticks. Putting it in a roxygen comment as <code>@importFrom foreach %dopar%</code> failed too. Seems to have worked to do <code>usethis::use_import_from('foreach', '%dopar%')</code>, which built some new files.</p>
+<p>Having a hard time testing with <code>doFuture</code>, since it can’t find this package. pause that for a while</p>
 </section>
 <section id="installing" class="level2">
 <h2 class="anchored" data-anchor-id="installing">Installing</h2>
-<p>Does it work to</p>
-<div class="cell" data-hash="package_creation_cache/html/unnamed-chunk-5_5b33a5363c84d39bce185ffe910c6895">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"galenholt/vicwater"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Downloading GitHub repo galenholt/vicwater@HEAD</code></pre>
+<p>Once it’s pushed to github, it’s fairly straightforward to install- just</p>
+<div class="cell" data-hash="package_creation_cache/html/unnamed-chunk-6_ae4d2e13a9cc951e247c3373e40190d5">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"galenholt/vicwater"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in untar2(tarfile, files, list, exdir, restore_times): skipping pax
-global extended headers
-
-Warning in untar2(tarfile, files, list, exdir, restore_times): skipping pax
-global extended headers</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-── R CMD build ─────────────────────────────────────────────────────────────────
-* checking for file 'C:\Users\galen\AppData\Local\Temp\Rtmpyk8VhM\remotes832c33ff8da\galenholt-vicwater-a22f0be/DESCRIPTION' ... OK
-* preparing 'vicwater':
-* checking DESCRIPTION meta-information ... OK
-* checking for LF line-endings in source and make files and shell scripts
-* checking for empty or unneeded directories
-* building 'vicwater_0.0.0.9000.tar.gz'
-</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Installing package into 'C:/Users/galen/Documents/Website/galen_website/renv/library/R-4.2/x86_64-w64-mingw32'
-(as 'lib' is unspecified)</code></pre>
-</div>
-</div>
+</section>
+<section id="checking-building-etc" class="level2">
+<h2 class="anchored" data-anchor-id="checking-building-etc">Checking, building, etc</h2>
+<p>It ended up being pretty straightforward to use <code>devtools::check()</code> and using continuous integration with github to run the checks and put the little badges on, as described in <a href="https://r-pkgs.org/continuous-integration.html">the book</a>.</p>
 
 
 </section>

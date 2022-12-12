@@ -3,6 +3,18 @@ title: "Bom reference stations"
 editor: visual
 ---
 
+```{r setup}
+#| warning: false
+#| message: false
+
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```
+
+```{r}
+library(ggplot2)
+library(sf)
+```
+
 Trying to find BOM gauge locations. Found reference stations. It's a simple link, but have to use httr2 to download because there's an error with the `user_agent` if we try to just `download.file`.
 
 Mostly including this here as an example of changing `user_agent`.
@@ -17,31 +29,36 @@ It's just a csv, but have to faff about with httr2 and deparsing back to csv bec
 
 ```{r}
 
-  bom2 <- httr2::request("http://www.bom.gov.au/water/hrs/content/hrs_station_details.csv") %>%
-  httr2::req_user_agent("md-werp") %>% 
-  httr2::req_perform() %>% 
-    httr2::resp_body_string() %>% 
-    readr::read_csv(skip = 11) %>% 
-    dplyr::select(site = `Station Name`, 
-           gauge = `AWRC Station Number`,  
-           owner = `Data Owner Name`, 
-           Latitude, Longitude)
+bom2 <- httr2::request("http://www.bom.gov.au/water/hrs/content/hrs_station_details.csv") |>
+  httr2::req_user_agent("md-werp") |> 
+  httr2::req_perform() |> 
+  httr2::resp_body_string() |> 
+  readr::read_csv(skip = 11) |> 
+  dplyr::select(site = `Station Name`, 
+                gauge = `AWRC Station Number`,  
+                owner = `Data Owner Name`, 
+                Latitude, Longitude)
 
 ```
 
 ```{r}
-library(sf)
-bom2 <- bom2 %>%
+basin <- read_sf(file.path('data','mdb_boundary', 'mdb_boundary.shp'))
+
+
+```
+
+```{r}
+bom2 <- bom2 |>
     # lat an long come in as chr because there is a line for 'undefined'
-    dplyr::filter(site != 'undefined') %>%
-  st_as_sf(coords = c('Longitude', 'Latitude'), crs = 4326) %>% 
+    dplyr::filter(site != 'undefined') |>
+  st_as_sf(coords = c('Longitude', 'Latitude'), crs = 4326) |> 
   st_transform(crs = st_crs(basin))
 ```
 
 They're not the gauges I'm looking for. Only 457, instead of 6500, and around the edges of the basin.
 
 ```{r}
-basin <- read_sf(file.path('data','mdb_boundary', 'mdb_boundary.shp'))
+
 ggplot() + 
   geom_sf(data = basin) +
   geom_sf(data = bom2)

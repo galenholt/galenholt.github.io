@@ -19,7 +19,7 @@ editor: visual
 
 This document is my testing and development of functions to include in the [{vicwater} package](https://github.com/galenholt/vicwater). Basically, it's where I interactively sorted through how to hit the API functions, the formats of the lists, and how to unpack the returned lists. It is a work in progress, since that package is under development.
 
-We want to access [victorian water data](https://data.water.vic.gov.au/static.htm) for a set of sites. That requires using the api at **https://data.water.vic.gov.au/cgi/webservice.exe?\[JSON_request\]** , but it's poorly documented. I think I got it mostly figured out in [a testing document](vicwater/vicwater_api_howtocall.qmd), but there's a lot of extra testing in there that needs to be skipped over and cleaned up. My plan is to make this a package, but it needs more development. I'm moving further testing here so I can get to the point a bit quicker.
+We want to access [victorian water data](https://data.water.vic.gov.au/static.htm) for a set of sites. That requires using the api at **https://data.water.vic.gov.au/cgi/webservice.exe?\[JSON_request\]** , but it's poorly documented. I think I got it mostly figured out in [a testing document](vicwater_api_howtocall.qmd), but there's a lot of extra testing in there that needs to be skipped over and cleaned up. My plan is to make this a package, but it needs more development. I'm moving further testing here so I can get to the point a bit quicker.
 
 Libraries. Do I still need jsonlite now that I've moved ot httr2?
 
