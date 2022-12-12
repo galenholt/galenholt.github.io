@@ -16,3 +16,5 @@ output/
 *.rdb
 
 *.rdx
+
+*_cache

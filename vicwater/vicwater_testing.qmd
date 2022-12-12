@@ -1,0 +1,951 @@
+---
+title: "Testing VicWater API"
+author: "Galen Holt"
+format: html
+editor: visual
+---
+
+## 
+
+```{r setup}
+#| warning: false
+#| message: false
+
+# knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+
+```
+
+## Access Victoria water data through API
+
+This document is my testing and development of functions to include in the [{vicwater} package](https://github.com/galenholt/vicwater). Basically, it's where I interactively sorted through how to hit the API functions, the formats of the lists, and how to unpack the returned lists. It is a work in progress, since that package is under development.
+
+We want to access [victorian water data](https://data.water.vic.gov.au/static.htm) for a set of sites. That requires using the api at **https://data.water.vic.gov.au/cgi/webservice.exe?\[JSON_request\]** , but it's poorly documented. I think I got it mostly figured out in [a testing document](vicwater_api_howtocall.qmd), but there's a lot of extra testing in there that needs to be skipped over and cleaned up. My plan is to make this a package, but it needs more development. I'm moving further testing here so I can get to the point a bit quicker.
+
+Libraries. Do I still need jsonlite now that I've moved ot httr2?
+
+```{r}
+library(tidyr)
+library(tibble)
+library(dplyr)
+library(stringr)
+library(httr2)
+library(ggplot2)
+```
+
+## Set up params
+
+### URL
+
+The base url that everything gets attached to is: and we use `httr2::request` to start building the request.
+
+```{r}
+vicurl <- "https://data.water.vic.gov.au/cgi/webservice.exe?"
+reqvic <- request(vicurl)
+```
+
+### Site lists
+
+I want to test with one, two, and several sites in a site list. I had tried to do `"sitelist" = c('site', 'site')` , and that failed. But it works to have `"site, site"`
+
+The upper steavenson is 405328, Barwon is 233217 (and has Temp), Taggerty 405331 only ran 2010-2013, And the Marysville golf course 405837 (only rainfall). That hits some things we want to make sure we pick up- no longer running gauges, gauges with only rain, gauges with lots of variables, etc.
+
+I only make one site_list here with multiple, but can do the `str_c` inside the calls usually.
+
+```{r}
+barwon <- '233217'
+steavenson <- '405328'
+taggerty <- '405331'
+golf <- '405837'
+
+allsites <- str_c(barwon, steavenson, taggerty, golf, sep = ", ")
+```
+
+## API functions
+
+And how to call each- including multiple values.
+
+I finally found a couple sources of documentation that will hopefully be helpful: <https://kisters.com.au/doco/hydllp.htm> and <https://water-monitoring.information.qld.gov.au/wini/Documents/RDMW_API_doco.pdf>.
+
+The first thing to do is to figure out what basic information is there, so we can ask for it. What we really want is `get_ts_traces`, but it has a lot of parameters (see [Kisters docs](https://kisters.com.au/doco/hydllp.htm#get_ts_traces)). Some are relatively straightforward to meaning, though how to get them to be correct JSON can be tricky (e.g. `site_list`, while others are opaque, e.g. `varfrom`, `varto`, `datasource`, either to their meaning or what the options are we can ask for. We can try to figure that out with some querying of the other functions.
+
+### Datasources
+
+Can we figure out what datasource means by asking for some by site?
+
+`version` has to be 1.
+
+```{r}
+ds_s_params <- list("function" = 'get_datasources_by_site',
+               "version" = "1",
+               "params" = list("site_list" = allsites))
+
+reqvic %>% 
+  req_body_json(ds_s_params) %>% 
+  req_dry_run()
+
+resp_ds_s <- reqvic %>% 
+  req_body_json(ds_s_params) %>% 
+  req_perform()
+
+rbody_ds_s <- resp_ds_s %>% resp_body_json(check_type = FALSE)
+
+str(rbody_ds_s)
+```
+
+I'll need to sort out how to unpack that list later, but for now, let's just look at it and see that all of them have options `A` and `TELEM`, and a couple have `TELEMCOPY`.
+
+According to the QLD pdf, the datasource distinguishes things like Archive and Telemetry. That's similar in Vic, though QLD also had codes for back-filled holes, which don't seem to be here (at least at these sites).
+
+Seems like it will be safest to ask for 'A' or 'TELEM'.
+
+And the different variables can be in a `var_list` or `varto` and `varfrom` (though not always- see below). The numbers are for different variables, but again, no guarantee they're the same in Vic.
+
+#### unpacking the list
+
+I might as well do this and build the function. Should be able to do it with `unnest`, and then maybe drop dumb columns? Nope, some of the lists unpack into lists of mixed type. But `unnest_wider` and `unnest_longer` might be the trick. Will need to test with single sites in case the structure changes.
+
+For the function, we probably want to just print the error value or something, and not return it in the df. Or if it errors, return that, if it doesn't, just give df. That's probably best.
+
+```{r}
+a <- as_tibble(rbody_ds_s[2]) %>% # the [2] drops the error column
+  unnest_longer(col = where(is.list)) %>% # error and a `return` list
+  unnest_wider(col = where(is.list)) %>% # error, site, and a `datasources` list
+  unnest_longer(col = where(is.list)) # fully unpacked into a long df
+a
+```
+
+Might actually be better as a table or `pivot_wider`? Depends what the point is? Pivot wider is kind of a pain, use table? But table actually unpacks longer when I as_tibble or as.data.frame it. Which is annoying.
+
+```{r}
+b <- table(a$site, a$datasources)
+b
+```
+
+I think just return the long tibble, and do the table as a plot or explicitly a table or something. Which orientation makes most sense? Not sure. Probably gauges on x? But plots of actual data will have gauges on y, time on x, so maybe stay consistent.
+
+```{r}
+c <- b %>% 
+  as_tibble(.name_repair = 'unique') %>% 
+  rename(gauge = `...1`, datasource = `...2`)
+
+c %>% 
+  mutate(n = as.logical(n)) %>% 
+ggplot2::ggplot(ggplot2::aes(x = datasource, y = gauge, fill = n)) + 
+  ggplot2::geom_tile(colour="white", size=0.25) +
+  ggplot2::scale_fill_discrete(type = c('firebrick', 'dodgerblue')) +
+  ggplot2::labs(fill = NULL) +
+  ggplot2::coord_equal()
+```
+
+Can I just build that plot from a? Yes, but would be just as annoying. maybe.
+
+```{r}
+allopts <- a %>%
+  expand(site, datasources)
+
+a2 <- a %>% 
+  mutate(indata = TRUE) %>% 
+  dplyr::right_join(allopts) %>% 
+  mutate(indata = ifelse(is.na(indata), FALSE, indata))
+  
+  ggplot(a2, aes(x = datasources, y = site, fill = indata)) + 
+  ggplot2::geom_tile(colour="white", linewidth=0.25) +
+  ggplot2::scale_fill_discrete(type = c('firebrick', 'dodgerblue')) +
+  ggplot2::labs(fill = NULL) +
+  ggplot2::coord_equal()
+```
+
+**Good enough for this one**- turn that into a function in a package.
+
+### Test from the package
+
+I'm using `devtools::load_all()` to load the package repo in here for interactive testing and poking.
+
+Obviously, hard paths are a bad idea, but I'm going to do it here since I typically do relative within repos, and these are across repos. Still, temporary and hacky.
+
+```{r}
+devtools::load_all('C:/Users/Galen/Documents/vicwater')
+```
+
+```{r}
+returntib <- get_datasources_by_site(vicurl, allsites)
+```
+
+```{r}
+returntib
+plot_datasources_by_site(returntib)
+```
+
+### Sites by datasource
+
+Haven't written this one before, might blow things up. But if we want a list of sites, it might be better than the way I did this before of just asking for everything in the db, lots of which had no data.
+
+And now we know the datasource options. I think? I suppose it's possible there's another type I'm not aware of.
+
+For some weird reason, sitelists should be `"site, site, site"`, while the datasources should be `c('source', 'source')`. The latter yields JSON array `['source', 'source']`, while the former yields JSON `'site', 'site'`
+
+This works. The list truncates, but it did work.
+
+```{r}
+ds_wanted <- c('A', 'TELEM')
+s_ds_params <- list("function" = 'get_sites_by_datasource',
+               "version" = "1",
+               "params" = list("datasources" = ds_wanted))
+
+reqvic %>% 
+  req_body_json(s_ds_params) %>% 
+  req_dry_run()
+
+resp_s_ds <- reqvic %>% 
+  req_body_json(s_ds_params) %>% 
+  req_perform()
+
+rbody_s_ds <- resp_s_ds %>% resp_body_json(check_type = FALSE)
+
+str(rbody_s_ds)
+```
+
+Can I tibble that up?
+
+```{r}
+s <- as_tibble(rbody_s_ds[2]) %>% # the [2] drops the error column
+  unnest_longer(col = where(is.list)) %>% # a `return` list
+  unnest_wider(col = where(is.list)) %>% # sites, and a `datasource` list
+  unnest_longer(col = where(is.list)) # fully unpacked into a long df
+s
+```
+
+What are the number of sites in each?
+
+```{r}
+s %>% group_by(datasource) %>% summarise(n = n())
+```
+
+Way more in Archive. Are there any in Telem that aren't in A?
+
+```{r}
+tsites <- s %>% 
+  filter(datasource == 'TELEM') %>% 
+  select(sites) %>% 
+  pull()
+
+asites <- s %>% 
+  filter(datasource == 'A') %>% 
+  select(sites) %>% 
+  pull()
+
+all(tsites %in% asites)
+sum(!(tsites %in% asites))
+```
+
+see if I can blow up ggplot. Oof the plurals
+
+```{r}
+s <- s %>% 
+  rename(site = sites, datasources = datasource)
+
+```
+
+Unreadable. Not surprisingly.
+
+```{r}
+#| eval: false
+plot_datasources_by_site(s) + coord_flip()
+```
+
+yikes.
+
+### Test package version
+
+```{r}
+devtools::load_all('C:/Users/Galen/Documents/vicwater')
+sxd <- get_sites_by_datasource(datasources = c('A', 'TELEM'))
+```
+
+```{r}
+sxd
+```
+
+Plot still needs work.
+
+```{r}
+plot_datasources_by_site(sxd) + coord_flip()
+```
+
+## Variables
+
+or do I go straight for get_ts\_ and then back this back out? Or get_db_info?
+
+I think I'm going to want to use get_variable_list both in get_ts_traces and to generate a set of possible variables.
+
+I'd like to get all sites, then make a master list of datasources and variables. But I need to get this usable for get_ts_traces, I think.
+
+### Get_variable_list
+
+Feeding this a c(datasource, datasource) makes it return only some of the results, but throws no errors. So do one at a time.
+
+```{r}
+v_s_params <- list("function" = 'get_variable_list',
+               "version" = "1",
+               "params" = list("site_list" = allsites,
+                               "datasource" = "A"))
+
+req <- request(vicurl)
+
+req %>% 
+  req_body_json(v_s_params) %>% 
+  req_dry_run()
+
+resp_v_s <- req %>% 
+  req_body_json(v_s_params) %>% 
+  req_perform()
+
+rbody_v_s <- resp_v_s %>% resp_body_json(check_type = FALSE)
+
+str(rbody_v_s)
+```
+
+Unpack that
+
+```{r}
+s <- as_tibble(rbody_v_s[2]) %>% # the [2] drops the error column
+  unnest_longer(col = where(is.list)) %>% # a `return` list
+  unnest_wider(col = where(is.list)) %>% # sites, and a `datasource` list
+  unnest_wider(col = site_details) %>% # site details in new cols
+  unnest_longer(col = variables) %>% # one line per variable, details of variables in a list
+  rename(long_name = name) %>% # variables have names too, avoid conflicts
+  unnest_wider(col = variables) %>% # columns for each attribute of the variables
+  rename(var_name = name)
+s
+```
+
+### Test package version
+
+```{r}
+devtools::load_all('C:/Users/Galen/Documents/vicwater')
+vl <- get_variable_list(site_list = allsites, datasource = 'A')
+```
+
+```{r}
+vl
+```
+
+Try with two datasources
+
+```{r}
+v2 <- get_variable_list(site_list = allsites, datasource = c('A', 'TELEM'))
+```
+
+```{r}
+v2
+```
+
+I think now go to get_ts_traces, and then go back and write some helpers that can call get_datasources and get_variable and geo-locate, and use them to allow passing things like variables = 'all'
+
+## get traces
+
+The basic format is this, will need to do some testing.
+
+```{r}
+b1params <- list("function" = 'get_ts_traces',
+               "version" = "2",
+               "params" = list("site_list" = barwon,
+                               "start_time" = "20200101000000",
+                               "var_list" = "100",
+                               "interval" = "day",
+                               "datasource" = "A", 
+                               "end_time" = "20200115000000",
+                               "data_type" = "mean",
+                               "multiplier" = "1"))
+
+req <- request(vicurl)
+
+req %>% 
+  req_body_json(b1params) %>% 
+  req_dry_run()
+
+respb1 <- req %>% 
+  req_body_json(b1params) %>% 
+  req_perform()
+
+rbodyb1 <- respb1 %>% resp_body_json(check_type = FALSE)
+
+str(rbodyb1)
+```
+
+and with two params
+
+```{r}
+b2params <- list("function" = 'get_ts_traces',
+               "version" = "2",
+               "params" = list("site_list" = barwon,
+                               "start_time" = "20200101000000",
+                               "var_list" = "100,210",
+                               "interval" = "day",
+                               "datasource" = "A", 
+                               "end_time" = "20200115000000",
+                               "data_type" = "mean",
+                               "multiplier" = "1"))
+
+req <- request(vicurl)
+
+req %>% 
+  req_body_json(b2params) %>% 
+  req_dry_run()
+
+respb2 <- req %>% 
+  req_body_json(b2params) %>% 
+  req_perform()
+
+rbodyb2 <- respb2 %>% resp_body_json(check_type = FALSE)
+
+str(rbodyb2)
+```
+
+Two params, two sites (one site only has one var, but not an error, I hope)
+
+```{r}
+b22params <- list("function" = 'get_ts_traces',
+               "version" = "2",
+               "params" = list("site_list" = str_c(barwon, steavenson, sep = ", "),
+                               "start_time" = "20200101000000",
+                               "var_list" = "100,210",
+                               "interval" = "day",
+                               "datasource" = "A", 
+                               "end_time" = "20200115000000",
+                               "data_type" = "mean",
+                               "multiplier" = "1"))
+
+req <- request(vicurl)
+
+req %>% 
+  req_body_json(b22params) %>% 
+  req_dry_run()
+
+respb22 <- req %>% 
+  req_body_json(b22params) %>% 
+  req_perform()
+
+rbodyb22 <- respb22 %>% resp_body_json(check_type = FALSE)
+
+str(rbodyb22)
+```
+
+I wasn't able to get discharge (140, 141) from a varlist. Double check
+
+```{r}
+bparamsd <- list("function" = 'get_ts_traces',
+               "version" = "2",
+               "params" = list("site_list" = barwon,
+                               "start_time" = "20200101000000",
+                               "var_list" = "100,140",
+                               "interval" = "day",
+                               "datasource" = "A", 
+                               "end_time" = "20200115000000",
+                               "data_type" = "mean",
+                               "multiplier" = "1"))
+
+req <- request(vicurl)
+
+req %>% 
+  req_body_json(bparamsd) %>% 
+  req_dry_run()
+
+respbd <- req %>% 
+  req_body_json(bparamsd) %>% 
+  req_perform()
+
+rbodybd <- respbd %>% resp_body_json(check_type = FALSE)
+
+str(rbodybd)
+```
+
+Kisters has an example of asking for 140.01? Try that? No, just do the varfrom/varto method for discharge and stage.
+
+```{r}
+bparams <- list("function" = 'get_ts_traces',
+               "version" = "2",
+               "params" = list("site_list" = barwon,
+                               "start_time" = "20200101000000",
+                               "var_list" = "100,140.01",
+                               "interval" = "day",
+                               "datasource" = "A", 
+                               "end_time" = "20200115000000",
+                               "data_type" = "mean",
+                               "multiplier" = "1"))
+
+req <- request(vicurl)
+
+req %>% 
+  req_body_json(bparams) %>% 
+  req_dry_run()
+
+respb <- req %>% 
+  req_body_json(bparams) %>% 
+  req_perform()
+
+rbodyb <- respb %>% resp_body_json(check_type = FALSE)
+
+str(rbodyb)
+```
+
+varfrom-varto check. Does it give us both, or do we have to ask for the from separately\`?
+
+```{r}
+bparamsft <- list("function" = 'get_ts_traces',
+               "version" = "2",
+               "params" = list("site_list" = barwon,
+                               "start_time" = "20200101000000",
+                               "varfrom" = "100",
+                               "varto" = "140", 
+                               "interval" = "day",
+                               "datasource" = "A", 
+                               "end_time" = "20200115000000",
+                               "data_type" = "mean",
+                               "multiplier" = "1"))
+
+req <- request(vicurl)
+
+req %>% 
+  req_body_json(bparamsft) %>% 
+  req_dry_run()
+
+respbft <- req %>% 
+  req_body_json(bparamsft) %>% 
+  req_perform()
+
+rbodybft <- respbft %>% resp_body_json(check_type = FALSE)
+
+str(rbodybft)
+```
+
+That looks like it might have only given us varto.
+
+What happens if we ask for a varto/from for a site that doesn't have it? Earlier we saw that the varlist just skips, but does this?
+
+```{r}
+bparamse <- list("function" = 'get_ts_traces',
+               "version" = "2",
+               "params" = list("site_list" = golf,
+                               "start_time" = "20200101000000",
+                               "var_list" = "100,210",
+                               "interval" = "day",
+                               "datasource" = "A", 
+                               "end_time" = "20200115000000",
+                               "data_type" = "mean",
+                               "multiplier" = "1"))
+
+req <- request(vicurl)
+
+req %>% 
+  req_body_json(bparamse) %>% 
+  req_dry_run()
+
+respbe <- req %>% 
+  req_body_json(bparamse) %>% 
+  req_perform()
+
+rbodybe <- respbe %>% resp_body_json(check_type = FALSE)
+
+str(rbodybe)
+```
+
+Ok, that errors. So I'll need to capture and skip errors.
+
+### unpack different formats
+
+(varlist with multiple, varfrom/to, etc). b1params (one param, one site), b2params (two params, varlist), b22params (two params, two sites- only one param at one site) bparamsft (varfrom/varto), bparamse (error),
+
+start simple- grab errors. Should have been doing this all along.
+
+```{r}
+er1 <- rbodyb1[1]
+ere <- rbodybe[1]
+er1
+ere
+```
+
+Unpack the single. Yeesh
+
+I'm ignoring quality codes for the moment. They're a definition list, and so maybe should be unpacked separately, matched to varto (I think not varfrom), and then joined? But I want to see how they work with more complex structures first.
+
+```{r}
+s <- as_tibble(rbodyb1[2]) %>% # the [2] drops the error column
+  unnest_longer(col = where(is.list)) %>% # a `return` list
+  unnest_wider(col = where(is.list)) %>% # complex set of lists
+  unnest_wider(col = site_details) %>% # columns of info about the site
+  rename(site_name = name, site_short_name = short_name) %>% 
+  # there are name conflicts between site and varfrom and varto. Not sure we need both varfrom and varto?
+  unnest_wider(col = varfrom_details) %>% 
+  rename_with(~(paste0('varfrom_', .)), 
+              c(short_name, precision, subdesc, variable, units, name)) %>% 
+  unnest_wider(col = varto_details) %>% 
+  rename_with(~(paste0('varto_', .)), 
+              c(short_name, precision, subdesc, variable, units, name)) %>% 
+  unnest_longer(col = trace) %>% 
+  unnest_wider(col = trace)
+```
+
+Try two variables. still works. still not sure why I need both varfrom and varto when they match.
+
+```{r}
+s <- as_tibble(rbodyb2[2]) %>% # the [2] drops the error column
+  unnest_longer(col = where(is.list)) %>% # a `return` list
+  unnest_wider(col = where(is.list)) %>% # complex set of lists
+  unnest_wider(col = site_details) %>% # columns of info about the site
+  rename(site_name = name, site_short_name = short_name) %>% 
+  # there are name conflicts between site and varfrom and varto. Not sure we need both varfrom and varto?
+  unnest_wider(col = varfrom_details) %>% 
+  rename_with(~(paste0('varfrom_', .)), 
+              c(short_name, precision, subdesc, variable, units, name)) %>% 
+  unnest_wider(col = varto_details) %>% 
+  rename_with(~(paste0('varto_', .)), 
+              c(short_name, precision, subdesc, variable, units, name)) %>% 
+  unnest_longer(col = trace) %>% 
+  unnest_wider(col = trace)
+```
+
+Two variables, two sites
+
+```{r}
+s <- as_tibble(rbodyb22[2]) %>% # the [2] drops the error column
+  unnest_longer(col = where(is.list)) %>% # a `return` list
+  unnest_wider(col = where(is.list)) %>% # complex set of lists
+  unnest_wider(col = site_details) %>% # columns of info about the site
+  rename(site_name = name, site_short_name = short_name) %>% 
+  # there are name conflicts between site and varfrom and varto. Not sure we need both varfrom and varto?
+  unnest_wider(col = varfrom_details) %>% 
+  rename_with(~(paste0('varfrom_', .)), 
+              c(short_name, precision, subdesc, variable, units, name)) %>% 
+  unnest_wider(col = varto_details) %>% 
+  rename_with(~(paste0('varto_', .)), 
+              c(short_name, precision, subdesc, variable, units, name)) %>% 
+  unnest_longer(col = trace) %>% 
+  unnest_wider(col = trace)
+```
+
+And finally, the one where we do have a varto
+
+```{r}
+s <- as_tibble(rbodybft[2]) %>% # the [2] drops the error column
+  unnest_longer(col = where(is.list)) %>% # a `return` list
+  unnest_wider(col = where(is.list)) %>% # complex set of lists
+  unnest_wider(col = site_details) %>% # columns of info about the site
+  rename(site_name = name, site_short_name = short_name) %>% 
+  # there are name conflicts between site and varfrom and varto. Not sure we need both varfrom and varto?
+  unnest_wider(col = varfrom_details) %>% 
+  rename_with(~(paste0('varfrom_', .)), 
+              c(short_name, precision, subdesc, variable, units, name)) %>% 
+  unnest_wider(col = varto_details) %>% 
+  rename_with(~(paste0('varto_', .)), 
+              c(short_name, precision, subdesc, variable, units, name)) %>% 
+  unnest_longer(col = trace) %>% 
+  unnest_wider(col = trace)
+```
+
+Finally, some new q values. and pretty clear we don't need the varfroms.
+
+Need to change the time column to dates
+
+Do we want to split up or return stacked or return wide? Make an option.
+
+Do we want to return NA days as NA or skip them?
+
+### Cleaning that up
+
+safest is code x site x varto. though I think don't need site, we'll have expanded there by the time we get varto.
+
+```{r}
+s <- as_tibble(rbodyb22[2]) %>% # the [2] drops the error column
+  unnest_longer(col = where(is.list)) %>% # a `return` list
+  unnest_wider(col = where(is.list)) %>% # complex set of lists
+  unnest_wider(col = site_details) %>% # columns of info about the site
+  rename(site_name = name, site_short_name = short_name) %>% 
+  # there are name conflicts between site and varfrom and varto. 
+  # and we can drop varfrom
+  select(-varfrom_details) %>% 
+  unnest_wider(col = varto_details) %>% 
+  rename_with(~(paste0('variable_', .)), 
+              c(short_name, name)) 
+
+# break in here to get the quality codes to match
+qc <- s %>% 
+  select(quality_codes, site, variable) %>% 
+  unnest_longer(col = quality_codes) %>% 
+  mutate(quality_codes_id = as.integer(quality_codes_id))
+
+# finish unpacking
+s <- s %>%
+  select(-quality_codes) %>% 
+  unnest_longer(col = trace) %>% 
+  unnest_wider(col = trace)
+
+# clean up
+s <- s %>% 
+  rename(value = v, time = t, quality_codes_id = q) %>% 
+  mutate(time = lubridate::ymd_hms(time)) %>% 
+  left_join(qc, by = c('quality_codes_id', 'site', 'variable')) %>% 
+  mutate(across(c(longitude, latitude, value), as.numeric)) # leaving some others because they either are names (gauges, variable) or display better (precision)
+```
+
+Can I make that wide? Works without using `id_cols` but messy because too many info cols. Would end up being better to cut and join the info back on. But then I lose the quality codes, because they apply to each variable differently. Just return like this for now with a warning.
+
+```{r}
+sw <- s %>% pivot_wider(names_from = variable, values_from = value, id_cols = c(time, site))
+```
+
+What I could do though is break it up into a list, potentially by sites and/or variables.
+
+```{r}
+slist <- split(s, s$site)
+vlist <- split(s, s$variable)
+svlist <- split(s, interaction(s$site, s$variable))
+```
+
+### Test package version
+
+```{r}
+devtools::load_all('C:/Users/Galen/Documents/vicwater')
+```
+
+One site, one variable
+
+```{r}
+bs <- get_ts_traces(site_list = barwon, datasource = 'A', var_list = '100', start_time = '20200101', end_time = '20200105', interval = 'day', data_type = 'mean', multiplier = 1, returnformat = 'df')
+```
+
+Can I pass decimals? it's how they come out of get_variable_list
+
+```{r}
+
+bsdec <- get_ts_traces(site_list = barwon, datasource = 'A', var_list = '100.00', start_time = '20200101', end_time = '20200105', interval = 'day', data_type = 'mean', multiplier = 1, returnformat = 'df')
+```
+
+One site, derived variables
+
+```{r}
+bsd <- get_ts_traces(site_list = barwon, datasource = 'A', var_list = c('100', '140'), start_time = '20200101', end_time = '20200105', interval = 'day', data_type = 'mean', multiplier = 1, returnformat = 'df')
+```
+
+Only derived
+
+```{r}
+bsod <- get_ts_traces(site_list = barwon, datasource = 'A', var_list = '140', start_time = '20200101', end_time = '20200105', interval = 'day', data_type = 'mean', multiplier = 1, returnformat = 'df')
+```
+
+Some more variables, derived and not
+
+```{r}
+bsdv <- get_ts_traces(site_list = barwon, datasource = 'A', var_list = c('100', '140', '210', '450'), start_time = '20200101', end_time = '20200105', interval = 'day', data_type = 'mean', multiplier = 1, returnformat = 'df')
+```
+
+And multi-sites too- does it correctly collapse the vector?
+
+```{r}
+bsdvs <- get_ts_traces(site_list = c(barwon, steavenson), 
+                       datasource = 'A', 
+                       var_list = c('100', '140', '210', '450'), 
+                       start_time = '20200101', end_time = '20200105', 
+                       interval = 'day', data_type = 'mean', 
+                       multiplier = 1, returnformat = 'df')
+```
+
+And finally everything including rain at golf. Careful though- does mean make sense for that? Probably better as a sum? Tried that and threw an error but told me the options:
+
+Mean/Max/Min/Start/End/First/Last/Tot/MaxMin/Point/Cum
+
+**Definitely need two calls if need two different values** at least for now- total temp is nonsense.
+
+```{r}
+bsdvs <- get_ts_traces(site_list = allsites, 
+                       datasource = 'A', 
+                       var_list = c('10', '100', '140', '210', '450'), 
+                       start_time = '20200101', end_time = '20200105', 
+                       interval = 'day', data_type = 'mean', 
+                       multiplier = 1, returnformat = 'df')
+```
+
+and return a list
+
+```{r}
+bsdvsl <- get_ts_traces(site_list = allsites, 
+                       datasource = 'A', 
+                       var_list = c('10', '100', '140', '210', '450'), 
+                       start_time = '20200101', end_time = '20200105', 
+                       interval = 'day', data_type = 'mean', 
+                       multiplier = 1, returnformat = 'sxvlist')
+```
+
+## A variable and time-aware version
+
+```{r}
+possibles <- get_variable_list(site_list = allsites, datasource = 'A') %>% 
+  dplyr::select(site, datasource, variable, period_start, period_end)
+```
+
+```{r}
+poss140 <- possibles[possibles$variable == '100.00', ] 
+
+poss141 <- poss140
+poss140$variable <- '140.00'
+poss141$variable <- '141.00'
+
+possibles <- bind_rows(possibles, poss140, poss141)
+```
+
+**all the tests above should run**
+
+### Test package version
+
+```{r}
+devtools::load_all('C:/Users/Galen/Documents/vicwater')
+```
+
+One site, one variable
+
+```{r}
+bs <- get_ts_traces2(site_list = barwon, datasource = 'A', var_list = '100', start_time = '20200101', end_time = '20200105', interval = 'day', data_type = 'mean', multiplier = 1, returnformat = 'df')
+```
+
+Can I pass decimals? it's how they come out of get_variable_list
+
+```{r}
+
+bsdec <- get_ts_traces2(site_list = barwon, datasource = 'A', var_list = '100.00', start_time = '20200101', end_time = '20200105', interval = 'day', data_type = 'mean', multiplier = 1, returnformat = 'df')
+```
+
+One site, derived variables
+
+```{r}
+bsd <- get_ts_traces2(site_list = barwon, datasource = 'A', var_list = c('100', '140', '141'), start_time = '20200101', end_time = '20200105', interval = 'day', data_type = 'mean', multiplier = 1, returnformat = 'df')
+```
+
+Only derived
+
+```{r}
+bsod <- get_ts_traces2(site_list = barwon, datasource = 'A', var_list = '140', start_time = '20200101', end_time = '20200105', interval = 'day', data_type = 'mean', multiplier = 1, returnformat = 'df')
+```
+
+Some more variables, derived and not
+
+```{r}
+bsdv <- get_ts_traces2(site_list = barwon, datasource = 'A', var_list = c('100', '140', '210', '450'), start_time = '20200101', end_time = '20200105', interval = 'day', data_type = 'mean', multiplier = 1, returnformat = 'df')
+```
+
+And multi-sites too- does it correctly collapse the vector?
+
+```{r}
+bsdvs <- get_ts_traces2(site_list = c(barwon, steavenson), 
+                       datasource = 'A', 
+                       var_list = c('100', '140', '210', '450'), 
+                       start_time = '20200101', end_time = '20200105', 
+                       interval = 'day', data_type = 'mean', 
+                       multiplier = 1, returnformat = 'df')
+```
+
+Do the 'all' settings work? Let's bump to year so I don't have so much data
+
+```{r}
+bsdvs <- get_ts_traces2(site_list = c(barwon, steavenson), 
+                       datasource = 'A', 
+                       var_list = "all", 
+                       start_time = "all", 
+                       end_time = "all", 
+                       interval = 'year', data_type = 'mean', 
+                       multiplier = 1, returnformat = 'df')
+```
+
+Can I throw something wrong to interval to see if it tells me what it can do? Kisters says
+
+year, month, day, hour, minute, second,\
+period,\
+default
+
+```{r}
+#| error: false
+#| eval: false
+biw <- get_ts_traces2(site_list = barwon, 
+                       datasource = 'A', 
+                       var_list = "100", 
+                       start_time = "20200101", 
+                       end_time = "20211231", 
+                       interval = 'eon', data_type = 'mean', 
+                       multiplier = 1, returnformat = 'df')
+```
+
+error is Invalid interval, must be YEAR, MONTH, DAY, HOUR, MINUTE or SECOND
+
+## Benchmark
+
+This likely varies a lot depending on what I'm asking for. Should be done more systematically, and use microbenchmark.
+
+They should be roughly the same for a single?
+
+```{r}
+system.time(b1 <- get_ts_traces(site_list = barwon, 
+                       datasource = 'A', 
+                       var_list = '100', 
+                       start_time = '20200101', end_time = '20200105', 
+                       interval = 'day', data_type = 'mean', 
+                       multiplier = 1, returnformat = 'df'))
+
+system.time(b2 <- get_ts_traces2(site_list = barwon, 
+                       datasource = 'A', 
+                       var_list = '100', 
+                       start_time = '20200101', end_time = '20200105', 
+                       interval = 'day', data_type = 'mean', 
+                       multiplier = 1, returnformat = 'df'))
+```
+
+interesting. so the second is faster locally, but higher network, I think.
+
+```{r}
+
+system.time(bsdvs1 <- get_ts_traces(site_list = c(barwon, steavenson), 
+                       datasource = 'A', 
+                       var_list = c('100', '140', '210', '450'), 
+                       start_time = '20200101', end_time = '20200105', 
+                       interval = 'day', data_type = 'mean', 
+                       multiplier = 1, returnformat = 'df'))
+
+system.time(bsdvs2 <- get_ts_traces2(site_list = c(barwon, steavenson), 
+                       datasource = 'A', 
+                       var_list = c('100', '140', '210', '450'), 
+                       start_time = '20200101', end_time = '20200105', 
+                       interval = 'day', data_type = 'mean', 
+                       multiplier = 1, returnformat = 'df'))
+
+
+```
+
+Oof. That's pretty bad. Can I speed it up? probably.
+
+How about parallel?
+
+```{r}
+library(doFuture)
+registerDoFuture()
+plan(multisession)
+
+system.time(bsdvs1p <- get_ts_traces(site_list = c(barwon, steavenson), 
+                       datasource = 'A', 
+                       var_list = c('100', '140', '210', '450'), 
+                       start_time = '20200101', end_time = '20200105', 
+                       interval = 'day', data_type = 'mean', 
+                       multiplier = 1, returnformat = 'df'))
+
+system.time(bsdvs2p <- get_ts_traces2(site_list = c(barwon, steavenson), 
+                       datasource = 'A', 
+                       var_list = c('100', '140', '210', '450'), 
+                       start_time = '20200101', end_time = '20200105', 
+                       interval = 'day', data_type = 'mean', 
+                       multiplier = 1, returnformat = 'df'))
+```
+
+# TODO
+
+List of all datasources and variables and sites in the db - cross-reffed? Not sure
+
+List of variable numbers and their names in a readable table (vignette?)
+
+List of possible data_type functions

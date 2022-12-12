@@ -25,10 +25,12 @@ website:
         - code_demos.qmd
         - section: "Small how-tos"
           contents:
-            - href: smallpieces.qmd
+            - href: small_helpers/smallpieces.qmd
               text: "Bits and pieces"
             - href: setup/rstudio_themes.qmd
               text: "Editing Rstudio themes"
+            - href: small_helpers/zip_downloading.qmd
+              text: "Download and unpack zips"
         - section: "Plotting"
           contents:
             - href: plotting/tweaks_tricks.qmd
@@ -62,6 +64,18 @@ website:
               text: "Getting this website working"
             - href: RpyEnvs/managingprivate.qmd
               text: "Private data for website repo"
+        - section: "Building packages"
+          contents:
+            - href: package/package_creation.qmd
+              text: 'First pass at building a package'
+            - href: vicwater/vicwater_testing.qmd
+        - section: "Data"
+          contents:
+            - href: data_acquisition/bom_gauges.qmd
+              text: "BOM gauge locations with httr2"
+            - href: vicwater/vicwater_api_howtocall.qmd
+              text: 'Experimenting with API calls for {vicwater}'
+              
       
       
 

@@ -1,0 +1,39 @@
+---
+title: "Download Zip helper"
+author: "Galen Holt"
+editor: visual
+---
+
+## The issue
+
+When we download files from the internet, we often feed in a url, and it returns a zip, which we then want to unzip to access. There's a fairly simple way to do that, but we can write a quicky function to do it and clean up the directory afterwards.
+
+## The function
+
+we want to give it the `dirname` *for the file(s)*, the `datadir` that contains our data, and the URL. Then it checks if it exists, and downloads, unzips, and cleans up.
+
+```{r}
+zip_load <- function(dirname, datadir, sourceurl,  
+                      existing_dirs = list.files(datadir)) {
+  print(existing_dirs)
+  if (!(dirname %in% existing_dirs)) {
+    
+    zippath <- file.path(datadir, paste0(dirname, '.zip'))
+    download.file(sourceurl, destfile = zippath)
+    
+    unzip(zippath, exdir = file.path(datadir, dirname))
+    
+    file.remove(zippath)
+  }
+}
+```
+
+## An example
+
+Get the Murray-Darling basin boundary
+
+```{r}
+zip_load('mdb_boundary', 'data', "https://data.gov.au/data/dataset/4ede9aed-5620-47db-a72b-0b3aa0a3ced0/resource/8a6d889d-723b-492d-8c12-b8b0d1ba4b5a/download/sworkingadhocjobsj4430dataoutputsmdb_boundarymdb_boundary.zip")
+```
+
+I've saved this in `functions/` so I have easy access to it everywhere.
