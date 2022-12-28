@@ -15,16 +15,16 @@ This is mostly quick little code snippets to copy-paste and avoid re-writing. lo
 library(tidyverse)
 ```
 
-### Rmarkdown/quarto with rproject directory as root
+### Rmarkdown with rproject directory as root
 
-I can't figure out how to avoid this setup chunk. It's leftover Rmarkdown format, and works fine in quarto too, even if it's not documented. But converting from Rmarkdown to quarto with `knitr::convert_chunk_header` kills it, and it's annoying to always have the header. It seems like setting the project to use the Project directory should do it, and it does for `Run all`, but not for `render`.
+We often want to set the root directory not to the file but to the project. In Rmarkdown, we use the following in the `setup` chunk. Quarto typically uses a different method, but see the [Quarto notes](quarto_notes.qmd) for some exceptions. Converting from Rmarkdown to quarto with `knitr::convert_chunk_header` kills this block, and it's annoying to always have the header. In both Rmarkdown and Quarto, this *has* to be in a `setup` chunk.
 
 ```{r setup}
 #| echo: fenced
 knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 ```
 
-I thought it'd be easiest to set in the global options, but that doesn't seem to persist to `render`.
+I thought it'd be easiest to set in the global options, but that doesn't seem to persist to `render` or `knit`.
 
 ![](images/paste-4D3CEEB1.png)
 
