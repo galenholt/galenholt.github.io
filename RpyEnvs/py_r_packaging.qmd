@@ -1,0 +1,74 @@
+---
+title: "Py-R in one library"
+author: "Galen Holt"
+---
+
+# The issue
+
+I'm working on a project that needs both Python and R, and they need to talk to each other. Most of the work is in R, but the first bit is Python, and more importantly, it *has* to call a python package (more in future, likely). I'm packaging everything up so the user doesn't need to do everything through the repo, but can just `library(package)` and be off and running, but that's complicated by the fact that any actual use of this project needs both languages.
+
+It seems like there are a couple options to how I deal with the two languages.
+
+-   Have a python package and an R package, and make the user install both and manage the bilinguilism in their own scripts using the packages.
+
+    -   Seems most cumbersome for user, but the users are fairly involved in the project, so could work
+
+-   Skip creating my own python package entirely, and just have the bits of python wrapper in `inst/python`
+
+    -   Likely how I'll start to figure out how to include python in package
+
+        -   And see below- I think it'll be easier to rapidly iterate the py code.
+
+    -   As python side grows, this will get very cumbersome
+
+    -   Is it slower than the first option?
+
+-   Make my own python package, and wrap *that* in `inst/python`
+
+    -   I think this is actually the best option, since I won't have to maintain two copies of py code
+
+    -   Will also allow a user to just use option 1 (or for the whole project to move that way in future, or shifting functions over to python).
+
+    -   It *will* make the R package more cumbersome than option 1, but I think it's the best tradeoff.
+
+    -   It will also slow down initial dev- as I change the python side, I'll have to rebuild the py package and re-install it into my environment. There's no obvious analogue to `devtools::load_all` that can reach across and do all that. Whereas I *think* if I have my py code in `inst` it'll get refreshed when I load_all.
+
+All of these will follow {reticulate} docs, but those are fairly sketchy as to how to actually write code that works.
+
+-   <https://rstudio.github.io/reticulate/articles/package.html> (seems to conflict a bit with the next)
+
+-   <https://rstudio.github.io/reticulate/articles/python_dependencies.html>
+
+-   <https://rstudio.github.io/reticulate/articles/calling_python.html>
+
+## Other useful sites
+
+<https://stackoverflow.com/questions/72185273/reticulate-fails-automatic-configuration-in-r-package>
+
+<https://github.com/rstudio/reticulate/issues/997>
+
+Will need to test how this works both when we already have a venv and when we don't.
+
+## NOTES
+
+as I'm developing
+
+This works from console, after I put the file in the inst/pytong
+
+    reticulate::source_python(file.path('inst', 'python', 'controller_functions.py'))
+
+tested with
+
+    scene_namer(file.path('inst', 'extdata', 'testsmall'))
+
+But it does *not* work to have the Config/retictulate in description and the source_python in .onLoad. I don't get anything.
+
+So, somehow I need to get .onLoad to actually work, I think.
+
+Is the answer to to the source_python *in a .R file*, which are also read in?
+
+SEEMS TO WORK- could it even be in the same r file, just not inside onLoad?
+
+## Question
+
+Is there a way to auto-build the `Config/reticulate` part of DESCRIPTION? Maybe from `pyproject.toml`? Similar to the way `usethis::use_package` installs automatically add them to `renv`? That's the other way though, so maybe it's moot. Still, would be nice to automate.
