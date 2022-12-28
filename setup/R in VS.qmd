@@ -1,0 +1,31 @@
+---
+title: "R in VS code"
+author: "Galen Holt"
+editor: visual
+---
+
+## The issue
+
+I typically use Rstudio, and am very used to it. But I need to use VScode for working on Azure, and am trying to sort that out. There are also idiosyncracies with using Azure, but I'll try to hold those for somewhere else and just keep this about VS.
+
+## The basics
+
+The [VS code documentation](https://code.visualstudio.com/docs/languages/r) gives a pretty good overview of the basics- install VScode, install languageserver, and install the R extension. That gets us up and running. Though it is worth noting that if you tend to work in `renv` for everything, it's probably better to install `languageserver` globally (ie in a non-`renv`-managed session).
+
+Now, supposedly that provides linting, debugging, code completion, help, etc. And the add-ons ([radian](https://github.com/randy3k/radian) and [httpgd](https://github.com/nx10/httpgd) look good too in terms of nicer terminal and visualisations). The question now is, HOW do we actually use all that functionality. I'm so used to Rstudio, it'll take some playing. I'll try to write down here what I try and how to get it to work.
+
+I tried to `install.packages('languageserver')` globally, but it gets grumpy sometimes and can't find it inside a `renv`- managed repo because the `.libPaths` don't have wherever the global package directory is. It seems to have worked on Windows, but not Azure/Unix.
+
+### Radian
+
+I tried installing radian as the terminal. Assuming I don't want it to mess up the project-level python environments, I installed it globally through the git-bash in windows terminal. It works when I type `radian` into VS bash, but does not run when I try to actually run something from a `.R` file. In the command pallette -\> settings -\> extensions -\> R, there's an option for Rterm:Windows that says it can be the path to radian. I tried `where radian` in git-bash (`which radian` on unix), and it gave me two paths in `py-env/shims`. The one with the `.bat` works on windows (`C:\Users\galen\.pyenv\pyenv-win\shims\radian.bat`). On Unix, it's just a standard `usr/bin/…`. I've turned radian back off, though, because it throws a really annoying amount of weird errors that don't actually stop the code from running, *and* that don't appear in the base R terminal. Things like 'unexpected & in }', when there are no '&' symbols in the code (and it still completes (usually). I think it works in `.R` scripts, but *not* in `quarto`. It's something about bracketed paste not working right in notebooks I think. Working on sorting that out.
+
+### linting
+
+This is something that (weirdly, I think) isn't included in Rstudio. It supposedly is in VScode, but I'm not seeing obvious signs of it.
+
+Interesting. I don't know what changed, but it has suddenly started linting. Maybe I turned something on in the settings-\>extensions-\>R section?
+
+And now all the blue lines are super annoying. Would be nice to at least have a turn off for comments setting. Or a good way to wrap comments a la Rstudio ctrl-shift /.
+
+Guess I need to figure out how to step through `lintr` and fix issues.
