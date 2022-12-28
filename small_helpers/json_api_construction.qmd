@@ -1,0 +1,182 @@
+---
+title: "JSON API coding"
+author: "Galen Holt"
+---
+
+# The issue
+
+I'm working on an API that uses JSON in the body, but getting it to come out right with square brackets, curly brackets, commas, etc where they're supposed to be has been trial and error. I'm going to put what I've figured out here. I'm using examples from the {vicwater} package, but the main point is to show how to get different sorts of output.
+
+Using the `httr2` examples with `req_dry_run` to see what the request looks like and check the formats.
+
+```{r}
+library(httr2)
+req <- request("http://httpbin.org/post")
+
+```
+
+## Simple key-value
+
+To pass simple one to one key-value pairs, wrapped in `{}` use a list.
+
+```{r}
+params <- list("function" = 'get_db_info',
+               "version" = "3")
+
+req %>%
+  req_body_json(params) %>%
+  req_dry_run()
+```
+
+## Nested key-value
+
+To pass nested key-value pairs, use nested lists
+
+```{r}
+params <- list("function" = 'get_variable_list',
+               "version" = "1",
+               "params" = list("site_list" = '123abc',
+                               "datasource" = "A"))
+req %>%
+  req_body_json(params) %>%
+  req_dry_run()
+```
+
+## Comma-separated strings
+
+These cannot be created with `c()`, because that does something else (square brackets)
+
+```{r}
+params <- list("function" = 'get_datasources_by_site',
+               "version" = "1",
+               "params" = list("site_list" = '233217, 405328, 405331'))
+req %>%
+  req_body_json(params) %>%
+  req_dry_run()
+```
+
+## Square brackets
+
+To get square brackets, we need a vector. So, typically `c()` the bits together in the call (or previously).
+
+```{r}
+params <- list("function" = 'get_sites_by_datasource',
+               "version" = "1",
+               "params" = list("datasources" = c('A', 'TELEM')))
+
+req %>%
+  req_body_json(params) %>%
+  req_dry_run()
+```
+
+## Double-square brackets
+
+To get patterns like `[['a', 'b'],['c', 'd']]`, use a matrix (and I think maybe a df). Which makes sense if we think of that as a group of vectors. The pattern is `[[row1], [row2], [row_n]]`.
+
+topleft \<- c('-35', '148')
+
+bottomright \<- c('-36', '149')
+
+rectbox \<- rbind(topleft, bottomright)
+
+params \<- list("function" = 'get_db_info',
+
+"version" = "3",
+
+"params" = list("table_name" = "site",
+
+"return_type" = "array",
+
+"geo_filter" = list('rectangle' = rectbox)))
+
+req %\>%
+
+req_body_json(params) %\>%
+
+req_dry_run()
+
+```{r}
+topleft <- c('-35', '148')
+bottomright <- c('-36', '149')
+
+rectbox <- rbind(topleft, bottomright)
+params <- list("function" = 'get_db_info',
+               "version" = "3",
+               "params" = list("table_name" = "site",
+                               "return_type" = "array",
+                               "geo_filter" = list('rectangle' = rectbox)))
+req %>%
+  req_body_json(params) %>%
+  req_dry_run()
+```
+
+### Using a df
+
+Gives some horrible combination of curly and square braces including column and row names.
+
+```{r}
+rectdf <- data.frame(rectbox)
+params <- list("function" = 'get_db_info',
+               "version" = "3",
+               "params" = list("table_name" = "site",
+                               "return_type" = "array",
+                               "geo_filter" = list('rectangle' = rectdf)))
+req %>%
+  req_body_json(params) %>%
+  req_dry_run()
+```
+
+Tibbles aren't really any different, but the names are a bit cleaner
+
+```{r}
+rectdf <- tibble::as_tibble(rectbox)
+params <- list("function" = 'get_db_info',
+               "version" = "3",
+               "params" = list("table_name" = "site",
+                               "return_type" = "array",
+                               "geo_filter" = list('rectangle' = rectdf)))
+req %>%
+  req_body_json(params) %>%
+  req_dry_run()
+```
+
+## Orientation of dfs and matrices
+
+There are arguments to `toJSON` that alter how matrices and dfs get parsed. Matrices are by default row-wise, but we can change to cols (e.g. `[['col1'], ['col2']]` with `matrix = 'columnmajor'`.
+
+```{r}
+params <- list("function" = 'get_db_info',
+               "version" = "3",
+               "params" = list("table_name" = "site",
+                               "return_type" = "array",
+                               "geo_filter" = list('rectangle' = rectbox)))
+req %>%
+  req_body_json(params, matrix = 'columnmajor') %>%
+  req_dry_run()
+```
+
+Similarly, we can alter how dfs work, which might actually be fairly useful in the way it handles named columns especially. The defaul (above) is `dataframe = 'rows'` , which is kind of a mess. But `dataframe = 'columns'` ends up with named vectors. I don't currently need that, but it sure makes more sense.
+
+```{r}
+params <- list("function" = 'get_db_info',
+               "version" = "3",
+               "params" = list("table_name" = "site",
+                               "return_type" = "array",
+                               "geo_filter" = list('rectangle' = rectdf)))
+req %>%
+  req_body_json(params, dataframe = 'columns') %>%
+  req_dry_run()
+```
+
+Using `dataframe = 'values'` is again a confusing list.
+
+```{r}
+params <- list("function" = 'get_db_info',
+               "version" = "3",
+               "params" = list("table_name" = "site",
+                               "return_type" = "array",
+                               "geo_filter" = list('rectangle' = rectdf)))
+req %>%
+  req_body_json(params, datafraem = 'values') %>%
+  req_dry_run()
+```
