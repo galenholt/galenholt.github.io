@@ -1,0 +1,121 @@
+---
+title: "Quarto notes"
+format:
+  html:
+    df-print: kable
+---
+
+### Quarto root directory
+
+If there's not a Quarto project (*which is not the same as an Rproject*), i.e. the .qmds are standalone, then the above rmarkdown method works to set the root to the Rproject. But if there is a Quarto project (I've moved to almost always doing this), then we can set the Quarto root directory in the \_quarto.yml for the project. There are actually two useful settings we can make there- a project-wide output directory, and what to use to execute. There are (to my knowledge) two options for `execute-dir`- `execute-dir: file` and `execute-dir: project`, which set the root for rendering as the file location or the project. It almost always makes most sense to use `project`, because then everything uses the same reference for relative paths. For this website, that yaml is
+
+``` yaml
+
+project:
+  type: website
+  output-dir: docs
+  execute-dir: project
+```
+
+#### Nested Rprojects
+
+The only exception that I've run into so far is a weird situation where I have a Quarto project with an Rproject in a subdirectory because I want the Quarto to have access to several different code projects. The catch is that if I use paths relative to the R project and ask Quarto to render, all the paths are wrong. They are also wrong if I `Run` or run the code cells interactively. If I add the Rmarkdown setup chunk above `knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())`, then `Run` and interactive stuff works, but when I try to `quarto render`, it can't find the Rproject because it's looking at the same level and up, and the Rproj is in a directory down.
+
+So, the workaround I've come up with is to set `execute-dir: file`, so the dir is set to the file dir, which is inside the Rproject. Then, use an Rmarkdown-style setup chunk with `knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())` to reset the directory to the Rproject root dir.
+
+```{r setup}
+#| echo: fenced
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```
+
+Then the code both `Run`s and `render`s, and we don't have to keep track of paths relative to two different nested projects manually. This approach works if the internal projects are self-contained (and we often want them to be). But if we need to render something across several, we'll need to do something different.
+
+Other options that might work but I haven't tried are parameterised notebooks (with conditional params?) Or using freeze and virtual environments (see [docs](https://quarto.org/docs/projects/code-execution.html))
+
+What I really want is a way to set the `execute-dir` on a file-by-file basis in the header yaml, but that doesn't seem to work.
+
+## Headers in VS code vs Rstudio
+
+I had a few notebooks that ran fine in Rstudio, but wouldn't render in VS (or from command line). I got the very cryptic error `YAMLException: can not read a block mapping entry; a multiline key may not be an implicit key` with a line and col number that didn't seem to correspond to anything with YAML in the project- not the file header, not the \_quarto.yml, not \_quarto.yaml.local, and nothing particularly useful showed up on google.
+
+The solution seems to be to add an explicit line for `editor: visual` in the file header, e.g.
+
+``` yaml
+title: Test
+author: Galen Holt
+format:
+  html:
+    df-print: paged
+editor: visual
+```
+
+It *doesn't* seem to matter if the title and author are wrapped in double-quotes (which was one suggestion online).
+
+I *think* what's happening is that Rstudio's visual editor is adding some hidden formatting syntax that gets exposed and looks like YAML to VS and the quarto CLI.
+
+## Python paths
+
+If we use {reticulate}, R wants to know where the python lives, and gets grumpy if it can't find it. Sometimes it silently points somewhere we don't want, and other times we see errors like
+
+    Error creating conda environment 'C:/Users/galen/Documents/Website/galen_website/renv/python/r-reticulate' [exit code 1]
+
+### Rprofile
+
+The main solution is to edit `.Rprofile` to set the `RETICULATE_PYTHON` environment variable,
+
+``` r
+Sys.setenv(RETICULATE_PYTHON = '../werptoolkitpy/.venv/Scripts/python.exe')
+```
+
+Note that this can either be a full path, or relative to the R project directory- in the situation above, I have the R project nested in a Quarto project that also contains a py project, so we need to go up and over to get to the `.venv`.
+
+This is needed to get any of the reticulate code to work (though you can set it on a file-by-file basis.
+
+Additional issues can come up with Quarto though.
+
+### Quarto environment
+
+When we run Quarto inside Rstudio in parallel with an R project, everything works fine. But, if Quarto is run through VScode, for some reason it doesn't hit the .Rprofile and so doesn't run the line we just added, and we're back to using the wrong python and errors about conda. To make it more complex, Quarto has *its own* python environment variable `QUARTO_PYTHON`. This is all more complicated when the Quarto project directory doesn't match the R project directory.
+
+The solution is to set up a `_environment` file in the Quarto project directory to set those variables according to [the docs](https://quarto.org/docs/projects/environment.html#overview) (and maybe `PY_PYTHON` too, just to be safe- I can't find the docs to know how these differ). For my case, my `_environment` file looks like
+
+    RETICULATE_PYTHON='../werptoolkitpy/.venv/Scripts/python.exe'
+    QUARTO_PYTHON='werptoolkitpy/.venv/Scripts/python.exe'
+    PY_PYTHON='werptoolkitpy/.venv/Scripts/python.exe'
+
+Here, again, I have Rproject nested in Quarto proj, *but they access this file differently* so the paths differ even though they point to the same place. `RETICULATE_PYTHON` needs to get up and out of the R subdir and over to the py side of things, while the Quarto project is the outer dir and so `QUARTO_PYTHON` can go straight in to the py subdir.
+
+As far as I can tell, this *does NOT* supersede the necessity of setting `.Rprofile`, which is needed for the R code to run. This stuff in `_environment` is in *addition* so Quarto (especially in VS) can access the right info.
+
+## Table printing
+
+### Style
+
+Use the yaml header to declare style, one of `paged`, `kable`, `tibble`, and `default` as in [documentation](https://quarto.org/docs/computations/r.html#data-frames). In a twist, `default` seems to be the way to do some customisation using S3, see <https://debruine.github.io/quarto_demo/table.html>, though I haven't played with that.
+
+So, typically the yaml header would be something like
+
+``` yaml
+format:
+  html:
+    df-print: paged
+```
+
+Can I change that for a single chunk? Work on that later. Putting it in as `#| df-print: option` isn't recognized.
+
+### Row number
+
+The different `df-print` options have different defaults of how much they print (and with paged it doesn't matter so much). As far as I can tell, `tibble` prints the whole thing, and `kable` prints 10 rows. Sometimes we want to control that though - maybe we have a df with 13 rows, and we want to just print the whole thing.
+
+The default is
+
+```{r}
+iris
+```
+
+To print more rows, we can use the `rows.print` option.
+
+```{r}
+#| rows.print = 15
+iris
+```
