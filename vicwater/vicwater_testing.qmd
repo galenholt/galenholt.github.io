@@ -942,6 +942,102 @@ system.time(bsdvs2p <- get_ts_traces2(site_list = c(barwon, steavenson),
                        multiplier = 1, returnformat = 'df'))
 ```
 
+## Get db info
+
+### Geofiltering
+
+The `get_db_info` API function can do a LOT. I'm primarily looking for using it for geofiltering, but it may turn out that that's better done in other ways anyway. The `filter_values` `sitelist_filter`, etc are likely also useful, and will be worth adding as we go.
+
+**STOPPED HERE** - got this working, but no cleanup.
+
+The area from Teesdale (-38, 144 at top left to Leopold (-38.2, 144.5) should contain 5 sites.
+
+Oh no it doesn't. It actually contains a bazillion, because there's a bunch of `stntype: "GW"`.
+
+```{r}
+
+# need a matrix to get the double brackets.
+topleft <- c('-38', '144')
+bottomright <- c('-38.2', '144.5')
+
+rectbox <- rbind(topleft, bottomright)
+geo_params <- list("function" = 'get_db_info',
+               "version" = "3",
+               "params" = list("table_name" = "site",
+                               "return_type" = "array",
+                               "geo_filter" = list('rectangle' = rectbox)))
+
+reqvic %>% 
+  req_body_json(geo_params) %>% 
+  req_dry_run()
+
+resp_geo <- reqvic %>% 
+  req_body_json(geo_params) %>% 
+  req_perform()
+
+rbody_geo <- resp_geo %>% resp_body_json(check_type = FALSE)
+
+str(rbody_geo)
+```
+
+So, that is WAAY too much, so we need to filter by surface water station types. Assuming the structure is the same, let's figure out how to parse that into a table, and then get the stntype that matches surface and develop that capacity. And document how to choose which.
+
+And use the `field_list` to not return all the 'category' nonsense.
+
+```{r}
+db <- as_tibble(rbody_geo[2]) %>% # the [2] drops the error column
+  unnest_longer(col = where(is.list)) %>% # a `return` list
+  unnest_wider(col = where(is.list)) %>% 
+  select(station, stntype, stname, everything(), -starts_with('category'))
+```
+
+So, what are the possible stntypes?
+
+```{r}
+table(db$stntype)
+```
+
+What are those? GW has got to be groundwater. HYD is Hydrology, presumably??? SOB I think is the State Observation Bore Network. VIR???.
+
+Let's knock off the GW and see if we can figure the others out.
+
+```{r}
+#| rows.print = 30
+dbNoGW <- db %>% 
+  filter(stntype != 'GW') %>% 
+  select(station, stntype, stname, shortname, parent, commence, cease, everything())
+
+dbNoGW
+```
+
+So, the SOB don't have any info, the HYD seem to be A and B versions of the VIR. Do they have different data??? If we get traces for 233217A and B, do they differ from 233217?
+
+Let's clean that up a bit first before figuring that out.
+
+```{r}
+#| rows.print = 30
+dbNoGW <- dbNoGW %>% 
+  filter(stntype != 'SOB') %>% 
+  arrange(station)
+dbNoGW
+```
+
+Interesting.
+
+So, some things to do
+
+**TODO**-
+
+-   sort out the filters to only get HYD and VIR (or whatever the user wants)
+
+-   sort out field_list to only get a subset of useful fields
+
+    -   And alert the user about what fields are being dropped
+
+-   figure out whether the data differs between HYD and VIR (should be able to just pass the A,B, numbers to the get_ts_traces)?
+
+-   Other geo filters
+
 # TODO
 
 List of all datasources and variables and sites in the db - cross-reffed? Not sure
@@ -949,3 +1045,5 @@ List of all datasources and variables and sites in the db - cross-reffed? Not su
 List of variable numbers and their names in a readable table (vignette?)
 
 List of possible data_type functions
+
+Can I get a date across years to calculate median, 90%, etc without pulling the full sequence?
