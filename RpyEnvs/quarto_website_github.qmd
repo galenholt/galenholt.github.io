@@ -59,3 +59,5 @@ to cache output and avoid long re-renders ( I hope). Seems to- re-clicking rende
 To set to `docs`, go to repo, then settings --\> Pages (on left) --\> deploy from a branch, and choose the branch (likely Main) and `/docs` instead of `/root`.
 
 So, I've been developing on `dev`, I guess I'll merge main and see what happens.
+
+**Don't forget to merge and push 'main'** if using the publish to `/docs` method. Otherwise no changes will actually appear.

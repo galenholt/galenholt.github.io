@@ -140,3 +140,9 @@ devtools::install_github("galenholt/vicwater")
 ## Checking, building, etc
 
 It ended up being pretty straightforward to use `devtools::check()` and using continuous integration with github to run the checks and put the little badges on, as described in [the book](https://r-pkgs.org/continuous-integration.html).
+
+## Ephemera
+
+### renv
+
+I use [{renv}](https://rstudio.github.io/renv/articles/renv.html) for package management and reproducibility, which usually (in a non-package Rproject) puts symlinks to the package in a `projdir/renv/library/R-4.x/CPUtype/` directory. But interestingly, in a package project, it puts the symlinked `library/R4.x/...` in a central location (in my case, `~/AppData/Local/R/cache/R/renv/library/PACKAGENAME-HASH/R4.x/…`.
