@@ -1,0 +1,122 @@
+---
+title: "Complex passing py-R"
+author: "Galen Holt"
+editor: visual
+---
+
+```{r setup}
+#| warning: false
+#| message: false
+
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```
+
+```{r}
+reticulate::use_virtualenv(file.path('RpyEnvs', 'pytesting', '.venv'), required = TRUE)
+```
+
+```{r}
+library(reticulate)
+```
+
+# The issue
+
+I previously did some very basic playing with using python and R [in the same quarto doc](RandPython.qmd). I immediately ran into issues though when I tried to use it in a real project because I was no longer passing just simple objects back and forth.
+
+The specific issue I ran into was that it was straighforward to pass a pandas dataframe, but if one of the columns has dates, they come in as a list of python environments containing the date objects. They can be parsed, but it takes *forever*. So the solution is to turn them into something else in python, pass the pandas, and re-date them.
+
+## General problem
+
+The real issue here is when we bring a df into R from python and it has a list column with 'environment' in it. Then the conversion hasn't really happened, and doing that conversion post-hoc has to convert every single environment, which is all rows. And that takes forever. It's not necessarily dates (and as we can see below, sometimes they *do* work just fine). So, if that happens, rather than taking an eternity to `purrr` or otherwise go through the column to translate, just put it in something easier in py, bring it over, and put it back.
+
+I do wish I had a better idea about *why* it happened. I'm sure as it happens more I'll start to figure it out.
+
+It's possible this has been fixed in more recent {reticulate}, and that's why I can't reproduce? <https://github.com/rstudio/reticulate/pull/1266>
+
+## A demonstration (sort of)
+
+Say we have a pandas dataframe with a few columns of simple types (numeric, character) and 1000 rows
+
+```{python}
+import pandas as pd
+import random
+import string
+
+randnums = [random.gauss(0, 1) for _ in range(1000)]
+allchars = list(string.ascii_lowercase) + list(string.ascii_uppercase)
+
+randchars = [random.choice(allchars) for _ in range(1000)]
+
+simpledf = pd.DataFrame({'rand_nums': randnums, 'rand_chars': randchars}, columns=['rand_nums', 'rand_chars'], index=range(1000))
+
+simpledf
+
+```
+
+Now, we can get that into R without too much fuss using `py$`.
+
+```{r}
+
+rsimple <- py$simpledf
+rsimple
+```
+
+Quick and easy. I *think* `py_to_r` is supposed to do some of this, but I can never get it to work. I think maybe it would make more sense in a script where we're moving back and forth than here where we have separate code chunks?
+
+## Now, with time
+
+Let's add a column of dates to simpledf. First, create the dates, then add to simpledf.
+
+```{python}
+
+import datetime
+
+dates = []
+
+d1 = datetime.datetime.strptime('2000-01-01', '%Y-%m-%d')
+
+# Because i starts at 0, the first loop is the start date
+for i in range(1000):
+    # Add i days to the start date
+    day_new = d1 + datetime.timedelta(days=i)
+    # Append the current date string to the list of dates
+    dates.append(day_new)
+
+timedf = simpledf.assign(date = dates)
+timedf
+```
+
+Now, when we bring it into R, it just works? That's not at all what happened to me when I had the original issue.
+
+```{r}
+timedfR <- py$timedf
+# tibble::as_tibble(timedfR)
+```
+
+## For future reference
+
+So, I can't seem to replicate the issue. Previously, the datetime col came in as a list-col into a tibble, and was wrapped in a python environment. It was possible to parse it with `purrr` (or `lapply`, but `purrr` was *much* faster (and weirdly, `furrr` was slower). Not running, because this *isn't* in a python env, and so this doesn't actually work.
+
+```{r}
+#| eval: false
+demodates <- timedfR$date
+rdates <- purrr::map(demodates, py_to_r) %>%
+  tibble(.name_repair = ~'Date') %>%
+  unnest(cols = Date)
+```
+
+But what was much faster was to comvert the column to strings in python with
+
+```{python}
+timedf['date_str'] = timedf['date'].astype(str)
+timedf.info()
+```
+
+And then `lubridate` back to dates in R
+
+```{r}
+timedfRstr <- py$timedf
+timedfRstr <- dplyr::select(timedfRstr, -date) |> 
+  dplyr::mutate(date = lubridate::ymd(date_str))
+str(timedfRstr)
+```
