@@ -948,14 +948,12 @@ system.time(bsdvs2p <- get_ts_traces2(site_list = c(barwon, steavenson),
 
 The `get_db_info` API function can do a LOT. I'm primarily looking for using it for geofiltering, but it may turn out that that's better done in other ways anyway. The `filter_values` `sitelist_filter`, etc are likely also useful, and will be worth adding as we go.
 
-**STOPPED HERE** - got this working, but no cleanup.
-
 The area from Teesdale (-38, 144 at top left to Leopold (-38.2, 144.5) should contain 5 sites.
 
-Oh no it doesn't. It actually contains a bazillion, because there's a bunch of `stntype: "GW"`.
+Oh no it doesn't. It actually contains a bazillion, because there's a bunch of `stntype: "GW"`. Turning `eval: false` to we don't do that again.
 
 ```{r}
-
+#| eval: false
 # need a matrix to get the double brackets.
 topleft <- c('-38', '144')
 bottomright <- c('-38.2', '144.5')
@@ -1028,15 +1026,268 @@ So, some things to do
 
 **TODO**-
 
--   sort out the filters to only get HYD and VIR (or whatever the user wants)
+-   sort out the filters (`filter_values` I think?) to only get HYD and VIR (or whatever the user wants)
 
--   sort out field_list to only get a subset of useful fields
+    -   and tell the user what the options are- apparently, 'GW', 'SOB', 'HYD', and 'VIR'
+
+-   sort out `field_list` to only get a subset of useful fields
 
     -   And alert the user about what fields are being dropped
 
 -   figure out whether the data differs between HYD and VIR (should be able to just pass the A,B, numbers to the get_ts_traces)?
 
 -   Other geo filters
+
+### Other filtering
+
+Try `filter_values` and `field_list`. `"filter_values" = list("stntype" = 'HYD, VIR')` *does not work*- figure out why.
+
+```{r}
+topleft <- c('-38', '144')
+bottomright <- c('-38.2', '144.5')
+
+rectbox <- rbind(topleft, bottomright)
+geo_params <- list("function" = 'get_db_info',
+               "version" = "3",
+               "params" = list("table_name" = "site",
+                               "return_type" = "array",
+                               "filter_values" = list("stntype" = 'VIR'),
+                               "field_list" = "station, stntype, stname, shortname, commence, cease, active, northing, easting, longitude, latitude, lldatum",
+                               "geo_filter" = list('rectangle' = rectbox)))
+
+reqvic %>% 
+  req_body_json(geo_params) %>% 
+  req_dry_run()
+
+resp_geo <- reqvic %>% 
+  req_body_json(geo_params) %>% 
+  req_perform()
+
+rbody_geo <- resp_geo %>% resp_body_json(check_type = FALSE)
+
+str(rbody_geo)
+```
+
+cleanup
+
+```{r}
+db <- as_tibble(rbody_geo[2]) %>% # the [2] drops the error column
+  unnest_longer(col = where(is.list)) %>% # a `return` list
+  unnest_wider(col = where(is.list)) %>% 
+  select(station, stntype, stname, everything(), -starts_with('category'))
+db
+```
+
+```{r}
+names(db)
+```
+
+That seems to have worked for filter vaues but not field list. and it doesn't work for filtering to multiple values. Figure both those things out.
+
+How about c() on both. Shorten the field list for the moment. Runs but no data.
+
+`c()` on the field list works for a single stntype. Now to figure out the stntypes
+
+```{r}
+topleft <- c('-38', '144')
+bottomright <- c('-38.2', '144.5')
+
+rectbox <- rbind(topleft, bottomright)
+geo_params <- list("function" = 'get_db_info',
+               "version" = "3",
+               "params" = list("table_name" = "site",
+                               "return_type" = "array",
+                               "filter_values" = list("stntype" = 'HYD'),
+                               "field_list" = c("station", "stntype", "stname"),
+                               "geo_filter" = list('rectangle' = rectbox)))
+
+reqvic %>% 
+  req_body_json(geo_params) %>% 
+  req_dry_run()
+
+resp_geo <- reqvic %>% 
+  req_body_json(geo_params) %>% 
+  req_perform()
+
+rbody_geo <- resp_geo %>% resp_body_json(check_type = FALSE)
+
+str(rbody_geo)
+```
+
+```{r}
+db <- as_tibble(rbody_geo[2]) %>% # the [2] drops the error column
+  unnest_longer(col = where(is.list)) %>% # a `return` list
+  unnest_wider(col = where(is.list)) %>% 
+  select(station, stntype, stname, everything(), -starts_with('category'))
+db
+```
+
+### Trying for the stntype
+
+Tried to use `sitelist_filter = "GROUP(PLUVIO_STATIONS)`, which qld made look like would work, but nothing. maybe `get_groups` is a way to figure out what the groups are?
+
+```{r}
+geo_params <- list("function" = 'get_db_info',
+               "version" = "3",
+               "params" = list("table_name" = "site",
+                               "return_type" = "array",
+                               "sitelist_filter" = "GROUP(PLUVIO_STATIONS)",
+                               "field_list" = c("station", "stntype", "stname"),
+                               "geo_filter" = list('rectangle' = rectbox)))
+
+reqvic %>% 
+  req_body_json(geo_params) %>% 
+  req_dry_run()
+
+resp_geo <- reqvic %>% 
+  req_body_json(geo_params) %>% 
+  req_perform()
+
+rbody_geo <- resp_geo %>% resp_body_json(check_type = FALSE)
+
+str(rbody_geo)
+```
+
+### Aside- get_groups
+
+Can we use hydstra groupings, as defined in the db? What *are* those groupings?
+
+```{r}
+grp_params <- list("function" = 'get_groups',
+               "version" = "1",
+               "params" = list("site_list" = allsites))
+
+reqvic %>% 
+  req_body_json(grp_params) %>% 
+  req_dry_run()
+
+resp_grp <- reqvic %>% 
+  req_body_json(grp_params) %>% 
+  req_perform()
+
+rbody_grp <- resp_grp %>% resp_body_json(check_type = FALSE)
+
+str(rbody_grp)
+```
+
+Unpack
+
+```{r}
+db <- as_tibble(rbody_grp[2]) %>% # the [2] drops the error column
+  unnest_wider(col = where(is.list)) %>% # a `return` list
+  unnest_longer(col = where(is.list))
+```
+
+Drop the stations- what are the groups?
+
+```{r}
+db %>% select(-stations) %>% distinct()
+```
+
+No obvious groupings there to select on except maybe surface water sites, but that drops rainfall.
+
+### How about `sitelist_filter`?
+
+with one site
+
+```{r}
+geo_params <- list("function" = 'get_db_info',
+               "version" = "3",
+               "params" = list("table_name" = "site",
+                               "return_type" = "array",
+                               "sitelist_filter" = "233217",
+                               "field_list" = c("station", "stntype", "stname"),
+                               "geo_filter" = list('rectangle' = rectbox)))
+
+reqvic %>% 
+  req_body_json(geo_params) %>% 
+  req_dry_run()
+
+resp_geo <- reqvic %>% 
+  req_body_json(geo_params) %>% 
+  req_perform()
+
+rbody_geo <- resp_geo %>% resp_body_json(check_type = FALSE)
+
+str(rbody_geo)
+```
+
+with multiple sites, it just returns the first one. And using `c("site1", "site2")` errors out.
+
+```{r}
+
+geo_params <- list("function" = 'get_db_info',
+               "version" = "3",
+               "params" = list("table_name" = "site",
+                               "return_type" = "array",
+                               "sitelist_filter" = "233217, 405331",
+                               "field_list" = c("station", "stntype", "stname"),
+                               "geo_filter" = list('rectangle' = rectbox)))
+
+reqvic %>% 
+  req_body_json(geo_params) %>% 
+  req_dry_run()
+
+resp_geo <- reqvic %>% 
+  req_body_json(geo_params) %>% 
+  req_perform()
+
+rbody_geo <- resp_geo %>% resp_body_json(check_type = FALSE)
+
+str(rbody_geo)
+```
+
+### using complex_filter
+
+is this easier or harder than just running it twice (or however many times)
+
+It's more flexible, but pretty terrible to sort out. And absurdly slow.
+
+```{r}
+geo_params <- list("function" = 'get_db_info',
+               "version" = "3",
+               "params" = list("table_name" = "site",
+                               "return_type" = "array",
+                               "complex_filter" = list(list('fieldname' = 'stntype',
+                                                         'value' = "HYD",
+                                                         'operator' = 'EQ'),
+                                                    list('combine' = 'OR',
+                                                         'fieldname' = 'stntype',
+                                                         'value' = "VIR",
+                                                         'operator' = 'EQ')),
+                               "field_list" = c("station", "stntype", "stname"),
+                               "geo_filter" = list('rectangle' = rectbox)))
+
+reqvic %>% 
+  req_body_json(geo_params) %>% 
+  req_dry_run()
+
+resp_geo <- reqvic %>% 
+  req_body_json(geo_params) %>% 
+  req_perform()
+
+rbody_geo <- resp_geo %>% resp_body_json(check_type = FALSE)
+
+str(rbody_geo)
+```
+
+that seems to have worked. Unpack- *remember we've used a field_list here so it's simpler and we don't need to have the select we had above*. In the package we should probably allow doing that both ways.
+
+```{r}
+db <- as_tibble(rbody_geo[2]) %>% # the [2] drops the error column
+  unnest_longer(col = where(is.list)) %>% # a `return` list
+  unnest_wider(col = where(is.list))
+```
+
+**TODO** clean that up into a function and include. *And test where we know there's rain gauges- am I losing those with the stntypes I've gone with?*
+
+allow field_list
+
+and geo_filter- all three kinds
+
+how to do stntype- could have one option that allows actually directly passing lists to complex filter (or filter_values).
+
+OR (and?) could have an option that builds that list for the user somehow. would need to limit it to a few common things like stntype. \*could I do this by saying if filter_values gets a c() of things for any of its keys, build an OR complex_filter. ie filter_values can only have one stntype. So if it gets c(stntype1, stntype2), just short-circuit and use complex instead. Would need to be careful if user passes more than one filtering thing in. In that case, just make them build the complex filter themselves. maybe provide a test_complex_filter function that just returns req_dry_run?
 
 # TODO
 
