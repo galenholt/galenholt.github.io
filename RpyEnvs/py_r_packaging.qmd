@@ -53,7 +53,7 @@ Will need to test how this works both when we already have a venv and when we do
 
 as I'm developing
 
-This works from console, after I put the file in the inst/pytong
+This works from console, after I put the file in the inst/python
 
     reticulate::source_python(file.path('inst', 'python', 'controller_functions.py'))
 
@@ -68,6 +68,17 @@ So, somehow I need to get .onLoad to actually work, I think.
 Is the answer to to the source_python *in a .R file*, which are also read in?
 
 SEEMS TO WORK- could it even be in the same r file, just not inside onLoad?
+
+## Passing types
+
+The above method works to expose python functions, but the specific ones I have take dicts and lists as arguments. How do I pass those from R? We can't just assign them to a variable in R, because those formats don't work- e.g. we cannot create the lists and dicts in R to pass.
+
+```{r}
+#| eval: false
+outputType = ['summary', 'all']
+
+allowance ={'minThreshold': MINT, 'maxThreshold': MAXT, 'duration': DUR, 'drawdown': DRAW}
+```
 
 ## Question
 
