@@ -80,6 +80,8 @@ outputType = ['summary', 'all']
 allowance ={'minThreshold': MINT, 'maxThreshold': MAXT, 'duration': DUR, 'drawdown': DRAW}
 ```
 
+I have sorted out how to call functions with arguments of a specific type (lists, dicts) that are not necessarily the same between languages. See [my testing of type-passing](R_py_type_passing.qmd).
+
 ## Question
 
 Is there a way to auto-build the `Config/reticulate` part of DESCRIPTION? Maybe from `pyproject.toml`? Similar to the way `usethis::use_package` installs automatically add them to `renv`? That's the other way though, so maybe it's moot. Still, would be nice to automate.

@@ -134,3 +134,7 @@ That *doesn't* allow the user to `library(package)` and then set up their python
     3.  *NOTE* if the `.venv` *is* in the outer directory, I'm getting weird errors when I try to `Sys.setenv` or otherwise set the path to the venv (it's either prepending `~/virtualenvs` or `C::/` unless I pass a full fixed path. Seems to work in that case to just not set the environment variable though, and {reticulate} sorts it out correctly.
 
 5.  Try to use the functions and see if they break.
+
+## Passing types
+
+We might need to call functions with arguments of a specific type (lists, dicts) that are not necessarily the same between languages. See [my testing of type-passing](R_py_type_passing.qmd).
