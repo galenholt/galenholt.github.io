@@ -147,6 +147,14 @@ OK, shut everything down, and instead of opening VS again as usual, I opened it 
 
 Just did `poetry add pandas` and it works and I immediately have access to it in a python script.
 
+### Complications with `add`
+
+To add a specific version of a package, use
+
+    poetry add packagename==2.0.5
+
+There are a number of other ways to specify version ranges, installing from git, etc.
+
 ### VS code note
 
 Sometimes VS seems to find the poetry venv and use it, and other times (I think if it's not at the head dir of the workspace?) it needs to be pointed at the python.exe. To do that, open the command palette, (ctrl-shift-p), select python interpreter, then `.venv\scripts\python.exe` wherever that venv is.
