@@ -21,10 +21,10 @@ My [python_setup](RpyEnvs/python_setup.qmd) sets up a very similar situation, so
 
 ## Set up reticulate from R
 
-Point reticulate at the venv. See [stackoverflow](https://stackoverflow.com/questions/59715101/how-to-get-reticulate-to-access-virtual-environment). This *seems* to not be necessary if the `.venv` is in the outer project directory.
+Point reticulate at the venv. See [stackoverflow](https://stackoverflow.com/questions/59715101/how-to-get-reticulate-to-access-virtual-environment). This *seems* to not be necessary if the `.venv` is in the outer project directory. Or if we've set the `RETICULATE_PYTHON` environment variable elsewhere (like `.Rprofile`).
 
 ```{r}
-reticulate::use_virtualenv(file.path('RpyEnvs', 'pytesting', '.venv'), required = TRUE)
+# reticulate::use_virtualenv(file.path('RpyEnvs', 'pytesting', 'Scripts', '.venv'), required = TRUE)
 ```
 
 If this is more than a one-off and you're using an R project, it's usually better to set the `RETICULATE_PYTHON` environment variable in `.Rprofile`. Here, that means adding this line in `.Rprofile` . This has the added bonus of stopping Rstudio/R throwing warnings about conda at startup when it detects {reticulate} being used in the project.
@@ -38,7 +38,7 @@ See [Quarto notes](quarto_notes.qmd) for some similar issues for different pytho
 Load the library. Interestingly, the python code chunks will run without loading the library, but I can't access their values using `py$pythonobject` unless I load it.
 
 ```{r}
-# library(reticulate)
+library(reticulate)
 ```
 
 ## R
@@ -103,4 +103,69 @@ Interestingly, the `r.` notation to get R into python does *not* need `reticulat
 
 ```{python}
 r.c + b
+```
+
+## Passing types
+
+I have a python function that takes dicts and lists as arguments. How do I pass those from R? We can't just assign them to a variable in R, because those formats don't work- e.g. we cannot create the lists and dicts in R to pass.
+
+```{r}
+#| eval: false
+outputType = ['summary', 'all']
+
+allowance ={'minThreshold': MINT, 'maxThreshold': MAXT, 'duration': DUR, 'drawdown': DRAW}
+```
+
+So, let's write a function to tell me the type of what I'm passing and try a few things.
+
+```{python}
+def test_type(testarg):
+  
+  return(type(testarg))
+  
+```
+
+Is a named list a dict or a list? what about just a `c()`? Is that a list?
+
+```{r}
+rlist <- list(dict1 = 100, dict2 = 'testing')
+rc <- c(100, 50)
+```
+
+The named list is a dict
+
+```{r}
+py$test_type(rlist)
+```
+
+The c() is a list- but see below- this fails if it's length-one
+
+```{r}
+py$test_type(rc)
+```
+
+An unnamed list is a list
+
+```{r}
+rlistu = list(100, 'testunname')
+py$test_type(rlistu)
+```
+
+That is useful, since creating a length-one list doesn't work with single values or `c()` wrapping single values
+
+```{r}
+rone = 100
+py$test_type(rone)
+```
+
+```{r}
+ronec = c('testingc')
+py$test_type(ronec)
+```
+
+We *do* get a length-one list with an unnamed list of length 1.
+
+```{r}
+ronel = list(100)
+py$test_type(ronel)
 ```
