@@ -11,8 +11,10 @@ editor: visual
 knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 ```
 
+Old way of giving path to venv, new way is to set it in `.Rprofile`
+
 ```{r}
-reticulate::use_virtualenv(file.path('RpyEnvs', 'pytesting', '.venv'), required = TRUE)
+# reticulate::use_virtualenv(file.path('RpyEnvs', 'pytesting', '.venv'), required = TRUE)
 ```
 
 ```{r}
@@ -31,7 +33,7 @@ The real issue here is when we bring a df into R from python and it has a list c
 
 I do wish I had a better idea about *why* it happened. I'm sure as it happens more I'll start to figure it out.
 
-It's possible this has been fixed in more recent {reticulate}, and that's why I can't reproduce? <https://github.com/rstudio/reticulate/pull/1266>
+It's possible this has been fixed in more recent {reticulate}, and that's why I can't reproduce? <https://github.com/rstudio/reticulate/pull/1266>. No, I'm still getting the error where I was before. Still struggling to replicate it, but it does happen in the original case.
 
 ## A demonstration (sort of)
 
@@ -83,7 +85,9 @@ for i in range(1000):
     dates.append(day_new)
 
 timedf = simpledf.assign(date = dates)
-timedf
+
+# Try another way too
+timedf['date2'] = pd.to_datetime(timedf['date'])
 ```
 
 Now, when we bring it into R, it just works? That's not at all what happened to me when I had the original issue.
