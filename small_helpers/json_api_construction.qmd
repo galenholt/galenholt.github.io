@@ -1,6 +1,7 @@
 ---
 title: "JSON API coding"
 author: "Galen Holt"
+editor: visual
 ---
 
 # The issue
@@ -44,7 +45,7 @@ req %>%
 
 ## Comma-separated strings
 
-These cannot be created with `c()`, because that does something else (square brackets)
+These cannot be created with `c()`, because that does something else (square brackets- see below).
 
 ```{r}
 params <- list("function" = 'get_datasources_by_site',
@@ -72,28 +73,6 @@ req %>%
 ## Double-square brackets
 
 To get patterns like `[['a', 'b'],['c', 'd']]`, use a matrix (and I think maybe a df). Which makes sense if we think of that as a group of vectors. The pattern is `[[row1], [row2], [row_n]]`.
-
-topleft \<- c('-35', '148')
-
-bottomright \<- c('-36', '149')
-
-rectbox \<- rbind(topleft, bottomright)
-
-params \<- list("function" = 'get_db_info',
-
-"version" = "3",
-
-"params" = list("table_name" = "site",
-
-"return_type" = "array",
-
-"geo_filter" = list('rectangle' = rectbox)))
-
-req %\>%
-
-req_body_json(params) %\>%
-
-req_dry_run()
 
 ```{r}
 topleft <- c('-35', '148')
@@ -155,7 +134,7 @@ req %>%
   req_dry_run()
 ```
 
-Similarly, we can alter how dfs work, which might actually be fairly useful in the way it handles named columns especially. The defaul (above) is `dataframe = 'rows'` , which is kind of a mess. But `dataframe = 'columns'` ends up with named vectors. I don't currently need that, but it sure makes more sense.
+Similarly, we can alter how dfs work, which might actually be fairly useful in the way it handles named columns especially. The default (above) is `dataframe = 'rows'` , which is kind of a mess (or at least not how my brain parses what a dataframe means). But `dataframe = 'columns'` ends up with named vectors. I don't currently need that, but it sure makes more sense.
 
 ```{r}
 params <- list("function" = 'get_db_info',
@@ -176,6 +155,26 @@ params <- list("function" = 'get_db_info',
                "params" = list("table_name" = "site",
                                "return_type" = "array",
                                "geo_filter" = list('rectangle' = rectdf)))
+req %>%
+  req_body_json(params, datafraem = 'values') %>%
+  req_dry_run()
+```
+
+## Square brackets around curly
+
+To get square brackets around multiple sets of curlies, e.g. \`\[{'key': 'value'}, {'key2': 'value2'}\], use a list of lists.
+
+```{r}
+params <- list("function" = 'get_db_info',
+               "version" = "3",
+               "params" = list("table_name" = "site",
+                               "return_type" = "array",
+                               
+                               "complex_filter" = list(list('fieldname' = 'stntype', 
+                                                       'value' = 'HYD'),
+                                                   list('combine' = 'OR',
+                                                        'fieldname' = 'stntype',
+                                                        'value' = 'VIR'))))
 req %>%
   req_body_json(params, datafraem = 'values') %>%
   req_dry_run()
