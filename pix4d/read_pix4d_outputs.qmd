@@ -1,0 +1,300 @@
+---
+title: "Pix4d outputs"
+author: "Galen Holt"
+---
+
+Trying to read in pix4d outputs- specifically point clouds, orthophotos, dsm, and dtm.
+
+I'm going to assume I need stars and sf.
+
+```{r}
+library(sf)
+library(stars)
+library(ggplot2)
+library(dplyr)
+```
+
+```{r}
+source(file.path('functions', 'rgb2hex.R'))
+```
+
+Typically the projdir would have a better name (likely similar/same as the project name)
+
+```{r}
+projname <- '4m_upandback'
+projdir <- file.path('data', 'pix4dout')
+```
+
+# DTM raster
+
+```{r}
+dtmpath <- file.path(projdir, projname, '3_dsm_ortho', 'extras', 'dtm')
+```
+
+read it in?
+
+```{r}
+dtm <- read_stars(file.path(dtmpath, paste0(projname, '_dtm.tif')))
+```
+
+That reads in, but isn't plotting
+
+`useRaster = TRUE` should be better, but it errors. Likely do to small rounding in the x and y coords (see <https://search.r-project.org/CRAN/refmans/spatstat.geom/html/plot.im.html>). I'm sure that could be cleaned up.
+
+```{r}
+plot(dtm, useRaster = FALSE)
+```
+
+Where is this stuff in space? is it in the right place?
+
+```{r}
+# This doesn't work right- runs forever.
+# library(tmap)
+# 
+# tmap_mode("view")
+# 
+# tm_shape(land) + 
+#   tm_raster(dtm)
+```
+
+# Orthomosiac
+
+```{r}
+orthopath <- file.path(projdir, projname, '3_dsm_ortho', '2_mosaic')
+```
+
+read it in?
+
+```{r}
+ortho <- read_stars(file.path(orthopath, paste0(projname, '_transparent_mosaic_group1.tif')))
+```
+
+```{r}
+ortho
+```
+
+4 bands. What are they? I expected rgb, and the 4th is uniform
+
+`useRaster = TRUE` works here.
+
+```{r}
+plot(ortho)
+```
+
+Color?
+
+```{r}
+colmos <- st_rgb(ortho)
+```
+
+```{r}
+colmos
+```
+
+```{r}
+plot(colmos)
+```
+
+Wow. That just worked. 4th band is likely alpha values.
+
+# DSM
+This is an xyz point file.
+
+```{r}
+dsmpath <- file.path(projdir, projname, '3_dsm_ortho', '1_dsm')
+```
+
+```{r}
+dsm <- readr::read_csv(file.path(dsmpath, paste0(projname, '_dsm_1cm.xyz')),
+                                 col_names = c('x', 'y', 'z', 'r', 'g', 'b'))
+```
+
+assume the last 3 cols are rgb, use my function
+
+```{r}
+dsm <- dsm %>% 
+  mutate(hexcol = rgb2hex(r,g,b))
+```
+
+Ignore spatial for a minute, can I just slam it in ggplot? using z as fill first. If we want the rgb, it'll either be an orthomosiac or we'll need to do something 3d with color overlay
+
+```{r}
+dsmgg <- ggplot(dsm, aes(x = x, y = y, fill = z)) + geom_raster() + coord_equal()
+dsmgg
+```
+
+That was really weirdly fast.
+
+Can I use the rgb to see the orthomosiac?
+
+```{r}
+dsmorthogg <- ggplot(dsm, aes(x = x, y = y, fill = hexcol)) + geom_raster() + coord_equal() + scale_fill_identity()
+dsmorthogg
+```
+
+Would be cool to do a 3d map with color, maybe {rayshader}? Would really be nice to be able to rotate it etc.
+
+**That has color and height**- might be good to feed to a ML algorithm to ID rocks using both sets of info and their relationships to each other.
+
+Can I make it geographic (`sf`)? Assume the same crs as the dtm?
+
+```{r}
+dsmsf <- st_as_sf(dsm, coords = c('x', 'y'), crs = st_crs(dtm))
+```
+
+use the sf plot method? bad idea. takes forever. The points (next) are points, but it might make more sense to make these stars anyway.
+
+```{r}
+plot(dsmsf[,'z'])
+```
+
+Try stars
+
+```{r}
+dsmstars <- st_as_stars(dsm, crs = st_crs(dtm))
+```
+
+```{r}
+plot(dsmstars['z'])
+```
+
+```{r}
+plot(dsmstars['hexcol'])
+```
+
+ggplot version- orthomosaic
+
+```{r}
+dsmstarsgg <- ggplot() + 
+  geom_stars(data = dsmstars, aes(fill = hexcol)) +
+  scale_fill_identity() +
+  theme(legend.position = 'none') + 
+  coord_equal()
+dsmstarsgg
+```
+
+ggplot version- elevation
+
+```{r}
+dsmstarsgg_z <- ggplot() + 
+  geom_stars(data = dsmstars, aes(fill = z)) +
+  colorspace::scale_fill_continuous_sequential(palette = 'Terrain 2') +
+  theme(legend.position = 'none') + 
+  coord_equal()
+dsmstarsgg_z
+```
+
+Is it faster to just use geom_raster? Would need to have a non-spatial df as we did above. This just errors when I try it.
+```{r}
+#| eval: false
+dsmstarsgg_z_raster <- ggplot() + 
+  geom_raster(data = dsmstars, aes(fill = z)) +
+  colorspace::scale_fill_continuous_sequential(palette = 'Terrain 2') +
+  theme(legend.position = 'none') + 
+  coord_equal()
+dsmstarsgg_z_raster
+```
+
+What about `geom_sf` on the point version? I `plot`ted it above, but haven't tried `ggplot`. This is more specifically what the point cloud is, below.
+Change everything to `color` from `fill`.
+
+```{r}
+dsmsfgg_z <- ggplot() + 
+  geom_sf(data = dsmsf, aes(color = z)) +
+  colorspace::scale_color_continuous_sequential(palette = 'Terrain 2') +
+  theme(legend.position = 'none') + 
+  coord_sf()
+dsmsfgg_z
+```
+
+
+# Point cloud
+
+Should work the same as dsm- this is also an xyz point file.
+
+```{r}
+pcpath <- file.path(projdir, projname, '2_densification', 'point_cloud')
+```
+
+```{r}
+pc <- readr::read_csv(file.path(pcpath, 
+                                paste0(projname,
+                                    '_group1_densified_point_cloud.xyz')),
+                                 col_names = c('x', 'y', 'z', 'r', 'g', 'b'))
+```
+```{r}
+pc <- pc %>% 
+  mutate(hexcol = rgb2hex(r,g,b))
+```
+
+Like the dsm, I should be able to use ggplot directly. But here, the points are the points in the cloud, not the evenly spaced points of the dsm. So `geom_raster` doesn't work. Could use `geom_tile` I guess, but it's more appropriate to just use `geom_point`. 
+```{r}
+pcgg <- ggplot(pc, aes(x = x, y = y, color = z)) + 
+  geom_point() + 
+  coord_equal() + 
+  colorspace::scale_color_continuous_sequential(palette = 'Terrain 2')
+pcgg
+```
+
+And the rgb for the ortho 
+
+```{r}
+pcorthogg <- ggplot(pc, aes(x = x, y = y, color = hexcol)) + 
+  geom_point() + 
+  coord_equal() + 
+  scale_color_identity()
+pcorthogg
+```
+We can make that an `sf`. Doesn't make sense to make it a `stars`, since it's points and not gridded. The DSM is techinically points, but they're gridded so can go either way.
+
+```{r}
+pcsf <- st_as_sf(pc, coords = c('x', 'y'), crs = st_crs(dtm))
+```
+
+Now we can `plot`
+```{r}
+plot(pcsf['z'])
+```
+
+```{r}
+plot(pcsf['hexcol'])
+```
+
+And ggplot/geom_sf
+
+```{r}
+pcsfgg_z <- ggplot() + 
+  geom_sf(data = pcsf, aes(color = z)) +
+  colorspace::scale_color_continuous_sequential(palette = 'Terrain 2') +
+  theme(legend.position = 'none') + 
+  coord_sf()
+pcsfgg_z
+```
+Point size is really making this ugly, but that's not super important right now.
+
+
+```{r}
+pcsfgg_z <- ggplot() + 
+  geom_sf(data = pcsf, aes(color = hexcol)) +
+  scale_color_identity() +
+  theme(legend.position = 'none') + 
+  coord_sf()
+pcsfgg_z
+```
+Ok, that all works. Need to clean it up and make a simple package.
+
+## To do
+make a package. Have funs for xyz and funs for tifs. But call those within specific funs for each output (e.g. dsm and point cloud should have their own funs, and the DSM should allow returning a raster in addition to points, but pc shouldn't).
+Similar for a standard set of plot returns
+
+## Can I get rayshader to work?
+Would be cool to do height with z and color with hexcol to actually map the stream in 3d with photo overlay. Pix4d does it, but would be nice to do here too.
+
+## Why does the point cloud not include the water? 
+  Does that make our lives easier in some ways? 
+  
+## Where is this stuff in space? is it in the right place?
+
+```{r}
+"#CECA9B"
+```
