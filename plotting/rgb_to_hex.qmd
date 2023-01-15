@@ -1,0 +1,71 @@
+---
+title: "RGB to hex"
+---
+
+```{r}
+library(dplyr)
+library(colorspace)
+library(ggplot2)
+```
+
+Let's say we have a dataframe with R, G, B values, but we want the hex. Why? Maybe we want to use `scale_color_identity` to plot the values in some other columns. Let's say `x` and `y`.
+
+```{r}
+set.seed(17)
+rgbtib <- tidyr::expand_grid(x = 1:10, y = 1:10) %>% 
+  mutate(R = sample(0:255, 100),
+                         G = sample(0:255, 100),
+                         B = sample(0:255, 100))
+rgbtib
+```
+
+We can use {colorspace}, but it's convoluted- have to make an RGB object first, and then convert to hex. And the RGB need to be on 0-1, not 0-255.
+
+Writing that out doesn't work because the colorspace RGB object can't get stuffed in the dataframe. But this is the idea
+
+```{r}
+#| eval: false
+rgbtib_writeout <- rgbtib %>% 
+  # Convert to 0-1
+  mutate(across(all_of(c('R', 'G', 'B')), ~./255)) %>%
+  # Create the rgb object
+  mutate(rgbobj = colorspace::RGB(R, G, B)) %>% 
+  # Get the hex values
+  mutate(hexval = colorspace::hex(rgbobj))
+```
+
+So, make a function. Have a maxval the user can pass (don't assume it's 1 or 255).
+
+```{r}
+rgb2hex <- function(R, G, B, maxval = 255) {
+  rgbobj <- colorspace::RGB(R/maxval, G/maxval, B/maxval)
+  hexval <- colorspace::hex(rgbobj)
+  return(hexval)
+}
+```
+
+Test that
+
+```{r}
+rgb2hex(177, 41, 147)
+```
+
+apparently quarto doesn't do the cool printing of color thing in output, just input.
+
+```{r}
+"#D970C8"
+```
+
+Now, use that in the mutate
+
+```{r}
+rgbtib <- rgbtib %>% 
+  mutate(hexvals = rgb2hex(R, G, B))
+rgbtib
+```
+
+Plot to show it works
+
+```{r}
+ggplot(rgbtib, aes(x = x, y = y, fill = hexvals)) + geom_tile() + theme(legend.position = 'none')
+```
