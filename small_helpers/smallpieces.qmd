@@ -35,6 +35,23 @@ newdir <- file.path('output', 'testdir')
 if (!dir.exists(newdir)) {dir.create(newdir, recursive = TRUE)}
 ```
 
+### Windows paths
+
+Windows paths come in with `\`, which R treats as an escape character. We can use `file.path` to just avoid them, or replace them with `/` or `\\`. But sometimes we just want to paste a path in quickly and be done with it. As of R 4.0, we can do that with `r`. It requires the parentheses to be in a funny place- inside the quotes.
+
+```{r}
+pastepath <- r"(C:\Users\username\path\to\somewhere.csv)"
+pastepath
+```
+
+And we can feed that straight into functions that need paths, eg.
+
+```{r}
+#| eval: false
+
+readr::read_csv(r"(C:\Users\username\path\to\somewhere.csv)")
+```
+
 ### Look at all duplicate values
 
 Functions like `duplicated` give the second (and greater) values that match. e.g.
