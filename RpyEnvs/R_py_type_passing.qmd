@@ -1,6 +1,8 @@
 ---
 title: "R-py type passing"
 author: "Galen Holt"
+engine: knitr
+
 ---
 
 ```{r setup}
@@ -10,6 +12,9 @@ author: "Galen Holt"
 knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 
 ```
+
+## Note- quarto renders fail
+This runs fine interactively, but when I render, everything fails. The python chunks lose what was in the previous ones, and the references to `py$` in R chunks all fail. For now I'm going to just take this off the render list until I figure out what's up.
 
 ## Passing types
 
@@ -38,7 +43,11 @@ rlist <- list(dict1 = 100, dict2 = 'testing')
 rc <- c(100, 50)
 ```
 
-The named list is a dict
+The named list is a dict. Look at it in python and R.
+
+```{python}
+test_type(r.rlist)
+```
 
 ```{r}
 py$test_type(rlist)

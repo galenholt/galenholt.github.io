@@ -1,7 +1,10 @@
 project:
   type: website
   output-dir: docs
-
+  execute-dir: project
+  render: 
+    - "*.qmd"
+    - "!R_py_type_passing.qmd"
 website:
   title: "Galen"
   navbar:
@@ -56,6 +59,8 @@ website:
               text: "Using R and python together"
             - href: RpyEnvs/R_py_shared_projects.qmd
               text: "Shared R-py project structure"
+            - href: RpyEnvs/py_r_dates.qmd
+              text: "Passing complex objects py-R"
         - section: "Setting things up"
           contents:
             - href: RpyEnvs/rig.qmd
