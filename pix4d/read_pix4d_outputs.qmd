@@ -75,10 +75,10 @@ ortho
 
 4 bands. What are they? I expected rgb, and the 4th is uniform
 
-`useRaster = TRUE` works here.
+`useRaster = TRUE` works here. BUt not in quarto? that's weird. Set to false so it renders.
 
 ```{r}
-plot(ortho)
+plot(ortho, useRaster = FALSE)
 ```
 
 Color?
@@ -98,6 +98,7 @@ plot(colmos)
 Wow. That just worked. 4th band is likely alpha values.
 
 # DSM
+
 This is an xyz point file.
 
 ```{r}
@@ -185,6 +186,7 @@ dsmstarsgg_z
 ```
 
 Is it faster to just use geom_raster? Would need to have a non-spatial df as we did above. This just errors when I try it.
+
 ```{r}
 #| eval: false
 dsmstarsgg_z_raster <- ggplot() + 
@@ -195,8 +197,7 @@ dsmstarsgg_z_raster <- ggplot() +
 dsmstarsgg_z_raster
 ```
 
-What about `geom_sf` on the point version? I `plot`ted it above, but haven't tried `ggplot`. This is more specifically what the point cloud is, below.
-Change everything to `color` from `fill`.
+What about `geom_sf` on the point version? I `plot`ted it above, but haven't tried `ggplot`. This is more specifically what the point cloud is, below. Change everything to `color` from `fill`.
 
 ```{r}
 dsmsfgg_z <- ggplot() + 
@@ -206,7 +207,6 @@ dsmsfgg_z <- ggplot() +
   coord_sf()
 dsmsfgg_z
 ```
-
 
 # Point cloud
 
@@ -222,12 +222,14 @@ pc <- readr::read_csv(file.path(pcpath,
                                     '_group1_densified_point_cloud.xyz')),
                                  col_names = c('x', 'y', 'z', 'r', 'g', 'b'))
 ```
+
 ```{r}
 pc <- pc %>% 
   mutate(hexcol = rgb2hex(r,g,b))
 ```
 
-Like the dsm, I should be able to use ggplot directly. But here, the points are the points in the cloud, not the evenly spaced points of the dsm. So `geom_raster` doesn't work. Could use `geom_tile` I guess, but it's more appropriate to just use `geom_point`. 
+Like the dsm, I should be able to use ggplot directly. But here, the points are the points in the cloud, not the evenly spaced points of the dsm. So `geom_raster` doesn't work. Could use `geom_tile` I guess, but it's more appropriate to just use `geom_point`.
+
 ```{r}
 pcgg <- ggplot(pc, aes(x = x, y = y, color = z)) + 
   geom_point() + 
@@ -236,7 +238,7 @@ pcgg <- ggplot(pc, aes(x = x, y = y, color = z)) +
 pcgg
 ```
 
-And the rgb for the ortho 
+And the rgb for the ortho
 
 ```{r}
 pcorthogg <- ggplot(pc, aes(x = x, y = y, color = hexcol)) + 
@@ -245,6 +247,7 @@ pcorthogg <- ggplot(pc, aes(x = x, y = y, color = hexcol)) +
   scale_color_identity()
 pcorthogg
 ```
+
 We can make that an `sf`. Doesn't make sense to make it a `stars`, since it's points and not gridded. The DSM is techinically points, but they're gridded so can go either way.
 
 ```{r}
@@ -252,6 +255,7 @@ pcsf <- st_as_sf(pc, coords = c('x', 'y'), crs = st_crs(dtm))
 ```
 
 Now we can `plot`
+
 ```{r}
 plot(pcsf['z'])
 ```
@@ -270,8 +274,8 @@ pcsfgg_z <- ggplot() +
   coord_sf()
 pcsfgg_z
 ```
-Point size is really making this ugly, but that's not super important right now.
 
+Point size is really making this ugly, but that's not super important right now.
 
 ```{r}
 pcsfgg_z <- ggplot() + 
@@ -281,20 +285,20 @@ pcsfgg_z <- ggplot() +
   coord_sf()
 pcsfgg_z
 ```
+
 Ok, that all works. Need to clean it up and make a simple package.
 
 ## To do
-make a package. Have funs for xyz and funs for tifs. But call those within specific funs for each output (e.g. dsm and point cloud should have their own funs, and the DSM should allow returning a raster in addition to points, but pc shouldn't).
-Similar for a standard set of plot returns
+
+make a package. Have funs for xyz and funs for tifs. But call those within specific funs for each output (e.g. dsm and point cloud should have their own funs, and the DSM should allow returning a raster in addition to points, but pc shouldn't). Similar for a standard set of plot returns
 
 ## Can I get rayshader to work?
+
 Would be cool to do height with z and color with hexcol to actually map the stream in 3d with photo overlay. Pix4d does it, but would be nice to do here too.
 
-## Why does the point cloud not include the water? 
-  Does that make our lives easier in some ways? 
-  
+## Why does the point cloud not include the water?
+
+Does that make our lives easier in some ways?
+
 ## Where is this stuff in space? is it in the right place?
 
-```{r}
-"#CECA9B"
-```
