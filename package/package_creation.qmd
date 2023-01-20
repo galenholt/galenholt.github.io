@@ -28,7 +28,7 @@ Opened a new Rstudio session (I use `renv`, but want to adjust some things globa
 devtools::dev_sitrep()
 ```
 
-R is also out of date (at the time of writing). [Fix it with](RpyEnvs/rig.qmd) `rig`, then re-run and update the packages.
+R is also out of date (at the time of writing). [Fix it with](../RpyEnvs/rig.qmd) `rig`, then re-run and update the packages.
 
 ```{r}
 #| eval: false

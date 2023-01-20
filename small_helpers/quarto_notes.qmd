@@ -148,3 +148,15 @@ find_missing_pages <- function() {
   return(list(missing_pages = missing_pages, no_file_present = broken_links))
 }
 ```
+
+### Github pages not updating
+
+Very frequently pushes to main will still not seem to work- the website will remain in the old state, despite being sure we've pushed to main and the local render and preview has all the new content. The issue seems to be caching, and I'm not sure why it's so aggressive. In chrome, you can open the Inspector, then right-click on the refresh button and then "empty cache and hard reload". Or incognito window, or clear the cache some other way. It's very annoying though.
+
+### Re-rendering
+
+I had thought that pushing the 'Render' button in Rstudio built the whole site- it throws errors for other qmds than the one I currently build. BUT, if that's all I do and then push and publish, pages that I haven't specifically rendered are outdated- e.g. the sidebar and content don't show updates. So it seems that we have to actually `quarto render` at the terminal first? I think- I'm trying to do that and all the R-python pages have broken.
+
+Ah. I see now that there's a warning about this in [the quarto docs](https://quarto.org/docs/websites/#website-preview):
+
+> As you preview your site, pages will be rendered and updated. However, if you make changes to global options (e.g. \_quarto.yml or included files) you need to fully re-render your site to have all of the changes reflected. Consequently, you should always fully quarto render your site before deploying it, even if you have already previewed changes to some pages with the preview server.

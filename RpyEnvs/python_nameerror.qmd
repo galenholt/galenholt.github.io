@@ -1,0 +1,193 @@
+---
+title: "Python NameErrors"
+engine: knitr
+execute:
+  error: true
+  echo: fenced
+---
+
+# Issue
+
+I keep getting NameErrors and weird behavior with mixed R and python chunks. Usually it seems to be that python can't find objects if there's an R chunk in between. It only happens when I render in quarto- running this interactively in Rstudio always works fine.
+
+I've set the `RETICULATE_PYTHON` and `QUARTO_PYTHON` environment variables, and put `engine: knitr` in the yaml, and it doesn't seem to have helped.
+
+The issue seems to be worst when R is somehow involved with the objects.
+
+This doc is to try to systematically and simply reproduce the issue. I hope that works.
+
+It was working, but the more often I rendered, the more intermittent the problem became. I've noted something about the frequency of errors for the chunks- some error more than others.
+
+```{r}
+library(reticulate)
+```
+
+An R chunk to make sure knitr kicks off
+
+```{r}
+a <- 1
+```
+
+Define a bunch of python variables to do different things with.
+
+```{python}
+b = 2
+c = 3
+d = 4
+e = 5
+f = 6
+g = 7
+```
+
+Can we see those immediately?
+
+```{python}
+b
+```
+
+What if there's an R chunk in the middle?
+
+```{r}
+rdummy <- 1
+```
+
+Can we still see the python? Yes
+
+```{python}
+c
+```
+
+What if the R touches the python?
+
+```{r}
+rb <- py$d + 1
+rb
+```
+
+This now fails almost every time
+
+```{python}
+d
+```
+
+Are the other variables unscathed? No, this also fails consistently (but not 100% of the time).
+
+```{python}
+c
+```
+
+What about those that haven't been used since declared? Fails again most of the time.
+
+```{python}
+e
+```
+
+Can we declare more python?
+
+```{python}
+f = 6
+```
+
+again, R in the middle
+
+```{r}
+rtest <- 5
+```
+
+Does the new python persist?
+
+```{python}
+f
+```
+
+What if there's a python chunk that accesses R?
+
+```{python}
+g = r.a + 1
+g
+```
+
+Can we access the previous python variables? Sometimes. I intermittently get an error here, but sometimes it runs.
+
+```{python}
+f
+```
+
+Can we access that new python variable? Also only sometimes.
+
+```{python}
+g
+```
+
+What if we declare python in two chunks? Do they all get annihilated after crossing the language boundary, or only on the basis of their chunk declaration?
+
+```{python}
+g = 7
+h = 8
+```
+
+```{python}
+j = 9
+```
+
+Contaminate with R
+
+```{r}
+rgh <- py$g + 9
+rgh
+```
+
+Can we see the python that was defined with `g`? This works sometimes. So whatever is going on is unstable. It's strange that this and the following two work sometimes- they seem like the same thing that consistently fails above (though that's now working too).
+
+```{python}
+h
+```
+
+I wasn't expecting that to work (and it only does sometimes). Can we see `g` itself? Sometimes
+
+```{python}
+g
+```
+
+Can we get to the python that was defined in a different chunk? Sometimes.
+
+```{python}
+j
+```
+
+Is the issue that we didn't ask for the touched variable first? Do the same thing, but this time ask for the contaminated variable
+
+```{python}
+k = 10
+l = 11
+```
+
+```{python}
+m = 12
+```
+
+Access in R
+
+```{r}
+r_m <- py$k + 9
+```
+
+Is that variable there in python?
+
+```{python}
+k
+```
+
+Is the other one that's defined with it?
+
+```{python}
+l
+```
+
+How about the one in the other code chunk?
+
+```{python}
+m
+```
+
+I'm not really sure what to do with this. Anything defined before any interaction across languages (either `py$pyvar` or `r.rvar`) would die in python when I rendered this the first few times, but now it's all working after about 10 update renders. I'm throwing `execute: error: true` in all the R-py yaml headers, but that doesn't actually help when I actually want them to run and there are errors intermittently.

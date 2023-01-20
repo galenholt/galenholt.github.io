@@ -7,6 +7,8 @@ This is an interactive page based on [more detailed exploration of drone overlap
 
 This gives us the opportunity to plug in flight parameters and back-calculate others. For example, give us the size of the photos on the ground given height, the needed drone flight distance for a desired overlap at a given height, or the speed we need to fly at a given height to yield the right overlap given the photo interval.
 
+Overlap is fixed at 80% for the moment.
+
 ```{r}
 #| echo: false
 #| message: false

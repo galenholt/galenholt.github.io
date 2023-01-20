@@ -983,6 +983,7 @@ So, that is WAAY too much, so we need to filter by surface water station types. 
 And use the `field_list` to not return all the 'category' nonsense.
 
 ```{r}
+#| eval: false
 db <- as_tibble(rbody_geo[2]) %>% # the [2] drops the error column
   unnest_longer(col = where(is.list)) %>% # a `return` list
   unnest_wider(col = where(is.list)) %>% 
@@ -992,6 +993,7 @@ db <- as_tibble(rbody_geo[2]) %>% # the [2] drops the error column
 So, what are the possible stntypes?
 
 ```{r}
+#| eval: false
 table(db$stntype)
 ```
 
@@ -1000,7 +1002,8 @@ What are those? GW has got to be groundwater. HYD is Hydrology, presumably??? SO
 Let's knock off the GW and see if we can figure the others out.
 
 ```{r}
-#| rows.print = 30
+#| eval: false
+##| rows.print: 30
 dbNoGW <- db %>% 
   filter(stntype != 'GW') %>% 
   select(station, stntype, stname, shortname, parent, commence, cease, everything())
@@ -1013,7 +1016,8 @@ So, the SOB don't have any info, the HYD seem to be A and B versions of the VIR.
 Let's clean that up a bit first before figuring that out.
 
 ```{r}
-#| rows.print = 30
+#| eval: false
+##| rows.print = 30
 dbNoGW <- dbNoGW %>% 
   filter(stntype != 'SOB') %>% 
   arrange(station)

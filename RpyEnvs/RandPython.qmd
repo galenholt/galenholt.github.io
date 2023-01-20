@@ -3,6 +3,8 @@ title: "Using R and python together"
 format: html
 editor: visual
 engine: knitr
+execute:
+  error: true
 ---
 
 ```{r setup}
@@ -17,7 +19,11 @@ knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 
 I have a project primarily in R, but needs some python. For the big python work, I'll have a directory with a `poetry` environment and python code. But I've run into the issue that I want to run just one or two lines of python from R. The specific case is that I have python code for extracting river gauge data, and I've filtered some river gauges in R for something else, and rather than do the finding of the gauges again in python, I'd rather just do the extraction in R. I think that means I have to sort out {reticulate}, but also how to point reticulate at my python environment. The situation I have is a `poetry` project inside a directory with an Rproj (which probably needs to be split up, but it's what I have now).
 
-My [python_setup](RpyEnvs/python_setup.qmd) sets up a very similar situation, so let's see if I can use it.
+My [python_setup](python_setup.qmd) sets up a very similar situation, so let's see if I can use it.
+
+### Additional issues
+
+This all worked, but then stopped- python chunks separated by R chunks couldn't share objects. This particular notebook still ran, but [others](RpyEnvs/py_r_dates.qmd) would run fine interactively but when rendered would throw errors about "name 'pyobjname' is not defined". I tried making sure jupyter was in the python env and set `engine: knitr` in yaml headers, since that's what the help suggested. And I set the `QUARTO_PYTHON` environment variable in an `_environments` file, since that helped me previously. It's unclear why it worked previously.
 
 ## Set up reticulate from R
 
@@ -29,11 +35,11 @@ Point reticulate at the venv. See [stackoverflow](https://stackoverflow.com/ques
 
 If this is more than a one-off and you're using an R project, it's usually better to set the `RETICULATE_PYTHON` environment variable in `.Rprofile`. Here, that means adding this line in `.Rprofile` . This has the added bonus of stopping Rstudio/R throwing warnings about conda at startup when it detects {reticulate} being used in the project.
 
-``` r
+``` {{r}}
 Sys.setenv(RETICULATE_PYTHON = file.path('RpyEnvs', 'pytesting', '.venv'))
 ```
 
-See [Quarto notes](quarto_notes.qmd) for some similar issues for different python-related env variables.
+See [Quarto notes](../small_helpers/quarto_notes.qmd) for some similar issues for different python-related env variables.
 
 Load the library. Interestingly, the python code chunks will run without loading the library, but I can't access their values using `py$pythonobject` unless I load it.
 
@@ -103,4 +109,23 @@ Interestingly, the `r.` notation to get R into python does *not* need `reticulat
 
 ```{python}
 r.c + b
+```
+
+### Python-R-python and NameErrors
+
+Elsewhere I'm running into a new issue of getting "NameError: name 'pyobjectname' is not defined" when I try to access an object defined in a previous python chunk in a later python chunk. It seems to be worse when there's an R chunk in the middle. It doesn't seem to be happening here, since the preceding chunk could get at `b`, which was defined way earlier.
+
+Does the issue happen when R has touched it? YES. This all runs fine interactively, but when I try to render, I get "Error in py_call_impl(callable, dots\$args, dots\$keywords) : NameError: name 'b' is not defined" in the python chunk.
+
+```{python}
+b + a
+```
+
+```{r}
+rb <- py$b + c
+rb
+```
+
+```{python}
+b + a
 ```

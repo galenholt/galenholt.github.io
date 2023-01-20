@@ -2,9 +2,9 @@ project:
   type: website
   output-dir: docs
   execute-dir: project
-  render: 
-    - "*.qmd"
-    - "!R_py_type_passing.qmd"
+  # render: 
+  #   - "*.qmd"
+  #   - "!R_py_type_passing.qmd"
 website:
   title: "Galen"
   navbar:
@@ -85,6 +85,8 @@ website:
               text: "Shared R-py project structure"
             - href: RpyEnvs/py_r_dates.qmd
               text: "Passing complex objects py-R"
+            - href: RpyEnvs/R_py_type_passing.qmd
+              text: "Passing types between R and python"
             - href: RpyEnvs/py_r_project_overview.qmd
               text: "Overview of building R-py package"
             - href: RpyEnvs/R_py_package.qmd

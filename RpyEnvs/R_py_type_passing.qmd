@@ -2,7 +2,8 @@
 title: "R-py type passing"
 author: "Galen Holt"
 engine: knitr
-
+execute:
+  error: true
 ---
 
 ```{r setup}
@@ -14,7 +15,8 @@ knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 ```
 
 ## Note- quarto renders fail
-This runs fine interactively, but when I render, everything fails. The python chunks lose what was in the previous ones, and the references to `py$` in R chunks all fail. For now I'm going to just take this off the render list until I figure out what's up.
+
+This runs fine interactively, but when I render, everything fails. The python chunks lose what was in the previous ones, and the references to `py$` in R chunks all fail. For now I'm going to just skip errors and have this not render correctly, which is unsatisfying. Not much more I can do though until I sort out the NameError issue, which is tricky because [it doesn't replicate consistently](python_namerror.qmd).
 
 ## Passing types
 

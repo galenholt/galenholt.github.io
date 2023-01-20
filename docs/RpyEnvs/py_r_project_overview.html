@@ -345,6 +345,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/R_py_type_passing.html" class="sidebar-item-text sidebar-link">Passing types between R and python</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../RpyEnvs/py_r_project_overview.html" class="sidebar-item-text sidebar-link active">Overview of building R-py package</a>
   </div>
 </li>
@@ -526,7 +531,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  reticulate<span class="sc">::</span><span class="fu">source_python</span>(<span class="fu">system.file</span>(<span class="st">"python/py_functions.py"</span>, <span class="at">package =</span> <span class="st">'packagename'</span>), <span class="at">envir =</span> <span class="fu">globalenv</span>())</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>See <a href="RpyEnvs/R_py_package.qmd">some initial work I’ve done sorting this out</a>.</p>
+<p>See <a href="../RpyEnvs/R_py_package.html">some initial work I’ve done sorting this out</a>.</p>
 </section>
 <section id="passing-types" class="level2">
 <h2 class="anchored" data-anchor-id="passing-types">Passing types</h2>
@@ -536,7 +541,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>allowance <span class="ot">=</span>{<span class="st">'minThreshold'</span><span class="sc">:</span> MINT, <span class="st">'maxThreshold'</span><span class="sc">:</span> MAXT, <span class="st">'duration'</span><span class="sc">:</span> DUR, <span class="st">'drawdown'</span><span class="sc">:</span> DRAW}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>I have sorted out how to call functions with arguments of a specific type (lists, dicts) that are not necessarily the same between languages. See <a href="R_py_type_passing.qmd">my testing of type-passing</a> (well, if I could get it to render in quarto).</p>
+<p>I have sorted out how to call functions with arguments of a specific type (lists, dicts) that are not necessarily the same between languages. See <a href="../RpyEnvs/R_py_type_passing.html">my testing of type-passing</a> (well, if I could get it to render in quarto).</p>
 </section>
 <section id="question" class="level2">
 <h2 class="anchored" data-anchor-id="question">Question</h2>

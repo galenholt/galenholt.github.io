@@ -71,7 +71,7 @@ That's a whole new thing to figure out, I think.
 
 If we assume the user *has the python dependencies installed and accessible to reticulate*, then the `Config/reticulate` works with the following `.onLoad`.
 
-``` R
+``` r
 .onLoad <- function(libname, pkgname) {
   reticulate::configure_environment(pkgname)
 
@@ -80,7 +80,7 @@ If we assume the user *has the python dependencies installed and accessible to r
 }
 ```
 
-See [some initial work I've done sorting this out](RpyEnvs/R_py_package.qmd).
+See [some initial work I've done sorting this out](R_py_package.qmd).
 
 ## Passing types
 

@@ -2,6 +2,9 @@
 title: "Complex passing py-R"
 author: "Galen Holt"
 editor: visual
+engine: knitr
+execute:
+  error: true
 ---
 
 ```{r setup}
@@ -109,7 +112,7 @@ rdates <- purrr::map(demodates, py_to_r) %>%
   unnest(cols = Date)
 ```
 
-But what was much faster was to comvert the column to strings in python with
+But what was much faster was to convert the column to strings in python with
 
 ```{python}
 timedf['date_str'] = timedf['date'].astype(str)
