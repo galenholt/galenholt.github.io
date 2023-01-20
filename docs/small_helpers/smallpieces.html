@@ -285,6 +285,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <a href="../RpyEnvs/R_py_shared_projects.html" class="sidebar-item-text sidebar-link">Shared R-py project structure</a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/py_r_dates.html" class="sidebar-item-text sidebar-link">Passing complex objects py-R</a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -363,8 +368,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <ul>
   <li><a href="#what-is-this" id="toc-what-is-this" class="nav-link active" data-scroll-target="#what-is-this">What is this?</a>
   <ul class="collapse">
-  <li><a href="#rmarkdownquarto-with-rproject-directory-as-root" id="toc-rmarkdownquarto-with-rproject-directory-as-root" class="nav-link" data-scroll-target="#rmarkdownquarto-with-rproject-directory-as-root">Rmarkdown/quarto with rproject directory as root</a></li>
+  <li><a href="#rmarkdown-with-rproject-directory-as-root" id="toc-rmarkdown-with-rproject-directory-as-root" class="nav-link" data-scroll-target="#rmarkdown-with-rproject-directory-as-root">Rmarkdown with rproject directory as root</a></li>
   <li><a href="#create-a-directory-if-doesnt-exist" id="toc-create-a-directory-if-doesnt-exist" class="nav-link" data-scroll-target="#create-a-directory-if-doesnt-exist">Create a directory if doesn’t exist</a></li>
+  <li><a href="#windows-paths" id="toc-windows-paths" class="nav-link" data-scroll-target="#windows-paths">Windows paths</a></li>
   <li><a href="#look-at-all-duplicate-values" id="toc-look-at-all-duplicate-values" class="nav-link" data-scroll-target="#look-at-all-duplicate-values">Look at all duplicate values</a></li>
   <li><a href="#changing-the-column-type-on-readr" id="toc-changing-the-column-type-on-readr" class="nav-link" data-scroll-target="#changing-the-column-type-on-readr">Changing the column type on readr</a></li>
   <li><a href="#sourcing-all-files-in-a-directory" id="toc-sourcing-all-files-in-a-directory" class="nav-link" data-scroll-target="#sourcing-all-files-in-a-directory">Sourcing all files in a directory</a></li>
@@ -400,15 +406,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="cell" data-hash="smallpieces_cache/html/unnamed-chunk-1_fe8b63b107c7b5bfe6ab5126f3245783">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="rmarkdownquarto-with-rproject-directory-as-root" class="level3">
-<h3 class="anchored" data-anchor-id="rmarkdownquarto-with-rproject-directory-as-root">Rmarkdown/quarto with rproject directory as root</h3>
-<p>I can’t figure out how to avoid this setup chunk. It’s leftover Rmarkdown format, and works fine in quarto too, even if it’s not documented. But converting from Rmarkdown to quarto with <code>knitr::convert_chunk_header</code> kills it, and it’s annoying to always have the header. It seems like setting the project to use the Project directory should do it, and it does for <code>Run all</code>, but not for <code>render</code>.</p>
+<section id="rmarkdown-with-rproject-directory-as-root" class="level3">
+<h3 class="anchored" data-anchor-id="rmarkdown-with-rproject-directory-as-root">Rmarkdown with rproject directory as root</h3>
+<p>We often want to set the root directory not to the file but to the project. In Rmarkdown, we use the following in the <code>setup</code> chunk. Quarto typically uses a different method, but see the <a href="../small_helpers/quarto_notes.html">Quarto notes</a> for some exceptions. Converting from Rmarkdown to quarto with <code>knitr::convert_chunk_header</code> kills this block, and it’s annoying to always have the header. In both Rmarkdown and Quarto, this <em>has</em> to be in a <code>setup</code> chunk.</p>
 <div class="cell" data-hash="smallpieces_cache/html/setup_d7aff98289e5009be43b806509a5d38c">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r setup}</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_knit<span class="sc">$</span><span class="fu">set</span>(<span class="at">root.dir =</span> rprojroot<span class="sc">::</span><span class="fu">find_rstudio_root_file</span>())</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>I thought it’d be easiest to set in the global options, but that doesn’t seem to persist to <code>render</code>.</p>
+<p>I thought it’d be easiest to set in the global options, but that doesn’t seem to persist to <code>render</code> or <code>knit</code>.</p>
 <p><img src="images/paste-4D3CEEB1.png" class="img-fluid"></p>
 </section>
 <section id="create-a-directory-if-doesnt-exist" class="level3">
@@ -418,23 +424,38 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">dir.exists</span>(newdir)) {<span class="fu">dir.create</span>(newdir, <span class="at">recursive =</span> <span class="cn">TRUE</span>)}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
+<section id="windows-paths" class="level3">
+<h3 class="anchored" data-anchor-id="windows-paths">Windows paths</h3>
+<p>Windows paths come in with <code>\</code>, which R treats as an escape character. We can use <code>file.path</code> to just avoid them, or replace them with <code>/</code> or <code>\\</code>. But sometimes we just want to paste a path in quickly and be done with it. As of R 4.0, we can do that with <code>r</code>. It requires the parentheses to be in a funny place- inside the quotes.</p>
+<div class="cell" data-hash="smallpieces_cache/html/unnamed-chunk-3_248030ef74e3124745953a45f3b5b73d">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>pastepath <span class="ot">&lt;-</span> r<span class="st">"(C:\Users\username\path</span><span class="sc">\t</span><span class="st">o\somewhere.csv)"</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>pastepath</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "C:\\Users\\username\\path\\to\\somewhere.csv"</code></pre>
+</div>
+</div>
+<p>And we can feed that straight into functions that need paths, eg.</p>
+<div class="cell" data-hash="smallpieces_cache/html/unnamed-chunk-4_4ea02847a46c8ecc2d64fdf02cfafce6">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>readr<span class="sc">::</span><span class="fu">read_csv</span>(r<span class="st">"(C:\Users\username\path</span><span class="sc">\t</span><span class="st">o\somewhere.csv)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
 <section id="look-at-all-duplicate-values" class="level3">
 <h3 class="anchored" data-anchor-id="look-at-all-duplicate-values">Look at all duplicate values</h3>
 <p>Functions like <code>duplicated</code> give the second (and greater) values that match. e.g.</p>
-<div class="cell" data-hash="smallpieces_cache/html/unnamed-chunk-3_2581bf66d3b14272c7442316079fbc5a">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">2</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">duplicated</span>(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="smallpieces_cache/html/unnamed-chunk-5_797d68d5bcabcfdfe355dd5d6ab83865">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">2</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">duplicated</span>(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] FALSE FALSE  TRUE FALSE FALSE  TRUE</code></pre>
 </div>
 </div>
 <p>But we often want to grab all values that are repeated- ie if everything matches in one column what’s going on in the others. do do that we can use <code>group_by</code> and <code>filter</code> to get those with &gt; 1 row.</p>
 <p>IE, let’s compare cars with duplicated mpg values</p>
-<div class="cell" data-hash="smallpieces_cache/html/unnamed-chunk-4_49c8fe9a1e576445bfa2ff2b415f2a91">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>mtcars <span class="sc">%&gt;%</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(mpg) <span class="sc">%&gt;%</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="fu">n</span>() <span class="sc">&gt;</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(mpg) <span class="co"># makes the comparisons easier</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="smallpieces_cache/html/unnamed-chunk-6_b3b779de75c73a21aba879de0279bfb4">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>mtcars <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(mpg) <span class="sc">%&gt;%</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="fu">n</span>() <span class="sc">&gt;</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(mpg) <span class="co"># makes the comparisons easier</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <div data-pagedtable="false">
@@ -450,14 +471,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3 class="anchored" data-anchor-id="changing-the-column-type-on-readr">Changing the column type on readr</h3>
 <p>Sometimes with long csvs, readr’s guess of col type based on the first thousand rows is wrong. But only for some cols. If we want to not have to specify all of them, we can use <code>.default</code> and only specify the offending col.</p>
 <p>First, save dummy data</p>
-<div class="cell" data-hash="smallpieces_cache/html/unnamed-chunk-5_98a34bf12e86ee0ed72b3ed2783c0537">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>dumtib <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">c1 =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3000</span>, <span class="at">c2 =</span> <span class="fu">rep</span>(letters, <span class="at">length.out =</span> <span class="dv">3000</span>), <span class="at">c3 =</span> <span class="fu">c</span>(c1[<span class="dv">1</span><span class="sc">:</span><span class="dv">2000</span>], c2[<span class="dv">2001</span><span class="sc">:</span><span class="dv">3000</span>]))</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(dumtib, <span class="at">file =</span> <span class="fu">file.path</span>(newdir, <span class="st">'colspectest.csv'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="smallpieces_cache/html/unnamed-chunk-7_4ed03fbb87a7144f89dea6a52026347a">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>dumtib <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">c1 =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3000</span>, <span class="at">c2 =</span> <span class="fu">rep</span>(letters, <span class="at">length.out =</span> <span class="dv">3000</span>), <span class="at">c3 =</span> <span class="fu">c</span>(c1[<span class="dv">1</span><span class="sc">:</span><span class="dv">2000</span>], c2[<span class="dv">2001</span><span class="sc">:</span><span class="dv">3000</span>]))</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(dumtib, <span class="at">file =</span> <span class="fu">file.path</span>(newdir, <span class="st">'colspectest.csv'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>If we read in without the cols, it assumes c3 is numeric and we get errors. But it doesn’t. why not? It keeps getting me elsewhere, but now I can’t create the problem. FIgure this out later, I guess</p>
-<div class="cell" data-hash="smallpieces_cache/html/unnamed-chunk-6_ac3bd99734a17e6c3a833965c50af4b3">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>filein <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">file.path</span>(newdir, <span class="st">'colspectest.csv'</span>), <span class="at">guess_max =</span> <span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="smallpieces_cache/html/unnamed-chunk-8_49a98a5020dc5a0eac4d57924a267df3">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>filein <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">file.path</span>(newdir, <span class="st">'colspectest.csv'</span>), <span class="at">guess_max =</span> <span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Rows: 3000 Columns: 3
 ── Column specification ────────────────────────────────────────────────────────
@@ -470,53 +491,53 @@ dbl (1): c1
 </div>
 </div>
 <p>Tell it the third col is character.</p>
-<div class="cell" data-hash="smallpieces_cache/html/unnamed-chunk-7_5576fac57de13c4a395b5bb58e97a9a3">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>filein <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="fu">file.path</span>(newdir, <span class="st">'colspectest.csv'</span>), <span class="at">col_types =</span> <span class="fu">cols</span>(<span class="at">.default =</span> <span class="st">"?"</span>, <span class="at">c3 =</span> <span class="st">"c"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="smallpieces_cache/html/unnamed-chunk-9_e980a634ad5c8ce3b45f44b913bda507">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>filein <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="fu">file.path</span>(newdir, <span class="st">'colspectest.csv'</span>), <span class="at">col_types =</span> <span class="fu">cols</span>(<span class="at">.default =</span> <span class="st">"?"</span>, <span class="at">c3 =</span> <span class="st">"c"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="sourcing-all-files-in-a-directory" class="level3">
 <h3 class="anchored" data-anchor-id="sourcing-all-files-in-a-directory">Sourcing all files in a directory</h3>
 <p>Yes, we <em>should</em> be building as a library in this case, but it’s often easier at least initially to not deal with the overhead. If, for example, all functions are in the ‘functions’ directory,</p>
-<div class="cell" data-hash="smallpieces_cache/html/unnamed-chunk-8_6d3fe152e13008f21440bcca875ac4d9">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Location-setting header</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># source everything in the functions folder. This really is turning into a package</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>funfiles <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="st">'functions'</span>)</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (s <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(funfiles)) {</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">'functions'</span>, funfiles[s])) </span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="smallpieces_cache/html/unnamed-chunk-10_4960d99762a09a1fdc9d772fae37640a">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Location-setting header</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># source everything in the functions folder. This really is turning into a package</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>funfiles <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="st">'functions'</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (s <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(funfiles)) {</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">'functions'</span>, funfiles[s])) </span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="render-big-dfs-in-html" class="level3">
 <h3 class="anchored" data-anchor-id="render-big-dfs-in-html">Render big dfs in html</h3>
 <p>Render in quarto defaults to making dfs text, and so often we can’t see all the columns (or rows), or access them. setting the <code>df-print</code> option to paged allows them to work. The header should look like this (commented out because this isn’t a header)</p>
-<div class="cell" data-hash="smallpieces_cache/html/unnamed-chunk-9_256e345ce3422ecf0e3500240e9ff10f">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># title: "TITLE"</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># author: "AUTHOR"</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># format:</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   html:</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co">#     df-print: paged</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="smallpieces_cache/html/unnamed-chunk-11_f2d28cebc675bf607d3d7454b9205c36">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># title: "TITLE"</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># author: "AUTHOR"</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># format:</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   html:</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co">#     df-print: paged</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="convert-all-rmd-to-qmd" class="level3">
 <h3 class="anchored" data-anchor-id="convert-all-rmd-to-qmd">Convert all rmd to qmd</h3>
 <p><code>convert_chunk_headers</code> is the main thing, but I want to apply it to a full directory. Let’s get the dir for here.</p>
-<div class="cell" data-hash="smallpieces_cache/html/unnamed-chunk-10_cab6215e442d301b42a18a0635e846df">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>allrmd <span class="ot">&lt;-</span> <span class="fu">list.files</span>(rprojroot<span class="sc">::</span><span class="fu">find_rstudio_root_file</span>(), <span class="at">pattern =</span> <span class="st">'.Rmd'</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">full.names =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>allrmd <span class="ot">&lt;-</span> allrmd[<span class="sc">!</span>stringr<span class="sc">::</span><span class="fu">str_detect</span>(allrmd, <span class="st">'renv'</span>)]</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>allqmd <span class="ot">&lt;-</span> stringr<span class="sc">::</span><span class="fu">str_replace</span>(allrmd, <span class="st">'.Rmd'</span>, <span class="st">'.qmd'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="smallpieces_cache/html/unnamed-chunk-12_f37a3602aea5f77f24b0c326cc02f68f">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>allrmd <span class="ot">&lt;-</span> <span class="fu">list.files</span>(rprojroot<span class="sc">::</span><span class="fu">find_rstudio_root_file</span>(), <span class="at">pattern =</span> <span class="st">'.Rmd'</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">full.names =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>allrmd <span class="ot">&lt;-</span> allrmd[<span class="sc">!</span>stringr<span class="sc">::</span><span class="fu">str_detect</span>(allrmd, <span class="st">'renv'</span>)]</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>allqmd <span class="ot">&lt;-</span> stringr<span class="sc">::</span><span class="fu">str_replace</span>(allrmd, <span class="st">'.Rmd'</span>, <span class="st">'.qmd'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Can I vectorize? No, but a loop works. Git commit first!</p>
-<div class="cell" data-hash="smallpieces_cache/html/unnamed-chunk-11_cf358590f995fde7f9530600bd45206c">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(allrmd)) {</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">convert_chunk_header</span>(<span class="at">input =</span> allrmd[i], <span class="at">output =</span> allqmd[i])</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="smallpieces_cache/html/unnamed-chunk-13_b3ee4959caae19be2a80184c51250f8e">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(allrmd)) {</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">convert_chunk_header</span>(<span class="at">input =</span> allrmd[i], <span class="at">output =</span> allqmd[i])</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now, if you want to really go for it, delete the rmds. That makes git happier because then it can treat this as a rename and keep tracking the files.</p>
 <p><em>Dangerous</em>- make sure you’ve git-committed. I’m commenting out and eval: false ing this</p>
-<div class="cell" data-hash="smallpieces_cache/html/unnamed-chunk-12_688c840cb0e5e3d0daf6c4204cf755fb">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># file.remove(allrmd)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="smallpieces_cache/html/unnamed-chunk-14_1e2106a4d4cf618a09cc1febb0b9e76f">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># file.remove(allrmd)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 

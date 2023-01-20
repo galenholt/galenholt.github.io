@@ -220,6 +220,11 @@ ul.task-list li input[type="checkbox"] {
   <a href="../RpyEnvs/R_py_shared_projects.html" class="sidebar-item-text sidebar-link">Shared R-py project structure</a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/py_r_dates.html" class="sidebar-item-text sidebar-link">Passing complex objects py-R</a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -311,6 +316,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#set-the-python-version" id="toc-set-the-python-version" class="nav-link" data-scroll-target="#set-the-python-version">Set the python version</a></li>
   <li><a href="#set-poetry" id="toc-set-poetry" class="nav-link" data-scroll-target="#set-poetry">Set poetry</a></li>
   <li><a href="#using-poetry-for-dependencies" id="toc-using-poetry-for-dependencies" class="nav-link" data-scroll-target="#using-poetry-for-dependencies">Using poetry for dependencies</a></li>
+  <li><a href="#complications-with-add" id="toc-complications-with-add" class="nav-link" data-scroll-target="#complications-with-add">Complications with <code>add</code></a></li>
   <li><a href="#vs-code-note" id="toc-vs-code-note" class="nav-link" data-scroll-target="#vs-code-note">VS code note</a></li>
   </ul></li>
   </ul>
@@ -433,6 +439,12 @@ ul.task-list li input[type="checkbox"] {
 <p>Now rebuild from <code>.toml</code> in the project with <code>poetry install</code>. The <code>.venv</code> is there now, but VS still can’t find it.</p>
 <p>OK, shut everything down, and instead of opening VS again as usual, I opened it and then opened a new window, and now it works. It was somehow setting the root based on where VS happened to open, rather than based on where files were. That probably makes sense for a git repo with just python, but broke here. I assume we need to add the <code>venv</code> directory to the gitignore.</p>
 <p>Just did <code>poetry add pandas</code> and it works and I immediately have access to it in a python script.</p>
+</section>
+<section id="complications-with-add" class="level3">
+<h3 class="anchored" data-anchor-id="complications-with-add">Complications with <code>add</code></h3>
+<p>To add a specific version of a package, use</p>
+<pre><code>poetry add packagename==2.0.5</code></pre>
+<p>There are a number of other ways to specify version ranges, installing from git, etc.</p>
 </section>
 <section id="vs-code-note" class="level3">
 <h3 class="anchored" data-anchor-id="vs-code-note">VS code note</h3>
