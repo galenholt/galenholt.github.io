@@ -1,0 +1,86 @@
+---
+title: "R-py type passing"
+author: "Galen Holt"
+engine: knitr
+
+---
+
+```{r setup}
+#| warning: false
+#| message: false
+
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+
+```
+
+## Note- quarto renders fail
+This runs fine interactively, but when I render, everything fails. The python chunks lose what was in the previous ones, and the references to `py$` in R chunks all fail. For now I'm going to just take this off the render list until I figure out what's up.
+
+## Passing types
+
+I have a python function that takes dicts and lists as arguments. How do I pass those from R? We can't just assign them to a variable in R, because those formats don't work- e.g. we cannot create the lists and dicts in R to pass.
+
+```{r}
+#| eval: false
+outputType = ['summary', 'all']
+
+allowance ={'minThreshold': MINT, 'maxThreshold': MAXT, 'duration': DUR, 'drawdown': DRAW}
+```
+
+So, let's write a function to tell me the type of what I'm passing and try a few things.
+
+```{python}
+def test_type(testarg):
+  
+  return(type(testarg))
+  
+```
+
+Is a named list a dict or a list? what about just a `c()`? Is that a list?
+
+```{r}
+rlist <- list(dict1 = 100, dict2 = 'testing')
+rc <- c(100, 50)
+```
+
+The named list is a dict. Look at it in python and R.
+
+```{python}
+test_type(r.rlist)
+```
+
+```{r}
+py$test_type(rlist)
+```
+
+The c() is a list- but see below- this fails if it's length-one
+
+```{r}
+py$test_type(rc)
+```
+
+An unnamed list is a list
+
+```{r}
+rlistu = list(100, 'testunname')
+py$test_type(rlistu)
+```
+
+That is useful, since creating a length-one list doesn't work with single values or `c()` wrapping single values
+
+```{r}
+rone = 100
+py$test_type(rone)
+```
+
+```{r}
+ronec = c('testingc')
+py$test_type(ronec)
+```
+
+We *do* get a length-one list with an unnamed list of length 1.
+
+```{r}
+ronel = list(100)
+py$test_type(ronel)
+```

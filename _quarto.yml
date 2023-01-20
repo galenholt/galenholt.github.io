@@ -26,29 +26,53 @@ website:
     - title: "Code Demos"
       contents:
         - code_demos.qmd
+        
         - section: "Small how-tos"
           contents:
             - href: small_helpers/smallpieces.qmd
               text: "Bits and pieces"
+            - href: small_helpers/quarto_notes.qmd
+              text: "Quarto notes"
             - href: setup/rstudio_themes.qmd
               text: "Editing Rstudio themes"
             - href: small_helpers/zip_downloading.qmd
               text: "Download and unpack zips"
+            - href: small_helpers/json_api_construction.qmd
+              text: "Building JSON syntax from R for API calls"
+              
         - section: "Plotting"
           contents:
             - href: plotting/tweaks_tricks.qmd
               text: "Saving and themeing plots"
             - href: plotting/hcl_exploration.qmd
               text: "Exploring HCL colorspace"
+            - href: plotting/rgb_to_hex.qmd
+              text: "Converting RGB to hex colors"
             - plotting/fonts.qmd
             - href: plotting/faded_colors.qmd
               text: "Faded 2d colour ramps"
             - href: plotting/math_in_ggplot.qmd
               text: "Latex in ggplot with latex2exp"
+              
         - section: "Theory and simulation"
           contents:
             - href: simmodelling/twoDautocorr.qmd
               text: "Generate 2d autocorrelation"
+              
+        - section: "Drones"
+          contents:
+            - href: drones/overlaps_reactive.qmd
+              text: "Calculations for flight planning"
+            - href: drones/overlaps.qmd
+              text: 'Figuring out flight plan calcs'
+            - href: pix4d/read_pix4d_outputs.qmd
+              text: "Reading and plotting pix4d outputs"
+              
+        - section: "Observable"
+          contents:
+            - href: observable/trying_observable.qmd
+              text: "Figuring out how to use ojs chunks"
+              
         - section: "R and python"
           contents:
             - href: RpyEnvs/python_setup.qmd
@@ -61,7 +85,12 @@ website:
               text: "Shared R-py project structure"
             - href: RpyEnvs/py_r_dates.qmd
               text: "Passing complex objects py-R"
-        - section: "Setting things up"
+            - href: RpyEnvs/py_r_project_overview.qmd
+              text: "Overview of building R-py package"
+            - href: RpyEnvs/R_py_package.qmd
+              text: "Wrapping python in R package"
+              
+        - section: "Setting up projects"
           contents:
             - href: RpyEnvs/rig.qmd
               text: "Managing old R versions with rig"
@@ -69,11 +98,15 @@ website:
               text: "Getting this website working"
             - href: RpyEnvs/managingprivate.qmd
               text: "Private data for website repo"
+            - href: setup/R_in_VS.qmd
+              text: "Using R in VScode"
+              
         - section: "Building packages"
           contents:
             - href: package/package_creation.qmd
               text: 'First pass at building a package'
             - href: vicwater/vicwater_testing.qmd
+            
         - section: "Data"
           contents:
             - href: data_acquisition/bom_gauges.qmd

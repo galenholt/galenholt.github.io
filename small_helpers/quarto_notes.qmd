@@ -5,7 +5,7 @@ format:
     df-print: kable
 ---
 
-### Quarto root directory
+## Quarto root directory
 
 If there's not a Quarto project (*which is not the same as an Rproject*), i.e. the .qmds are standalone, then the above rmarkdown method works to set the root to the Rproject. But if there is a Quarto project (I've moved to almost always doing this), then we can set the Quarto root directory in the \_quarto.yml for the project. There are actually two useful settings we can make there- a project-wide output directory, and what to use to execute. There are (to my knowledge) two options for `execute-dir`- `execute-dir: file` and `execute-dir: project`, which set the root for rendering as the file location or the project. It almost always makes most sense to use `project`, because then everything uses the same reference for relative paths. For this website, that yaml is
 
@@ -17,7 +17,7 @@ project:
   execute-dir: project
 ```
 
-#### Nested Rprojects
+### Nested Rprojects
 
 The only exception that I've run into so far is a weird situation where I have a Quarto project with an Rproject in a subdirectory because I want the Quarto to have access to several different code projects. The catch is that if I use paths relative to the R project and ask Quarto to render, all the paths are wrong. They are also wrong if I `Run` or run the code cells interactively. If I add the Rmarkdown setup chunk above `knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())`, then `Run` and interactive stuff works, but when I try to `quarto render`, it can't find the Rproject because it's looking at the same level and up, and the Rproj is in a directory down.
 
@@ -118,4 +118,33 @@ To print more rows, we can use the `rows.print` option.
 ```{r}
 #| rows.print = 15
 iris
+```
+
+## Website
+
+### Finding new pages
+
+I often work on a bunch of pages and actually merge and push rarely. To identify pages that are present in the repo but not yet in the yaml (and so will not be included in the website), I wrote a little function that finds the files not in the yaml and also qmds in the yml but without a file, as when we change filenames. It's available in the `functions` dir and here:
+
+```{r}
+find_missing_pages <- function() {
+  qmd_in_proj <- list.files(pattern = "*.qmd", recursive = TRUE)
+  qmd_in_yml <- readLines("_quarto.yml") |> 
+    purrr::keep(\(x) grepl(".qmd", x)) |> 
+    gsub('\\s', '', x = _) |> 
+    gsub('-', '', x = _) |> 
+    gsub('href:', '', x = _)
+  # The values in the `render` section are still there, but that's ok
+  
+  not_present <- which(!(qmd_in_proj %in% qmd_in_yml))
+  
+  missing_pages <- qmd_in_proj[not_present]
+  
+  no_file <- which(!(qmd_in_yml %in% qmd_in_proj))
+  
+  broken_links <- qmd_in_yml[no_file]
+
+  
+  return(list(missing_pages = missing_pages, no_file_present = broken_links))
+}
 ```

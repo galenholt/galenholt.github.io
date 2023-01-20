@@ -1,0 +1,371 @@
+---
+title: "Drone flight calculations"
+author: "Galen Holt"
+---
+
+This is an interactive page based on [more detailed exploration of drone overlaps](overlaps.qmd).
+
+This gives us the opportunity to plug in flight parameters and back-calculate others. For example, give us the size of the photos on the ground given height, the needed drone flight distance for a desired overlap at a given height, or the speed we need to fly at a given height to yield the right overlap given the photo interval.
+
+```{r}
+#| echo: false
+#| message: false
+library(dplyr)
+source(file.path('functions', 'drone_overlaps.R'))
+```
+
+```{r}
+#| echo: false
+#| message: false
+# Build a reference table of drone properties
+
+drone_aspects <- tidyr::expand_grid(drone = c('Mini 2', 'Phantom 4 Pro V2'),
+                                    aspect = c('3:2', '4:3', '16:9')) |> 
+  mutate(image_h = c(NA, 3000, 2250, 3648, 3648, 3078),
+         image_w = c(NA, 4000, 4000, 5472, 4864, 5472))
+
+droneprops <- tibble::tibble(drone = c('Mini 2', 'Phantom 4 Pro V2'),
+                             sensor_h = c(4.7, 8.8),
+                             sensor_w = c(6.3, 13.2),
+                             focal_length = c(4.5, 8.8))
+
+droneprops <- dplyr::left_join(droneprops, drone_aspects)
+
+```
+
+<!-- I think I have to pre-calculate everything, and then serve the outputs (or re-write all my processing in observable, and I don't want to do that). -->
+
+<!-- I think that means using a heatmap versions and doubling it up for each drone. Shiny really would be better. -->
+
+<!-- Let's assume overlaps of 80% so this doesn't get too out of hand. -->
+
+```{r}
+#| echo: false
+dopts <- tidyr::expand_grid(altitude_m = seq(1,50, by = 0.1), 
+                              overlap = seq(0.8, 0.8, by = 0.05))
+
+droned <- dplyr::full_join(droneprops, dopts, by = character())
+
+
+vopts <- tidyr::expand_grid(altitude_m = seq(1,50, by = 0.1), 
+                              overlap = seq(0.8, 0.8, by = 0.05),
+                              intervals = seq(0.1, 5, by = 0.1))
+
+dronev <- dplyr::full_join(droneprops, vopts, by = character())
+
+iopts <- tidyr::expand_grid(altitude_m = seq(1,50, by = 0.1), 
+                              overlap = seq(0.8, 0.8, by = 0.05),
+                              velocity_ms = seq(0.1, 5, by = 0.1))
+
+dronei <- dplyr::full_join(droneprops, iopts, by = character())
+
+rm(dopts, vopts, iopts)
+```
+
+```{r}
+#| echo: false
+droned <- droned |> 
+  mutate(photo_dist_h = drone_dist_H_o(altitude_m, overlap, focal_length, 
+                                 sensor_h, image_h),
+         photo_dist_w = drone_dist_H_o(altitude_m, overlap, focal_length, 
+                                 sensor_w, image_w),
+         ground_dist_h = ground_dist_H_o(altitude_m, overlap, focal_length, 
+                                 sensor_h, image_h),
+         ground_dist_w = ground_dist_H_o(altitude_m, overlap, focal_length, 
+                                 sensor_w, image_w)) |>
+  select(-starts_with('sensor'), -starts_with('image')) |>
+  tidyr::pivot_longer(cols = contains('dist'),
+                      names_to = 'direction', 
+                      values_to = 'distance') |>
+  tidyr::separate(direction, into = c('type', 'direction'), sep = -1) |> 
+  tidyr::pivot_wider(names_from = type, values_from = distance) |> 
+  rename(photo_distance_m = photo_dist_, ground_distance_m = ground_dist_)
+
+dronev <- dronev |> 
+  mutate(velocity_ms = v_H_o(altitude_m, overlap, intervals,
+                       focal_length, sensor_h, image_h))
+
+dronei <- dronei |> 
+  mutate(photo_interval = t_H_o(altitude_m, overlap, velocity_ms,
+                       focal_length, sensor_h, image_h))
+```
+
+<!-- This hits the javascript heap limit with a range of overlaps. For now let's just enforce overlap of 0.8 because I need to get this done. -->
+
+<!-- A better way to do this is just to do all the math in ojs I think and not have to carry data around. -->
+
+```{r}
+#| cache: false
+#| echo: false
+ojs_define(droned = droned)
+ojs_define(dronev = dronev)
+ojs_define(dronei = dronei)
+```
+
+```{ojs}
+//| echo: false
+import { aq, op } from '@uwdata/arquero'
+
+droned_aq = aq.from(transpose(droned))
+dronev_aq = aq.from(transpose(dronev))
+dronei_aq = aq.from(transpose(dronei))
+
+```
+
+<!-- ```{ojs} -->
+
+<!-- droned_aq.view() -->
+
+<!-- ``` -->
+
+<!-- what are the overlap values? -->
+
+<!-- ```{ojs} -->
+
+<!-- droned_aq -->
+
+<!--   .groupby('overlap') -->
+
+<!--   .count() -->
+
+<!-- ``` -->
+
+<!-- ```{ojs} -->
+
+<!-- dronei_aq.view() -->
+
+<!-- ``` -->
+
+<!-- ```{ojs} -->
+
+<!-- dronev_aq.view() -->
+
+<!-- ``` -->
+
+::: panel-sidebar
+```{ojs}
+//| echo: false
+viewof dronetype = Inputs.checkbox(
+  ["Mini 2", "Phantom 4 Pro V2"],
+  {value: ["Mini 2"],
+    label: "Drone"
+  }
+)
+
+viewof aspect = Inputs.checkbox(
+  ["3:2", "4:3", "16:9"],
+  {value: ["4:3"],
+    label: "Aspect Ratio"
+  }
+)
+
+viewof overlap_p = Inputs.range(
+  [0.7, 0.95],
+  {value: 0.8, step: 0.05, label: "Overlap:"}
+)
+
+viewof height = Inputs.range(
+  [1, 50],
+  {value: 5, step: 0.1, label: "Altitude (m):"}
+)
+
+viewof velocity = Inputs.range(
+  [0.1, 5],
+  {value: 1, step: 0.1, label: "Velocity (m/s):"}
+)
+
+viewof interval = Inputs.range(
+  [0.1, 5],
+  {value: 2, step: 0.1, label: "Photo interval (s):"}
+)
+```
+:::
+
+::: panel-fill
+**For the selected values**
+
+Ground distances (photo footprints) and needed photo distances to achieve overlap are
+
+```{ojs}
+//| echo: false
+dist_h
+  .select('altitude_m', 'overlap', 'direction', 'photo_distance_m', 'ground_distance_m')
+  .view()
+```
+
+For the selected interval and height, the needed velocity is
+
+```{ojs}
+//| echo: false
+vel_h
+  .select('altitude_m', 'overlap', 'intervals', 'velocity_ms')
+  .view()
+```
+
+For the selected velocity, the needed photo interval is
+
+```{ojs}
+//| echo: false
+i_h
+  .select('altitude_m', 'overlap', 'velocity_ms', 'photo_interval')
+  .view()
+```
+:::
+
+```{ojs}
+//| echo: false
+distfilter = droned_aq
+  .params({
+  dr: dronetype,
+  ov: overlap_p,
+  asp: aspect
+})
+  .filter((d, $) => op.includes(d.drone, $.dr))
+  .filter((d, $) => op.equal(d.overlap, $.ov))
+  .filter((d, $) => op.includes(d.aspect, $.asp))
+
+dist_h = distfilter
+  .params({
+  h: height
+})
+  .filter((d, $) => op.equal(d.altitude_m, $.h))
+
+```
+
+```{ojs}
+//| echo: false
+vfilter = dronev_aq
+  .params({
+  dr: dronetype,
+  ov: overlap_p,
+  asp: aspect,
+  inter: interval
+})
+  .filter((d, $) => op.includes(d.drone, $.dr))
+  .filter((d, $) => op.equal(d.overlap, $.ov))
+  .filter((d, $) => op.includes(d.aspect, $.asp))
+  .filter((d, $) => op.equal(d.intervals, $.inter))
+
+vel_h = vfilter
+  .params({
+  h: height
+})
+  .filter((d, $) => op.equal(d.altitude_m, $.h))
+
+```
+
+```{ojs}
+//| echo: false
+ifilter = dronei_aq
+  .params({
+  dr: dronetype,
+  ov: overlap_p,
+  asp: aspect,
+  v: velocity
+})
+  .filter((d, $) => op.includes(d.drone, $.dr))
+  .filter((d, $) => op.equal(d.overlap, $.ov))
+  .filter((d, $) => op.includes(d.aspect, $.asp))
+  .filter((d, $) => op.equal(d.velocity_ms, $.v))
+
+i_h = ifilter
+  .params({
+  h: height
+})
+  .filter((d, $) => op.equal(d.altitude_m, $.h))
+
+```
+
+<!-- ::: {.panel-tabset} -->
+
+<!-- ## Distance -->
+
+<!-- ```{ojs} -->
+
+<!-- //| echo: false -->
+
+<!-- distfilter.view() -->
+
+<!-- ``` -->
+
+<!-- ## Velocity -->
+
+<!-- ```{ojs} -->
+
+<!-- //| echo: false -->
+
+<!-- vfilter.view() -->
+
+<!-- ``` -->
+
+<!-- ## Photo interval -->
+
+<!-- ```{ojs} -->
+
+<!-- //| echo: false -->
+
+<!-- ifilter.view() -->
+
+<!-- ``` -->
+
+<!-- ::: -->
+
+::: panel-tabset
+## Ground distance
+
+```{ojs}
+//| echo: false
+Plot.plot({
+  grid: false,
+  color: {
+    legend: true
+  },
+  marks: [
+    Plot.line(distfilter, {x: "altitude_m", y: "ground_distance_m", stroke: "direction"}),
+    Plot.dot(dist_h, {x: "altitude_m", y: "ground_distance_m", stroke: "drone"})
+  ]
+})
+```
+
+## Photo distance
+
+```{ojs}
+//| echo: false
+Plot.plot({
+  grid: false,
+  color: {
+    legend: true
+  },
+  marks: [
+    Plot.line(distfilter, {x: "altitude_m", y: "photo_distance_m", stroke: "direction"}),
+    Plot.dot(dist_h, {x: "altitude_m", y: "photo_distance_m", stroke: "drone"})
+  ]
+})
+```
+
+## Velocity
+
+```{ojs}
+//| echo: false
+Plot.plot({
+  grid: false,
+  marks: [
+    Plot.line(vfilter, {x: "altitude_m", y: "velocity_ms"}),
+    Plot.dot(vel_h, {x: "altitude_m", y: "velocity_ms"})
+  ]
+})
+```
+
+## Photo interval
+
+```{ojs}
+//| echo: false
+Plot.plot({
+  grid: false,
+  marks: [
+    Plot.line(ifilter, {x: "altitude_m", y: "photo_interval"}),
+    Plot.dot(i_h, {x: "altitude_m", y: "photo_interval"})
+  ]
+})
+```
+:::

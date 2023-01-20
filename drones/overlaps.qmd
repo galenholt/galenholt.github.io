@@ -1,0 +1,419 @@
+---
+title: "Overlaps"
+format: html
+editor: visual
+---
+
+```{r}
+library(dplyr)
+library(ggplot2)
+```
+
+## Calculating photo separation for desired overlaps
+
+There are a lot of variables that go into this. My goal here is to start by making a plot of how this varies with height. And then sort out how to calculate photo frequency given speed (or vice versa). Though Litchi allows photos by distance interval, which is nice.
+
+## GSD
+
+Ground sampling distance. Lots of people determine heights to fly for a desired ground sampling distance (GSD) in cm/pixel. That's useful to know, but we're almost certainly always going to be flying low enough for really good GSD. Our main need here is that the overlap calculations rely on GSD. So, let's find it. The equation is $$GSD_w=\frac{HS_w}{FI_w}$$
+
+and
+
+$$GSD_h=\frac{HS_h}{FI_h}$$
+
+where the subscripts *h* and *w* are the dimensions height (along path) and width (across path), *H* is flight altitude in meters, *S* is sensor width or height (ie physical size of the sensor in mm), *F* is focal length (true, in mm. not 35mm equivalent), and *I* is image width or height in pixels (be careful here- often the default photo settings are 16:9 but the sensor dims are given for 4:3, and the 16:9 crops to get there. Easiest to change to shoot in 4:3, and get better coverage to boot. This gives GSD in m/px. We typically want it in cm/px, so we adjust *H* in the calculations below.
+
+### Where to get those values?
+
+#### Sensor size *I*
+
+DJI sensor sizes are given here <https://www.djzphoto.com/blog/2018/12/5/dji-drone-quick-specs-amp-comparison-page>. For the drones we have, the Mini 2 is 6.3w x 4.7h (called 1/2.3" sensor), and the Phantom 4 Pro V2 is 13.2w x 8.8h (called 1" sensor).
+
+Parameterise for Mini 2
+
+```{r}
+
+sw <- 6.3
+sh <- 4.7
+```
+
+#### Image size
+
+Image sizes depend on photo settings, and are given for the [Mini 2](https://www.dji.com/au/mini-2/specs) and [Phantom 4 Pro V2](https://www.dji.com/au/phantom-4-pro-v2/specs) by DJI. You can also get them from the photo's EXIF data (either in Properties, or more completely from <https://jimpl.com/>. *It's a good idea to check, because the set aspect ratio can change*. Mini can be 16:9 or 4:3 (best), and Phantom can be 16:9, 4:3, or 3:2 (best).
+
+Mini 2
+
+-   4:3: 4000×3000
+
+-   16:9: 4000×2250
+
+Phantom 4 Pro V2
+
+-   3:2 Aspect Ratio: 5472×3648
+
+-   4:3 Aspect Ratio: 4864×3648
+
+-   16:9 Aspect Ratio: 5472×3078
+
+Parameterise for Mini 2 at 4:3
+
+```{r}
+Iw <- 4000
+Ih <- 3000
+```
+
+#### Focal length
+
+I found the true focal length from the EXIF data, though it can be back-calculated from the 35mm format equivalent on the specs pages above.
+
+The EXIF had Mini 2 at 4.5, Phantom at 8.8.
+
+To back-calculate, the expression is $Focal*Scale=35mmequiv$ where the scale factor is found in the EXIF, or is known and can be looked up for the sensor size. Both drones have a 24mm 35mm equivalent, but scale factors differ.
+
+Parameterise for Mini 2
+
+```{r}
+Focal <- 4.5 
+```
+
+### Calculate GSD
+
+We now have what we need to get the two GSDs. Let's get one as a function of height, and another to solve for height given GSD
+
+```{r}
+get_gsd <- function(H_m, focal_mm, sensor_mm, image_px, h_units = 'm') {
+  # make cm
+  if (h_units == 'm') {H_m = H_m * 100} else if (h_units != 'cm') {stop("units not supported")}
+  gsd <- (H_m * sensor_mm)/(focal_mm * image_px)
+}
+```
+
+And typically, the recommendation is to use the maximum of the height and width GSDs, as that's the worst resolution.
+
+```{r}
+worst_gsd <- function(H_m, focal_mm, sensor_w, sensor_h, image_w, image_h, h_units = 'm') {
+  gsd_w <- get_gsd(H_m, focal_mm, sensor_w, image_w)
+  gsd_h <- get_gsd(H_m, focal_mm, sensor_h, image_h)
+  
+  gsd <- pmax(gsd_w, gsd_h)
+}
+```
+
+What is that for the mini 2 for a range of heights? I'll look at all of them, even if that's not typically what we'd do.
+
+```{r}
+heights <- seq(0, 100, by = 0.1)
+mini_gsd_w <- get_gsd(heights, Focal, sw, Iw)
+mini_gsd_h <- get_gsd(heights, Focal, sh, Ih)
+
+mini_gsd_worst <- worst_gsd(heights, Focal, sw, sh, Iw, Ih)
+```
+
+Plot
+
+```{r}
+mini_gsd <- tibble(altitude_m = heights, width_gsd = mini_gsd_w, height_gsd = mini_gsd_w, worst_gsd = mini_gsd_worst)
+```
+
+```{r}
+mini_gsd |> 
+  tidyr::pivot_longer(cols = ends_with('gsd'), names_to = 'gsd_type', values_to = 'GSD_cmperpx') |> 
+ggplot(aes(x = altitude_m, y = GSD_cmperpx, color = gsd_type)) + geom_line()
+```
+
+Not much difference there between *h* and *w*.
+
+Does it match [the Pix4d calculator](https://support.pix4d.com/hc/en-us/articles/202560249-TOOLS-GSD-calculator)?
+
+That gives a GSD of 0.07 for a height of 2m, I get
+
+```{r}
+format(mini_gsd_w[which(heights == 2)], scientific = FALSE)
+```
+
+## Distance and overlap
+
+What we really want is to get the flight distance we need to get a desired overlap. That will depend on height and GSD (from which we get the ground area covered per photo). And if we want photo timings, we need speed as well. [Using the equations from pix4d](https://support.pix4d.com/hc/en-us/articles/202557479-Step-1-Before-Starting-a-Project-1-Designing-the-Image-Acquisition-Plan-c-Computing-the-Image-Rate-for-a-given-Frontal-Overlap), but rearranged so the order of operations makes sense to me.
+
+The image size on the ground in meters (again using *h* and *w* for height (along path) and width (across path), given image height in px and GSD in cm/px is $$D_h=(I_hGSD)/100$$
+
+Then the flight distance needed for an overlap % *O_p* expressed in 0-1 is $$d = D_h-O_pD_h = D_h(1-O_p)$$
+
+The pix4d then goes on to back that back out to the definition of *D_h,* $$d=((I_hGSD)/100)(1-O_p)$$
+
+If we can't set a travel distance *d* for the drone, we will need to adjust it's velocity *v* in m/s and the photo interval *t* in seconds. In practice, well want to adjust them in tandem (and for a given height). To get the photo interval for a given velocity, it's simply the desired distance divided by velocity, $$t = d/v$$
+
+and so the velocity for a given interval is
+
+$$
+v=d/t
+$$
+
+We can obviously break this down into the equation for *d*, e.g. $$t = D_h(1-O_p)/v$$.
+
+### Functions
+
+#### Given GSD
+
+First, the ground distance in m
+
+```{r}
+ground_dist <- function(image_px, gsd_cmpx) {
+  D <- image_px*gsd_cmpx/100
+}
+```
+
+Next, the distance the drone should travel, given overlap
+
+```{r}
+drone_dist <- function(ground_dist_m, overlap_prop) {
+  d <- ground_dist_m * (1-overlap_prop)
+}
+```
+
+The time interval, given velocity
+
+```{r}
+photo_interval <- function(drone_dist_m, v_ms) {
+  t <- drone_dist_m/v_ms
+}
+```
+
+The velocity, given interval (not typical, but we might want it since we can only set intervals down to 2 seconds when hand-flying.
+
+```{r}
+velocity <- function(drone_dist_m, p_s) {
+  v <- drone_dist_m/p_s
+}
+```
+
+#### Wrap those up
+
+Drone dist is just one level
+
+```{r}
+drone_dist_from_gsd <- function(image_px, gsd_cmpx, overlap_prop) {
+  D <- ground_dist(image_px, gsd_cmpx)
+  dd <- drone_dist(D, overlap_prop)
+}
+```
+
+Photo interval and velocity need to depend on that
+
+```{r}
+photo_interval_from_gsd <- function(image_px, gsd_cmpx, overlap_prop, v_ms) {
+  dd <- drone_dist_from_gsd(image_px, gsd_cmpx, overlap_prop)
+  t <- photo_interval(dd, v_ms)
+}
+```
+
+```{r}
+velocity_from_gsd <- function(image_px, gsd_cmpx, overlap_prop, p_s) {
+  dd <- drone_dist_from_gsd(image_px, gsd_cmpx, overlap_prop)
+  v <- velocity(dd, p_s)
+}
+```
+
+## Values from H and overlap
+
+Do this separately for h and w, I guess?
+
+### Drone distance
+
+This might be all we need for litchi, and regardless, it will tell us about how close flightpaths need to be.
+
+```{r}
+drone_dist_H_o <- function(H_m, overlap_prop, 
+                           focal_mm, sensor_mm, image_px, 
+                          h_units = 'm') {
+  gsd <- get_gsd(H_m, focal_mm, 
+                   sensor_mm, 
+                   image_px, 
+                   h_units = 'm')
+  
+  gD <- ground_dist(image_px, gsd)
+  
+  dd <- drone_dist(gD, overlap_prop)
+  
+  return(dd)
+}
+```
+
+### Velocity and photo intervals
+
+```{r}
+v_H_o <- function(H_m, overlap_prop, p_s,
+                           focal_mm, sensor_mm, image_px, 
+                          h_units = 'm') {
+  dd <- drone_dist_H_o(H_m, overlap_prop,
+                           focal_mm, sensor_mm, image_px, 
+                          h_units = 'm')
+  v <- dd/p_s # could use velocity(dd/ps), but not worth it here.
+  return(v)
+}
+```
+
+```{r}
+t_H_o <- function(H_m, overlap_prop, v_ms,
+                           focal_mm, sensor_mm, image_px, 
+                          h_units = 'm') {
+  dd <- drone_dist_H_o(H_m, overlap_prop,
+                           focal_mm, sensor_mm, image_px, 
+                          h_units = 'm')
+  t <- dd/v_ms # could use velocity(dd/ps), but not worth it here.
+  
+  return(t)
+}
+```
+
+## Plots
+
+### Drone distance
+
+How does the drone distance depend on height and overlap?
+
+For a fixed overlap of 80%, and the same heights sequences as above, for the *h* dimension (along flight path) and *w* (across),
+
+```{r}
+dd_h <- drone_dist_H_o(heights, 0.8,
+                       Focal, sh, Ih)
+
+dd_w <- drone_dist_H_o(heights, 0.8,
+                       Focal, sw, Iw)
+
+```
+
+Those are fairly different, actually
+
+```{r}
+dd_hw <- tibble(altitude_m = heights, width_dd = dd_w, height_dd = dd_h) |> 
+  tidyr::pivot_longer(cols = ends_with('dd'), names_to = 'dd_direction', values_to = 'drone_photo_distance')
+```
+
+```{r}
+ggplot(dd_hw, aes(x = altitude_m, y = drone_photo_distance, color = dd_direction)) + geom_line()
+```
+
+Could use plotly here to have mouseover. Or use observable or shiny.
+
+What if we zoom in on the lower altitudes (\< 10m)?
+
+```{r}
+dd_hw |> 
+  dplyr::filter(altitude_m <= 10) |> 
+ggplot(aes(x = altitude_m, y = drone_photo_distance, color = dd_direction)) + geom_line()
+```
+
+We could make a heatmap with overlaps, but I'm not sure we really care that much? We'd really only be interested in maybe 75, 80, 85 or something, and this is for rule of thumb. Do that later.
+
+What are those at 2 and 4 m?
+
+```{r}
+dd_hw |> 
+  dplyr::filter(altitude_m %in% c(2,4))
+```
+
+### Velocity from interval
+
+Here, let's say we have a fixed overlap, and want to know the velocity we need to fly to get that at a given height and photo interval. This sounds contrived, but is pretty much exactly our situation when hand flying- the shortest interval we have is 2seconds, so how fast/slow do we need to fly to get 80% overlap at a range of heights?
+
+Here, we'll focus on the *h* dimension. While we could fly sideways, we usually will fly with forward velocity.
+
+Let's say 2 seconds, and then look at a heatmap.
+
+```{r}
+v_h <- v_H_o(heights, 0.8, 2,
+                       Focal, sh, Ih)
+
+v_tib <- tibble(altitude_m = heights, velocity_ms = v_h)
+```
+
+```{r}
+ggplot(v_tib, aes(x = altitude_m, y = velocity_ms)) + geom_line()
+```
+
+And again zoom in
+
+```{r}
+v_tib |> 
+  dplyr::filter(altitude_m <= 10) |> 
+ggplot(aes(x = altitude_m, y = velocity_ms)) + geom_line()
+```
+
+So, to get 80% overlap if we're limited to intervals of 2 seconds, we'd need to fly at about 0.2m/s at 2m or 0.4 at 4m. Should do a tooltip kinda thing. But for now
+
+```{r}
+v_tib |> 
+  dplyr::filter(altitude_m %in% c(2, 4)) 
+```
+
+How about a heatmap of heights and intervals?
+
+```{r}
+intervals <- seq(0.1, 5, by = 0.1)
+
+vel_map <- tidyr::expand_grid(altitude_m = heights, photo_intervals = intervals) |> 
+  mutate(velocity_ms = v_H_o(altitude_m, 0.8, photo_intervals,
+                       Focal, sh, Ih))
+```
+
+```{r}
+vel_map |> 
+ggplot(aes(x = altitude_m, y = photo_intervals, fill = velocity_ms)) + geom_raster()
+```
+
+That's a dumb scale. Obviously we can fly super fast at 100m and super fast photo intervals
+
+```{r}
+vel_map |> 
+  dplyr::filter(altitude_m <= 10) |> 
+ggplot(aes(x = altitude_m, y = photo_intervals, fill = velocity_ms)) + geom_raster()
+```
+
+Still not particularly useful. Moving on.
+
+### Interval from velocity
+
+How often do we need to take photos given a velocity and height? Let's start by saying velocity of 1m/s (3.6km/h).
+
+```{r}
+t_h <- t_H_o(heights, 0.8, 1,
+                       Focal, sh, Ih)
+
+t_tib <- tibble(altitude_m = heights, photo_interval = t_h)
+```
+
+```{r}
+t_tib |> 
+  ggplot(aes(x = altitude_m, y = photo_interval)) + geom_line()
+```
+
+```{r}
+t_tib |> 
+  dplyr::filter(altitude_m <= 10) |> 
+  ggplot(aes(x = altitude_m, y = photo_interval)) + geom_line()
+```
+
+So, at that velocity, the photo interval can't be as long as 2 seconds without flying at 10m. Clearly that would change as we fly slower.
+
+Make a heatmap again, I guess, even if it wasn't very useful before and we know this is just flipping axes and colors.
+
+```{r}
+speeds <- seq(0.1, 5, by = 0.1)
+
+interval_map <- tidyr::expand_grid(altitude_m = heights, velocity_m = speeds) |> 
+  mutate(photo_interval = t_H_o(altitude_m, 0.8, velocity_m,
+                       Focal, sh, Ih))
+```
+
+```{r}
+interval_map |> 
+  dplyr::filter(altitude_m <= 10) |> 
+ggplot(aes(x = altitude_m, y = velocity_m, fill = photo_interval)) + geom_raster()
+```
+
+## Next steps
+
+The obvious thing to do here is to make an observable quarto where we can select drone type, desired overlap, things we want to set, and it makes the plot and returns values we want. For now though, these plots get us most of the way there.
+
+What do those distances look like for the phantom?

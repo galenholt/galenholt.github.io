@@ -1,5 +1,5 @@
 ---
-title: "R_py_package"
+title: "Wrapping python in R package"
 author: "Galen Holt"
 ---
 

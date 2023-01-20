@@ -32,6 +32,10 @@ Observable uses `object.thing` notation like python, but it also uses the `.` to
 names(iris) <- stringr::str_replace_all(names(iris), '\\.', '_')
 ```
 
+### Code changes
+
+I'm running into issues where I change some R code, and it works when I run it interactively, but then when I go to render, the new R code just doesn't happen. E.g. I'll add code that makes a dataframe with more values, and I can see them interactively in R, but they don't appear in the render. I think it has something to do with the cache not resetting with changes, but I'm not positive. 
+
 ## R setup
 
 ```{r}

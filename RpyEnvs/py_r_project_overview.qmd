@@ -1,5 +1,5 @@
 ---
-title: "Py-R in one library"
+title: "Overview of bilingual python-R projects"
 author: "Galen Holt"
 ---
 
@@ -61,13 +61,26 @@ tested with
 
     scene_namer(file.path('inst', 'extdata', 'testsmall'))
 
-But it does *not* work to have the Config/retictulate in description and the source_python in .onLoad. I don't get anything.
+At first it didn't work to have the Config/retictulate in description and the source_python in .onLoad. I didn't get anything. Then I fixed it by adding it to the package's global environment with the argument `envir = globalenv()`, and it started working. But only when I already have a python environment. If I try to get the `Config/reticulate` to build a python environment with the necessary dependencies in a bare project, it won't even install the package.
 
-So, somehow I need to get .onLoad to actually work, I think.
+I think the issue there is that the way the config/reticulate and onload are set up, it doesn't try to install dependencies until Python is used, and for some reason running that file in `onLoad` doesn't trigger it.
 
-Is the answer to to the source_python *in a .R file*, which are also read in?
+So, somehow I need to be able to install the package without needing the py dependencies, and then install them the first time someone types `library(packagename)` or otherwise tries to use it.
 
-SEEMS TO WORK- could it even be in the same r file, just not inside onLoad?
+That's a whole new thing to figure out, I think.
+
+If we assume the user *has the python dependencies installed and accessible to reticulate*, then the `Config/reticulate` works with the following `.onLoad`.
+
+``` R
+.onLoad <- function(libname, pkgname) {
+  reticulate::configure_environment(pkgname)
+
+  reticulate::source_python(system.file("python/py_functions.py", package = 'packagename'), envir = globalenv())
+
+}
+```
+
+See [some initial work I've done sorting this out](RpyEnvs/R_py_package.qmd).
 
 ## Passing types
 
@@ -80,7 +93,7 @@ outputType = ['summary', 'all']
 allowance ={'minThreshold': MINT, 'maxThreshold': MAXT, 'duration': DUR, 'drawdown': DRAW}
 ```
 
-I have sorted out how to call functions with arguments of a specific type (lists, dicts) that are not necessarily the same between languages. See [my testing of type-passing](R_py_type_passing.qmd).
+I have sorted out how to call functions with arguments of a specific type (lists, dicts) that are not necessarily the same between languages. See [my testing of type-passing](R_py_type_passing.qmd) (well, if I could get it to render in quarto).
 
 ## Question
 
