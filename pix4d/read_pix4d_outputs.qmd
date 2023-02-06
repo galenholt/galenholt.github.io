@@ -3,7 +3,7 @@ title: "Pix4d outputs"
 author: "Galen Holt"
 ---
 
-Trying to read in pix4d outputs- specifically point clouds, orthophotos, dsm, and dtm.
+Trying to read in pix4d outputs- specifically point clouds, orthophotos, dsm_xyz, and dtm.
 
 I'm going to assume I need stars and sf.
 
@@ -73,7 +73,7 @@ ortho <- read_stars(file.path(orthopath, paste0(projname, '_transparent_mosaic_g
 ortho
 ```
 
-4 bands. What are they? I expected rgb, and the 4th is uniform
+4 bands. What are they? I expected rgb, and the 4th is uniform. Seems to be alpha, based on some searching.
 
 `useRaster = TRUE` works here. BUt not in quarto? that's weird. Set to false so it renders.
 
@@ -99,29 +99,59 @@ Wow. That just worked. 4th band is likely alpha values.
 
 # DSM
 
-This is an xyz point file.
+## Raster DSM
+
+The settings for this seem to be in the DSM and orthomosaic tab and resolution matches the ortho, as far as I can tell.
 
 ```{r}
-dsmpath <- file.path(projdir, projname, '3_dsm_ortho', '1_dsm')
+dsm_rpath <- file.path(projdir, projname, '3_dsm_ortho', '1_dsm')
+```
+
+read it in?
+
+```{r}
+dsm_r <- read_stars(file.path(dsm_rpath, paste0(projname, '_dsm.tif')))
 ```
 
 ```{r}
-dsm <- readr::read_csv(file.path(dsmpath, paste0(projname, '_dsm_1cm.xyz')),
+dsm_r
+```
+
+Really not super clear why `useRaster = TRUE` isn't working for these, but whatever.
+
+```{r}
+plot(dsm_r, useRaster = FALSE)
+```
+
+Those are funny z-values. What is the reference- clearly not elevation.
+
+How many pixels? `r 2416*4546`. 11 million is a lot.
+
+## Grid DSM
+
+This is an xyz point file.The settings are in the Additional Outputs tab, and we can set the grid spacing there. This was done with a spacing of 100cm. That implies these are centers, and this is a *much* coarser grid than in the dsm raster, which is at GSD scale.
+
+```{r}
+dsm_xyzpath <- file.path(projdir, projname, '3_dsm_ortho', '1_dsm')
+```
+
+```{r}
+dsm_xyz <- readr::read_csv(file.path(dsm_xyzpath, paste0(projname, '_dsm_1cm.xyz')),
                                  col_names = c('x', 'y', 'z', 'r', 'g', 'b'))
 ```
 
 assume the last 3 cols are rgb, use my function
 
 ```{r}
-dsm <- dsm %>% 
+dsm_xyz <- dsm_xyz %>% 
   mutate(hexcol = rgb2hex(r,g,b))
 ```
 
 Ignore spatial for a minute, can I just slam it in ggplot? using z as fill first. If we want the rgb, it'll either be an orthomosiac or we'll need to do something 3d with color overlay
 
 ```{r}
-dsmgg <- ggplot(dsm, aes(x = x, y = y, fill = z)) + geom_raster() + coord_equal()
-dsmgg
+dsm_xyzgg <- ggplot(dsm_xyz, aes(x = x, y = y, fill = z)) + geom_raster() + coord_equal()
+dsm_xyzgg
 ```
 
 That was really weirdly fast.
@@ -129,88 +159,191 @@ That was really weirdly fast.
 Can I use the rgb to see the orthomosiac?
 
 ```{r}
-dsmorthogg <- ggplot(dsm, aes(x = x, y = y, fill = hexcol)) + geom_raster() + coord_equal() + scale_fill_identity()
-dsmorthogg
+dsm_xyzorthogg <- ggplot(dsm_xyz, aes(x = x, y = y, fill = hexcol)) + geom_raster() + coord_equal() + scale_fill_identity()
+dsm_xyzorthogg
 ```
 
 Would be cool to do a 3d map with color, maybe {rayshader}? Would really be nice to be able to rotate it etc.
 
 **That has color and height**- might be good to feed to a ML algorithm to ID rocks using both sets of info and their relationships to each other.
 
-Can I make it geographic (`sf`)? Assume the same crs as the dtm?
+**This is supposedly a 100cm grid**, but it has 1.5 million pixels, which is a lot less than the dsm raster at GSD resolution, but is nowhere near the difference I'd expect. It's approximately 10x less, but GSD is \< 1cm. And even at 1cm, I'd expect 10,000x fewer pixels. And those pictures are *clearly* not 1m pixels. What IS the spacing? Iterates fastest on x
 
 ```{r}
-dsmsf <- st_as_sf(dsm, coords = c('x', 'y'), crs = st_crs(dtm))
+dsm_xyz[2, 'x'] - dsm_xyz[1, 'x']
+# dsm_xyz[2, 'y'] - dsm_xyz[1, 'y']
 ```
 
-use the sf plot method? bad idea. takes forever. The points (next) are points, but it might make more sense to make these stars anyway.
+So, what is 0.01? That's a cm, isn't it?
+
+Assuming the same crs as the raster dsm, the `LENGTHUNIT` is 1 meter. So, 0.01 would be 1cm, and that makes more sense.
 
 ```{r}
-plot(dsmsf[,'z'])
+st_crs(dsm_r)
 ```
 
-Try stars
+It's not exactly a translation from the raster, because the raster has all the NA off the edges, and a step of
 
 ```{r}
-dsmstars <- st_as_stars(dsm, crs = st_crs(dtm))
+diff(st_get_dimension_values(dsm_r, 'x')[1:2])
+```
+
+So, the raster should have about 4x, but also includes the NAs.
+
+```{r}
+sum(is.na(dsm_r[[1]]))
+```
+
+That's not entirely it. Still about 266k more pixels in the rnn than expected once we drop the NA and adjust by pixel size.
+
+```{r}
+#non-na in raster
+rnn  <- (2416*4546)-sum(is.na(dsm_r[[1]]))
+#pixel difference- how many dsm_r pixels per dsm_xyz pixels?
+pixdif <- (0.01/diff(st_get_dimension_values(dsm_r, 'x')[1:2]))^2
+
+expected_rnn <- nrow(dsm_xyz)*pixdif
+
+expected_rnn-rnn
+```
+
+### Make geographic
+
+#### sf
+
+Can I make it geographic (`sf`)? Assume the same crs as the dsm_r
+
+```{r}
+dsm_xyzsf <- st_as_sf(dsm_xyz, coords = c('x', 'y'), crs = st_crs(dsm_r))
+```
+
+use the sf plot method? bad idea. takes forever. The points (next) are points, but it might make more sense to make these stars anyway- it *is* gridded.
+
+```{r}
+plot(dsm_xyzsf[,'z'])
+```
+
+#### stars
+
+Try stars- first, confirm it is gridded- what's the step?
+
+Need to do a bit of cleanup- the x's have negatives when they turnover y's, and the y's have a ton of zeros because they iterate slower.
+
+```{r}
+rawx <- diff(pull(dsm_xyz[, 'x']))
+cleanx <- rawx[rawx > 0]
+# rounding error
+difclean <- abs(cleanx-cleanx[1])
+
+
+# huh- some are still out. by a lot. It seems systematic and strange
+all(difclean < 1e-8)
+which(difclean > 1e-8)
+cleanx[which(difclean > 1e-8)]
+
+```
+
+If I plot that does it become clear? Because I took diffs and cut out the big steps, I can't just attach it. Will need to modify in place.
+
+```{r}
+dsm_xyz <- dsm_xyz |> 
+  mutate(xdifs = x - lag(x, 1),
+         ydifs = y - lag(y, 1)) |> 
+  mutate(xdifs = ifelse(ydifs == 0, xdifs, NA),
+         ydifs = ifelse(ydifs == 0, NA, ydifs))
+
+```
+
+The steps are where there are weird things happening along angled edges.
+
+```{r}
+
+dsm_xyz_x <- ggplot(dsm_xyz, aes(x = x, y = y, fill = xdifs)) + geom_raster() + coord_equal() + scale_fill_gradient(low = 'white', high = 'red')
+dsm_xyz_x
+```
+
+Can we see it better with size?
+
+```{r}
+dsm_xyz_xp <- ggplot(dsm_xyz, aes(x = x, y = y, color = xdifs, size = xdifs)) + geom_point() + coord_equal() + scale_color_gradient(low = 'white', high = 'red')
+dsm_xyz_xp
+```
+
+Yeah, it's also centered on corners.
+
+Check y in the same way
+
+```{r}
+dsm_xyz_yp <- ggplot(dsm_xyz, aes(x = x, y = y, color = ydifs, size = ydifs)) + geom_point() + coord_equal() + scale_color_gradient(low = 'white', high = 'red')
+dsm_xyz_yp
+```
+
+The ydifs are all 0.01, and we can see the rows stepover on the left edge.
+
+I think it's safe to ignore the few discontinuities.
+
+Now, actually make it stars
+
+```{r}
+dsm_xyzstars <- st_as_stars(dsm_xyz, crs = st_crs(dtm))
 ```
 
 ```{r}
-plot(dsmstars['z'])
+plot(dsm_xyzstars['z'])
 ```
 
 ```{r}
-plot(dsmstars['hexcol'])
+plot(dsm_xyzstars['hexcol'])
 ```
 
 ggplot version- orthomosaic
 
 ```{r}
-dsmstarsgg <- ggplot() + 
-  geom_stars(data = dsmstars, aes(fill = hexcol)) +
+dsm_xyzstarsgg <- ggplot() + 
+  geom_stars(data = dsm_xyzstars, aes(fill = hexcol)) +
   scale_fill_identity() +
   theme(legend.position = 'none') + 
   coord_equal()
-dsmstarsgg
+dsm_xyzstarsgg
 ```
 
 ggplot version- elevation
 
 ```{r}
-dsmstarsgg_z <- ggplot() + 
-  geom_stars(data = dsmstars, aes(fill = z)) +
+dsm_xyzstarsgg_z <- ggplot() + 
+  geom_stars(data = dsm_xyzstars, aes(fill = z)) +
   colorspace::scale_fill_continuous_sequential(palette = 'Terrain 2') +
   theme(legend.position = 'none') + 
   coord_equal()
-dsmstarsgg_z
+dsm_xyzstarsgg_z
 ```
 
 Is it faster to just use geom_raster? Would need to have a non-spatial df as we did above. This just errors when I try it.
 
 ```{r}
 #| eval: false
-dsmstarsgg_z_raster <- ggplot() + 
-  geom_raster(data = dsmstars, aes(fill = z)) +
+dsm_xyzstarsgg_z_raster <- ggplot() + 
+  geom_raster(data = dsm_xyzstars, aes(fill = z)) +
   colorspace::scale_fill_continuous_sequential(palette = 'Terrain 2') +
   theme(legend.position = 'none') + 
   coord_equal()
-dsmstarsgg_z_raster
+dsm_xyzstarsgg_z_raster
 ```
 
 What about `geom_sf` on the point version? I `plot`ted it above, but haven't tried `ggplot`. This is more specifically what the point cloud is, below. Change everything to `color` from `fill`.
 
 ```{r}
-dsmsfgg_z <- ggplot() + 
-  geom_sf(data = dsmsf, aes(color = z)) +
+dsm_xyzsfgg_z <- ggplot() + 
+  geom_sf(data = dsm_xyzsf, aes(color = z)) +
   colorspace::scale_color_continuous_sequential(palette = 'Terrain 2') +
   theme(legend.position = 'none') + 
   coord_sf()
-dsmsfgg_z
+dsm_xyzsfgg_z
 ```
 
 # Point cloud
 
-Should work the same as dsm- this is also an xyz point file.
+Should work the same as dsm_xyz- this is also an xyz point file.
 
 ```{r}
 pcpath <- file.path(projdir, projname, '2_densification', 'point_cloud')
@@ -228,7 +361,7 @@ pc <- pc %>%
   mutate(hexcol = rgb2hex(r,g,b))
 ```
 
-Like the dsm, I should be able to use ggplot directly. But here, the points are the points in the cloud, not the evenly spaced points of the dsm. So `geom_raster` doesn't work. Could use `geom_tile` I guess, but it's more appropriate to just use `geom_point`.
+Like the dsm_xyz, I should be able to use ggplot directly. But here, the points are the points in the cloud, not the evenly spaced points of the dsm_xyz. So `geom_raster` doesn't work. Could use `geom_tile` I guess, but it's more appropriate to just use `geom_point`.
 
 ```{r}
 pcgg <- ggplot(pc, aes(x = x, y = y, color = z)) + 
@@ -248,7 +381,7 @@ pcorthogg <- ggplot(pc, aes(x = x, y = y, color = hexcol)) +
 pcorthogg
 ```
 
-We can make that an `sf`. Doesn't make sense to make it a `stars`, since it's points and not gridded. The DSM is techinically points, but they're gridded so can go either way.
+We can make that an `sf`. Doesn't make sense to make it a `stars`, since it's points and not gridded. The dsm_xyz is technically points, but they're gridded so can go either way.
 
 ```{r}
 pcsf <- st_as_sf(pc, coords = c('x', 'y'), crs = st_crs(dtm))
@@ -288,9 +421,70 @@ pcsfgg_z
 
 Ok, that all works. Need to clean it up and make a simple package.
 
-## To do
+# Sizes and matching
 
-make a package. Have funs for xyz and funs for tifs. But call those within specific funs for each output (e.g. dsm and point cloud should have their own funs, and the DSM should allow returning a raster in addition to points, but pc shouldn't). Similar for a standard set of plot returns
+Do the pixels line up between the various outputs? The dsm_xyz is points, each with x,y,z,r,g,b, so that will just match. But they aren't technically a raster. The ortho, raster dsm, and dtm are rasters, but it's not clear their pixels match. So, let's do some investigation and possibly re-processing if necessary.
+
+## Check pixels dsm & ortho
+
+```{r}
+st_dimensions(dsm_r)
+st_dimensions(ortho)
+```
+
+Confirm they match
+
+```{r}
+all(st_get_dimension_values(dsm_r, 'x') == st_get_dimension_values(ortho, 'x'))
+all(st_get_dimension_values(dsm_r, 'y') == st_get_dimension_values(ortho, 'y'))
+
+```
+
+Can we combine those into one stars? the catch is that the rgb vals aren't on the same scale as the z. For the ortho, we have a pixel value for each of 4 bands (r,g,b, alpha). But z isn't a band. So how would we do it? Make the bands attributes, probably. Or just call z a band?
+
+To make the bands attributes and add z, this works. Will need to better define what's needed later before deciding whether to then merge this back or what. And maybe we should be using hex (e.g. merging `colmos` and `dsm_r`).
+
+```{r}
+orthosplit <- split(ortho, 'band') |> 
+  setNames(c('r', 'g','b', 'alpha'))
+
+dsm_r <- setNames(dsm_r, 'z')
+
+orthodsm <- c(orthosplit, dsm_r)
+```
+
+Merging into a dim- takes a while. and it's unclear what to call this dimension or its values- 'band' isn't right, and the values aren't 0-255 for the z. I think don't do this unless we're really sure we want to.
+
+```{r}
+#| eval: false
+orthodsm_dim <- orthodsm |> 
+  merge()
+```
+
+Does it actually make more sense to add a z dimension? Maybe? we can't just `merge` the dsm_r, because then it has no attributes. Can we control the merge above? Maybe, but it'll be a bit tricky. ignore until we have a clearer definition of what we need. The few obvious things I've tried have failed.
+
+***Whatever we do about the combination, the pixels match for the DSM raster and the orthophoto***
+
+## Check pixels dtm & ortho
+
+These are unlikely to match-the dtm's settings are done elsewhere and unless we were really particular to set them the same as the ortho, (which would require downgrading the ortho), they won't match. AND, it's unnecessary, since there's a raster dsm that *does* match.
+
+Looking at the from-to, they clearly don't match, and looking at dimensions confirms it
+
+```{r}
+st_dimensions(ortho)
+st_dimensions(dtm)
+```
+
+But, the DTM is some sort of smoothed thing, and is set in the Additional Outputs tab. We could make the ortho matched, but it'd be contrived (and pointless, given the existence of the raster dsm.
+
+## Convert dsm_xyz to image with z?
+
+Again, I don't really see the point of this turning the dsm_xyz into an image (raster) is already done in the raster dsm + ortho. We can merge if we want. Just not sure exactly how we'd want to present that.
+
+# To do
+
+make a package. Have funs for xyz and funs for tifs. But call those within specific funs for each output (e.g. dsm_xyz and point cloud should have their own funs, and the dsm_xyz should allow returning a raster in addition to points, but pc shouldn't). Similar for a standard set of plot returns
 
 ## Can I get rayshader to work?
 
@@ -301,4 +495,3 @@ Would be cool to do height with z and color with hexcol to actually map the stre
 Does that make our lives easier in some ways?
 
 ## Where is this stuff in space? is it in the right place?
-
