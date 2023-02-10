@@ -1,0 +1,120 @@
+---
+title: "Custom ggplot themes"
+author: "Galen Holt"
+---
+
+I often want to consistently theme my ggplots across projects. I've developed some custom themes, but they're usually ad-hoc, and don't work particularly well in packages, because the simple way to do it isn't a function.
+
+```{r}
+library(ggplot2)
+```
+
+For example, we might have a theme that's good for publication, as in [Saving and theming plots](tweaks_tricks.qmd), where we specify size, backgrounds, and text. We load new fonts first.
+
+```{r}
+source(file.path('functions', 'loadfonts.R'))
+showtext::showtext_auto()
+pubfont <- 'Cambria'
+loadfonts(fontvec = pubfont)
+```
+
+```{r}
+pubtheme <- theme_bw(base_size = 10) + 
+  theme(strip.background = element_blank(),
+        plot.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        text = element_text(family=pubfont))
+```
+
+Here, the theme is essentially hardcoded, and we can add it to a figure.
+
+```{r}
+ggplot(iris, aes(x = Sepal.Length, y = Petal.Width, color = Species)) + 
+  geom_point() + 
+  facet_wrap(~Species) + 
+  pubtheme
+```
+
+### What's the problem?
+
+First, we have to adjust the theme with `+` if we want to make changes.
+
+Most importantly, probably, is that in packages that gets read in as an object, instead of a function (which yes, are objects, but packages like functions).
+
+### Making it a function
+
+The solution is to make it a function. This matches how the built-in themes work too, e.g. we add `theme_bw()`, not `theme_bw` , and that lets us modify it in the arguments. As a simple case, this lets us use the `base_size` to have a theme that we can give larger fonts to for talks vs papers, for example, whereas in the past I'd have two different names for that.
+
+```{r}
+theme_pub <- function(base_size = 10) {
+  ggplot2::theme_bw(base_size = base_size) +
+    theme(strip.background = element_blank(),
+        plot.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        text = element_text(family=pubfont))
+}
+```
+
+This looks the same
+
+```{r}
+ggplot(iris, aes(x = Sepal.Length, y = Petal.Width, color = Species)) + 
+  geom_point() + 
+  facet_wrap(~Species) +
+  theme_pub()
+```
+
+Now, maybe we also want to make the font an argument? Now, we can include `loadfonts` to load it if it's not already.
+
+```{r}
+theme_pubf <- function(base_size = 10, font) {
+  if (!(font %in% sysfonts::font_families())) {
+      loadfonts(font)
+  }
+
+  ggplot2::theme_bw(base_size = base_size) +
+    theme(strip.background = element_blank(),
+        plot.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        text = element_text(family=font))
+}
+```
+
+Now let's change the font
+
+```{r}
+ggplot(iris, aes(x = Sepal.Length, y = Petal.Width, color = Species)) + 
+  geom_point() + 
+  facet_wrap(~Species) +
+  theme_pubf(base_size = 14, font = 'Calibri')
+```
+
+## Can we pass other arguments?
+
+If the goal is to enforce a style, we might not want to *allow* passing other arguments to `theme`, but can we with `…`?
+
+```{r}
+theme_pub_dots <- function(base_size = 10, font, ...) {
+  if (!(font %in% sysfonts::font_families())) {
+      loadfonts(font)
+  }
+
+  ggplot2::theme_bw(base_size = base_size) +
+    theme(strip.background = element_blank(),
+        plot.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        text = element_text(family=font), 
+        ...)
+}
+```
+
+```{r}
+ggplot(iris, aes(x = Sepal.Length, y = Petal.Width, color = Species)) + 
+  geom_point() + 
+  facet_wrap(~Species) +
+  theme_pub_dots(base_size = 8, font = 'Arial', legend.position = 'none')
+```

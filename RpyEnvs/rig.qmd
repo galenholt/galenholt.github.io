@@ -6,7 +6,7 @@ editor: visual
 
 ## Issue
 
-I've update to R 4.2, but have projects that were built with 3.x. Some new versions of packages for R 4.x don't work in 3.x, so I would need to update packages, but I know doing that will break things, and I don't have time to do a full update of the project.
+I've update to R 4.2, but have projects that were built with 4.0 and even 3.x. Most new versions of packages for R 4.x don't work in 3.x, and 4.2 seems to have broken quite a bit compared to 4.0. So I can't just `renv::restore()`, and would need to update packages one at a time, but I know doing that will break things, and I don't have time to do a full update of the project.
 
 I use `renv` to manage the packages, but not currently anything to switch/manage R versions itself. In python, there's `pyenv` to manage python versions. I've run across `rig` (<https://github.com/r-lib/rig>).
 
@@ -16,7 +16,7 @@ click on windows installer. Restart terminal. Type `rig list` to see what R is a
 
 ## Using it
 
-Go to the project I want to run, and figure out what version of R it was using. Interesting- it says 4.0.2 so maybe I didn't need to worry about this? Whoops. Still interesting, I guess. And, just to avoid any issues, I still think I might downgrade to that to run the project because I really just need things to work.
+Go to the project I want to run, and figure out what version of R it was using. The one I'm testing on uses 4.0.2, which still is different enough from 4.2 that a lot of the packages fail when I `renv::restore()` in a session with 4.2. To avoid any issues, I will downgrade to that to run the project because I really just need things to work. Then, once I know it works, I can start updating and testing.
 
 So, try `rig add 4.0.2`. Seems to have worked. Set the default to current, though.
 
@@ -27,6 +27,8 @@ So, try `rig add 4.0.2`. Seems to have worked. Set the default to current, thoug
 What if I just open the project file by double clicking? There's no obvious way to change the R version just by opening Rstudio- it uses the default.
 
 I think there's probably a way to use the CLI to change the R version and then double click, but what seems to be easiest is `cd path/to/repo` and then `rig rstudio renv.lock` to open with the version in the lockfile.
+
+*Note: this does not work with the new version of Rstudio (***2022.12.0** Build 353 and others): *<https://github.com/r-lib/rig/issues/134> and <https://github.com/rstudio/rstudio/issues/12545>*
 
 And do I keep using other R versions elsewhere? Seem to. For now, this should do what I need.
 
