@@ -27,6 +27,8 @@ I tend to establish a theme to set the basic plot look, including font sizes. I 
 
 Can also set theme differently for presentations, including doing things like setting font to match a ppt theme.
 
+**Developing themes is now done more extensively in [ggplot themes](ggplot_themes.qmd)**, where I develop them as more flexible functions.
+
 Typically, very few fonts are loaded into R and available for use. See fonts.Rmd for figuring out how to work with that. The short answer is that we use `showtext` to load what we need (if anything). If this step is skipped, will default to the default font and throw a warning about "fontfamily not found" because we haven't loaded the selected font yet.
 
 We could load fonts by hand Using functions from `showtext` and `sysfonts`, and specify the `text = element_text(family="Ink Free")` with a manual character vector. It's way easier to automate though, and saves issues of loading the wrong font.

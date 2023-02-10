@@ -42,6 +42,10 @@ website:
               
         - section: "Plotting"
           contents:
+            - href: plotting/ggplot_themes.qmd
+              text: "ggplot themes"
+            - href: plotting/setting_colors_for_groups.qmd
+              text: "Consistent colors"
             - href: plotting/tweaks_tricks.qmd
               text: "Saving and themeing plots"
             - href: plotting/hcl_exploration.qmd
@@ -53,6 +57,13 @@ website:
               text: "Faded 2d colour ramps"
             - href: plotting/math_in_ggplot.qmd
               text: "Latex in ggplot with latex2exp"
+              
+        - section: "Website"
+          contents:
+            - href: website/quarto_website_github.qmd
+              text: "Getting started"
+            - href: website/updating_website.qmd
+              text: "Updating and maintaining website"
               
         - section: "Theory and simulation"
           contents:
@@ -91,17 +102,19 @@ website:
               text: "Overview of building R-py package"
             - href: RpyEnvs/R_py_package.qmd
               text: "Wrapping python in R package"
+            - href: RpyEnvs/python_nameerror.qmd
+              text: "Intermittent NameError py-R"
               
         - section: "Setting up projects"
           contents:
             - href: RpyEnvs/rig.qmd
               text: "Managing old R versions with rig"
-            - href: RpyEnvs/quarto_website_github.qmd
-              text: "Getting this website working"
             - href: RpyEnvs/managingprivate.qmd
               text: "Private data for website repo"
             - href: setup/R_in_VS.qmd
               text: "Using R in VScode"
+            - href: RpyEnvs/end_run_renv.qmd
+              text: "Dealing with renv failures"
               
         - section: "Building packages"
           contents:
