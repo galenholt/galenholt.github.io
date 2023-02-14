@@ -141,8 +141,20 @@ devtools::install_github("galenholt/vicwater")
 
 It ended up being pretty straightforward to use `devtools::check()` and using continuous integration with github to run the checks and put the little badges on, as described in [the book](https://r-pkgs.org/continuous-integration.html).
 
+It *is* easy to end up with funny missing pieces and issues if you forget to run `devtools::check()` and just push to github followed by `devtools::install_github` or even more likely if you just `devtools::install_local` from the directory with the code in it. In general, I think the github actions should take care of the check, but I never seem to get the emails that say it's happened.
+
 ## Ephemera
 
 ### renv
 
 I use [{renv}](https://rstudio.github.io/renv/articles/renv.html) for package management and reproducibility, which usually (in a non-package Rproject) puts symlinks to the package in a `projdir/renv/library/R-4.x/CPUtype/` directory. But interestingly, in a package project, it puts the symlinked `library/R4.x/...` in a central location (in my case, `~/AppData/Local/R/cache/R/renv/library/PACKAGENAME-HASH/R4.x/…`.
+
+### testing figures
+
+I need to make some standard figure functions as part of the package. To test them, I've found the [{vdiffr} package](https://www.tidyverse.org/blog/2021/06/vdiffr-1-0-0/). It saves a figure if one doesn't exist and if one does exist, it checks against the saved version. It seems to work well, the only trick is to remember to `usethis::use_package('vdiffr', 'Suggests')`, or it won't be available to use by `devtools::check()`.
+
+### 'global' variables and dplyr
+
+When I `devtools::check()` on a package using dplyr, I get a million errors about 'no visible binding for global variable 'variable_name''. The issue is that R CMD CHECK is interpreting the bare variable names in mutate, summarise, etc as variables and can't find them. The code runs fine, but it's annoying.
+
+The answer, unfortunately, is to use the .data\[\['variable_name'\]\] or .data\$variable_name convention everywhere and `usethis::use_import_from('rlang', '.data')`. That works to get rid of the errors, but now we've lost one of the really nice things about writing dplyr code- the simplicity of bare data variable names.
