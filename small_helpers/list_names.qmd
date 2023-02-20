@@ -1,0 +1,84 @@
+---
+title: "List names as variables"
+author: "Galen Holt"
+---
+
+I often end up wanting to build a list with named items, and the names come in as variables.
+
+For example, instead of the typical
+
+```{r}
+list(a = 'first', b = 'second', d = c(3,4))
+```
+
+I might have the names defined elsewhere. This is particularly common inside functions.
+
+```{r}
+name1 <- 'a'
+name2 <- 'b'
+name3 <- 'd'
+```
+
+We can't pass those in as usual- this uses `name#` as the name, not the value of the variable.
+
+```{r}
+list(name1 = 'first', name2 = 'second', name3 = c(3,4))
+```
+
+## Various solutions
+
+We can use `setNames`
+
+```{r}
+setNames(list('first', 'second',c(3,4)), c(name1, name2, name3))
+```
+
+we can do it in two steps with `names` , which I think is what setNames wraps, and is just extra verbose and requires carrying data copies around.
+
+```{r}
+barelist <- list('first', 'second',c(3,4))
+names(barelist) <- c(name1, name2, name3)
+barelist
+```
+
+Can we unquote/eval?
+
+I can almost never get `!!` or `!!!` to work. this doesn't, as usual.
+
+```{r}
+#| eval: false
+list(!!name1 = 'first', !!name2 = 'second', !!name3 = c(3,4))
+```
+
+Nor this
+
+```{r}
+#| eval: false
+list(eval(name1) = 'first', eval(name2) = 'second', eval(name3) = c(3,4))
+```
+
+Nor this, despite the eval working
+
+```{r}
+rlang::eval_bare(name1)
+```
+
+```{r}
+#| eval: false
+list(rlang::eval_bare(name1) = 'first', rlang::eval_bare(name2) = 'second', rlang::eval_bare(name3) = c(3,4))
+```
+
+How about `tibble::lst` ? I often use it for lists of variables because it self-names them, so maybe it's the answer here. Yep. That's just cleaner.
+
+```{r}
+tibble::lst(name1 = 'first', name2 = 'second', name3 = c(3,4))
+```
+
+And, that self-naming I was describing, which solves a different problem- having to write `list(name = name, age = age)`.
+
+```{r}
+name <- c('David', 'Susan')
+age <- c(1,2)
+
+tibble::lst(name, age)
+```
