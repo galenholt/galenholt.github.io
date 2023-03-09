@@ -17,7 +17,7 @@ git clone repo, cd into it
 
 set up environment with `renv` - usually just `module load R` then `R` for an interactive session
 
-when things break because the R version is too old, it sometimes works to [force it to update using {rig}](RpyEnvs/rig.qmd)
+when things break because the R version is too old, it sometimes works to [force it to update using {rig}](../RpyEnvs/rig.qmd)
 
 do most dev on local computer, push
 

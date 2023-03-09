@@ -23,7 +23,7 @@ My [python_setup](python_setup.qmd) sets up a very similar situation, so let's s
 
 ### Additional issues
 
-This all worked, but then stopped- python chunks separated by R chunks couldn't share objects. This particular notebook still ran, but [others](RpyEnvs/py_r_dates.qmd) would run fine interactively but when rendered would throw errors about "name 'pyobjname' is not defined". I tried making sure jupyter was in the python env and set `engine: knitr` in yaml headers, since that's what the help suggested. And I set the `QUARTO_PYTHON` environment variable in an `_environments` file, since that helped me previously. It's unclear why it worked previously.
+This all worked, but then stopped- python chunks separated by R chunks couldn't share objects. This particular notebook still ran, but [others](py_r_dates.qmd) would run fine interactively but when rendered would throw errors about "name 'pyobjname' is not defined". I tried making sure jupyter was in the python env and set `engine: knitr` in yaml headers, since that's what the help suggested. And I set the `QUARTO_PYTHON` environment variable in an `_environments` file, since that helped me previously. It's unclear why it worked previously.
 
 ## Set up reticulate from R
 

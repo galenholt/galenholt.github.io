@@ -126,4 +126,4 @@ iris
 
 ## Website
 
-[Starting](website/quarto_website_github.qmd) and [updating](website/updating_website.qmd) quarto websites has a few tricks, written up in more detail at those links.
+[Starting](../website/quarto_website_github.qmd) and [updating](../website/updating_website.qmd) quarto websites has a few tricks, written up in more detail at those links.

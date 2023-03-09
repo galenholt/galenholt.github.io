@@ -62,7 +62,7 @@ Let's start building.
 
 ## Building
 
-I've been testing and poking at the API in some qmds [here](vicwater/vicwater_testing.qmd~). I expect a lot of that ends up as vignettes in the package, and some is ready to become functions. I'll likely maintain that flow- test in the qmd, make into functions there, repeat.
+I've been testing and poking at the API in some qmds [here](../vicwater/vicwater_testing.qmd). I expect a lot of that ends up as vignettes in the package, and some is ready to become functions. I'll likely maintain that flow- test in the qmd, make into functions there, repeat.
 
 I'm going to go write a function, and then figure out how to use it.
 

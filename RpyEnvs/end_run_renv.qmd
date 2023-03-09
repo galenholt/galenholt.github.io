@@ -3,7 +3,7 @@ title: "End-running renv"
 author: "Galen Holt"
 ---
 
-I use {renv} to manage packages, but it is not uncommon for `renv::restore` to fail if enough time has passed. Maybe a package no longer exists. Maybe the package versions don't work with the current R version (most common). We can use [rig](RpyEnvs/rig.qmd) to downgrade R for that project, but lately that is failing with new versions of Rstudio. And sometimes we just want to install all the packages in a project, but all-new versions. If everything worked right, `renv::update()` should do that, but not if the packages haven't been successfully `restore()`d.
+I use {renv} to manage packages, but it is not uncommon for `renv::restore` to fail if enough time has passed. Maybe a package no longer exists. Maybe the package versions don't work with the current R version (most common). We can use [rig](rig.qmd) to downgrade R for that project, but lately that is failing with new versions of Rstudio. And sometimes we just want to install all the packages in a project, but all-new versions. If everything worked right, `renv::update()` should do that, but not if the packages haven't been successfully `restore()`d.
 
 We can stil use `renv` to solve this. Get the dependencies, make them a character vector, and install them. That's *way* less work than my old method of running `renv::status()`, seeing what it said was missing, and installing, especially since that method included dependencies, and so had a lot of needless installs that would have happened with the outer package.
 

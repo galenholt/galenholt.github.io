@@ -9,7 +9,7 @@ editor: visual
 
 Both renv and poetry want to set up project structures and work within them. And I want to do both in the same git repo because I'm using both for the same project. And have access to both everywhere within the project (ie I want to be able to use `reticulate`, but more importantly I want the different parts of the project to be able to have both py and R components.
 
-I've done a bit getting them to [work in the same *script*](RandPython.qmd)*,* and setting up [clean python environments with poetry](python_setyup.qmd). With the shared scripts, I did it with a subdirectory, and that sort of worked for testing, but won't work for a project where they're both used a fair amount and in both places.
+I've done a bit getting them to [work in the same *script*](RandPython.qmd)*,* and setting up [clean python environments with poetry](python_setup.qmd). With the shared scripts, I did it with a subdirectory, and that sort of worked for testing, but won't work for a project where they're both used a fair amount and in both places.
 
 ### Init in existing
 

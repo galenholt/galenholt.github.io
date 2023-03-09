@@ -9,7 +9,7 @@ I [already did some tests of what sort of work makes most sense to be parallelis
 
 ## Packages and setup
 
-I'll use the {future} package, along with {dofuture} and {foreach}, because I tend to like writing for loops (there's a reason I'll try to write up sometime later). I test other packages in the {future} family (`furrr`, `future_apply`) [where I try to better understand when they do and don't give speed advantages](parallelism/parallel_speed.qmd).
+I'll use the {future} package, along with {dofuture} and {foreach}, because I tend to like writing for loops (there's a reason I'll try to write up sometime later). I test other packages in the {future} family (`furrr`, `future_apply`) [where I try to better understand when they do and don't give speed advantages](parallel_speed.qmd).
 
 ```{r}
 library(microbenchmark)

@@ -119,7 +119,7 @@ So, that's not good. Especially the silent part
 
 I can't figure out how to use `mdba_gauge_getter` to automatically query the period of record. So for that, you have to make sure to check for every request.
 
-On the other hand, {vicwater} can hit other API calls (`get_variable_list`) that return the period of record, and then use them to call `get_ts_traces`. We can do this manually, which is a bit of a hassle, because `get_variable_list` returns all the variables, and we have to remember to filter for '100' if we want '100' or '140', or '141' (see [testing vicwater](vicwater/vicwater_testing.qmd)).
+On the other hand, {vicwater} can hit other API calls (`get_variable_list`) that return the period of record, and then use them to call `get_ts_traces`. We can do this manually, which is a bit of a hassle, because `get_variable_list` returns all the variables, and we have to remember to filter for '100' if we want '100' or '140', or '141' (see [testing vicwater](../vicwater/vicwater_testing.qmd)).
 
 With multiple sites, we always will have to loop, since the `start_time`s (and maybe `end_time`) will differ.
 
