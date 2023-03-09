@@ -32,6 +32,40 @@ find_missing_pages <- function() {
 }
 ```
 
+### Page linking
+
+I keep getting dead links, because I think I don't understand how links of the form
+
+    [words](path/to/quarto_doc.qmd)
+
+work. Do I need the path? Should the path be relative to the root, or the particular document being rendered?
+
+To test, this doc is in the `/website_notes` folder, as is `quarto_website_github.qmd`, while another set of small helpers is in `/small_helpers/smallpieces.qmd`. I'm going to try to link to both of those in a couple different ways and see what works. Actual text is in code chunks so it's visible.
+
+**no outer dir, same folder** [quarto_website_github.qmd](quarto_website_github.qmd) : WORKS
+
+    [quarto_website_github.qmd](quarto_website_github.qmd)
+
+**no outer dir, different folder** [smallpieces.qmd](smallpieces.qmd) : FAILS
+
+    [smallpieces.qmd](smallpieces.qmd)
+
+**outer dir, same folder** [quarto_website_github.qmd](website_notes/quarto_website_github.qmd) : FAILS
+
+    [quarto_website_github.qmd](website_notes/quarto_website_github.qmd)
+
+**outer dir, different folder** [smallpieces.qmd](small_helpers/smallpieces.qmd) : FAILS
+
+    [smallpieces.qmd](small_helpers/smallpieces.qmd)
+
+**referenced to file dir, different folder** [smallpieces.qmd](../small_helpers/smallpieces.qmd) : (doesn't make sense to do this for the same folder, since the implication is that the reference is to the directory with the qmd in it). WORKS
+
+    [smallpieces.qmd](../small_helpers/smallpieces.qmd)
+
+So, *LINKS NEED TO BE RELATIVE TO THE LOCATION OF THE FILE*. That's *really* annoying, and I thought would have been controlled by setting `execute-dir: project` in the yaml, but that doesn't seem to be the case.
+
+Is there a good way to find and fix dead links? Need to look.
+
 ### Github pages not updating
 
 Very frequently pushes to main will still not seem to work- the website will remain in the old state, despite being sure we've pushed to main and the local render and preview has all the new content. The issue seems to be caching, and I'm not sure why it's so aggressive. In chrome, you can open the Inspector, then right-click on the refresh button and then "empty cache and hard reload". Or incognito window, or clear the cache some other way. It's very annoying though.

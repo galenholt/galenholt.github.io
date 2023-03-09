@@ -491,6 +491,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#ephemera" id="toc-ephemera" class="nav-link" data-scroll-target="#ephemera">Ephemera</a>
   <ul class="collapse">
   <li><a href="#renv" id="toc-renv" class="nav-link" data-scroll-target="#renv">renv</a></li>
+  <li><a href="#testing-figures" id="toc-testing-figures" class="nav-link" data-scroll-target="#testing-figures">testing figures</a></li>
+  <li><a href="#global-variables-and-dplyr" id="toc-global-variables-and-dplyr" class="nav-link" data-scroll-target="#global-variables-and-dplyr">‘global’ variables and dplyr</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -661,12 +663,23 @@ Sentiment:???</code></pre>
 <h2 class="anchored" data-anchor-id="checking-building-etc">Checking, building, etc</h2>
 <p>It ended up being pretty straightforward to use <code>devtools::check()</code> and using continuous integration with github to run the checks and put the little badges on, as described in <a href="https://r-pkgs.org/continuous-integration.html">the book</a>.</p>
 <p>It <em>is</em> easy to end up with funny missing pieces and issues if you forget to run <code>devtools::check()</code> and just push to github followed by <code>devtools::install_github</code> or even more likely if you just <code>devtools::install_local</code> from the directory with the code in it. In general, I think the github actions should take care of the check, but I never seem to get the emails that say it’s happened.</p>
+<p>I often forget these steps. But to actually make the package usable other than with <code>load_all()</code>, we seem to need to <code>devtools::check()</code> and if there’s an rmd readme, knit that.</p>
+<p>The readme ends up being hard to build when it gets updated without reinstalling the package. I ended up in a weird loop once where I couldn’t build the package with a broken readme, but couldn’t update the readme without package updates. The solution is <code>devtools::build_readme()</code> to install a temp package and build the readme from that, and then <code>devtools::check()</code>.</p>
 </section>
 <section id="ephemera" class="level2">
 <h2 class="anchored" data-anchor-id="ephemera">Ephemera</h2>
 <section id="renv" class="level3">
 <h3 class="anchored" data-anchor-id="renv">renv</h3>
 <p>I use <a href="https://rstudio.github.io/renv/articles/renv.html">{renv}</a> for package management and reproducibility, which usually (in a non-package Rproject) puts symlinks to the package in a <code>projdir/renv/library/R-4.x/CPUtype/</code> directory. But interestingly, in a package project, it puts the symlinked <code>library/R4.x/...</code> in a central location (in my case, <code>~/AppData/Local/R/cache/R/renv/library/PACKAGENAME-HASH/R4.x/…</code>.</p>
+</section>
+<section id="testing-figures" class="level3">
+<h3 class="anchored" data-anchor-id="testing-figures">testing figures</h3>
+<p>I need to make some standard figure functions as part of the package. To test them, I’ve found the <a href="https://www.tidyverse.org/blog/2021/06/vdiffr-1-0-0/">{vdiffr} package</a>. It saves a figure if one doesn’t exist and if one does exist, it checks against the saved version. It seems to work well, the only trick is to remember to <code>usethis::use_package('vdiffr', 'Suggests')</code>, or it won’t be available to use by <code>devtools::check()</code>.</p>
+</section>
+<section id="global-variables-and-dplyr" class="level3">
+<h3 class="anchored" data-anchor-id="global-variables-and-dplyr">‘global’ variables and dplyr</h3>
+<p>When I <code>devtools::check()</code> on a package using dplyr, I get a million errors about ‘no visible binding for global variable ’variable_name’’. The issue is that R CMD CHECK is interpreting the bare variable names in <code>mutate</code>, <code>summarise</code>, etc as variables and can’t find them. The code runs fine, but it’s annoying.</p>
+<p>The answer, unfortunately, is to use the <code>.data[['variable_name']]</code> or <code>.data$variable_name</code> convention everywhere and <code>usethis::use_import_from('rlang', '.data')</code>. That works to get rid of the errors, but now we’ve lost one of the really nice things about writing dplyr code- the simplicity of bare data variable names.</p>
 
 
 </section>

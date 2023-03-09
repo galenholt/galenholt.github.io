@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Galen Holt">
+
+<title>Galen - Changing batchtools template</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Galen</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../research.html">
+ <span class="menu-text">Research</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../code_demos.html">
+ <span class="menu-text">Code Demos</span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#modify-path" id="toc-modify-path" class="nav-link active" data-scroll-target="#modify-path">Modify path</a></li>
+  <li><a href="#specifying-resources" id="toc-specifying-resources" class="nav-link" data-scroll-target="#specifying-resources">Specifying resources</a></li>
+  <li><a href="#tweak-has-to-match-the-template" id="toc-tweak-has-to-match-the-template" class="nav-link" data-scroll-target="#tweak-has-to-match-the-template">Tweak has to match the template!</a>
+  <ul class="collapse">
+  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
+  </ul></li>
+  <li><a href="#todo-nodes-and-cores" id="toc-todo-nodes-and-cores" class="nav-link" data-scroll-target="#todo-nodes-and-cores">TODO: Nodes and cores</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Changing batchtools template</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Galen Holt </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>I <a href="../parallelism/initial_future_batchtools.html">got future.batchtools working</a>, and now I have a bunch of follow-up tests.</p>
+<p>Can we call a different template, even if it’s not named <code>batchtools.slurm.tmpl</code>?</p>
+<p>In my <a href="https://github.com/galenholt/slurm_r_tests">slurm testing repo</a>, I have the default templates from <code>future.batchtools</code> and <code>batchtools</code> saved in <code>/batchtools_templates</code>. The one from <code>future.batchtools</code> is also saved as <code>batchtools.slurm.tmpl</code> in the outer directory (where it gets found by default and <a href="../parallelism/initial_future_batchtools.html">we know it works</a>).</p>
+<section id="modify-path" class="level2">
+<h2 class="anchored" data-anchor-id="modify-path">Modify path</h2>
+<p>First, I’ll just send a path, as in <code>plan(batchtools_slurm, template = "/path/to/batchtools.slurm.tmpl")</code> to the original template from <code>future.batchtools</code> that I copied to make <code>/batchtools.slurm.tmpl</code>.</p>
+<p>And then I’ll use the <code>batchtools</code> template and see how that works.</p>
+<p>To do both of these, I’ll modify <code>slurm_r_tests/testing_future_batchtools.R</code> to take the path as an argument so I can pass it from the command line.</p>
+<p>I could loop over that like I did <a href="../parallelism/plans_and_hpc.html">when testing single-node plans</a> but I think I don’t for the moment.</p>
+<p>Check that the default works (no path argument at command line, <code>sbatch batchtools_R.sh testing_future_batchtools.R</code>. That works.</p>
+<p>The same template but with a different name and in a subdirectory works if we’re careful with the path-</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> batchtools_R.sh testing_future_batchtools.R ./batchtools_templates/slur</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">m.tmpl</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The template that comes from <code>batchtools</code> <em>doesn’t</em> work.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> batchtools_R.sh testing_future_batchtools.R ./batchtools_templates/slur</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">m-simple.tmpl</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Why not? I think because it doesn’t actually specify any resources. It expects that to come in from elsewhere.</p>
+<p>So, let’s figure out resource specification, and then try that one again.</p>
+</section>
+<section id="specifying-resources" class="level2">
+<h2 class="anchored" data-anchor-id="specifying-resources">Specifying resources</h2>
+<p>Remember, this is <em>per job</em>.</p>
+<p>What I want to do is use <code>tweak</code>- e.g.&nbsp;<code>tweak(batchtools_slurm, resources = list(ncpus = 10, nodes = 2)</code>). Again, <strong>remembering this is what gets requested <em>for every job-</em></strong></p>
+<ul>
+<li><p>so does it ever make sense to request nodes &gt; 1?</p></li>
+<li><p>Should I only request ncpus &gt; 1 if I use list-plans to then go to <code>multisession</code> or <code>multicore</code>?</p></li>
+</ul>
+<p>But first, does that let me use the <code>slurm-simple</code> template that didn’t request anything itself?</p>
+<p>I’ve done it by hardcoding some resource requests in <code>tweak_resources.R</code> in the test repo, but they could be build in a script if we wanted.</p>
+<p>Didn’t work. But I think the answer is in th %&lt; resources$whatever &gt;% - THOSE ARE THE NAMES. AND I CAN CHANGE WHAT THE LIST RETURNS- character instead of integer, for ex.</p>
+<p>So the <code>slurm-simple.tmpl</code> from <code>batchtools</code> has</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --job-name=&lt;%= job.name %&gt;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --output=&lt;%= log.file %&gt;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --error=&lt;%= log.file %&gt;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --time=&lt;%= ceiling(resources$walltime / 60) %&gt;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --ntasks=1</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --cpus-per-task=&lt;%= resources$ncpus %&gt;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --mem-per-cpu=&lt;%= resources$memory %&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>And so only lets us set those values (job-name, output, error, time, ntasks, cpus-per-task, and mem-per-cpu), and we have to do that in the right slots of <code>resources</code> and with the right type- e.g.&nbsp;<code>resources$walltime</code> sets <code>--time</code>, and has to be numeric. BUT, we <em>could</em> change that with a different template file that just uses the character vector “hh:mm:ss” (as I do with the non-template <code>any_R.sh</code>. Or passing things like 4GB instead of memory in mb.</p>
+<p>Now, if I run that with <code>resources$ncpus = 12</code>, I get the same output as before. But I <em>think</em> I’m using 100 cpus, but each one is also sitting on 11 others. I’m just not saving what I need to check. The <code>ntasks</code> instead of <code>nodes</code> is a bit confusing too- I thought tasks were threads on the cpu. Maybe that <em>is</em> the case- the hardcode <code>nthreads = 1</code> here says don’t thread below the cpu level. And no <code>node</code> request I assume just defaults to 1.</p>
+<p><em>OR</em> if we aren’t defining nodes, does slurm just auto-assign work to cpus across nodes? ie node-agnostic? And then we don’t have to worry about necessarily matching work to CPUs on nodes?</p>
+<p>I think the <code>future.batchtools</code> template <code>batchtools_templates/slurm.tmpl</code> is more flexible. Instead of individually filling parts of the slurm script as above, it just fills whatever options we want. It has the minimal set to get things to run hardcoded, but the section</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">## Resources needed:</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;</span>% <span class="cf">if</span> <span class="kw">(</span><span class="ex">length</span><span class="er">(</span><span class="ex">resources</span><span class="kw">)</span> <span class="op">&gt;</span> 0<span class="kw">)</span> <span class="kw">{</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="ex">opts</span> <span class="op">&lt;</span>- unlist<span class="er">(</span><span class="ex">resources,</span> use.names = TRUE<span class="kw">)</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="ex">opts</span> <span class="op">&lt;</span>- sprintf<span class="er">(</span><span class="st">"--%s=%s"</span><span class="ex">,</span> names<span class="er">(</span><span class="ex">opts</span><span class="kw">)</span><span class="ex">,</span> opts<span class="kw">)</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="ex">opts</span> <span class="op">&lt;</span>- paste<span class="er">(</span><span class="ex">opts,</span> collapse = <span class="st">" "</span><span class="kw">)</span> <span class="ex">%</span><span class="op">&gt;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH &lt;%= opts %&gt;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;</span>% <span class="kw">}</span> <span class="ex">%</span><span class="op">&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Just writes in anything. So, can I get <em>that</em> to work in <code>tweak_resources.R</code>? It should be easier, but wasn’t working for me.</p>
+</section>
+<section id="tweak-has-to-match-the-template" class="level2">
+<h2 class="anchored" data-anchor-id="tweak-has-to-match-the-template">Tweak has to match the template!</h2>
+<p>So, that means the way <code>tweak(batchtools_slurm, resources = …)</code> works is template-specific. Some might not have parsing for what gets passed, sometimes it might be the wrong type, etc).</p>
+<section id="examples" class="level3">
+<h3 class="anchored" data-anchor-id="examples">Examples</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plan</span>(<span class="fu">tweak</span>(batchtools_slurm,</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">template =</span> <span class="st">"./batchtools_templates/slurm-simple.tmpl"</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">resources =</span> <span class="fu">list</span>(<span class="at">ncpus =</span> <span class="dv">12</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                            <span class="at">memory =</span> <span class="dv">1000</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>                            <span class="at">walltime=</span><span class="dv">60</span><span class="sc">*</span><span class="dv">5</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>For the <code>slurm-simple.tmpl</code>, the SLURM <code>--time</code> is referenced to <code>resources$walltime</code> and gets divided by 60 so has to be a numeric in seconds.</p>
+<p>The <code>ncpus = 12</code> here gets 12 CPUs that all get assigned (kinda weirdly though, with <code>--cpus-per-task</code>), even though we only use one- see the top of the output</p>
+<pre><code>## Nodes and pids
+# A tibble: 100 × 6
+# Groups:   all_job_nodes, node, pid, taskid [100]
+    all_job_nodes node             pid taskid cpus_avail n_reps
+    &lt;chr&gt;         &lt;chr&gt;          &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;       &lt;int&gt;
+  1 gandalf-vm02  gandalf-vm02 3329413 0      12              6
+  2 gandalf-vm02  gandalf-vm02 3329479 0      12              7
+  3 gandalf-vm02  gandalf-vm02 3329545 0      12              7
+  4 gandalf-vm02  gandalf-vm02 3329611 0      12              6
+  5 gandalf-vm02  gandalf-vm02 3329679 0      12              7
+  6 gandalf-vm02  gandalf-vm02 3329747 0      12              6
+  7 gandalf-vm02  gandalf-vm02 3329811 0      12              6</code></pre>
+<p>Whereas <code>cpus_avail</code> is 1 without that line-</p>
+<pre><code>## Nodes and pids
+# A tibble: 100 × 6
+# Groups:   all_job_nodes, node, pid, taskid [100]
+    all_job_nodes node             pid taskid cpus_avail n_reps
+    &lt;chr&gt;         &lt;chr&gt;          &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;       &lt;int&gt;
+  1 gandalf-vm01  gandalf-vm01   12812 0      1               6
+  2 gandalf-vm01  gandalf-vm01   12881 0      1               6
+  3 gandalf-vm01  gandalf-vm01   12966 0      1               6
+  4 gandalf-vm01  gandalf-vm01   13043 0      1               6
+  5 gandalf-vm01  gandalf-vm01   13117 0      1               6
+  6 gandalf-vm01  gandalf-vm01   13179 0      1               6
+  7 gandalf-vm01  gandalf-vm01   13261 0      1               6</code></pre>
+<p>It looks like a major catch here is I can’t use names in the <code>resources</code> list with dashes, e.g.&nbsp;<code>ntasks-per-node</code>. And so to set those i’ll have to translate, as in <code>slurm-simple</code>, I think. Unless batchtools auto-translates under the hood, but I think not.</p>
+<p>Going to have to come back to this. It’d be nice if it were possible. How did that github issue do it? It used <code>ncpus</code> in <code>slurm-simple.tmpl</code>. So maybe I’ll just do that for now. Then I can get on with checking the use of chunks and arrays and nodes and nesting. And whether i can use the <code>ncpus</code> thing to get (and use) more cpus than exist on single nodes.</p>
+<p>Does that mean I can auto-generate jobnames???? That would be great</p>
+</section>
+</section>
+<section id="todo-nodes-and-cores" class="level1">
+<h1>TODO: Nodes and cores</h1>
+<p>Does it make sense to grab a node and then do a second layer of processing on cores? Or does it make more sense to just throw everything to cores at the beginning (ie just run with defaults) and let everything else run sequentially? Almost certainly question-specific.</p>
+<p>Is there ever a reason to get more than one node per job?</p>
+<p>Is <code>--tasks=1</code> and <code>--cpus-per-task=N</code> better/worse/different than <code>--nodes=1</code> and <code>--ntasks-per-node=N</code> ? Does the first just ignore nodes and let us span them?</p>
+<p>How should chunking work? Is there a reason to manage it manually, and how does chunks.as.array work?</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

@@ -1,0 +1,51 @@
+---
+title: "Conditional futures"
+author: "Galen Holt"
+---
+
+```{r}
+library(future)
+```
+
+It's likely that we want to write code that just runs either locally or on an HPC without having to change a bunch of things inside the relevant scripts. This is useful for local prototyping, as well as just sometimes needing to run things locally.
+
+The portability of {futures} is a major benefit for this reason- futures should all work the same, no matter what `plan` is used to resolve them. So, we can write code that runs both locally and on the HPC by changing the plan. And we can automate this process by making the plan conditional.
+
+Different HPCs define themselves differently, but in the simple case where the code only runs on Linux on an HPC, something like
+
+```{r}
+if (grepl('^Windows', Sys.info()["sysname"])) {
+  inpath <- file.path('path', 'to', 'local', 'inputs')
+  outpath <- file.path('path', 'to', 'local', 'outputs')
+  plan(multisession)
+}
+
+if (grepl('^Linux', Sys.info()["sysname"])) {
+  inpath <- file.path('path', 'to', 'HPC', 'inputs')
+  outpath <- file.path('path', 'to', 'HPC', 'outputs')
+  plan(list(tweak(batchtools_slurm,
+                template = "batchtools.slurm.tmpl",
+                resources = list(time = 5,
+                                 ntasks.per.node = 12, 
+                                 mem = 1000)),
+          multicore))
+}
+```
+
+Obviously if you run on Linux that's NOT an HPC, that second `if` needs to ask about something else. `Sys.info()$user` and `login` are often the same, but I've had success with something like
+
+```{r}
+if (grepl('^nameofcluster', Sys.info()["nodename"]) | 
+    grepl('^c', Sys.info()["nodename"])) {
+  inpath <- file.path('path', 'to', 'HPC', 'inputs')
+  outpath <- file.path('path', 'to', 'HPC', 'outputs')
+  plan(list(tweak(batchtools_slurm,
+                template = "batchtools.slurm.tmpl",
+                resources = list(time = 5,
+                                 ntasks.per.node = 12, 
+                                 mem = 1000)),
+          multicore))
+}
+```
+
+where that second `grepl` is because the working nodes have a different `nodename` than the login node, which tends to have the same name as the whole HPC. But I have encountered HPCs where there a many different formats for that nodename, so there's just some trial and error involved, often involving some jobs like those in [slurm_r\_tests](https://github.com/galenholt/slurm_r_tests) that query and return HPC resources used, including the names of the nodes.

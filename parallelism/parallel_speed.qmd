@@ -1,0 +1,587 @@
+---
+title: "Investigating parallel speedups"
+author: "Galen Holt"
+---
+
+I tend to run a lot of code that can be parallelised, but it's not always clear when it's worth it and how best to structure the paralellisation. Should it be at the outermost layer, where I'm typically looping over parameters, some intermediate layer where I might be looping over indices or iterators, or to handle large datasets?
+
+For reference, I often have population dynamics models with many species and locations. At each timestep I need to make a lot of calculations on the species, including some large matrix multiplications to get dispersal. These could be parallelised over species. And after simulations are complete, I calculate a lot of covariances over species, space, and time that can be parallelised over pairwise combinations. Both of these cases operate on large arrays, and so would feed large amounts of data to parallelised functions, which would then do some limited processing on it (e.g. calculate covariances and clean them up for return). At the other extreme, each of these situations is governed by an initial set of parameters, giving, for example, environmental conditions, species growth rates, etc. These are often just vectors, and so parallelising over them would feed the parallel function small amounts of data and kick off large amounts of work.
+
+To test parallel performance under these different situations, I'll attempt to build an example that is non-trivial, but still try to stay minimally complex to avoid getting into writing a complex population dynamics model.
+
+## Packages and setup
+
+I'll use the {future} package, along with {dofuture} and {foreach}, because I tend to like writing for loops (there's a reason- I'll try to write up sometime later). I'll also test {furrr} and {future.apply} to see if they differ in any appreciable way.
+
+```{r}
+library(microbenchmark)
+library(doFuture)
+library(foreach)
+library(furrr)
+library(future.apply)
+library(doRNG)
+library(listenv)
+```
+
+Just set up a typical doFuture situation with `plan(multisession)`. Sorting out plans is a topic for another day.
+
+```{r}
+registerDoFuture()
+plan(multisession)
+```
+
+# A data-heavy loop
+
+Let's just say it's a biggish (but not obscene) matrix multiplication, which for a single iteration (maybe this is species 1's dispersal) looks like this:
+
+```{r}
+a <- rnorm(1000)
+b <- matrix(rnorm(1000*1000), nrow = 1000)
+microbenchmark(c <- a %*% b, times = 10)
+```
+
+Now, let's say we have a lot of species- ie there are 100 `a`'s in the situation above. I'll put them in a list so I can use `foreach` or `furrr` or `future.apply` might make the most sense. My code often makes the most sense in loops because of dependencies and so I tend to keep writing them, but anything parallelisable should be able to be coerced into working with `furrr` or `future.apply.`
+
+So, let's say I have 100 'species' that each get multiplied by the b above
+
+```{r}
+a100 <- matrix(rnorm(100*1000), ncol = 100)
+```
+
+In a single- case, this is
+
+```{r}
+c1 <- a100[,1] %*% b
+```
+
+So what we want to do is multiply each column of a100 by b and then glue them back together. And yes, we could do all this more cleanly with linear algebra. The point here is to test the situation where we have a reasonably large amount of data we want to iterate over and do some smallish number of operations on. I'll make each one a function so we can easily run them through `microbenchmark` (and later, nest them).
+
+## foreach
+
+```{r}
+mult_foreach <- function(a, b) {
+  c_foreach <- foreach(i = 1:ncol(a), .combine = rbind) %dopar% {
+    a[,i] %*% b
+  }
+  return(t(c_foreach))
+}
+
+```
+
+## furrr
+
+`purrr` (and so `furrr`) don't seem to work on matrices. So, I guess have a silly pre-step to make it a list. I'm going to do that outside the function, simply because if we went this way, we'd set the data up to work.
+
+```{r}
+mult_furrr <- function(a_list, b) {
+  c_map <- future_map(a_list, \(x) x %*% b)
+  matrix(unlist(c_map), ncol = 2)
+}
+```
+
+## future.apply
+
+```{r}
+mult_apply <- function(a, b) {
+  future_apply(a, MARGIN = 2, FUN = function(x) x %*% b)
+}
+```
+
+## simple for
+
+Preallocate, because I'm not a heathen
+
+```{r}
+mult_for <- function(a, b) {
+  
+  c_for <- a
+  for(i in 1:ncol(a)) {
+    c_for[,i] <- a[,i] %*% b
+  }
+  return(c_for)
+}
+```
+
+## future for
+
+We can write a usual for loop if we use futures directly. the futures themselves have to go in a list, because they are futures, not values, and so can't go straight into a matrix. That list *can* be preallocated.
+
+There are two ways to do this- explicit and implicit- [see the future docs](https://github.com/HenrikBengtsson/future).
+
+#### Explicit futures
+
+```{r}
+mult_for_future_e <- function(a, b) {
+  
+  c_for <- vector(mode = 'list', length = ncol(a))
+  
+  for(i in 1:ncol(a)) {
+    c_for[[i]] <- future({a[,i] %*% b})
+  }
+  # get values and make a matrix
+  v_for <- lapply(c_for, FUN = value)
+  
+  return(matrix(unlist(v_for), ncol = ncol(a)))
+}
+```
+
+#### Implicit futures
+
+using `listenv`
+
+```{r}
+mult_for_future_i <- function(a, b) {
+  
+  c_for <- listenv()
+  
+  for(i in 1:ncol(a)) {
+    c_for[[i]] %<-% {a[,i] %*% b}
+  }
+  # get values and make a matrix
+  v_for <- as.list(c_for)
+  
+  return(matrix(unlist(v_for), ncol = ncol(a)))
+}
+```
+
+## linear algebra
+
+```{r}
+mult_linear <- function(a,b) {
+  t(a %*% b)
+}
+```
+
+# Test they all work
+
+set up a small test case and see if they are all returning the same answer
+
+```{r}
+asmall <- matrix(rnorm(10*2), ncol = 2)
+asmall_l <- as.list(as.data.frame(asmall)) # This is silly
+bsmall <- matrix(rnorm(10*10), ncol = 10)
+```
+
+```{r}
+c_foreach <- mult_foreach(asmall, bsmall)
+c_furrr <- mult_furrr(asmall_l, bsmall)
+c_apply <- mult_apply(asmall, bsmall)
+c_for <- mult_for(asmall, bsmall)
+c_for_fe <- mult_for_future_e(asmall, bsmall)
+c_for_fi <- mult_for_future_i(asmall, bsmall)
+c_linear <- mult_linear(t(asmall), bsmall)
+```
+
+```{r}
+all(c_foreach == c_furrr)
+all(c_foreach == c_apply)
+all(c_foreach == c_for)
+all(c_foreach == c_for_fe)
+all(c_foreach == c_for_fi)
+all(c_foreach == c_linear)
+```
+
+# Benchmark
+
+```{r}
+a100_l <- as.list(as.data.frame(a100))
+
+microbenchmark(
+  futureforeach = mult_foreach(a100, b),
+  futurefurrr = mult_furrr(a100_l, b),
+  futureapply = mult_apply(a100, b),
+  bare_for = mult_for(a100, b),
+  future_for_e = mult_for_future_e(a100, b),
+  future_for_i = mult_for_future_i(a100, b),
+  bare_linear = mult_linear(t(a100), b),
+  times = 10
+)
+```
+
+Well, that's interesting. The futures are hugely slower than even the bare `for`. And the direct futures in a `for` are the worst by far (so bad there must be something major wrong). Is it just overhead passing the matrices to workers? That might explain the poor performance of the direct futures in `for`- if the other `future` functions chunk to avoid passing everything every time, then the overhead hits the direct versions much harder. Or something else? Does preallocating help for the foreach, apply, etc?
+
+# Preallocation and lists
+
+This is a bit of an aside- we *know* preallocation speeds up `for` loops. Does it speed up `foreach`? Seems unlikely, since by nature `foreach` constructs the object additively as a list or whatever's specified in `.combine`. That can make the code cleaner in a lot of cases if we're building something in a loop, but it seems more like the un-preallocated `for` method of doing things.
+
+Let's test and see.
+
+## preallocate the foreach
+
+I typically don't do this, since my understanding of foreach is that it builds them with the .combine, so preallocating doesn't do anything. But maybe?
+
+```{r}
+mult_foreach_pre <- function(a, b) {
+  c_foreach <- t(a)
+  c_foreach <- foreach(i = 1:ncol(a), .combine = rbind) %dopar% {
+    a[,i] %*% b
+  }
+  return(t(c_foreach))
+}
+
+```
+
+## Return the foreach as a list
+
+It is possible that using `.combine` is forcing slower behaviour for the foreach, and it's optimized for a list?
+
+```{r}
+mult_foreach_list <- function(a, b) {
+  c_foreach <- foreach(i = 1:ncol(a)) %dopar% {
+    a[,i] %*% b
+  }
+  
+  # Do the binding in one step
+  return(matrix(unlist(c_foreach), ncol = 2))
+}
+```
+
+## Don't preallocate the for
+
+How bad is this- I almost always DO preallocate (it's faster, and the loop starts at 1, and it's just cleaner), but it's possible not to.
+
+```{r}
+mult_for_build <- function(a, b) {
+  
+  c_for <- a[,1] %*% b
+  
+  for(i in 2:ncol(a)) {
+    ctemp <- a[,i] %*% b
+    c_for <- rbind(c_for, ctemp)
+  }
+  return(t(c_for))
+}
+```
+
+I'll include the `furrr` and `future.apply` here too, I guess as reference.
+
+```{r}
+
+microbenchmark(
+  futurefurrr = mult_furrr(a100_l, b),
+  futureapply = mult_apply(a100, b),
+  futureforeach = mult_foreach(a100, b),
+  preallocate_foreach = mult_foreach_pre(a100, b),
+  foreach_list = mult_foreach_list(a100, b),
+  bare_for = mult_for(a100, b),
+  unallocate_for = mult_for_build(a100, b),
+  bare_linear = mult_linear(t(a100), b),
+  times = 10
+)
+```
+
+These results are interesting, and the actual *slowdown* (not just lack of speedup) is worrying for how I do some things. I think the overhead of shifting the data around is absolutely killing these parallel processes. And I definitely have code that does this sort of thing.
+
+I have two more questions now (plus one for later):
+
+1.  Does the `foreach` loop work as fast as a `for` if I use `%do%` instead of `%dopar%`? Or is the overhead still there?
+
+    1.  And same with all the futures if I set `plan(sequential)`?
+
+2.  If I don't send prebuilt data, but just some parameters and build the data internally, how do they compare?
+
+    1.  Sometimes this flow makes sense, and sometimes it doesn't-- e.g. if I'm simulating populations, the outer set of parallelisation just sends parameters. But the internal set often needs to work on things like population matrices. And so maybe that internal loop just shouldn't be parallel.
+
+3.  How do other `plan` options affect these answers? I think this deserves its own page, and could get very complicated once I get into `future.callr`, `future.batchtools`, `cluster`, etc. And `multicore` might avoid the passing and use pointers, but i can't test on windows?
+
+# Un-parallelising
+
+## foreach %do%
+
+Let's try shifting to `%do%` for the foreach
+
+```{r}
+mult_foreach_do <- function(a, b) {
+  c_foreach <- foreach(i = 1:ncol(a), .combine = rbind) %do% {
+    a[,i] %*% b
+  }
+  return(t(c_foreach))
+}
+```
+
+## list foreach %do%
+
+```{r}
+mult_foreach_list_do <- function(a, b) {
+  c_foreach <- foreach(i = 1:ncol(a)) %do% {
+    a[,i] %*% b
+  }
+  
+  # Do the binding in one step
+  return(matrix(unlist(c_foreach), ncol = 2))
+}
+```
+
+Test against parallel foreach, bare for, and the unallocated for (since that's kind of what the foreach is doing- building up an object). Since that's sometimes nice behaviour and leads to cleaner code than a for loop, I'd like to see how they compare.
+
+```{r}
+microbenchmark(
+  futureforeach = mult_foreach(a100, b),
+  foreachdo = mult_foreach_do(a100, b),
+  foreachlistdo = mult_foreach_list_do(a100, b),
+  bare_for = mult_for(a100, b),
+  unallocate_for = mult_for_build(a100, b),
+  bare_linear = mult_linear(t(a100), b),
+  times = 10
+)
+```
+
+Interesting. Nearly identical to the unallocated for and quite a bit *faster* than the parallel version, which seems to hint that it's the data transfer that's killing things. And backs up my assumption of what's going on under the hood in terms of constructing the object as in an unallocated for loop. There's no appreciable difference in using the foreach with a list and then combining vs combining as we go with `.combine`.
+
+## plan(sequential)
+
+How do the parallel versions work with `plan(sequential)`? Do they all get a speedup from avoiding data transfer? This is the same benchmark test as above, but now run sequentially.
+
+```{r}
+plan(sequential)
+
+microbenchmark(
+  futurefurrr = mult_furrr(a100_l, b),
+  futureapply = mult_apply(a100, b),
+  futureforeach = mult_foreach(a100, b),
+  bare_for = mult_for(a100, b),
+  unallocate_for = mult_for_build(a100, b),
+  bare_linear = mult_linear(t(a100), b),
+  times = 10
+)
+```
+
+Interesting. `foreach` and `furrr` both sped up about as expected (`furrr` just seems a bit slower in general), but `future.apply` had much less of a speedup. It must not fall back to a simpler function, and still tries to use the parallel data shuffling? It is still much faster than with `plan(multisession)` (was 590 microseconds), so something is happening, but it's not getting down to the speeds of the other futures. And the simple `for` is still fastest (other than just using linear algebra, obviously).
+
+### The message so far
+
+Test the parallel implementation at different points in the code- if there's no way to avoid data passing, a simple `for` (or other sequential function like `apply` could be fastest.
+
+# Create the data in the function
+
+Sometimes it does work (or makes more sense) to create the data inside each parallel process. This is certainly the case where we're looping over parameter sets for simulations, which tend to be embarassingly parallel and low-data, which then sets of lots of processing. It's *also* likely to be the case in another situation I encounter often- reading chunks of large raster data, where I can keep it as `stars_proxy` objects until inside a parallel loop, where I can bring a chunk into memory. Something similar is likely true of things like netcdf reading.
+
+To test this sort of situation, let's use the same functions as above, but now create the vectors and matrices internally, rather than pass them in. I'm going to remake the `b` matrix internally because the point is to check this use of parallelism (lots of processing triggered from small data), even though in practice for this particular sort of calculation we'd need to pass it in so it's common to all the a's. Here, it's just a stand-in for "do some work". Let's make the first argument actually do something other than just replicate, so have it set the mean of `a`.
+
+I'm not going to bother with setting seeds because it'll be a pain to get them to match across the different ways of doing this, so the answers will be different.
+
+Do we need to adjust globals here? If we leave defaults, we copy in the whole parent environment, right? and so don't end-run anything? e.g. `.options = furrr_options(globals = "y")` for `furrr`? No, see tests of this below- `future` only passes in the needed objects from global.
+
+Turn parallel processing back on.
+
+```{r}
+plan(multisession)
+```
+
+### foreach
+
+changing this a bit too so *all* the work is done inside (no `t` on the return)
+
+```{r}
+mult_foreach_internal <- function(n_reps = 100, size = 1000) {
+  c_foreach <- foreach(i = 1:n_reps, .combine = cbind) %dorng% {
+    a <- rnorm(size, mean = i)
+    b <- matrix(rnorm(size * size), nrow = size)
+    t(a %*% b)
+  }
+  return(c_foreach)
+}
+```
+
+### furrrr
+
+reframing this one too, because `future_map` needs to call the function that does all the generating. This construction gets contrived very quickly.
+
+```{r}
+mult_furrr_internal <- function(n_reps = 100, size = 1000) {
+  fn_to_call <- function(rep, size) {
+    a <- rnorm(size, mean = rep)
+    b <- matrix(rnorm(size * size), nrow = size)
+    t(a %*% b)
+  }
+  
+  c_map <- future_map(1:n_reps, fn_to_call, size = size, .options = furrr_options(seed = TRUE))
+  matrix(unlist(c_map), ncol = n_reps)
+}
+```
+
+### future.apply
+
+modifying to `future_lapply` because it doesn't make sense to `apply` over the margins of a matrix that gets created. Again, this is getting contrived.
+
+```{r}
+mult_apply_internal <- function(n_reps = 100, size = 1000) {
+    fn_to_call <- function(rep, size) {
+    a <- rnorm(size, mean = rep)
+    b <- matrix(rnorm(size * size), nrow = size)
+    t(a %*% b)
+    }
+    
+  c_apply <- future_lapply(1:n_reps, FUN = fn_to_call, size, future.seed = TRUE)
+  
+    matrix(unlist(c_apply), ncol = n_reps)
+}
+```
+
+### For
+
+back to preallocating- we know it's better
+
+```{r}
+mult_for_internal <- function(n_reps = 100, size = 1000) {
+  
+  c_for <- matrix(nrow = size, ncol = n_reps)
+  
+  for(i in 1:n_reps) {
+        a <- rnorm(size, mean = i)
+        b <- matrix(rnorm(size * size), nrow = size)
+
+        c_for[,i] <- a %*% b
+  }
+  return(c_for)
+}
+```
+
+## future for
+
+We can write a usual for loop if we use futures directly. the futures themselves have to go in a list, because they are futures, not values, and so can't go straight into a matrix. That list *can* be preallocated.
+
+There are two ways to do this- explicit and implicit- [see the future docs](https://github.com/HenrikBengtsson/future).
+
+#### Explicit futures
+
+```{r}
+mult_for_future_internal_e <- function(n_reps = 100, size = 1000) {
+  
+  c_for <- vector(mode = 'list', length = n_reps)
+  
+  for(i in 1:n_reps) {
+    c_for[[i]] <- future({a <- rnorm(size, mean = i)
+        b <- matrix(rnorm(size * size), nrow = size)
+        a %*% b}, seed = TRUE)
+  }
+  # get values and make a matrix
+  v_for <- lapply(c_for, FUN = value)
+  
+  return(matrix(unlist(v_for), ncol = n_reps))
+}
+```
+
+#### Implicit futures
+
+using `listenv`
+
+That's a funny way to set the seed. Good to know.
+
+```{r}
+mult_for_future_internal_i <- function(n_reps = 100, size = 1000) {
+  
+  c_for <- listenv()
+  
+  for(i in 1:n_reps) {
+    c_for[[i]] %<-% {a <- rnorm(size, mean = i)
+        b <- matrix(rnorm(size * size), nrow = size)
+        a %*% b} %seed% TRUE
+  }
+  # get values and make a matrix
+  v_for <- as.list(c_for)
+  
+  return(matrix(unlist(v_for), ncol = n_reps))
+}
+```
+
+There's no reason to have a linear algebra version here, since we're by definition not operating on existing matrices.
+
+Try that *without* adjusting what globals are passed to the futures
+
+```{r}
+microbenchmark(
+  futurefurrr = mult_furrr_internal(n_reps = 100, size = 1000),
+  futureapply = mult_apply_internal(n_reps = 100, size = 1000),
+  futureforeach = mult_foreach_internal(n_reps = 100, size = 1000),
+  futurefor_e = mult_for_future_internal_e(n_reps = 100, size = 1000),
+  futurefor_i = mult_for_future_internal_i(n_reps = 100, size = 1000),
+  bare_for = mult_for_internal(n_reps = 100, size = 1000),
+  times = 10
+)
+```
+
+Now the parallelisation *is* helping quite a bit, even the `for` loops with futures, though they're still much slower than the other `future` methods. However, this is much slower than creating the matrices as we actually should do for this particular calculation, and is even slower than passing those matrices in. So, if the operations need to happen this way anyway (parallel lots of stuff over parameters), this makes lots of sense and speeds up. If we CAN pre-generate matrices, linear algebra is fastest (unsurprisingly), and the loops are next, even if we have to eat pass-in cost. Though in that case sequential is probably better.
+
+I think the slower bare futures are likely because there's no chunking being done, and so data is copied to *each* iteration, rather than to chunks of iterations (which is built into `doFuture` and I think `furrr` and `future.apply`. I could try to manually chunk to test that, but I think I'm just going to skip it.
+
+## Globals
+
+One of the nice things about `future` compared to some other parallel backends is that it does pass the global environment, so i don't have to manage what it gets- it works as it does interactively. BUT, if data passing is what's killing the speed, maybe I *do* need to manage what gets passed. In theory, the test above should get even faster if we don't pass it the global environment, but *only* the arguments.
+
+So, a new version of the above, explicitly limiting passing.
+
+### foreach
+
+```{r}
+mult_foreach_internal_g <- function(n_reps = 100, size = 1000) {
+  c_foreach <- foreach(i = 1:n_reps, 
+                       .combine = cbind,
+                       .export = NULL) %dorng% {
+    a <- rnorm(size, mean = i)
+    b <- matrix(rnorm(size * size), nrow = size)
+    t(a %*% b)
+  }
+  return(c_foreach)
+}
+```
+
+### furrrr
+
+```{r}
+mult_furrr_internal_g <- function(n_reps = 100, size = 1000) {
+  fn_to_call <- function(rep, size) {
+    a <- rnorm(size, mean = rep)
+    b <- matrix(rnorm(size * size), nrow = size)
+    t(a %*% b)
+  }
+  
+  c_map <- future_map(1:n_reps, fn_to_call, size = size, 
+                      .options = furrr_options(seed = TRUE, globals = NULL))
+  matrix(unlist(c_map), ncol = n_reps)
+}
+```
+
+### future.apply
+
+```{r}
+mult_apply_internal_g <- function(n_reps = 100, size = 1000) {
+    fn_to_call <- function(rep, size) {
+    a <- rnorm(size, mean = rep)
+    b <- matrix(rnorm(size * size), nrow = size)
+    t(a %*% b)
+    }
+    
+  c_apply <- future_lapply(1:n_reps, FUN = fn_to_call, size, 
+                           future.seed = TRUE, future.globals = FALSE)
+  
+    matrix(unlist(c_apply), ncol = n_reps)
+}
+```
+
+## Benchmark
+
+```{r}
+microbenchmark(
+  futurefurrr = mult_furrr_internal(n_reps = 100, size = 1000),
+  futureapply = mult_apply_internal(n_reps = 100, size = 1000),
+  futureforeach = mult_foreach_internal(n_reps = 100, size = 1000),
+  futurefurrr_g = mult_furrr_internal_g(n_reps = 100, size = 1000),
+  futureapply_g = mult_apply_internal_g(n_reps = 100, size = 1000),
+  futureforeach_g = mult_foreach_internal_g(n_reps = 100, size = 1000),
+  bare_for = mult_for_internal(n_reps = 100, size = 1000),
+  times = 10
+)
+```
+
+So, that's not hauling around a ton of extra stuff. I think, based on [the doFuture vignette](https://cran.r-project.org/web/packages/doFuture/vignettes/doFuture.html), that `future` will send the globals, but only those that are needed. So it's not that they're in functions, it's that `future` can tell it doesn't need to pass extra variables. This means we don't really get performance gains because `future` already had our back.
+
+# Conclusions
+
+-   If we can just write good linear algebra, that's best. No surprise there. But sometimes we can't.
+
+-   If we have large amounts of data, it's likely fastest to use a preallocated `for` loop or `apply` or `purrr::map` other sequential operation.
+
+    -   Even if we *have* to parallelise and take a performance hit (why? who knows? maybe because it's buried in a function that needs the ability to be parallel if it's the outer function?), passing in existing data is still faster than generating the data inside (over what range of data sizes?). But sometimes we need to generate the data inside anyway. In which case-
+
+-   If we have a bunch of work to do, based on small amounts of data (e.g. parameters, iterators), then the parallel futures are best, without much difference between the flavours.

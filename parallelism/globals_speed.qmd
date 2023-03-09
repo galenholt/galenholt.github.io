@@ -1,0 +1,263 @@
+---
+title: "Foreach globals and speed"
+author: "Galen Holt"
+---
+
+I previously [tested the impact of unused globals on speed](parallel_speed.qmd), but only briefly. Here, I'll be more systematic, because it gets tricky fast if we need to be super careful about what objects exist in the global environment.
+
+There are a couple things to check here
+
+-   Does unused globals get passed in, just because they exist? Does that slow things down?
+
+-   Does that answer change if the parallelisation is inside a function?
+
+I'll tackle these by
+
+1.  Running speed tests before I initialise *any* globals
+
+    1.  Bare processing
+
+    2.  Inside a function
+
+2.  Create a big global, and compare two identical processing steps that either ignore it or reference it without doing any processing on it.
+
+    1.  Bare
+
+    2.  Inside a function
+
+```{r}
+library(doFuture)
+library(future.apply)
+library(furrr)
+library(doRNG)
+library(microbenchmark)
+registerDoFuture()
+plan(multisession)
+```
+
+## Nothing exists
+
+Well, almost nothing. I'm going to set a couple scalars and define a function for `furrr` and `future.apply` . I'm not using any of the `globals` or `export` arguments in the functions.
+
+### Bare
+
+```{r}
+n_reps = 100
+size <- 1000
+
+fn_to_call <- function(rep, size) {
+    a <- rnorm(size, mean = rep)
+    b <- matrix(rnorm(size * size), nrow = size)
+    t(a %*% b)
+  }
+```
+
+#### Benchmark
+
+```{r}
+microbenchmark(
+  dofut0 = {foreach(i = 1:n_reps, 
+                       .combine = cbind) %dorng% {
+    a <- rnorm(size, mean = i)
+    b <- matrix(rnorm(size * size), nrow = size)
+    t(a %*% b)
+                       }},
+  furr0 = {future_map(1:n_reps, fn_to_call, size = size, 
+                      .options = furrr_options(seed = TRUE))},
+  
+  fuapply0 = {future_lapply(1:n_reps, FUN = fn_to_call, size, 
+                           future.seed = TRUE)},
+  times = 10
+)
+```
+
+So, doFuture and furrr are slower than future.apply, but not by a ton. The key thing here is this sets the baseline, so we can see if things slow down once we have big objects in memory.
+
+### Inside a function
+
+These functions are from [testing parallel speed](parallel_speed.qmd), though they have different names here. I've added the ability to change the way they handle globals so I don't have to write new functions for comparing that later, with the default set at the function default.
+
+#### foreach
+
+```{r}
+foreach_fun <- function(n_reps = 100, size = 1000, .export = NULL, .noexport = NULL) {
+  c_foreach <- foreach(i = 1:n_reps, 
+                       .combine = cbind,
+                       .export = .export,
+                       .noexport = .noexport) %dorng% {
+    a <- rnorm(size, mean = i)
+    b <- matrix(rnorm(size * size), nrow = size)
+    t(a %*% b)
+  }
+  return(c_foreach)
+}
+```
+
+#### furrrr
+
+```{r}
+furrr_fun <- function(n_reps = 100, size = 1000, globals = TRUE) {
+  fn_to_call <- function(rep, size) {
+    a <- rnorm(size, mean = rep)
+    b <- matrix(rnorm(size * size), nrow = size)
+    t(a %*% b)
+  }
+  
+  c_map <- future_map(1:n_reps, fn_to_call, size = size, 
+                      .options = furrr_options(seed = TRUE, 
+                                               globals = globals))
+  matrix(unlist(c_map), ncol = n_reps)
+}
+```
+
+#### future.apply
+
+```{r}
+fuapply_fun <- function(n_reps = 100, size = 1000, future.globals = TRUE) {
+    fn_to_call <- function(rep, size) {
+    a <- rnorm(size, mean = rep)
+    b <- matrix(rnorm(size * size), nrow = size)
+    t(a %*% b)
+    }
+    
+  c_apply <- future_lapply(1:n_reps, FUN = fn_to_call, size, 
+                           future.seed = TRUE,
+                           future.globals = future.globals)
+  
+    matrix(unlist(c_apply), ncol = n_reps)
+}
+```
+
+#### Benchmark
+
+```{r}
+microbenchmark(
+  dofut_fun = foreach_fun(n_reps = 100, size = 1000),
+  fur_fun = furrr_fun(n_reps = 100, size = 1000),
+  app_fun = fuapply_fun(n_reps = 100, size = 1000),
+  times = 10
+)
+```
+
+This sets the other baseline before we have big objects in memory, so we can see if things respond differently when used inside a function's environment vs directly in the global. Now all three functions are basically equivalent.
+
+## With big global
+
+Default `future.globals.maxsize` is 500MB. Should i increase that, or just try to hit it? I think just try to get just under it.
+
+```{r}
+# This is 1.6GB
+# big_obj <- matrix(rnorm(20000*10000), nrow = 10000)
+# 496 MB
+big_obj <- matrix(rnorm(10000*6200), nrow = 10000)
+```
+
+Now, same tests as before, and some that reference it but don't use it.
+
+**The comparisons to make here are:**
+
+-   Matched to above- does just having the object exist slow things down, even if not called?
+
+-   Referenced and not- does it only get passed in if asked for and slow things down?
+
+    -   Not exactly sure how I'll check that. Maybe instead of referencing it in the function (which is hard to do without using it, especially with furrr and future.apply), I'll explicitly send it in with their globals arguments.
+
+### Bare
+
+#### Benchmark
+
+I'm going to run this for default (no global argument), explicitly sending them in, and explicitly excluding them.
+
+```{r}
+microbenchmark(
+  # default- same as above, but now big_obj exists, but is not used in the actual processing
+  dofut0 = {foreach(i = 1:n_reps, 
+                       .combine = cbind) %dorng% {
+    a <- rnorm(size, mean = i)
+    b <- matrix(rnorm(size * size), nrow = size)
+    t(a %*% b)
+                       }},
+  furr0 = {future_map(1:n_reps, fn_to_call, size = size, 
+                      .options = furrr_options(seed = TRUE))},
+  
+  fuapply0 = {future_lapply(1:n_reps, FUN = fn_to_call, size, 
+                           future.seed = TRUE)},
+  
+  # Explicitly telling it not to send big global (I can't sort out getting .export to work)
+  dofut_no_g = {foreach(i = 1:n_reps, 
+                       .combine = cbind,
+                       .noexport = "big_obj") %dorng% {
+    a <- rnorm(size, mean = i)
+    b <- matrix(rnorm(size * size), nrow = size)
+    t(a %*% b)
+                       }},
+  
+  furr_no_g = {future_map(1:n_reps, fn_to_call, size = size, 
+                      .options = furrr_options(seed = TRUE, 
+                                               globals = FALSE))},
+  
+  fuapply_no_g = {future_lapply(1:n_reps, FUN = fn_to_call, size, 
+                           future.seed = TRUE,
+                           future.globals = FALSE)},
+  
+  # Explicitly telling it to send the unused global
+  dofut_g = {foreach(i = 1:n_reps, 
+                       .combine = cbind,
+                       .export = 'big_obj') %dorng% {
+    a <- rnorm(size, mean = i)
+    b <- matrix(rnorm(size * size), nrow = size)
+    t(a %*% b)
+                       }},
+  
+  furr_g = {future_map(1:n_reps, fn_to_call, size = size, 
+                      .options = furrr_options(seed = TRUE, 
+                                               globals = 'big_obj'))},
+  
+  fuapply_g = {future_lapply(1:n_reps, FUN = fn_to_call, size, 
+                           future.seed = TRUE,
+                           future.globals = 'big_obj')},
+  
+  times = 10
+)
+```
+
+Now there's a big object sitting in global memory, but it does not slow down the default run relative to the enforced-non-pass version or the version from before it existed (above). It *does* show major slowdown when it is explicitly passed.
+
+**Unused globals therefore are *NOT* passed by default, even when code is running straight in the global environment.**
+
+### Inside functions
+
+The functions have an option to change the way globals are handled.
+
+#### Benchmark
+
+```{r}
+microbenchmark(
+  # default
+  dofut_default = foreach_fun(n_reps = 100, size = 1000),
+  fur_default = furrr_fun(n_reps = 100, size = 1000),
+  app_default = fuapply_fun(n_reps = 100, size = 1000),
+  
+  # No globals
+  dofut_no_g = foreach_fun(n_reps = 100, size = 1000, .noexport = 'big_obj'),
+  fur_no_g = furrr_fun(n_reps = 100, size = 1000,
+                          globals = FALSE),
+  app_no_g = fuapply_fun(n_reps = 100, size = 1000,
+                            future.globals = FALSE),
+  
+  # Explicit globals
+  dofut_g = foreach_fun(n_reps = 100, size = 1000,
+                              .export = 'big_obj'),
+  fur_g = furrr_fun(n_reps = 100, size = 1000, 
+                          globals = 'big_obj'),
+  app_g = fuapply_fun(n_reps = 100, size = 1000,
+                            future.globals = 'big_obj'),
+  
+  
+  times = 10
+)
+```
+
+Using functions yields the same result as before- the big objects sitting in the global environment do not get passed in and slow things down if they aren't actually used in the functions (or explicitly sent in).
+
+**Unused globals therefore are *NOT* passed by default into parallelised functions.**

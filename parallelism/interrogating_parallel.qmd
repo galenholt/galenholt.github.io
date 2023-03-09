@@ -1,0 +1,640 @@
+---
+title: "Interrogating parallel functions"
+author: "Galen Holt"
+---
+
+In testing parallel functions, especially on new machines, or if we're trying to get a granular understanding of what they're doing, we will want to do more than benchmark. We might, for example, want to know what cores and processes they'r using to make sure they're taking full advantage of resources, or to better understand how resources get divided up, or to better understand the differences between `plan`s.
+
+I've done some [basic speed testing of parallel functions](parallel_speed.qmd) as well as some [testing of nested functions](nested_parallel.qmd) Here, I'll build on that to better understand how the workers get divided up in those nested functions, and use that to jump off into testing different `plan`s.
+
+## Packages and setup
+
+I'll use the {future} package, along with {dofuture} and {foreach}, because I tend to like writing for loops (there's a reason I'll try to write up sometime later). I test other packages in the {future} family (`furrr`, `future_apply`) [where I try to better understand when they do and don't give speed advantages](parallelism/parallel_speed.qmd).
+
+```{r}
+library(microbenchmark)
+library(doFuture)
+library(foreach)
+library(doRNG)
+library(ggplot2)
+library(dplyr)
+library(tibble)
+library(patchwork)
+
+registerDoFuture()
+plan(multisession)
+```
+
+## Workers and cores
+
+We get assigned workers and cores when we call `plan` . We can also get the outer process id
+
+*note* on HPC, we need to use `availableCores(methods = 'Slurm')` .
+
+```{r}
+availableWorkers()
+availableCores()
+Sys.getpid()
+```
+
+## The setup- nested functions
+
+I'll use the inner and outer parallel functions similar to my [tests of nested functions](nested_parallel.qmd), but instead of doing anything, they'll just track the processes.
+
+What do I want to interrogate? The process id, for one- I can use `Sys.getpid()`. I think I might just skip all the actual processing and just get the IDs
+
+What do I want to check? How the processes get divvied up. Are the inner loops getting different processes? Are the outer, and then the inner all use that one? Does it change through the outer loop? Does it depend on the number of iterations?
+
+```{r}
+inner_par <- function(outer_it, size) {
+  inner_out <- foreach(j = 1:size,
+                       .combine = bind_rows) %dorng% {
+    
+                         thisproc <- tibble(loop = "inner",
+                                            outer_iteration = outer_it,
+                                            inner_iteration = j, 
+                                            pid = Sys.getpid())
+    # d <- rnorm(size, mean = j)
+    # 
+    # f <- matrix(rnorm(size*size), nrow = size)
+    # 
+    # g <- d %*% f
+    # 
+    # mean(g)
+    
+  }
+}
+```
+
+For the outer loop, let's check the PID both before and after the inner loop runs.
+
+```{r}
+outer_par <- function(outer_size, innerfun, inner_size) {
+  outer_out <- foreach(i = 1:outer_size,
+                       .combine = bind_rows) %dorng% {
+                         
+                        outerpre <- tibble(loop = 'outer_pre',
+                                           outer_iteration = i,
+                                           inner_iteration= NA,
+                                           pid = Sys.getpid())
+                         
+                         # Now iterate over the values in c to do somethign else
+                         inner_out <- innerfun(outer_it = i, size = inner_size)
+                         
+                         outerpost <- tibble(loop = 'outer_post',
+                                           outer_iteration = i,
+                                           inner_iteration= NA,
+                                           pid = Sys.getpid())
+                         
+                         bind_rows(outerpre, inner_out, outerpost)
+                         
+                         
+                       }
+  
+  return(outer_out)
+}
+
+```
+
+# PID division
+
+```{r}
+test10 <- outer_par(outer_size = 10, innerfun = inner_par, inner_size = 10)
+test10
+```
+
+Does the PID only change with the outer loop? Looks like yes
+
+```{r}
+table(test10$outer_iteration, test10$pid)
+```
+
+```{r}
+ggplot(test10, aes(x = outer_iteration, 
+                   y = as.factor(pid), 
+                   color = inner_iteration)) + 
+  geom_point(position = position_jitter(width = 0.2, height = 0)) +
+  scale_x_continuous(breaks = 0:10) +
+  scale_color_binned(breaks = 0:10)
+```
+
+So yes, it assigns the PIDs to the outer loops and doesn't add more for the inner. Does that change with different sizes?
+
+Let's check an outer loop with 1, and inner with 10, and vice versa
+
+```{r}
+test1_10 <- outer_par(outer_size = 1, innerfun = inner_par, inner_size = 10)
+```
+
+```{r}
+test10_1 <- outer_par(outer_size = 10, innerfun = inner_par, inner_size = 1)
+```
+
+```{r}
+plot1_10 <- ggplot(test1_10, aes(x = outer_iteration, 
+                   y = as.factor(pid), 
+                   color = inner_iteration)) + 
+  geom_point(position = position_jitter(width = 0.2, height = 0))
+
+plot10_1 <- ggplot(test10_1, aes(x = outer_iteration, 
+                   y = as.factor(pid), 
+                   color = inner_iteration)) + 
+  geom_point(position = position_jitter(width = 0.2, height = 0))
+
+plot1_10 + plot10_1
+```
+
+So yeah, it *always* only assigns PIDs to the outer. That means this sort of nested loop doesn't actually nest- only the outer gets parallelised, at least with plan(multisession).
+
+I'm assuming more iterations doesn't change that, but let's push both above the number of workers (20)
+
+```{r}
+test1_50 <- outer_par(outer_size = 1, innerfun = inner_par, inner_size = 50)
+test50_1 <- outer_par(outer_size = 50, innerfun = inner_par, inner_size = 1)
+```
+
+```{r}
+plot1_50 <- ggplot(test1_50, aes(x = outer_iteration, 
+                   y = as.factor(pid), 
+                   color = inner_iteration)) + 
+  geom_point(position = position_jitter(width = 0.2, height = 0))
+
+plot50_1 <- ggplot(test50_1, aes(x = outer_iteration, 
+                   y = as.factor(pid), 
+                   color = inner_iteration)) + 
+  geom_point(position = position_jitter(width = 0.2, height = 0))
+
+plot1_50 + plot50_1
+```
+
+Yeah, so the same PID gets re-used across the outer loops but not the inner
+
+```{r}
+table(test50_1$outer_iteration, test50_1$pid)
+
+```
+
+## sequential outer loop
+
+I assume if we make the outer loop sequential, the inner will then get PIDs
+
+```{r}
+outer_seq <- function(outer_size, innerfun, inner_size) {
+  outer_out <- foreach(i = 1:outer_size,
+                       .combine = bind_rows) %do% {
+                         
+                        outerpre <- tibble(loop = 'outer_pre',
+                                           outer_iteration = i,
+                                           inner_iteration= NA,
+                                           pid = Sys.getpid())
+                         
+                         # Now iterate over the values in c to do somethign else
+                         inner_out <- innerfun(outer_it = i, size = inner_size)
+                         
+                         outerpost <- tibble(loop = 'outer_post',
+                                           outer_iteration = i,
+                                           inner_iteration= NA,
+                                           pid = Sys.getpid())
+                         
+                         bind_rows(outerpre, inner_out, outerpost)
+                         
+                         
+                       }
+  
+  return(outer_out)
+}
+```
+
+```{r}
+testseq10 <- outer_seq(outer_size = 10, innerfun = inner_par, inner_size = 10)
+
+```
+
+```{r}
+ggplot(testseq10, aes(x = outer_iteration, 
+                   y = as.factor(pid), 
+                   color = inner_iteration)) + 
+  geom_point(position = position_jitter(width = 0.2, height = 0)) +
+  scale_x_continuous(breaks = 0:10) +
+  scale_color_binned(breaks = 0:10)
+```
+
+At least that- if we have a sequential outer, it lets the inner parallelise.
+
+## Nested with %:%
+
+The 'proper' way to nest `foreach` loops is with `%:%`. That's not always possible, but I think we can here, to check what they're getting.
+
+```{r}
+outer_nest <- function(outer_size, innerfun, inner_size) {
+  outer_out <- foreach(i = 1:outer_size,
+                       .combine = bind_rows) %:% 
+    foreach(j = 1:inner_size,
+                       .combine = bind_rows) %dopar% {
+    
+                         thisproc <- tibble(loop = "",
+                                            outer_iteration = i,
+                                            inner_iteration = j, 
+                                            pid = Sys.getpid())
+                       }
+  
+  return(outer_out)
+}
+```
+
+note- `inner_par` isn't doing anything here, since it's not a function anymore
+
+```{r}
+testnest <- outer_nest(10, inner_par, 10)
+```
+
+```{r}
+ggplot(testnest, aes(x = outer_iteration, 
+                   y = as.factor(pid), 
+                   color = inner_iteration)) + 
+  geom_point(position = position_jitter(width = 0.2, height = 0)) +
+  scale_x_continuous(breaks = 0:10) +
+  scale_color_binned(breaks = 0:10)
+```
+
+Now, each outer loop is getting two PIDs to split up with its inner loop.
+
+So that makes sense- this way `foreach` knows what's coming and can split up workers. It looks like the outer loop is favored, though that shouldn't matter when they're specified this way.
+
+We can check though
+
+```{r}
+testnest50_10 <- outer_nest(50, inner_par, 10)
+testnest10_50 <- outer_nest(10, inner_par, 50)
+```
+
+```{r}
+plotnest50_10 <- ggplot(testnest50_10, aes(x = outer_iteration, 
+                   y = as.factor(pid), 
+                   color = inner_iteration)) + 
+  geom_point(position = position_jitter(width = 0.2, height = 0))
+
+plotnest10_50 <- ggplot(testnest10_50, aes(x = outer_iteration, 
+                   y = as.factor(pid), 
+                   color = inner_iteration)) + 
+  geom_point(position = position_jitter(width = 0.2, height = 0))
+
+plotnest50_10 + plotnest10_50
+```
+
+Those look more similar than they are because of different axes. I think that is giving more PIDs to the outer when it has more iterations.
+
+## List-plans
+
+### Naive- just defaults
+
+There is information out there, largely related to using `future.batchtools`, that a list of plans lets us handle nested futures. Does that work with `multisession`?
+
+`plan("list")` tells us what the plan is. This is super helpful for checking what's going on.
+
+```{r}
+plan(list(multisession, multisession))
+plan("list")
+```
+
+Then let's use the same `outer_par` we tried earlier
+
+Let's check an outer loop with 1, and inner with 10, and vice versa
+
+```{r}
+test1_10_double <- outer_par(outer_size = 1, 
+                             innerfun = inner_par, inner_size = 10)
+test10_1_double <- outer_par(outer_size = 10, 
+                             innerfun = inner_par, inner_size = 1)
+```
+
+```{r}
+plot1_10_double <- ggplot(test1_10_double, aes(x = outer_iteration, 
+                   y = as.factor(pid), 
+                   color = inner_iteration)) + 
+  geom_point(position = position_jitter(width = 0.2, height = 0))
+
+plot10_1_double <- ggplot(test10_1_double, aes(x = outer_iteration, 
+                   y = as.factor(pid), 
+                   color = inner_iteration)) + 
+  geom_point(position = position_jitter(width = 0.2, height = 0))
+
+plot1_10_double + plot10_1_double
+```
+
+That didn't work. BUT, `plan("list")` shows that the first one uses `workers = availableCores()`. Does that eat all the cores?
+
+### Tweak outer plan
+
+If we limit the outer plan, do the 'leftover' cores go to the inner?
+
+```{r}
+plan(list(tweak(multisession, workers = 2), multisession))
+plan("list")
+```
+
+Let's check an outer loop with 1, and inner with 10, and vice versa
+
+```{r}
+test1_10_double <- outer_par(outer_size = 1, 
+                             innerfun = inner_par, inner_size = 10)
+test10_1_double <- outer_par(outer_size = 10, 
+                             innerfun = inner_par, inner_size = 1)
+```
+
+```{r}
+plot1_10_double <- ggplot(test1_10_double, aes(x = outer_iteration, 
+                   y = as.factor(pid), 
+                   color = inner_iteration)) + 
+  geom_point(position = position_jitter(width = 0.2, height = 0))
+
+plot10_1_double <- ggplot(test10_1_double, aes(x = outer_iteration, 
+                   y = as.factor(pid), 
+                   color = inner_iteration)) + 
+  geom_point(position = position_jitter(width = 0.2, height = 0))
+
+plot1_10_double + plot10_1_double
+```
+
+That restricted the outer, but didn't give any to the inner. Can I get them there?
+
+### Tweak both plans
+
+Now, we're explicitly telling each plan how many workers it gets.
+
+```{r}
+plan(list(tweak(multisession, workers = 2), tweak(multisession, workers = 5)))
+plan("list")
+```
+
+Let's check an outer loop with 1, and inner with 10, and vice versa
+
+```{r}
+test1_10_double <- outer_par(outer_size = 1, 
+                             innerfun = inner_par, inner_size = 10)
+test10_1_double <- outer_par(outer_size = 10, 
+                             innerfun = inner_par, inner_size = 1)
+```
+
+```{r}
+plot1_10_double <- ggplot(test1_10_double, aes(x = outer_iteration, 
+                   y = as.factor(pid), 
+                   color = inner_iteration)) + 
+  geom_point(position = position_jitter(width = 0.2, height = 0))
+
+plot10_1_double <- ggplot(test10_1_double, aes(x = outer_iteration, 
+                   y = as.factor(pid), 
+                   color = inner_iteration)) + 
+  geom_point(position = position_jitter(width = 0.2, height = 0))
+
+plot1_10_double + plot10_1_double
+```
+
+That worked! So, if we *explicitly* give each plan workers, we can manage nestedness.
+
+Turn the plan back to multisession
+
+```{r}
+plan(multisession)
+plan("list")
+```
+
+# Conclusions
+
+-   Nesting parallel loops removes the parallelisation from the inner loop unless it's done directly with `%:%` or with explicitly-declared list-plans.
+
+    -   This means no intermediate processing without explicit worker-control
+
+-   Maybe this is OK- the [outer layer of parallelisation tends to work best](nested_parallel.qmd) since it reduces the overhead:processing ratio.
+
+    -   And the situation where nesting makes the most sense (nodes with cores) lend themselves to list-plans with `future.batchtools` and worker control internally. I think.
+
+-   BUT, need to be careful- we could be wasting workers if we parallelise over an outer layer with fewer jobs than workers- those 'extra' workers won't be used by inner parallel loops
+
+    -   above, where I had outer_size = 10, I got 10 PIDs, even though I have 20 cores available.
+
+-   It's unclear how this works with more complex situations (e.g. on an HPC with nodes and workers)-
+
+    -   will the outer layer grab nodes and inner layer workers? Or do we need to manually manage that by using job arrays? I think the answer is list-plans and treating the loop over `batchtools` as essentially an array-job, just managed by R not slurm. But that needs to be tested.
+
+-   I guess the good thing is the internal `foreach` isn't hurting anything, except that a well-written `for` [would be faster](parallel_speed.qmd).
+
+    -   So where we have control of things, need to test with and without `foreach`es in deep functions.
+
+    -   It would sure be nice if deep parallel foreaches that are getting their parallelisation skipped worked as fast as `for`, or even as fast as a sequential `foreach %do%`
+
+# Interpreting the nested speed results
+
+In my [testing of speed of nested functions](nested_parallel.qmd), parallelising the inner loop was always slow. That can't *always* be because the parallelisation is getting skipped- it would happen when the outer loop was sequential- but it suggests that the parallelisation is actually making things worse, *even when it gets skipped*.
+
+As a test, we can combine the return values I use here with those functions to do the same processing but return the pids instead of the values to confirm when those inner loops actually get run in parallel.
+
+# Functions
+
+These do the same processing as in [my tests of nested speed](nested_parallel.qmd), but return a tibble of pids instead.
+
+## Inner loop
+
+### Parallel version
+
+```{r}
+inner_par <- function(in_vec, size, outer_it) {
+  inner_out <- foreach(j = in_vec,
+                       .combine = bind_rows) %dorng% {
+    d <- rnorm(size, mean = j)
+    
+    f <- matrix(rnorm(size*size), nrow = size)
+    
+    g <- d %*% f
+    
+    h <- mean(g)
+    
+    thisproc <- tibble(loop = "inner",
+                       outer_iteration = outer_it,
+                       inner_iteration = j, 
+                       pid = Sys.getpid())
+    
+                       }
+  return(inner_out)
+}
+```
+
+### Sequential version
+
+```{r}
+inner_seq <- function(in_vec, size, outer_it) {
+  inner_out <- foreach(j = in_vec,
+                       .combine = bind_rows) %do% {
+    d <- rnorm(size, mean = j)
+    
+    f <- matrix(rnorm(size*size), nrow = size)
+    
+    g <- d %*% f
+    
+    h <- mean(g)
+    
+    thisproc <- tibble(loop = "inner",
+                       outer_iteration = outer_it,
+                       inner_iteration = j, 
+                       pid = Sys.getpid())
+    
+                       }
+  
+  return(inner_out)
+}
+```
+
+### Using preallocated for
+
+This is likely to be faster than the sequential. Preallocate both the vector *and* the new tibble output.
+
+```{r}
+inner_for <- function(in_vec, size, outer_it) {
+  inner_out <- vector(mode = 'numeric', length = size)
+  
+  thisproc <- tibble(loop = "inner",
+                       outer_iteration = outer_it,
+                       inner_iteration = 1:length(in_vec), 
+                       pid = Sys.getpid())
+  
+  for(j in 1:length(in_vec)) {
+    d <- rnorm(size, mean = in_vec[j])
+    
+    f <- matrix(rnorm(size*size), nrow = size)
+    
+    g <- d %*% f
+    
+    inner_out[j] <- mean(g)
+    
+    thisproc$pid[j] <- Sys.getpid()
+    thisproc$inner_iteration[j] <- j
+    
+  }
+  
+  return(thisproc)
+}
+```
+
+## Outer loop
+
+I cant divide by inner_out now that it's not a matrix, so just get a cv.
+
+### parallel
+
+```{r}
+outer_par <- function(size, innerfun) {
+  outer_out <- foreach(i = 1:size,
+                       .combine = bind_rows) %dorng% {
+                         
+                         # Do a matrix mult on a vector specified with i
+                         a <- rnorm(size, mean = i)
+                         
+                         b <- matrix(rnorm(size*size), nrow = size)
+                         
+                         cvec <- a %*% b
+                         
+                         # Now iterate over the values in c to do somethign else
+                         inner_out <- innerfun(in_vec = cvec, 
+                                               size = size, 
+                                               outer_it = i)
+                         
+                         h <- sd(cvec)/mean(cvec)
+                         
+                         inner_out
+                         
+                       }
+  
+  return(outer_out)
+}
+
+```
+
+### sequential
+
+```{r}
+outer_seq <- function(size, innerfun) {
+  outer_out <- foreach(i = 1:size,
+                       .combine = bind_rows) %do% {
+                         
+                         # Do a matrix mult on a vector specified with i
+                         a <- rnorm(size, mean = i)
+                         
+                         b <- matrix(rnorm(size*size), nrow = size)
+                         
+                         cvec <- a %*% b
+                         
+                         # Now iterate over the values in c to do somethign else
+                         inner_out <- innerfun(in_vec = cvec, 
+                                               size = size, outer_it = i)
+                         
+                         h <- sd(cvec)/mean(cvec)
+                         
+                         inner_out
+                       }
+  
+  return(outer_out)
+}
+```
+
+### Un-preallocated for
+
+Because this would need to replace chnks in the tibble, it's hard to preallocate. Just don't bother- the point isn't speed, it's testing pids.
+
+```{r}
+outer_for <- function(size, innerfun) {
+  outer_out <- matrix(nrow = size, ncol = size)
+  
+  thisproc <- tibble(loop = "inner",
+                       outer_iteration = 1,
+                       inner_iteration = 1, 
+                       pid = Sys.getpid(),
+                     .rows = 0)
+  
+  for(i in 1:size) {
+    
+    # Do a matrix mult on a vector specified with i
+    a <- rnorm(size, mean = i)
+    
+    b <- matrix(rnorm(size*size), nrow = size)
+    
+    cvec <- a %*% b
+    
+    # Now iterate over the values in c to do somethign else
+    inner_out <- innerfun(in_vec = cvec, size = size, outer_it = i)
+    
+    outer_out[, i] <- sd(cvec)/mean(cvec)
+    
+    thisproc <- bind_rows(thisproc, inner_out)
+    
+    
+  }
+  outer_out <- c(outer_out) 
+  
+  
+  return(thisproc)
+}
+```
+
+# Checking PIDs
+
+I'm less interested here in benchmarks, and more in how the PIDs get used.
+
+```{r}
+benchsize = 10
+bench10 <- microbenchmark(
+  out_par_in_par = outer_par(benchsize, inner_par),
+  out_par_in_seq = outer_par(benchsize, inner_seq),
+  out_par_in_for = outer_par(benchsize, inner_for),
+  
+  out_seq_in_par = outer_seq(benchsize, inner_par),
+  out_seq_in_seq = outer_seq(benchsize, inner_seq),
+  out_seq_in_for = outer_seq(benchsize, inner_for),
+  
+  out_for_in_par = outer_for(benchsize, inner_par),
+  out_for_in_seq = outer_for(benchsize, inner_seq),
+  out_for_in_for = outer_for(benchsize, inner_for),
+  
+  times = 10
+)
+bench10
+```

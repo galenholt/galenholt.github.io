@@ -1,0 +1,150 @@
+---
+title: "Changing batchtools template"
+author: "Galen Holt"
+---
+
+I [got future.batchtools working](initial_future_batchtools.qmd), and now I have a bunch of follow-up tests.
+
+Can we call a different template, even if it's not named `batchtools.slurm.tmpl`?
+
+In my [slurm testing repo](https://github.com/galenholt/slurm_r_tests), I have the default templates from `future.batchtools` and `batchtools` saved in `/batchtools_templates`. The one from `future.batchtools` is also saved as `batchtools.slurm.tmpl` in the outer directory (where it gets found by default and [we know it works](initial_future_batchtools.qmd)).
+
+## Modify path
+
+First, I'll just send a path, as in `plan(batchtools_slurm, template = "/path/to/batchtools.slurm.tmpl")` to the original template from `future.batchtools` that I copied to make `/batchtools.slurm.tmpl`.
+
+And then I'll use the `batchtools` template and see how that works.
+
+To do both of these, I'll modify `slurm_r_tests/testing_future_batchtools.R` to take the path as an argument so I can pass it from the command line.
+
+I could loop over that like I did [when testing single-node plans](plans_and_hpc.qmd) but I think I don't for the moment.
+
+Check that the default works (no path argument at command line, `sbatch batchtools_R.sh testing_future_batchtools.R`. That works.
+
+The same template but with a different name and in a subdirectory works if we're careful with the path-
+
+``` bash
+sbatch batchtools_R.sh testing_future_batchtools.R ./batchtools_templates/slur
+m.tmpl
+```
+
+The template that comes from `batchtools` *doesn't* work.
+
+``` bash
+sbatch batchtools_R.sh testing_future_batchtools.R ./batchtools_templates/slur
+m-simple.tmpl
+```
+
+Why not? I think because it doesn't actually specify any resources. It expects that to come in from elsewhere.
+
+So, let's figure out resource specification, and then try that one again.
+
+## Specifying resources
+
+Remember, this is *per job*.
+
+What I want to do is use `tweak`- e.g. `tweak(batchtools_slurm, resources = list(ncpus = 10, nodes = 2)`). Again, **remembering this is what gets requested *for every job-***
+
+-   so does it ever make sense to request nodes \> 1?
+
+-   Should I only request ncpus \> 1 if I use list-plans to then go to `multisession` or `multicore`?
+
+But first, does that let me use the `slurm-simple` template that didn't request anything itself?
+
+I've done it by hardcoding some resource requests in `tweak_resources.R` in the test repo, but they could be build in a script if we wanted.
+
+Didn't work. But I think the answer is in th %\< resources\$whatever \>% - THOSE ARE THE NAMES. AND I CAN CHANGE WHAT THE LIST RETURNS- character instead of integer, for ex.
+
+So the `slurm-simple.tmpl` from `batchtools` has
+
+``` bash
+#SBATCH --job-name=<%= job.name %>
+#SBATCH --output=<%= log.file %>
+#SBATCH --error=<%= log.file %>
+#SBATCH --time=<%= ceiling(resources$walltime / 60) %>
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=<%= resources$ncpus %>
+#SBATCH --mem-per-cpu=<%= resources$memory %>
+```
+
+And so only lets us set those values (job-name, output, error, time, ntasks, cpus-per-task, and mem-per-cpu), and we have to do that in the right slots of `resources` and with the right type- e.g. `resources$walltime` sets `--time`, and has to be numeric. BUT, we *could* change that with a different template file that just uses the character vector "hh:mm:ss" (as I do with the non-template `any_R.sh`. Or passing things like 4GB instead of memory in mb.
+
+Now, if I run that with `resources$ncpus = 12`, I get the same output as before. But I *think* I'm using 100 cpus, but each one is also sitting on 11 others. I'm just not saving what I need to check. The `ntasks` instead of `nodes` is a bit confusing too- I thought tasks were threads on the cpu. Maybe that *is* the case- the hardcode `nthreads = 1` here says don't thread below the cpu level. And no `node` request I assume just defaults to 1.
+
+*OR* if we aren't defining nodes, does slurm just auto-assign work to cpus across nodes? ie node-agnostic? And then we don't have to worry about necessarily matching work to CPUs on nodes?
+
+I think the `future.batchtools` template `batchtools_templates/slurm.tmpl` is more flexible. Instead of individually filling parts of the slurm script as above, it just fills whatever options we want. It has the minimal set to get things to run hardcoded, but the section
+
+``` bash
+## Resources needed:
+<% if (length(resources) > 0) {
+  opts <- unlist(resources, use.names = TRUE)
+  opts <- sprintf("--%s=%s", names(opts), opts)
+  opts <- paste(opts, collapse = " ") %>
+#SBATCH <%= opts %>
+<% } %>
+```
+
+Just writes in anything. So, can I get *that* to work in `tweak_resources.R`? It should be easier, but wasn't working for me.
+
+## Tweak has to match the template!
+
+So, that means the way `tweak(batchtools_slurm, resources = …)` works is template-specific. Some might not have parsing for what gets passed, sometimes it might be the wrong type, etc).
+
+### Examples
+
+``` r
+plan(tweak(batchtools_slurm,
+           template = "./batchtools_templates/slurm-simple.tmpl",
+           resources = list(ncpus = 12,
+                            memory = 1000,
+                            walltime=60*5)))
+```
+
+For the `slurm-simple.tmpl`, the SLURM `--time` is referenced to `resources$walltime` and gets divided by 60 so has to be a numeric in seconds.
+
+The `ncpus = 12` here gets 12 CPUs that all get assigned (kinda weirdly though, with `--cpus-per-task`), even though we only use one- see the top of the output
+
+    ## Nodes and pids
+    # A tibble: 100 × 6
+    # Groups:   all_job_nodes, node, pid, taskid [100]
+        all_job_nodes node             pid taskid cpus_avail n_reps
+        <chr>         <chr>          <int> <chr>  <chr>       <int>
+      1 gandalf-vm02  gandalf-vm02 3329413 0      12              6
+      2 gandalf-vm02  gandalf-vm02 3329479 0      12              7
+      3 gandalf-vm02  gandalf-vm02 3329545 0      12              7
+      4 gandalf-vm02  gandalf-vm02 3329611 0      12              6
+      5 gandalf-vm02  gandalf-vm02 3329679 0      12              7
+      6 gandalf-vm02  gandalf-vm02 3329747 0      12              6
+      7 gandalf-vm02  gandalf-vm02 3329811 0      12              6
+
+Whereas `cpus_avail` is 1 without that line-
+
+    ## Nodes and pids
+    # A tibble: 100 × 6
+    # Groups:   all_job_nodes, node, pid, taskid [100]
+        all_job_nodes node             pid taskid cpus_avail n_reps
+        <chr>         <chr>          <int> <chr>  <chr>       <int>
+      1 gandalf-vm01  gandalf-vm01   12812 0      1               6
+      2 gandalf-vm01  gandalf-vm01   12881 0      1               6
+      3 gandalf-vm01  gandalf-vm01   12966 0      1               6
+      4 gandalf-vm01  gandalf-vm01   13043 0      1               6
+      5 gandalf-vm01  gandalf-vm01   13117 0      1               6
+      6 gandalf-vm01  gandalf-vm01   13179 0      1               6
+      7 gandalf-vm01  gandalf-vm01   13261 0      1               6
+
+It looks like a major catch here is I can't use names in the `resources` list with dashes, e.g. `ntasks-per-node`. And so to set those i'll have to translate, as in `slurm-simple`, I think. Unless batchtools auto-translates under the hood, but I think not.
+
+Going to have to come back to this. It'd be nice if it were possible. How did that github issue do it? It used `ncpus` in `slurm-simple.tmpl`. So maybe I'll just do that for now. Then I can get on with checking the use of chunks and arrays and nodes and nesting. And whether i can use the `ncpus` thing to get (and use) more cpus than exist on single nodes.
+
+Does that mean I can auto-generate jobnames???? That would be great
+
+# TODO: Nodes and cores
+
+Does it make sense to grab a node and then do a second layer of processing on cores? Or does it make more sense to just throw everything to cores at the beginning (ie just run with defaults) and let everything else run sequentially? Almost certainly question-specific.
+
+Is there ever a reason to get more than one node per job?
+
+Is `--tasks=1` and `--cpus-per-task=N` better/worse/different than `--nodes=1` and `--ntasks-per-node=N` ? Does the first just ignore nodes and let us span them?
+
+How should chunking work? Is there a reason to manage it manually, and how does chunks.as.array work?

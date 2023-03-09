@@ -17,6 +17,10 @@ project:
   execute-dir: project
 ```
 
+### Linking pages
+
+This is fairly specific to websites (and I guess books?). Sorted out in the [website-specific page](../website_notes/updating_website.qmd). Takehome is links need to be relative to the file. And so those in different directories often have to use `../other_dir/other_file.qmd` to get up and over.
+
 ### Nested Rprojects
 
 The only exception that I've run into so far is a weird situation where I have a Quarto project with an Rproject in a subdirectory because I want the Quarto to have access to several different code projects. The catch is that if I use paths relative to the R project and ask Quarto to render, all the paths are wrong. They are also wrong if I `Run` or run the code cells interactively. If I add the Rmarkdown setup chunk above `knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())`, then `Run` and interactive stuff works, but when I try to `quarto render`, it can't find the Rproject because it's looking at the same level and up, and the Rproj is in a directory down.

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Galen Holt">
+
+<title>Galen - Control process dying or timing out</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Galen</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../research.html">
+ <span class="menu-text">Research</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../code_demos.html">
+ <span class="menu-text">Code Demos</span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#the-issue" id="toc-the-issue" class="nav-link active" data-scroll-target="#the-issue">The issue</a></li>
+  <li><a href="#tests" id="toc-tests" class="nav-link" data-scroll-target="#tests">Tests</a>
+  <ul class="collapse">
+  <li><a href="#trial-1" id="toc-trial-1" class="nav-link" data-scroll-target="#trial-1">Trial 1</a></li>
+  <li><a href="#trial-2" id="toc-trial-2" class="nav-link" data-scroll-target="#trial-2">Trial 2</a></li>
+  <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions">Conclusions</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Control process dying or timing out</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Galen Holt </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="the-issue" class="level1">
+<h1>The issue</h1>
+<p>The way <code>future.batchtools</code> works there’s a controlling R process that starts the futures and waits for them to return. In typical use, the <code>value()</code> of futures are intended to be used, whereas in some cases, particularly when I use them on the cluster, I’m using them to fire off a bunch of HPC jobs that save output, and don’t care if they return. This is a very similar issue to the discussion <a href="https://github.com/HenrikBengtsson/future.batchtools/issues/68">here</a>.</p>
+<p>There are a couple issues this use-case brings up</p>
+<ul>
+<li><p>What happens if that master R script that creates the futures dies?</p>
+<ul>
+<li><p>Do we need to tie up a core just to run that? (YES)</p></li>
+<li><p>Does it have to stay in use for the entire period all futures take to finish? (NO- see next)</p></li>
+<li><p>What if it dies once the jobs have started running vs before they’ve started</p>
+<ul>
+<li><p>e.g.&nbsp;does it create a queue that just runs no matter what? (NO)</p></li>
+<li><p>once a job starts, does it finish no matter what? (YES, unless <em>it</em> times out)</p></li>
+</ul></li>
+</ul></li>
+<li><p>Does it matter if the master runs through sbatch, sinteractive, or just Rscript on the login node?&nbsp;(Probably not, but <code>sbatch</code> is likely safest/most robust).</p></li>
+<li><p>Should I actually be using <code>batchtools::submitJobs()</code> instead, as suggested in that <a href="https://github.com/HenrikBengtsson/future.batchtools/issues/68">github thread</a>? I <em>really</em> like the automatic control of jobs and globals etc in <code>future.batchtools</code>, and the ability to be portable to local computers. (Quite possibly, but that’s for another day, I think. And we’d potentially lose a lot of the advantages of <code>future</code>).</p></li>
+</ul>
+</section>
+<section id="tests" class="level1">
+<h1>Tests</h1>
+<p>I want to create some tests that run scripts with <code>future.batchtools</code>, where the master times out (and so quits) before the jobs all finish. And I particularly want to cause the situation where the master dies</p>
+<ol type="1">
+<li><p>Some jobs have finished, others haven’t started</p></li>
+<li><p>Some jobs have finished, others started but havent finished</p></li>
+<li><p>No jobs have started, but they’ve been created.</p></li>
+</ol>
+<p>I’ve set up a testing script in the <a href="https://github.com/galenholt/slurm_r_tests">slurm_r_tests repo</a>, <code>master_timeouts.R</code> that will hopefully address some of this by saving files at the start and end of each job. Getting the timings right will be a bit of a crapshoot, since the master will be running while the created jobs sit in a queue.</p>
+<p>I think we’ll have to assume the master will create the futures pretty much right away. So then we’ll just check the produced files to see if all the starts and/or all the ends finished. And keep an eye on <code>squeue</code> to see when the master process dies and whether others die then too, or start after that. I think there’ll be some trial and error.</p>
+<section id="trial-1" class="level3">
+<h3 class="anchored" data-anchor-id="trial-1">Trial 1</h3>
+<p>I’m calling it for a 25 * 25 loop, so should be 625 outputs. As a first pass, there were 175 files created in both <code>startdir</code> and <code>enddir</code>, so every loop that started finished, but lots of loops didn’t start. Each loop is fast, so it’s possible all the starts finishing could have happened by chance. The master process did timeout before it finished.</p>
+</section>
+<section id="trial-2" class="level3">
+<h3 class="anchored" data-anchor-id="trial-2">Trial 2</h3>
+<p>Adding a pause in the loop <code>Sys.sleep(70)</code>, so we know the loops shouldn’t finish while the master is still running, because it has <code>--time=0:01:00</code>. Should manage to start a few though.</p>
+<p>The master (“batchtoo” in this <code>squeue</code> output) started a bunch of jobs:</p>
+<p><img src="images/image-1592871702.png" class="img-fluid"></p>
+<p>Immediately after it died, the job list was</p>
+<p><img src="images/image-2074543489.png" class="img-fluid"></p>
+<p>with the last one being 556051</p>
+<p>After another minute, those were all still running (or had finished), but no new jobs had been started</p>
+<p><img src="images/image-829938471.png" class="img-fluid"></p>
+<p>Not all the jobs that started finished, but it seems to be because some individual jobs timed out. 108 started, 72 produced their output, and there are 36 (the difference) logs in the <code>.futures</code> folder with timout messages. I wouldn’t have thought they’d take anywhere near that long, but that seems to be the issue.</p>
+</section>
+<section id="conclusions" class="level2">
+<h2 class="anchored" data-anchor-id="conclusions">Conclusions</h2>
+<p>The master needs to run until all jobs have <em>started</em>, but not necessarily until all jobs have <em>finished</em> (unless it actually does something with the output).</p>
+<p>That will be hard to manage, since the time it takes to start jobs depends on SLURM queues.</p>
+<p>There’s no reason to use <code>srun</code> or <code>sinteractive</code>- they still need to ask for resources, and die when disconnect, so even more finicky.</p>
+<p>Using <code>Rscript</code> on the login node is I guess a potential workaround, but I think it also dies when we disconnect and potentially times out anyway. It’s still tying up a node, just in a different place. I think that’d make people even grumpier. It’s also hard to test with short-ish runs.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

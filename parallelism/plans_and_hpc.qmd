@@ -1,0 +1,301 @@
+---
+title: "Testing plans and systems"
+author: "Galen Holt"
+---
+
+```{r}
+library(dplyr)
+library(tibble)
+library(doFuture)
+registerDoFuture()
+```
+
+I want to test how tasks get split up in different plans (e.g. `multisession`, `multicore`, `cluster`, `future.batchtools`, `future.callr`). In a local case on Windows, I think it's fairly clear we want `plan(multisession)` and on unix/mac, `plan(multicore)`. But when we have access to something bigger, like an HPC, I want to know how the plans work where there are multiple nodes, each with several cores. Can we access more than one node? How? What's the difference between `cluster`, `batchtools` and `callr`?
+
+I've done some haphazard poking at this, and at that time, if we just had a slurm script that requested multiple nodes, but then called a single R script, I couldn't use workers on more than one node. My workaround was to use array jobs to do the node-parallelisation, and then {future} for the cores. But this splits the parallelisation into some being handled by shell scripts and slurm, and some handled by R and futures. And that makes it harder to control and load-balance. And in fact, I had an extra level, where I had shell scripts that started a set of SLURM array jobs, which then split into cores. This approach worked, but it's very hardcodey, even when we auto-generate the batch and SLURM scripts. It tends to not be well-balanced without a lot of manual intervention every time anything changes. And it's not portable- we have to restructure the code to run locally vs on the HPC.
+
+What would be nice is to auto-break-up the set of work into evenly-sized chunks, and then fire off the SLURM commands to start an appropriate number of nodes with some number of cores. And have that also work locally, where it would just parallelise over those things. Can I figure that out?
+
+I'm not sure how I'm going to test this in a quarto doc, since I need to run things on the HPC and return to stdout. Might have to copy-paste and treat this like onenote or something. But I should be able to set up the desired structure here, anyway.
+
+I think I'll start similarly to some of my local parallel testing, [where I just returned process IDs](interrogatin_parallel.qmd) to see what resources are being used.
+
+And I think I'll start by requesting resources with `sbatch` and slurm scripts that call `Rscript` and see what that gets me and whether we can access all the resources, and then move on to trying to get R to generate the SLURM calls, likely with `future.batchtools`.
+
+## Setting up tests
+
+I want to be able to see if I'm getting nodes and cores
+
+As a first pass, I don't particularly care about speed- deal with that after I figure out how it's actually working.
+
+## Structure
+
+I'll write a slurm script to start an `sbatch` job that requests \> 1 node and all cores on those nodes. That will call a test R script that calls a `plan` and runs some `foreach` loops that return PIDs, [as I did previously](interrogating_parallel.qmd). These loops need to iterate over at least nodes X cores so we can see what gets used.
+
+The easiest thing to do will be to just use `print` statements to print to stdout, I think, though I guess I could save rds files or something.
+
+Can I automate? Or can I call all the plans one after each other in the same script? Probably yes to both. What's the best way to get the code over to the HPC? I usually use git/github to sync changes, but I don't really want to git this whole website over there. It's a hassle, but I might set up a template slurm testing repo and use that.
+
+### The R code
+
+Basically, I want to call `plan(PLAN_NAME)`, and then run a loop, checking PID as before. That loop will be like the simple nested loop with `%:%` [I built before](interrogating_parallel.qmd) at least to start. I might do more complex nesting and try `plan(list(PLAN1, PLAN2)` later. Why am I looping at all? In case there's some built-in capacity to throw one set of loops on nodes and the other on cores. This is more likely to come in later, but might as well set it up now.
+
+That nested function is
+
+```{r}
+nest_test <- function(outer_size, inner_size, planname) {
+  outer_out <- foreach(i = 1:outer_size,
+                       .combine = bind_rows) %:% 
+    foreach(j = 1:inner_size,
+                       .combine = bind_rows) %dopar% {
+    
+                         thisproc <- tibble(plan = planname,
+                                            outer_iteration = i,
+                                            inner_iteration = j, 
+                                            pid = Sys.getpid())
+                       }
+  
+  return(outer_out)
+}
+```
+
+And I also want to know `availableWorkers()` and `availableCores()`. Also try `availableCores(methods = 'Slurm')` to see how that differs and which matches the resources we actually use.
+
+Can I make the stdout auto-generate something in markdown I can copy-paste in here? That'd be nice.
+
+I think as a first pass, I'll try this for the single-machine `plan`s- sequential, multicore, and multiprocess. I have a feeling I'll encounter more difficulty with the cluster, callr, and batchtools, so get the basics figured out first.
+
+So, what should that R script look like? I think I'll use a `for` over the `plan`s.
+
+The test HPC I'll use has 20 nodes with 12 cores. I'll request 2 nodes and 24 cores for testing so I can see if it uses multiple nodes. That means I'll need at least 24 loops, and ideally more. Might as well go 50- this won't actually take any time.
+
+I can run this locally too, so I guess do that?
+
+```{r}
+plannames <- c('sequential', 'multisession', 'multicore')
+
+# The loopings
+nest_test <- function(outer_size, inner_size, planname) {
+  outer_out <- foreach(i = 1:outer_size,
+                       .combine = bind_rows) %:% 
+    foreach(j = 1:inner_size,
+            .combine = bind_rows) %dopar% {
+              
+              thisproc <- tibble(plan = planname,
+                                 outer_iteration = i,
+                                 inner_iteration = j, 
+                                 pid = Sys.getpid())
+            }
+  
+  return(outer_out)
+}
+
+
+for (planname in plannames) {
+  print(paste0("# ", planname))
+  plan(planname)
+  
+  print('## available Workers:')
+  print(availableWorkers())
+  
+  print('## available Cores:')
+  print("### non-slurm")
+  print(availableCores())
+  print("### slurm method")
+  print(availableCores(methods = 'Slurm'))
+  
+  # base R process id
+  print('## Main PID:')
+  print(Sys.getpid())
+  
+  looptib <- nest_test(25, 25, planname)
+  
+  print('## Unique processes')
+  print(length(unique(looptib$pid)))
+  print("This should be the IDs of all cores used")
+  print(unique(looptib$pid))
+  
+  print('## Full loop data')
+  print(looptib)
+  
+  
+}
+
+
+
+```
+
+### The slurm script
+
+we need a batch script that calls the R script, requests resources (here, 2 nodes with 12 cores each so we can see node utilisation- or not).
+
+``` bash
+#!/bin/bash
+
+# # Resources on test system: 20 nodes, each with 12 cores. 70GB RAM
+
+#SBATCH --time=0:05:00 # request time (walltime, not compute time)
+#SBATCH --mem=8GB # request memory. 8 should be more than enough to test
+#SBATCH --nodes=2 # number of nodes. Need > 1 to test utilisation
+#SBATCH --ntasks-per-node=12 # Cores per node
+
+#SBATCH -o node_core_%A_%a.out # Standard output
+#SBATCH -e node_core_%A_%a.err # Standard error
+
+# timing
+begin=`date +%s`
+
+module load R
+
+Rscript testing_plans.R
+
+
+end=`date +%s`
+elapsed=`expr $end - $begin`
+
+echo Time taken for code: $elapsed
+```
+
+That's then called with
+
+``` bash
+sbatch filename.sh
+```
+
+From within the directory.
+
+# Single-machine plans
+
+The copy-pasted output for sequential, multisession, and multicore plans is:
+
+::: {#Single-machine outputs} ℹ Using R 4.0.3 (lockfile was generated with R 4.2.2)
+
+## sequential
+
+### available workers:
+
+gandalf-vm03 gandalf-vm03 gandalf-vm03 gandalf-vm03 gandalf-vm03 gandalf-vm03 gandalf-vm03 gandalf-vm03 gandalf-vm03 gandalf-vm03 gandalf-vm03 gandalf-vm03 gandalf-vm04 gandalf-vm04 gandalf-vm04 gandalf-vm04 gandalf-vm04 gandalf-vm04 gandalf-vm04 gandalf-vm04 gandalf-vm04 gandalf-vm04 gandalf-vm04 gandalf-vm04
+
+### total workers:
+
+24
+
+### unique workers:
+
+gandalf-vm03 gandalf-vm04
+
+### available Cores:
+
+#### non-slurm
+
+12
+
+#### slurm method
+
+12
+
+### Main PID:
+
+1224603
+
+### Unique processes
+
+1
+
+IDs of all cores used
+
+1224603
+
+## multisession
+
+ℹ Using R 4.0.3 (lockfile was generated with R 4.2.2) ℹ Using R 4.0.3 (lockfile was generated with R 4.2.2) ℹ Using R 4.0.3 (lockfile was generated with R 4.2.2) ℹ Using R 4.0.3 (lockfile was generated with R 4.2.2) ℹ Using R 4.0.3 (lockfile was generated with R 4.2.2) ℹ Using R 4.0.3 (lockfile was generated with R 4.2.2) ℹ Using R 4.0.3 (lockfile was generated with R 4.2.2) ℹ Using R 4.0.3 (lockfile was generated with R 4.2.2) ℹ Using R 4.0.3 (lockfile was generated with R 4.2.2) ℹ Using R 4.0.3 (lockfile was generated with R 4.2.2) ℹ Using R 4.0.3 (lockfile was generated with R 4.2.2) ℹ Using R 4.0.3 (lockfile was generated with R 4.2.2)
+
+### available workers:
+
+gandalf-vm03 gandalf-vm03 gandalf-vm03 gandalf-vm03 gandalf-vm03 gandalf-vm03 gandalf-vm03 gandalf-vm03 gandalf-vm03 gandalf-vm03 gandalf-vm03 gandalf-vm03 gandalf-vm04 gandalf-vm04 gandalf-vm04 gandalf-vm04 gandalf-vm04 gandalf-vm04 gandalf-vm04 gandalf-vm04 gandalf-vm04 gandalf-vm04 gandalf-vm04 gandalf-vm04
+
+### total workers:
+
+24
+
+### unique workers:
+
+gandalf-vm03 gandalf-vm04
+
+### available Cores:
+
+#### non-slurm
+
+12
+
+#### slurm method
+
+12
+
+### Main PID:
+
+1224603
+
+### Unique processes
+
+12
+
+IDs of all cores used
+
+1224723 1224717 1224715 1224716 1224718 1224725 1224724 1224721 1224720 1224722 1224719 1224726
+
+## multicore
+
+### available workers:
+
+gandalf-vm03 gandalf-vm03 gandalf-vm03 gandalf-vm03 gandalf-vm03 gandalf-vm03 gandalf-vm03 gandalf-vm03 gandalf-vm03 gandalf-vm03 gandalf-vm03 gandalf-vm03 gandalf-vm04 gandalf-vm04 gandalf-vm04 gandalf-vm04 gandalf-vm04 gandalf-vm04 gandalf-vm04 gandalf-vm04 gandalf-vm04 gandalf-vm04 gandalf-vm04 gandalf-vm04
+
+### total workers:
+
+24
+
+### unique workers:
+
+gandalf-vm03 gandalf-vm04
+
+### available Cores:
+
+#### non-slurm
+
+12
+
+#### slurm method
+
+12
+
+### Main PID:
+
+1224603
+
+### Unique processes
+
+12
+
+IDs of all cores used
+
+1225561 1225564 1225567 1225570 1225573 1225576 1225581 1225586 1225591 1225596 1225601 1225606
+
+Time taken for code: 15 :::
+
+So, in all cases, the **workers** were seen across all nodes ({parallely} says as much in the help- this uses `scontrol` to find workers), while the **cores** are local. And only 12 cores ever end up getting used here, even with `multisession` and `multicore`.
+
+# Cluster
+
+I can call `plan(cluster)` just like I did for the others. (unlike `future.batchtools`, which needs additional setup). Just try it.
+
+It's taking *forever* to run...
+
+And then I get "Host key verification failed." I'm now remembering I've done this before- it can't figure out how to actually make connections to the other nodes, and so ends up failing. I *think* the use-case here is having very specific sets of compute that we can explicitly link to, rather than something like an HPC.
+
+I think the answer here would be to use [slurmR](https://github.com/USCbiostats/slurmR), which provides the ability to define `cluster` plans on slurm. I think that (and `future.batchtools`) are worth exploring, but need their own docs as I figure them out.
+
+# Related
+
+[Getting arguments from sbatch scripts](hpc_ephemera.qmd)
+
+Using slurm arrays- passing in the arrays and using for R (and vice versa- when it makes sense to pre-define arrays, and when it's better if R calculates and calls them). This is what I've done in the past, but it leaves something to be desired and needs to be better tested- e.g. if I'm using a slurm array to deal with an outer loop (which is my usual case), but that outer loop is `%dopar%` and then there's an inner loop that's not linked with `%:%`, do I end up only using one core?- see [my earlier look at PID use in different sorts of nesting](interrogating_parallel.qmd). I think the answer is that that foreach will start nodes, and so while they are separate jobs, they work like an array. And then use [list-plans](interrogating_parallel.qmd), since they let us manage workers at multiple levels.

@@ -143,6 +143,10 @@ It ended up being pretty straightforward to use `devtools::check()` and using co
 
 It *is* easy to end up with funny missing pieces and issues if you forget to run `devtools::check()` and just push to github followed by `devtools::install_github` or even more likely if you just `devtools::install_local` from the directory with the code in it. In general, I think the github actions should take care of the check, but I never seem to get the emails that say it's happened.
 
+I often forget these steps. But to actually make the package usable other than with `load_all()`, we seem to need to `devtools::check()` and if there's an rmd readme, knit that.
+
+The readme ends up being hard to build when it gets updated without reinstalling the package. I ended up in a weird loop once where I couldn't build the package with a broken readme, but couldn't update the readme without package updates. The solution is `devtools::build_readme()` to install a temp package and build the readme from that, and then `devtools::check()`.
+
 ## Ephemera
 
 ### renv
@@ -155,6 +159,6 @@ I need to make some standard figure functions as part of the package. To test th
 
 ### 'global' variables and dplyr
 
-When I `devtools::check()` on a package using dplyr, I get a million errors about 'no visible binding for global variable 'variable_name''. The issue is that R CMD CHECK is interpreting the bare variable names in mutate, summarise, etc as variables and can't find them. The code runs fine, but it's annoying.
+When I `devtools::check()` on a package using dplyr, I get a million errors about 'no visible binding for global variable 'variable_name''. The issue is that R CMD CHECK is interpreting the bare variable names in `mutate`, `summarise`, etc as variables and can't find them. The code runs fine, but it's annoying.
 
-The answer, unfortunately, is to use the .data\[\['variable_name'\]\] or .data\$variable_name convention everywhere and `usethis::use_import_from('rlang', '.data')`. That works to get rid of the errors, but now we've lost one of the really nice things about writing dplyr code- the simplicity of bare data variable names.
+The answer, unfortunately, is to use the `.data[['variable_name']]` or `.data$variable_name` convention everywhere and `usethis::use_import_from('rlang', '.data')`. That works to get rid of the errors, but now we've lost one of the really nice things about writing dplyr code- the simplicity of bare data variable names.

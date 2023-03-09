@@ -1,0 +1,128 @@
+---
+title: "HPC ephemera"
+author: "Galen Holt"
+---
+
+## SLURM commands
+
+To see characteristics of the system (nodes, CPUs, memory, etc) and state:
+
+``` bash
+sinfo --Node --long
+```
+
+## Common workflow:
+
+git clone repo, cd into it
+
+set up environment with `renv` - usually just `module load R` then `R` for an interactive session
+
+when things break because the R version is too old, it sometimes works to [force it to update using {rig}](RpyEnvs/rig.qmd)
+
+do most dev on local computer, push
+
+git pull to HPC- if on branch
+
+``` bash
+git pull origin BRANCHNAME
+```
+
+run code with sbatch
+
+something breaks
+
+fix locally, push, pull, re-run
+
+use scripts to copy data down
+
+## Transferring files
+
+### The best solution- WinSCP
+
+Unless we want to batch-transfer a lot of stuff automatically, *USE WINSCP*- it's way easier, and we can open docs with notepad++, etc.
+
+### Scripting
+
+I have better ones, but simply, if we are on a local terminal in a directory we want to put the file (or maybe we want it in a subdir)
+
+``` bash
+scp user@remote.address:~/path/to/file/filename.txt /subdir/filename.txt
+```
+
+That's annoying because we need to start local, and so have an scp terminal running alongside the one that's sshed. Otherwise we have to treat local as remote from inside the ssh session.
+
+## Running any file
+
+The how-tos for using SLURM all have a line that is `Rscript filename.R` to run that file. But that means we have to have a different shell script for each R script we want to run. THat's really annoying, especially when prototyping or with a lot of similar R scripts. Instead, we want to build a shell script that takes the R script name as input in the sbatch call. E.g.
+
+``` bash
+sbatch shellname.sh
+```
+
+With the R script hardcoded in sh.
+
+Instead, we want
+
+``` bash
+sbatch shellname.sh rname.R
+```
+
+that can take an arbitrary R script.
+
+This then will get to other arguments, but this is the first step and super useful.
+
+It's relatively easy- just use `Rscript $1` in the shell script, and then the command above works.
+
+## Arguments in sbatch
+
+Sometimes we want to pass arguments to R scripts in the sbatch call so we don't need fully-new Rscripts just to change a parameter value. In that case, we can pass the args, and they're available in R with `commandArgs()`. There are a couple things to be aware of to use this. Primarily, they boil down to **The shell SLURM script *must* match the argument extraction in the R script- ie they need to know the argument order and meaning**.
+
+1.  Slots for them MUST be available in the slurm script. e.g.
+
+    ``` bash
+    Rscript $1 $2
+    ```
+
+    will work to pass `sbatch any_R.sh rscriptname.R argument1` in, with `rscriptname.R` being `$1`(the first argument to the slurm script) and `argument1` being `$2`. (The first *additional* argument, intended for R). If you send `sbatch any_R.sh rscriptname.R argument1 argument2` in to a slurm script as above, `argument2` will just disappear into the ether.
+
+2.  Alternatively, the slurm script *itself* can define arguments-
+
+    ``` bash
+    Rscript $1 "argument1" "argument2"
+    ```
+
+    makes whatever `$1` is coming in from command line, as well as `"argument1"` and `"argument2"` available in R via `commandArgs()`
+
+3.  We can use arbitrary numbers of arguments as well with `$*` , which accesses all the arguments.
+
+    ``` bash
+    Rscript $*
+    ```
+
+    Note that now we've dropped the `$1`- it's included as the first item in the `$*` . This is a bit dangerous- we need to make sure we use the right order, but it is flexible.
+
+4.  Accessing the arguments is tricky- they are numbered in order, but there are some initial invisible ones. It seems, but may not always be true, that the first four are set, with the fourth being `--file=filename.R` for the file called by Rscript, then 5 is `--args` and the subsequent args are 6-n.
+
+5.  Numbers come through as characters
+
+6.  `${SLURM_ARRAY_TASK_ID}` is a particularly useful variable to include, as it lets us manually divide tasks among a slurm array.
+
+## Naming jobs
+
+And especially putting the name on the stdout and err. Creating a new dir for them would be even nicer, but I'll leave that for later.
+
+the produced stdout and err get hard to find after a lot of jobs. If we use %x in their names in the slurm script, it appends the jobname
+
+The jobname by default is the name of the shell script, e.g. `sbatch shellscript.sh` has jobname "shellscript.sh". That's actually pretty useful if we have individual shell scripts. But if we're using a script that takes R script names as arguments, it's not. In that case, we can set the job with `--job-name` or `-J` flags, e.g. `sbatch -J test_job shellscript.sh`.
+
+Note that the jobname flag has to happen *before* the script, and does NOT affect the args returned by `commandArgs()` (thankfully).
+
+## Testing future plans
+
+`plan("list")` tells us what the plan is. This is super helpful for checking what's going on.
+
+```{r}
+library(future)
+plan(multisession)
+plan("list")
+```

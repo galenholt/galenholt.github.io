@@ -1,0 +1,105 @@
+---
+title: "Template modification"
+author: "Galen Holt"
+---
+
+I don't want to spend a ton of time on this, but if I want to add the ability to adjust any of the SLURM variables, including those that have dashes '-' in their names, and I don't want to use the format of the `resources` list enforced by the {batchtools} template `slurm-simple.tmpl`, I'll need to modify the template.
+
+To do that, it's a bit helpful to know how {brew} works, though it's mostly self-explanatory from reading the templates. I'm primarily confused why I can't pass names with backticks, when somethign like
+
+```{r}
+resources <- list('name-with-ticks' = 17, namenoticks = 'a')
+resources
+names(resources)
+```
+
+Works, since the `future.batchtools` template just uses unlist and names. e.g. the relevant bit is
+
+```{r}
+opts <- unlist(resources, use.names = TRUE)
+opts <- sprintf("--%s=%s", names(opts), opts)
+opts <- paste(opts, collapse = " ")
+
+opts
+```
+
+It must be enforced by the `batchtools` wrapper for `brew`, because this works
+
+```{r}
+#| eval: false
+resources <- list('name-with-ticks' = 17, namenoticks = 'a')
+job.name <- 'testjob'
+log.file = 'testlog'
+uri <- 'testuri'
+brew::brew(file = file.path('batchtools_templates', 'slurm.tmpl'), output = 'temp.txt')
+```
+
+yeilding
+
+    #!/bin/bash
+    ######################################################################
+    # A batchtools launch script template for Slurm
+    #
+    # Author: Henrik Bengtsson 
+    ######################################################################
+
+    #SBATCH --job-name=testjob
+    #SBATCH --output=testlog
+    #SBATCH --nodes=1
+    #SBATCH --time=00:05:00
+
+    ## Resources needed:
+
+    #SBATCH --name-with-ticks=17 --namenoticks=a
+
+
+    ## Launch R and evaluated the batchtools R job
+    Rscript -e 'batchtools::doJobCollection("testuri")'
+
+Do I want to dig into why batchtools enforces syntactic names? Not really.
+
+Do I want to bypass batchtools slurm generation? Not really.
+
+So, can I modify the slurm script to do what I want? I think probably.
+
+## What do I want?
+
+-   To pass arbitrary slurm arguments, similar to how `future.batchtools` 's `slurm.tmpl` works, but including dash names. I really don't like that batchtools takes over some of those arguments and calls them different things.
+
+-   To be able to pass the options in the formats slurm allows (e.g. `--time` in seconds or as 00:05:00, `--mem` as an integer of megabytes, or as `"1GB"`)
+
+I think what might work is to use dots in the names of `resources` and then translate to dashes?
+
+e.g. insert one small `gsub` line in the `future.batchtools` script:
+
+```{r}
+resources_dots <- list('name.with.ticks' = 17, namenoticks = 'a')
+opts <- unlist(resources_dots, use.names = TRUE)
+opts <- sprintf("--%s=%s", names(opts), opts)
+opts <- gsub('\\.', '-', opts)
+opts <- paste(opts, collapse = " ")
+opts
+```
+
+I generally like to structure SLURM scripts with
+
+``` bash
+#SBATCH --option1=value1
+#SBATCH --option2=value2
+```
+
+And this template structures them
+
+``` bash
+#SBATCH --option1=value1 --option2=value2
+```
+
+I could almost certainly write a thing that put carriage returns and `#SBATCH` in front of each, but we never see these templates, so I think I'll skip that.
+
+I've changed it in `batchtools.slurm.tmpl`, and now the question is whether it runs afoul of some other `batchtools` error-catcher.
+
+## Outcome
+
+It seems to work
+
+I can also change `--job-name` now with `resources$job.name`, but the catch is I don't know if there's a way to change it on a per-job basis, since I have to specify it in `plan` with the `resources` list, and the iteration won't be known until later. I would have thought that's where the default `job.name` was coming from in `slurm.tmpl` and `slurm-simple.tmpl`, but they seem to just call themselves 'doFuture'.
