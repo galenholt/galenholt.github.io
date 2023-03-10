@@ -5,6 +5,7 @@ editor: visual
 engine: knitr
 execute:
   error: true
+  echo: fenced
 ---
 
 ```{r setup}
@@ -21,6 +22,15 @@ I have a project primarily in R, but needs some python. For the big python work,
 
 My [python_setup](python_setup.qmd) sets up a very similar situation, so let's see if I can use it.
 
+I'm going to try to remember to always put
+
+``` yaml
+execute:
+  echo: fenced
+```
+
+in the yaml headers of mixed r-python notebooks, so it's clear which chunks are which language (though we can usually tell by the code).
+
 ### Additional issues
 
 This all worked, but then stopped- python chunks separated by R chunks couldn't share objects. This particular notebook still ran, but [others](py_r_dates.qmd) would run fine interactively but when rendered would throw errors about "name 'pyobjname' is not defined". I tried making sure jupyter was in the python env and set `engine: knitr` in yaml headers, since that's what the help suggested. And I set the `QUARTO_PYTHON` environment variable in an `_environments` file, since that helped me previously. It's unclear why it worked previously.
@@ -29,8 +39,8 @@ This all worked, but then stopped- python chunks separated by R chunks couldn't 
 
 Point reticulate at the venv. See [stackoverflow](https://stackoverflow.com/questions/59715101/how-to-get-reticulate-to-access-virtual-environment). This *seems* to not be necessary if the `.venv` is in the outer project directory. Or if we've set the `RETICULATE_PYTHON` environment variable elsewhere (like `.Rprofile`).
 
-```{r}
-# reticulate::use_virtualenv(file.path('RpyEnvs', 'pytesting', 'Scripts', '.venv'), required = TRUE)
+```{r}}
+reticulate::use_virtualenv(file.path('RpyEnvs', 'pytesting', 'Scripts', '.venv'), required = TRUE)
 ```
 
 If this is more than a one-off and you're using an R project, it's usually better to set the `RETICULATE_PYTHON` environment variable in `.Rprofile`. Here, that means adding this line in `.Rprofile` . This has the added bonus of stopping Rstudio/R throwing warnings about conda at startup when it detects {reticulate} being used in the project.

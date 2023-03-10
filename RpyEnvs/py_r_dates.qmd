@@ -5,6 +5,7 @@ editor: visual
 engine: knitr
 execute:
   error: true
+  echo: fenced
 ---
 
 ```{r setup}

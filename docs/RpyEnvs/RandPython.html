@@ -599,13 +599,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
-<div class="cell" data-hash="RandPython_cache/html/setup_e35f15b05fccd3924fabd416333c5073">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_knit<span class="sc">$</span><span class="fu">set</span>(<span class="at">root.dir =</span> rprojroot<span class="sc">::</span><span class="fu">find_rstudio_root_file</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="RandPython_cache/html/setup_224df750c14b4205f4a9d5935a168739">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r setup}</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_knit<span class="sc">$</span><span class="fu">set</span>(<span class="at">root.dir =</span> rprojroot<span class="sc">::</span><span class="fu">find_rstudio_root_file</span>())</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="the-issue" class="level2">
 <h2 class="anchored" data-anchor-id="the-issue">The issue</h2>
 <p>I have a project primarily in R, but needs some python. For the big python work, I’ll have a directory with a <code>poetry</code> environment and python code. But I’ve run into the issue that I want to run just one or two lines of python from R. The specific case is that I have python code for extracting river gauge data, and I’ve filtered some river gauges in R for something else, and rather than do the finding of the gauges again in python, I’d rather just do the extraction in R. I think that means I have to sort out {reticulate}, but also how to point reticulate at my python environment. The situation I have is a <code>poetry</code> project inside a directory with an Rproj (which probably needs to be split up, but it’s what I have now).</p>
 <p>My <a href="../RpyEnvs/python_setup.html">python_setup</a> sets up a very similar situation, so let’s see if I can use it.</p>
+<p>I’m going to try to remember to always put</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">execute</span><span class="kw">:</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">echo</span><span class="kw">:</span><span class="at"> fenced</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>in the yaml headers of mixed r-python notebooks, so it’s clear which chunks are which language (though we can usually tell by the code).</p>
 <section id="additional-issues" class="level3">
 <h3 class="anchored" data-anchor-id="additional-issues">Additional issues</h3>
 <p>This all worked, but then stopped- python chunks separated by R chunks couldn’t share objects. This particular notebook still ran, but <a href="../RpyEnvs/py_r_dates.html">others</a> would run fine interactively but when rendered would throw errors about “name ‘pyobjname’ is not defined”. I tried making sure jupyter was in the python env and set <code>engine: knitr</code> in yaml headers, since that’s what the help suggested. And I set the <code>QUARTO_PYTHON</code> environment variable in an <code>_environments</code> file, since that helped me previously. It’s unclear why it worked previously.</p>
@@ -614,45 +623,51 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="set-up-reticulate-from-r" class="level2">
 <h2 class="anchored" data-anchor-id="set-up-reticulate-from-r">Set up reticulate from R</h2>
 <p>Point reticulate at the venv. See <a href="https://stackoverflow.com/questions/59715101/how-to-get-reticulate-to-access-virtual-environment">stackoverflow</a>. This <em>seems</em> to not be necessary if the <code>.venv</code> is in the outer project directory. Or if we’ve set the <code>RETICULATE_PYTHON</code> environment variable elsewhere (like <code>.Rprofile</code>).</p>
-<div class="cell" data-hash="RandPython_cache/html/unnamed-chunk-1_ac4a954694074c98cb1662d499541a9b">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># reticulate::use_virtualenv(file.path('RpyEnvs', 'pytesting', 'Scripts', '.venv'), required = TRUE)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<pre class="{r}}"><code>reticulate::use_virtualenv(file.path('RpyEnvs', 'pytesting', 'Scripts', '.venv'), required = TRUE)</code></pre>
 <p>If this is more than a one-off and you’re using an R project, it’s usually better to set the <code>RETICULATE_PYTHON</code> environment variable in <code>.Rprofile</code>. Here, that means adding this line in <code>.Rprofile</code> . This has the added bonus of stopping Rstudio/R throwing warnings about conda at startup when it detects {reticulate} being used in the project.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">RETICULATE_PYTHON =</span> <span class="fu">file.path</span>(<span class="st">'RpyEnvs'</span>, <span class="st">'pytesting'</span>, <span class="st">'.venv'</span>))</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">RETICULATE_PYTHON =</span> <span class="fu">file.path</span>(<span class="st">'RpyEnvs'</span>, <span class="st">'pytesting'</span>, <span class="st">'.venv'</span>))</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>See <a href="../small_helpers/quarto_notes.html">Quarto notes</a> for some similar issues for different python-related env variables.</p>
 <p>Load the library. Interestingly, the python code chunks will run without loading the library, but I can’t access their values using <code>py$pythonobject</code> unless I load it.</p>
-<div class="cell" data-hash="RandPython_cache/html/unnamed-chunk-2_ac74569ea761b1fccb580cb9c4c3fde7">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reticulate)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="RandPython_cache/html/unnamed-chunk-1_c96ebd5827e46bb2d0d553cd4c37727b">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reticulate)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="r" class="level2">
 <h2 class="anchored" data-anchor-id="r">R</h2>
 <p>First, let’s create some things in R.</p>
-<div class="cell" data-hash="RandPython_cache/html/unnamed-chunk-3_a29c90d00ebeb055059c0cbd16ce57a1">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="RandPython_cache/html/unnamed-chunk-2_6d4c8cad1aa783fcc21cbea8e9466d4f">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="python" class="level2">
 <h2 class="anchored" data-anchor-id="python">Python</h2>
 <p>Does not just inherit the values from R, but runs.</p>
-<div class="cell" data-hash="RandPython_cache/html/unnamed-chunk-4_21a9fb66aabf246ea07a059d63674b7d">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> <span class="dv">1</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> <span class="dv">2</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>a<span class="op">+</span>b</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="RandPython_cache/html/unnamed-chunk-3_c02666086395f53c4f24dadb9c72771d">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>a<span class="op">+</span>b</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>3</code></pre>
 </div>
 </div>
 <p>Do I have access to packages? Yes.</p>
-<div class="cell" data-hash="RandPython_cache/html/unnamed-chunk-5_82cc1aa5673ca06dbe3c737ba5a676db">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.arange(<span class="dv">15</span>, dtype<span class="op">=</span>np.int64).reshape(<span class="dv">3</span>, <span class="dv">5</span>)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>x[<span class="dv">1</span>:, ::<span class="dv">2</span>] <span class="op">=</span> <span class="op">-</span><span class="dv">99</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="RandPython_cache/html/unnamed-chunk-4_fadc96ad70efd6426423af40b905269c">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.arange(<span class="dv">15</span>, dtype<span class="op">=</span>np.int64).reshape(<span class="dv">3</span>, <span class="dv">5</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>x[<span class="dv">1</span>:, ::<span class="dv">2</span>] <span class="op">=</span> <span class="op">-</span><span class="dv">99</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>x</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>array([[  0,   1,   2,   3,   4],
        [-99,   6, -99,   8, -99],
@@ -661,8 +676,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <p>Does access to python objects persist? Yes</p>
 <p><strong>Though in lot of other docs, this has proved to be <em>super</em> unstable, and fails intermittently</strong></p>
-<div class="cell" data-hash="RandPython_cache/html/unnamed-chunk-6_416b778db2eb91e1bbf54cc8ab7b80db">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>x.<span class="bu">max</span>(axis<span class="op">=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="RandPython_cache/html/unnamed-chunk-5_b1c4b2ff0a3c7f2cb4d9851f88f34b93">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>x.<span class="bu">max</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>array([ 4,  8, 13], dtype=int64)</code></pre>
 </div>
@@ -673,9 +690,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="python-to-r" class="level3">
 <h3 class="anchored" data-anchor-id="python-to-r">Python to R</h3>
 <p>Can I access objects with R? Yes, but not quite directly. Have to use the <code>py$pythonObject</code> notation. But <em>only</em> if I’ve loaded <code>library(reticulate)</code> <em>or</em> specified with <code>reticulate::py</code>. That’s a pain, so probably almost always better to load the library. Even though the python chunks run fine without explictly loading it, I can’t seem to access <code>py</code> without loading it.</p>
-<div class="cell" data-hash="RandPython_cache/html/unnamed-chunk-7_975dfaea353da8868ce72d8553bd1410">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># x</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>reticulate<span class="sc">::</span>py<span class="sc">$</span>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="RandPython_cache/html/unnamed-chunk-6_3c7b88fe0a8a8e3edac08dfd389fe9fc">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># x</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>reticulate<span class="sc">::</span>py<span class="sc">$</span>x</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     [,1] [,2] [,3] [,4] [,5]
 [1,]    0    1    2    3    4
@@ -687,12 +706,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="r-to-python" class="level3">
 <h3 class="anchored" data-anchor-id="r-to-python">R to python</h3>
 <p>Similar to python objects being in <code>py</code>, R objects are in <code>r</code>, and are accessed with <code>.</code> instead of <code>$</code>.</p>
-<div class="cell" data-hash="RandPython_cache/html/unnamed-chunk-8_e623ff838ddc43fd0825da77555c9323">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>c <span class="ot">&lt;-</span> <span class="dv">17</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="RandPython_cache/html/unnamed-chunk-7_d2ddc9f62adf5e4026d217b63923e656">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>c <span class="ot">&lt;-</span> <span class="dv">17</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Interestingly, the <code>r.</code> notation to get R into python does <em>not</em> need <code>reticulate::</code> on it. Which I guess makes some sense- this block is actually running in python and python doesn’t know what <code>reticulate</code> is. But it does know what <code>r.</code> is, somehow. Pretty cool.</p>
-<div class="cell" data-hash="RandPython_cache/html/unnamed-chunk-9_8115269bc79fd3a3f1c3d320d65127e3">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>r.c <span class="op">+</span> b</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="RandPython_cache/html/unnamed-chunk-8_b56bbc9de4fea86058b5c73b5acc2d6c">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>r.c <span class="op">+</span> b</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>19.0</code></pre>
 </div>
@@ -702,21 +725,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3 class="anchored" data-anchor-id="python-r-python-and-nameerrors">Python-R-python and NameErrors</h3>
 <p>Elsewhere I’m running into a new issue of getting “NameError: name ‘pyobjectname’ is not defined” when I try to access an object defined in a previous python chunk in a later python chunk. It seems to be worse when there’s an R chunk in the middle. It doesn’t seem to be happening here, since the preceding chunk could get at <code>b</code>, which was defined way earlier.</p>
 <p>Does the issue happen when R has touched it? YES. This all runs fine interactively, but when I try to render, I get “Error in py_call_impl(callable, dots$args, dots$keywords) : NameError: name ‘b’ is not defined” in the python chunk.</p>
-<div class="cell" data-hash="RandPython_cache/html/unnamed-chunk-10_9588ff21f7141bf54230b2a621308da2">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>b <span class="op">+</span> a</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="RandPython_cache/html/unnamed-chunk-9_a1a580e2ace505709f3732d28a9f45a3">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>b <span class="op">+</span> a</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>3</code></pre>
 </div>
 </div>
-<div class="cell" data-hash="RandPython_cache/html/unnamed-chunk-11_9ad4bfdd081fa66c5c43aa3df21e2a8b">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>rb <span class="ot">&lt;-</span> py<span class="sc">$</span>b <span class="sc">+</span> c</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>rb</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="RandPython_cache/html/unnamed-chunk-10_fcdd1a127ec85f724020b85367edf248">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>rb <span class="ot">&lt;-</span> py<span class="sc">$</span>b <span class="sc">+</span> c</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>rb</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 19</code></pre>
 </div>
 </div>
-<div class="cell" data-hash="RandPython_cache/html/unnamed-chunk-12_b681c6f53e5e8eb492df711f4a9ea2f0">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>b <span class="op">+</span> a</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="RandPython_cache/html/unnamed-chunk-11_412ed9dfdeea85bdf2ce88b4327434d8">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>b <span class="op">+</span> a</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>3</code></pre>
 </div>

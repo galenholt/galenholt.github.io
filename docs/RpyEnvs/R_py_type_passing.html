@@ -595,80 +595,97 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
-<div class="cell" data-hash="R_py_type_passing_cache/html/setup_2d987574899ca50fd7d8785c6ada6995">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_knit<span class="sc">$</span><span class="fu">set</span>(<span class="at">root.dir =</span> rprojroot<span class="sc">::</span><span class="fu">find_rstudio_root_file</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
 <section id="note--quarto-renders-fail" class="level2">
 <h2 class="anchored" data-anchor-id="note--quarto-renders-fail">Note- quarto renders fail</h2>
-<p>This runs fine interactively, but when I render, everything fails. The python chunks lose what was in the previous ones, and the references to <code>py$</code> in R chunks all fail. For now I’m going to just skip errors and have this not render correctly, which is unsatisfying. Not much more I can do though until I sort out the NameError issue, which is tricky because <a href="python_namerror.qmd">it doesn’t replicate consistently</a>.</p>
+<p>This runs fine interactively, but when I render, everything fails. The python chunks lose what was in the previous ones, and the references to <code>py$</code> in R chunks all fail. For now I’m going to just skip errors and have this not render correctly, which is unsatisfying. Not much more I can do though until I sort out the NameError issue, which is tricky because <a href="../RpyEnvs/python_nameerror.html">it doesn’t replicate consistently</a>.</p>
 </section>
 <section id="passing-types" class="level2">
 <h2 class="anchored" data-anchor-id="passing-types">Passing types</h2>
 <p>I have a python function that takes dicts and lists as arguments. How do I pass those from R? We can’t just assign them to a variable in R, because those formats don’t work- e.g.&nbsp;we cannot create the lists and dicts in R to pass.</p>
-<div class="cell" data-hash="R_py_type_passing_cache/html/unnamed-chunk-1_27e820ccbbeaab3cca96e439d0be983d">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>outputType <span class="ot">=</span> [<span class="st">'summary'</span>, <span class="st">'all'</span>]</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>allowance <span class="ot">=</span>{<span class="st">'minThreshold'</span><span class="sc">:</span> MINT, <span class="st">'maxThreshold'</span><span class="sc">:</span> MAXT, <span class="st">'duration'</span><span class="sc">:</span> DUR, <span class="st">'drawdown'</span><span class="sc">:</span> DRAW}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="R_py_type_passing_cache/html/unnamed-chunk-1_694f227e6eec2614cc7053f7501304b5">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>outputType <span class="ot">=</span> [<span class="st">'summary'</span>, <span class="st">'all'</span>]</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>allowance <span class="ot">=</span>{<span class="st">'minThreshold'</span><span class="sc">:</span> MINT, <span class="st">'maxThreshold'</span><span class="sc">:</span> MAXT, <span class="st">'duration'</span><span class="sc">:</span> DUR, <span class="st">'drawdown'</span><span class="sc">:</span> DRAW}</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>So, let’s write a function to tell me the type of what I’m passing and try a few things.</p>
-<div class="cell" data-hash="R_py_type_passing_cache/html/unnamed-chunk-2_53e98ebaae00ba76c0ecfa05b12606d8">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_type(testarg):</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span>(<span class="bu">type</span>(testarg))</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="R_py_type_passing_cache/html/unnamed-chunk-2_eadf65250171040c7c35435fb95eb86a">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_type(testarg):</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span>(<span class="bu">type</span>(testarg))</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Is a named list a dict or a list? what about just a <code>c()</code>? Is that a list?</p>
-<div class="cell" data-hash="R_py_type_passing_cache/html/unnamed-chunk-3_a6fc049dcd7c899fb1dccb7f862a8b08">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>rlist <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">dict1 =</span> <span class="dv">100</span>, <span class="at">dict2 =</span> <span class="st">'testing'</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>rc <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">50</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="R_py_type_passing_cache/html/unnamed-chunk-3_aac0b7796fbe52526691461c78b355fe">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>rlist <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">dict1 =</span> <span class="dv">100</span>, <span class="at">dict2 =</span> <span class="st">'testing'</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>rc <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">50</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The named list is a dict. Look at it in python and R.</p>
-<div class="cell" data-hash="R_py_type_passing_cache/html/unnamed-chunk-4_bf04de68d7df4667c1eb6909461c8878">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>test_type(r.rlist)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="R_py_type_passing_cache/html/unnamed-chunk-4_631adfa16d83bd98efa9dd3600624c84">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>test_type(r.rlist)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;class 'dict'&gt;</code></pre>
 </div>
 </div>
-<div class="cell" data-hash="R_py_type_passing_cache/html/unnamed-chunk-5_2c935cc5080b045a05333b234da18ae5">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>py<span class="sc">$</span><span class="fu">test_type</span>(rlist)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="R_py_type_passing_cache/html/unnamed-chunk-5_35b6a602b6ce7b59c5f21bf59a6bfb58">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>py<span class="sc">$</span><span class="fu">test_type</span>(rlist)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;class 'dict'&gt;</code></pre>
 </div>
 </div>
 <p>The c() is a list- but see below- this fails if it’s length-one</p>
-<div class="cell" data-hash="R_py_type_passing_cache/html/unnamed-chunk-6_b1a9083b5a5b1ef527e689aaffc93125">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>py<span class="sc">$</span><span class="fu">test_type</span>(rc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="R_py_type_passing_cache/html/unnamed-chunk-6_ede06126185bf1a7ab6e9497f261cf76">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>py<span class="sc">$</span><span class="fu">test_type</span>(rc)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;class 'list'&gt;</code></pre>
 </div>
 </div>
 <p>An unnamed list is a list</p>
-<div class="cell" data-hash="R_py_type_passing_cache/html/unnamed-chunk-7_df6b897f67ac763585aa64bcc156a390">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>rlistu <span class="ot">=</span> <span class="fu">list</span>(<span class="dv">100</span>, <span class="st">'testunname'</span>)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>py<span class="sc">$</span><span class="fu">test_type</span>(rlistu)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="R_py_type_passing_cache/html/unnamed-chunk-7_2a5e59992daed10778f1618d3daf8144">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>rlistu <span class="ot">=</span> <span class="fu">list</span>(<span class="dv">100</span>, <span class="st">'testunname'</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>py<span class="sc">$</span><span class="fu">test_type</span>(rlistu)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;class 'list'&gt;</code></pre>
 </div>
 </div>
 <p>That is useful, since creating a length-one list doesn’t work with single values or <code>c()</code> wrapping single values</p>
-<div class="cell" data-hash="R_py_type_passing_cache/html/unnamed-chunk-8_5d0f57b9379603208c181f8cb5602bca">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>rone <span class="ot">=</span> <span class="dv">100</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>py<span class="sc">$</span><span class="fu">test_type</span>(rone)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="R_py_type_passing_cache/html/unnamed-chunk-8_bc1905c4e9b8b0fad392002d6857e0be">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>rone <span class="ot">=</span> <span class="dv">100</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>py<span class="sc">$</span><span class="fu">test_type</span>(rone)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;class 'float'&gt;</code></pre>
 </div>
 </div>
-<div class="cell" data-hash="R_py_type_passing_cache/html/unnamed-chunk-9_79200b2998987fc2f58890e8c6c2e8ff">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>ronec <span class="ot">=</span> <span class="fu">c</span>(<span class="st">'testingc'</span>)</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>py<span class="sc">$</span><span class="fu">test_type</span>(ronec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="R_py_type_passing_cache/html/unnamed-chunk-9_301e759b361ea1ef91381c1999e8e73e">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>ronec <span class="ot">=</span> <span class="fu">c</span>(<span class="st">'testingc'</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>py<span class="sc">$</span><span class="fu">test_type</span>(ronec)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;class 'str'&gt;</code></pre>
 </div>
 </div>
 <p>We <em>do</em> get a length-one list with an unnamed list of length 1.</p>
-<div class="cell" data-hash="R_py_type_passing_cache/html/unnamed-chunk-10_e51c9c0b5ec3e1b11992a4bbe9121a6f">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>ronel <span class="ot">=</span> <span class="fu">list</span>(<span class="dv">100</span>)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>py<span class="sc">$</span><span class="fu">test_type</span>(ronel)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="R_py_type_passing_cache/html/unnamed-chunk-10_388c3e1d883ffaf274c6cf66af232ddc">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>ronel <span class="ot">=</span> <span class="fu">list</span>(<span class="dv">100</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>py<span class="sc">$</span><span class="fu">test_type</span>(ronel)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;class 'list'&gt;</code></pre>
 </div>
