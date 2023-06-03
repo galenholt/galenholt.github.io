@@ -1,0 +1,61 @@
+---
+title: "Atlas of living australia"
+author: "Galen Holt"
+---
+
+I need to pull some records from the [Atlas of living australia](https://www.ala.org.au/). There's an API. Can I use it so I don't have to do this manually (and can re-do it easily?).
+
+Was going to set up to hit the API directly, but they have an R package (that hits a LOT of these sorts of atlases, which is nice).
+
+```{r}
+# library(httr2)
+library(galah)
+```
+
+Have to register at their website first- *if you're at an Australian university, it's likely you can login with those credentials*- click the AAF button.
+
+```{r}
+galah_config(email = "g.holt@deakin.edu.au", atlas = "Australia")
+
+```
+
+## Try it
+
+I'm just following the vignette, but not filtering or selecting
+
+```{r}
+lippia <- galah_call() |>
+  galah_identify("lippia") |>
+  # galah_select(institutionID, group = "basic") |>
+  atlas_occurrences()
+
+lippia
+```
+
+From the website though, I know that *Phyla nodiflora* comes up as a synonym with way more records. Can I get that sort of info from the API before pulling?
+
+```{r}
+all_lippia <- search_taxa('lippia')
+all_lippia
+```
+
+Looks like no- these come up in the search bar on the website, but not in the above. Oh well, I guess be aware of that.
+
+```{r}
+pnode <- search_taxa('phyla nodiflora')
+```
+
+## Can I ask for both in one call?
+
+Yeszs
+
+```{r}
+lippia_phyla <- galah_call() |>
+  galah_identify(c("lippia", 'phyla nodiflora')) |>
+  # galah_select(institutionID, group = "basic") |>
+  atlas_occurrences()
+
+lippia_phyla
+```
+
+And it returns the names, so I can filter.
