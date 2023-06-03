@@ -5,6 +5,10 @@ format:
     df-print: kable
 ---
 
+```{r}
+library(ggplot2)
+```
+
 ## Quarto root directory
 
 If there's not a Quarto project (*which is not the same as an Rproject*), i.e. the .qmds are standalone, then the above rmarkdown method works to set the root to the Rproject. But if there is a Quarto project (I've moved to almost always doing this), then we can set the Quarto root directory in the \_quarto.yml for the project. There are actually two useful settings we can make there- a project-wide output directory, and what to use to execute. There are (to my knowledge) two options for `execute-dir`- `execute-dir: file` and `execute-dir: project`, which set the root for rendering as the file location or the project. It almost always makes most sense to use `project`, because then everything uses the same reference for relative paths. For this website, that yaml is
@@ -111,17 +115,46 @@ Can I change that for a single chunk? Work on that later. Putting it in as `#| d
 
 The different `df-print` options have different defaults of how much they print (and with paged it doesn't matter so much). As far as I can tell, `tibble` prints the whole thing, and `kable` prints 10 rows. Sometimes we want to control that though - maybe we have a df with 13 rows, and we want to just print the whole thing.
 
-The default is
+The default is 10, though that's not working when I render to the web for some reason
 
 ```{r}
+#| echo: fenced
 iris
 ```
 
-To print more rows, we can use the `rows.print` option.
+To print more rows, we can use the `rows.print` option. *NOTE*- this used to work, and now does not. Will need to sort out a new solution.
 
 ```{r}
-#| rows.print = 15
+#| echo: fenced
+#| rows.print: 15
+
 iris
+```
+
+### Figure captions with variables
+
+Sometimes we want figure captions to auto-update, e.g. maybe we want them to provide some parameter values. In that case, we can provide `!expr`, for example
+
+```{r}
+param_val <- 17
+```
+
+```{r}
+#| echo: fenced
+#| fig-cap: !expr glue::glue("Iris petals multiplied by {param_val}")
+
+ggplot(iris, aes(x = Petal.Length * param_val, y = Petal.Width * param_val, color = Species)) + geom_point()
+
+```
+
+That's a bit annoying that we have to build the whole cap as an R expression, but we should be able to use `glue`, `paste`, or whatever syntax (will need to sort something out for math and greek, maybe `expression` or `bquote`? `latex2exp` isn't just working out of the box).
+
+```{r}
+#| echo: fenced
+#| fig-cap: !expr latex2exp::TeX("$\\alpha$")
+
+ggplot(iris, aes(x = Petal.Length * param_val, y = Petal.Width * param_val, color = Species)) + geom_point()
+
 ```
 
 ## Website

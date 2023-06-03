@@ -1,0 +1,80 @@
+---
+title: "Catching, passing, handling errors"
+author: "Galen Holt"
+---
+
+There's a lot out there on handling errors. This will mostly be testing things as they come up when I need to use them. Will rely heavily on [Hadley](http://adv-r.had.co.nz/Exceptions-Debugging.html), as usual.
+
+# Returning value or the error
+
+I want to return the output value if something works, or the error message if it doesn't. Let's say in a list.
+
+I don't like how all the demos include an explicit `stop()` call, somehow that confuses me. I'm going to do essentially the same thing, but bury it in a function, so it's more like the behaviour we'd actually see.
+
+```{r}
+err_even <- function(x) {
+  if ((x %% 2) == 0) {stop('Even numbers are error')} else {x}
+  }
+```
+
+As a test, what does that look over a vector? I'm going to loop so it's clearer (maybe). And so I don't get an error about asking about a vector in an if.
+
+```{r}
+#| error: true
+outvec <- vector(mode = 'numeric', length = 10)
+for (i in 1:10) {outvec[i] <- err_even(i)}
+
+```
+
+## Try and passing
+
+If we just use `try`, the error should get printed but everything keeps moving
+
+```{r}
+
+outvec <- vector(mode = 'numeric', length = 10)
+for (i in 1:10) {outvec[i] <- try(err_even(i))}
+outvec
+```
+
+Huh. I thought `try` just printed the values but let things keep going. Changing the non-failures to character isn't ideal. But I guess then I'd use `tryCatch`? For now though, this is exactly what i need, so I'll stop here.
+
+## tryCatch
+
+I actually want to capture errors, warnings, or passing to assess some code
+
+```{r}
+err_even_warn5 <- function(x) {
+  if ((x %% 2) == 0) {
+    stop('Even numbers are error')
+  } else if (x == 5) {
+    warning('5 throws a warning')
+  } else {x}
+}
+```
+
+I want to use this for recording, so
+
+```{r}
+recorder <- vector(mode = 'character', length = 10)
+for (i in 1:10) {
+  recorder[i] <- tryCatch(err_even_warn5(i),
+                        error = function(c) c$message,
+                        warning = function(c) c$message,
+                        message = function(c) c$message)
+}
+recorder
+```
+
+And to be even more explicit, can I do some mods in the call to just say if it passed?
+
+```{r}
+recorder2 <- vector(mode = 'character', length = 10)
+for (i in 1:10) {
+  recorder2[i] <- tryCatch(if(is.numeric(err_even_warn5(i))) {'pass'},
+                        error = function(c) c$message,
+                        warning = function(c) c$message,
+                        message = function(c) c$message)
+}
+recorder2
+```
