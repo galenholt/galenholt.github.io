@@ -25,6 +25,8 @@ Both those websites are working on Unix and Mac, so while step 1 is install `pye
 
 ### pyenv
 
+#### Windows
+
 Guess I'll just start at Quick start. Going to use powershell directly rather than inside vs code here, because vs code likes to open in recent directories instead of globally, and I think I want `pyenv` system-wide.
 
 Step 1- install in powershell with `Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"`
@@ -65,9 +67,15 @@ Now it says to validate by closing and reopening- do that. Now `pyenv --version`
 
 Then try in a vs code terminal, also works. Note that using the git bash terminal instead of powershell bypasses the script permissions issue if it hasn't been set larger than `Process`.
 
+#### Linux
+
+This is much easier. Install with `curl https://pyenv.run | bash`. That tells you to add somethign to `.bashrc`, do that. Then close and restart bash, and run `pyenv install 3.11.0` or whatever version we're using. I needed to `sudo apt-get install libffi-dev` to get it to compile some C bits.
+
 Now, we have Python 3.11 as the global python version, but should be able to install other versions and use them in local projects. Assuming I'll get there once I set up poetry.
 
 ### poetry
+
+#### Windows
 
 Once again, the websites I'm following have commands for mac/unix, so back to the [main poetry page](https://python-poetry.org/) to sort this out on windows.
 
@@ -84,6 +92,12 @@ I could change it with powershell, but the instructions I found involved a bunch
 Shut down powershell, then fire it back up and run `poetry --version`. If the path setting failed, it won't be able to find `poetry`, if it worked, it'll give the version number.
 
 That worked for me once, but now isn't working the next day. Actually, it works in powershell, but not vs code powershell. It wasn't unpacking the %APPDATA% correctly - running `(Get-ChildItem env:path).Value` lists %APPDATA% instead of the expanded directory. I stuffed the full path as in the screenshot above in the PATH, restarted VS Code and it works. Interestingly though, I left the %APPDATA% version there too, and it's now unpacked when I run `(Get-ChildItem env:path).Value`.
+
+#### Linux
+
+As at the [docs](https://python-poetry.org/docs/), install with `curl -sSL https://install.python-poetry.org | python3 -`
+
+add `export PATH="/home/azureuser/.local/bin:$PATH"` to `~/.bashrc`, start a new shell and make sure it worked with `poetry --version`.
 
 ## Setting up a project
 
@@ -151,7 +165,9 @@ Just did `poetry add pandas` and it works and I immediately have access to it in
 
 To add a specific version of a package, use
 
-    poetry add packagename==2.0.5
+```         
+poetry add packagename==2.0.5
+```
 
 There are a number of other ways to specify version ranges, installing from git, etc.
 

@@ -39,7 +39,7 @@ This all worked, but then stopped- python chunks separated by R chunks couldn't 
 
 Point reticulate at the venv. See [stackoverflow](https://stackoverflow.com/questions/59715101/how-to-get-reticulate-to-access-virtual-environment). This *seems* to not be necessary if the `.venv` is in the outer project directory. Or if we've set the `RETICULATE_PYTHON` environment variable elsewhere (like `.Rprofile`).
 
-```{r}}
+```{{r}}
 reticulate::use_virtualenv(file.path('RpyEnvs', 'pytesting', 'Scripts', '.venv'), required = TRUE)
 ```
 
