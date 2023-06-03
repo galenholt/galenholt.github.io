@@ -1,6 +1,9 @@
 ---
 title: "Nested parallelism"
 author: "Galen Holt"
+format:
+  html:
+    df-print: paged
 ---
 
 I tend to run a lot of simulation code that consists of some core functions that are then run for a large number of different parameter values. This bit is entirely independent and clearly parallelisable. There are also typically large calculations inside the simulation functions that can be parallelised. What's not clear to me is whether I should write them all with parallel-friendly code (`foreach %dopar%`, `furrr`, etc), or just one or the other. While my particular situation gives me the option to choose, it's likely not uncommon to call parallelisable functions from a package in code that is itself parallelised, and so is useful to know how this works.
@@ -24,7 +27,7 @@ plan(multisession)
 
 ## Built-in nesting
 
-The foreach package provides built-in nesting, with constructions using `%:%`. This is designed for loops that can be written tightly together (no processing between them). For example, we might write a nested loop over two sets of parameters mean and sd and calculate the realised coefficient of variation and return it as a matrix.
+The foreach package provides built-in nesting, with constructions using `%:%`. This is designed for loops that can be written tightly together (no processing between them). For example, we might write a nested loop over two sets of parameters mean and sd and calculate the realised coefficient of variation and return it as a matrix. Situations with more complexity around dependency in these loops is [here](nested_dependent_iterations.qmd).
 
 ```{r}
 #| message: false
@@ -305,9 +308,8 @@ Are there general conclusions here?
 
 -   What if the split of work was less even? Here, each loop is doing similar amounts of work in the body, but the outer encases the inner, so is doing WAY more work.
 
-```{=html}
 <!-- -->
-```
+
     -   We won't always have control over this if it's an external function
 
 -   How do the workers get split up? If we parallel an outer loop over more workers than we have cores, does it matter what happens in the inner loop? Or do they end up causing some sort of worker shuffle?

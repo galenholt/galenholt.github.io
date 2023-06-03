@@ -1,0 +1,109 @@
+---
+title: "Nested dependencies with `%:%`"
+author: "Galen Holt"
+format:
+  html:
+    df-print: paged
+---
+
+I did a lot of [nesting checking](nested_parallel.qmd), but here I'm specifically interested in dependencies in the iterations in the nesting of foreach loops using `%:%`.
+
+## Packages and setup
+
+I'll use the {future} package, along with {dofuture} and {foreach}.
+
+```{r}
+library(microbenchmark)
+library(doFuture)
+library(foreach)
+library(dplyr)
+registerDoFuture()
+plan(multisession)
+```
+
+# Built-in nesting with dependencies
+
+I'm getting strange errors when using built-in nesting where the iterations in the inner loop depend on the outer. I think those dependencies aren't resolving how I assumed they were.
+
+These iterations could be wholly independent of each other, e.g. `i = 1:10`, `j = seq(from = 0, to = 1, by = 0.1)`. But they could be dependent- e.g. in that simple case, we could naively say `j = i/10` because that would make an equivalent vector, but it only happens for each `i` (see below). That's expected, but not necessarily obvious at first glance. And it could be more complex still (which is the situation I have), with `j` indexing into something chosen by `i`. I'll go through each in turn, returning objects that allow me to assess what's up.
+
+### Wholly independent
+
+```{r}
+#| message: false
+#| warning: false
+indep_nested <- foreach(i = 1:10, .combine = rbind) %:%
+  foreach(j = seq(from = 0.1, to = 1, by = 0.1), .combine = rbind) %dopar% {
+    thisloop <- tibble::tibble(outer_it = i, inner_it = j)
+  }
+# indep_nested
+```
+
+To check, we can see if there is a factorial mapping
+
+```{r}
+table(indep_nested)
+# indep_nested |> group_by(outer_it) |> summarise(n_outer = n())
+# indep_nested |> group_by(inner_it) |> summarise(n_inner = n())
+```
+
+### Simple dependency
+
+Now we can make `j` dependent on `i`, but very simply. And we see that the factorial combination is lost- `j` only maps to each `i`. This is how the loop *should* work, though it may not be obvious at first glance- the vectors `i/10` and `seq(from = 0.1, to = 1, by = 0.1)` are the same, but the first only finds one value per `i`, while the second finds the whole vector.
+
+```{r}
+#| message: false
+#| warning: false
+simple_dep <- foreach(i = 1:10, .combine = rbind) %:%
+  foreach(j = i/10, .combine = rbind) %dopar% {
+    thisloop <- tibble::tibble(outer_it = i, inner_it = j)
+  }
+# simple_dep
+table(simple_dep)
+```
+
+### Balanced indexing
+
+Now we're on to the bit that is tripping up some of my code. I have a list, and want to index through its names and values. Though I think the same thing would apply to any indexing.
+
+```{r}
+ballist <- list(a = 1:10, b = seq(from = 0.1, to = 1, by = 0.1), d = 11:20)
+```
+
+```{r}
+list_dep <- foreach(i = names(ballist), .combine = rbind) %:%
+  foreach(j = ballist[[i]], .combine = rbind) %dopar% {
+    thisloop <- tibble::tibble(outer_it = i, inner_it = j)
+  }
+# simple_dep
+table(list_dep)
+```
+
+That looks right- there are only records for the inner values when they're present in the outer. We can see that more clearly in the df itself
+
+```{r}
+#| rows.print = 30
+list_dep
+```
+
+### Unbalanced indexing
+
+The above should work the same if the list-items are different lengths, but let's check
+
+```{r}
+unballist <- list(a = 1:5, b = seq(from = 0.1, to = 1, by = 0.1), d = 11:13)
+```
+
+```{r}
+list_dep_unbal <- foreach(i = names(unballist), .combine = rbind) %:%
+  foreach(j = unballist[[i]], .combine = rbind) %dopar% {
+    thisloop <- tibble::tibble(outer_it = i, inner_it = j)
+  }
+```
+
+```{r}
+#| rows.print = 30
+list_dep_unbal
+```
+
+That seems like it works how I expect. It's not so clear then why I'm getting a shuffled issue in the code that prompted this, but it seems I need to look elsewhere.
