@@ -162,3 +162,7 @@ I need to make some standard figure functions as part of the package. To test th
 When I `devtools::check()` on a package using dplyr, I get a million errors about 'no visible binding for global variable 'variable_name''. The issue is that R CMD CHECK is interpreting the bare variable names in `mutate`, `summarise`, etc as variables and can't find them. The code runs fine, but it's annoying.
 
 The answer, unfortunately, is to use the `.data[['variable_name']]` or `.data$variable_name` convention everywhere and `usethis::use_import_from('rlang', '.data')`. That works to get rid of the errors, but now we've lost one of the really nice things about writing dplyr code- the simplicity of bare data variable names.
+
+### Data
+
+Data in `/data` needs to be included with the package (unsurprisingly- it obviously can't be accessed if it's not there). This is easy to have bite though, since my typical default is to gitignore data. Then everything works locally (where the package is originally built and data created), but fails when, for example, we install from github. The obvious answer is to not gitignore data (and so don't change it very often). We do *not* seem to need to export the data like we do functions to have access to it in an installed package, (though documenting data is clearly ideal).
