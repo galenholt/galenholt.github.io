@@ -35,11 +35,13 @@ in the yaml headers of mixed r-python notebooks, so it's clear which chunks are 
 
 This all worked, but then stopped- python chunks separated by R chunks couldn't share objects. This particular notebook still ran, but [others](py_r_dates.qmd) would run fine interactively but when rendered would throw errors about "name 'pyobjname' is not defined". I tried making sure jupyter was in the python env and set `engine: knitr` in yaml headers, since that's what the help suggested. And I set the `QUARTO_PYTHON` environment variable in an `_environments` file, since that helped me previously. It's unclear why it worked previously.
 
+**IDE NOTE** The above may be due in part because Rstudio uses the reticulate python REPL for python chunks, and so they are available to R. Quarto itself does as well. But VScode does not, and so python and R chunks are run wholly independently of each other and we can't just pass objects between them as we do here in interactive notebooks. Instead, we need to run the python through reticulate in R chunks., rather than interactive python in the REPL. This is usually fine, but becomes a pain when we want to stay in python for a while, e.g to run something, process it, run something else, and then get it back in R.
+
 ## Set up reticulate from R
 
 Point reticulate at the venv. See [stackoverflow](https://stackoverflow.com/questions/59715101/how-to-get-reticulate-to-access-virtual-environment). This *seems* to not be necessary if the `.venv` is in the outer project directory. Or if we've set the `RETICULATE_PYTHON` environment variable elsewhere (like `.Rprofile`).
 
-```{{r}}
+``` {{r}}
 reticulate::use_virtualenv(file.path('RpyEnvs', 'pytesting', 'Scripts', '.venv'), required = TRUE)
 ```
 
@@ -138,4 +140,15 @@ rb
 
 ```{python}
 b + a
+```
+
+# Python in R
+
+In some cases, we want to run python through reticulate, but not in the REPL (or are forced to by e.g. the way VScode handles python and R chunks). To do this, we use an R chunk and reticulate functions. Re-doing the numpy example above, now we're working in R, and reticulate is doing the python behind the scenes. Reticulate has some special functions for numpy, but I'm trying to keep this generic- it's about the process, not about numpy per se. This immediately becomes a pain when we need to chain methods- e.g. the `reshape` here fails.
+
+```{r}
+#| error: true
+np <- reticulate::import('numpy')
+x <- np$arange(15)$reshape(3, 5)
+x
 ```

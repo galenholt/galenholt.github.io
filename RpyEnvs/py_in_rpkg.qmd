@@ -1,0 +1,490 @@
+---
+title: "Wrapping python in an R package"
+author: "Galen Holt"
+---
+
+# Goal
+
+I've been slowly sorting this out with trial and error, but haven't really come up with a satisfactory solution. I have things that work, but they're not ideal- often either make the user do too much, or clutter up the global environment with python objects as soon as we `library` in the package. So I've created a [test repo](https://github.com/galenholt/py_in_rpkg) to build a package and test different options.
+
+What do I want? There are potentially a few different things we might want to do, and I may or may not get to all of them.
+
+1.  Access functions in an existing python package
+2.  Access a small set of functions in `inst/python` in the R package
+    1.  One option here is clearly to make these a py package and revert to (1)
+        1.  The function `reticulate::import_from_path` just imports a module like `reticulate::import`, it just does so from a local path, and so these are functionally equivalent.
+    2.  These may only use base python (simplest, but unlikely)
+    3.  These may depend on python packages (most likely)
+3.  Auto-install (or at least help the user install) necessary python dependencies\
+
+# Conclusions and demos
+
+In figuring this out, I set up a [simple dummy R package](https://github.com/galenholt/py_in_rpkg) that wraps python in a few different ways for testing. Some of the tests below are still there but commented out because they may be useful in some situations, and others were obviously bad and have been dropped.
+
+To test how all this works, including the auto-installation and management of python environments, install the dummy package with
+
+You can install the development version of PyInRpkg from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("galenholt/py_in_rpkg")
+```
+
+The first time a function is called from it that depends on python, it will either build a python environment if one does not exist, or modify one if it does to have the necessary dependencies (pandas).
+
+It *should* be robust to being in pre-created sandboxed python environments created by conda, poetry, etc or the system version, and should be robust to installation and use even with currently-active python in the interactive R session with `reticulate`.
+
+## Dev setup
+
+We need a python environment for the package (needed for dev, we'll sort out how they get configured for users below). I've gone with just `poetry init` and `poetry install` in the git repo/ outer project directory, which doesn't create a full python package structure but will at least create a `.venv`, which is all I really need.
+
+# Wrapping python
+
+If we put a simple function, e.g.
+
+``` python
+def adder(x, y):
+  return(x + y)
+```
+
+in a file `inst/python/adder.py` , we can
+
+`{r} reticulate::source_python('inst/python/adder.py')`
+
+and access the `adder` function. (probably without the 'inst' when we build the package).
+
+But that puts a bunch of python objects in our environment.
+
+If we also put an empty `__init__.py` file in `inst/python`, {reticulate} will see it as a module and we can use `import_from_path`
+
+`{r} reticulate::import_from_path('adder', path = 'inst/python/adder.py', delay_load = TRUE)`
+
+That yields much less junk in the environment, just `adder` as a python module. And we can use it with \$ notation to get the function within the module.
+
+``` r
+adder$adder(3,4)
+```
+
+Now we need to figure out how to actually use that in a package, whether we can avoid even having the `adder` module kicking around as soon as we load the package, etc.
+
+If we use `.onLoad` in a `zzz.R` file,
+
+``` r
+.onLoad <- function(libname, pkgname) {
+
+  adder <<- reticulate::import_from_path("adder",
+                                         path = system.file("python",
+                                                            package = 'PyInRpkg'),
+                                         delay_load = TRUE)
+}
+```
+
+We get the `adder` module in the environment when we `library(PyInRpkg)`, and as above, can use it with `adder$adder(3,4)`.
+
+That's a bit messy still- adder is visible in the global environment, and we have to call it with the funny pseudo-python `module$method` notation, which has some advantages (direct access to the python), but won't feel like seamless R to the user. I thought the `delay_load = TRUE` meant it didn't load in until used, but it seems to load in immediately. And making the assignment local `<-` instead of global `<<-` just makes it not work.
+
+## Wrappers to keep R clean
+
+One option might be instead of `import` ing in `.onLoad` to `import` within R wrapper functions. Then the python never ends up in the user's environment. And we can document the functions in R (via the wrappers). And, we can deprecate py functions through time by simply re-writing them into the R wrappers (this applies mostly to setup-type functions, not big things like all of scipy or something). But, does that yield weird things when the package is loaded?
+
+This works- writing and exporting an R function that does the onload, e.g.
+
+``` r
+adder_wrap <- function(x,y) {
+  adder <- reticulate::import_from_path("adder",
+                                        path = system.file("python",
+                                                           package = 'PyInRpkg'),
+                                        delay_load = TRUE)
+  adder$adder(x,y)
+}
+```
+
+keeps everything clean, and we can document and test the function in R. The downside is that the first time we run that function, it is really slow. Likely on the same order as the increased time `library(package)` takes when the import is on `.onLoad`). It does get much faster subsequently, so this may not be a huge issue, though it's possible if we were calling it thousands of times there would be significant overhead (but then maybe that would suggest a different flow, writing whatever loop in python and `import` ing that loop.
+
+The other advantage here is that in more complex situations, where we need to pass objects of more complex types (dates, lists, dicts), we can control that in the wrapper function, letting the user pass in standard R types and converting them, rather than make the user know that named lists become dicts, as they would need to when the `adder` module itself is exposed.
+
+## Functions with py dependencies
+
+I'm not super interested in just wrapping a python package. But what I *will* need to do is have the R-package-specific python depend on other python packages; it won't be as simple as `adder`.
+
+That means we have to do two things- managing a python environment and checking to see if the methods above (both through `.onLoad` or in wrapper functions) work to import python modules with dependencies.
+
+In any case, the python module that comes with the package should have functions that do *all* the python interaction; e..g. we don't really want to be passing in and out of python a bunch. That makes things like method chaining work how they're supposed to.
+
+I think I'll use `pandas` to test since it's common, and will be a bit more interesting/complex than `numpy`, for example.
+
+That works just as before- if we have a function in `/inst/python/pdsummary.py`,
+
+``` python
+import pandas as pd
+
+def pdsummary(df, group):
+  summarydf = df.groupby(group).mean()
+  return(summarydf)
+```
+
+We can use `.onLoad` to get it into the global environment and pass it R dataframes,
+
+``` r
+.onLoad <- function(libname, pkgname) {
+  pdsummary <<- reticulate::import_from_path("pdsummary",
+                                         path = system.file("python",
+                                                            package = 'PyInRpkg'),
+                                         delay_load = TRUE)
+}
+```
+
+and it works as before with the `module$method` notation
+
+``` r
+pdsummary$pdsummary(iris, 'Species')
+```
+
+If I have a few functions in the module, can I `import` the module at the top of a .R with a bunch of wrappers, and then use it in each? Or does that load immediately?
+
+If we make a few py functions in one file, some of which depend on `pandas`
+
+``` python
+import pandas as pd
+
+def pdmean(df, group):
+  df = df.groupby(group).mean()
+  return(df)
+  
+def pdvar(df, group):
+  df = df.groupby(group).var()
+  return(df)
+
+def pdselect(df, cols):
+  df = df[cols]
+  return(df)
+  
+def divide(x,y):
+  return(x/y)
+```
+
+Then we can `import` in `.onLoad` and have access to all of them with `multipy$NAME`
+
+``` r
+.onLoad <- function(libname, pkgname) {
+  multipy <<- reticulate::import_from_path("multipython",
+                                         path = system.file("python",
+                                                            package = 'PyInRpkg'),
+                                         delay_load = TRUE)
+}
+```
+
+And we can use them
+
+``` r
+multipy$pdmean(iris, 'Species')
+multipy$pdvar(iris, 'Species')
+multipy$pdselect(iris, c('Species', 'Sepal.Length'))
+multipy$divide(10, 5)
+```
+
+### Wrapping in various ways
+
+And, as before, we can do the `import` inside wrapper functions, and then it doesn't clutter up the world and only gets imported on first use. We have to `@export` them, and we can cheat a bit and use the `…` as the argument. This is a bit dangerous- the user needs to know the arguments to the python function, since they won't really end up documented in the R wrapper. It's not best practice, but it does work.
+
+``` r
+#' wrap pandas grouped mean
+#'
+#' @param df
+#' @param group
+#'
+#' @return
+#' @export
+#'
+#' @examples
+wrap_mean <- function(df, group) {
+  multipy <- reticulate::import_from_path("multipython",
+                                           path = system.file("python",
+                                                              package = 'PyInRpkg'),
+                                           delay_load = TRUE)
+  return(multipy$pdmean(df, group))
+}
+
+#' wrap pandas grouped var
+#'
+#' @param ... df, character group column
+#'
+#' @return
+#' @export
+#'
+#' @examples
+wrap_var <- function(...) {
+  multipy <- reticulate::import_from_path("multipython",
+                                           path = system.file("python",
+                                                              package = 'PyInRpkg'),
+                                           delay_load = TRUE)
+  return(multipy$pdvar(...))
+}
+
+#' wrap pandas column select
+#'
+#' @param ... df, columns to select as character vector
+#'
+#' @return
+#' @export
+#'
+#' @examples
+wrap_select <- function(...) {
+  multipy <- reticulate::import_from_path("multipython",
+                                           path = system.file("python",
+                                                              package = 'PyInRpkg'),
+                                           delay_load = TRUE)
+  return(multipy$pdselect(...))
+}
+
+#' Wrap python divide
+#'
+#' @param ... two values
+#'
+#' @return
+#' @export
+#'
+#' @examples
+wrap_divide <- function(...) {
+  multipy <- reticulate::import_from_path("multipython",
+                                           path = system.file("python",
+                                                              package = 'PyInRpkg'),
+                                           delay_load = TRUE)
+  return(multipy$divide(...))
+}
+```
+
+It still is slow on the first use and fast on subsequent, even when calling different functions.
+
+``` r
+wrap_mean(iris, 'Species')
+wrap_var(iris, 'Species')
+wrap_select(iris, c('Species', 'Sepal.Length'))
+wrap_divide(10,5)
+```
+
+If we don't want the `import` inside *each* function, we can put it at the head of the Rscript. In the demo package, I demo this with a new set of python functions in `multi2.py`
+
+``` python
+import pandas as pd
+
+def pdmin(df, group):
+  df = df.groupby(group).min()
+  return(df)
+  
+def pdsum(df, group):
+  df = df.groupby(group).sum()
+  return(df)
+  
+def minus(x,y):
+  return(x-y)
+```
+
+And then wrap it with the `import` *outside* the functions
+
+``` r
+multi2 <- reticulate::import_from_path("multi2",
+                                       path = system.file("python",
+                                                          package = 'PyInRpkg'),
+                                       delay_load = TRUE)
+
+#' Wrap pandas group sd
+#'
+#' @param df
+#' @param group
+#'
+#' @return
+#' @export
+#'
+#' @examples
+wrap_min <- function(df, group) {
+  return(multi2$pdmin(df, group))
+}
+
+#' Wrap pandas group sum
+#'
+#' @param df
+#' @param group
+#'
+#' @return
+#' @export
+#'
+#' @examples
+wrap_sum <- function(df, group) {
+  return(multi2$pdsum(df, group))
+}
+
+#' wrap python subtraction
+#'
+#' @param df
+#' @param group
+#'
+#' @return
+#' @export
+#'
+#' @examples
+wrap_minus <- function(df, group) {
+  return(multi2$minus(df, group))
+}
+```
+
+And that still works
+
+``` r
+wrap_min(iris, 'Species')
+wrap_sum(iris, 'Species')
+wrap_minus(5,4)
+```
+
+Just like before, that is slow the first time, and fast subsequently. It does *not* put the imported module into the R environment, so as far as I can tell, it's equivalent to when we put the module import in each function. It's just a bit cleaner to only have the `import` line once.
+
+That made me think maybe we could do the `import` with `<-` instead of `<<-` in `.onLoad`, and then use that in functions, but it doesn't work that way, unfortunately.
+
+# Managing user environments
+
+So far, I've been worrying about making the functions work, given a set up python environment. Now we need to deal with ensuring that python environment exists and works. We need to deal with availablity of python itself for the simple things, and pandas for others.
+
+I have to include `pandas` in my dev environment to test, but will need to test package installations in clean locations (as if a user), to understand how the DESCRIPTION and `.onLoad` changes described here actually work to ensure users have the right dependencies available.
+
+I think this is where the `Config/reticulate` line in `DESCRIPTION` comes in, but need to test that I can actually get it to work.
+
+I'm going to again set up a series of tests, where I will create empty R projects with `renv` to manage environments to keep things sandboxed, and then install the package, load it, and try to use it- both the `adder_wrap` function that only needs python but no py packages and the `wrap_min`, `wrap_sum`, and `wrap_minus`, which require pandas
+
+## setup
+
+To make this easier on myself, the commands to set this up after I create the project are
+
+```{r}
+renv::install('devtools')
+# I have the package in /Documents, so.
+devtools::install_local('~/py_in_rpkg')
+
+library(PyInRpkg)
+```
+
+## No `Config/reticulate` , no preexisting python
+
+Install works, `library` works.
+
+Running `adder_wrap(1,3)` kicks off a conda install of a bunch of python stuff. It then insalls a bunch of python and packages, and while the original `adder_wrap` call gets lost, a new one works fine.
+
+When I try to use `wrap_min`, though, I get
+
+```         
+Error: Error loading Python module multi2
+```
+
+This is a cryptic error, I think because the `wrap_min` function is in the R file that uses `import_from_path` at the head of the R file. If I use `wrap_mean`, which is in the R file that uses `import_from_path` inside each wrapper function, I get
+
+```         
+Error in py_module_import(module, convert = convert) :    ModuleNotFoundError: No module named 'pandas'
+```
+
+That's more helpful.
+
+I think before I move on to trying to manage the package dependencies with Config/reticulate or pre-loading, I want to try two things-
+
+1.  Just closing and reopening- does the whole python install have to happen again?
+    1.  **No.**
+2.  Starting *another* clean directory- does it grab the python env we just built, or does it build a new one per-project?
+    1.  **It builds a new one, but MUCH faster- must be cross-linking packages and/or python itself**
+
+## Pre-setting py env
+
+Instead of starting blank, what if I manually control the python environment by initializing a poetry project? e.g. go create a poetry project `poetry new prepoetry`, then `cd prepoetry`, `poetry add pandas` to create a `.venv` with `pandas` installed. *Then* create the R project in `prepoetry` directory.
+
+Now, when I use `adder_wrap(1,5)`, it works without building any new python envs. As usual, the first run is slow, later are fast.
+
+And both `wrap_min(iris, 'Species')` and `wrap_mean(iris, 'Species')` work (`import_from_module` external and internal to the functions, respectively). No additional python building has to happen. First run is slow (even when `adder_wrap` has been used), but later are fast, *even across R functions in different files*, as here. So it must have to do some behind the scenes python the first time we use pandas.
+
+## Using `Config/reticulate`
+
+In theory, including a `Config/reticulate:` entry in the `DESCRIPTION` [should handle the dependencies](https://rstudio.github.io/reticulate/articles/python_dependencies.html). I *think* those docs also say that we will need a `.onLoad` with `reticulate::configure_environment` to get it to work.
+
+First, add
+
+``` r
+Config/reticulate:
+  list(
+    packages = list(
+      list(package = "pandas")
+    )
+  )
+```
+
+To the description. I'm ignoring the `version` and `pip` arguments for now.
+
+I'll need to do a few tests here-
+
+-   Bare directory, no py environments
+
+-   Existing py environments with the dependencies already
+
+-   Existing py environments *without* the right dependencies
+
+I'm starting *without* the `reticulate::configure_environment` in `.onLoad` so I can see why/when it's necessary.
+
+## Bare, no py
+
+Everything works, even without the `reticulate::configure_environment`. It installs python *and* pandas on the first use of a function, and the `adder_wrap`, `wrap_min`, and `wrap_mean` all work.
+
+## Existing py env with pandas
+
+As above, set up a .venv with `poetry` , then put an R project in it. Everything works, but it worked before too, since there's no python configuring that needs to happen.
+
+## Existing py env *without* pandas
+
+I'll do the same thing as above, but build a .venv with numpy but not pandas.
+
+In this case, as soon as we use any function, it installs pandas into the .venv, just as it did before for both python and pandas. All the functions work.
+
+So, what is the point of `configure_environment`? I thought it was to deal with this? Maybe it's that I need it to alter python *once I'm already using it in a session*? E.g. we have a python version running with reticulate for something else, and we then want to use this package? I guess I'll try that.
+
+## Active in-session python without pandas
+
+I'll start a session in a project with numpy, and use reticulate to do some simple numpy to get python running,
+
+```         
+np <- reticulate::import('numpy')
+np$array(list(c(1, 2, 3, 4), c(5, 6, 7, 8), c(9, 10, 11, 12)))
+```
+
+*Then* I'll install the package.
+
+When I try to use it, `adder_wrap` works, but the pandas-based functions don't- same errors as earlier, and it *hasn't* added pandas to the venv.
+
+### using .onLoad
+
+If I add a `.onLoad` function to `zzz.R`, e.g.
+
+``` r
+.onLoad <- function(libname, pkgname) {
+  reticulate::configure_environment(pkgname)
+}
+```
+
+Then it works. I can load up numpy as before, but as soon as I `library(PyInRpkg)`, it installs pandas, and then the functions work.
+
+So, that seems to be the way to avoid weird runtime pitfalls in interactive sessions. It's a particular case, but likely a fairly common one, so seems like the way to go.
+
+Does having that in `.onLoad` affect any of the other ways? e.g. bare projects or preexisting but inactive python environments? Seems to work everywhere.
+
+# Build notes
+
+The package will have a dev python environment, but it shouldn't be included in the package build, so put `^.venv` in `Rbuildignore`.
+
+## Passing types
+
+We might need to call functions with arguments of a specific type (lists, dicts) that are not necessarily the same between languages. This is where wrapper functions can be very helpful. See [my testing of type-passing](R_py_type_passing.qmd).
+
+## Python venv locations
+
+I have run into issues with reticulate finding the right virtual env, especially if it's not in the top-level of the package. In that case, we need to be careful and control more things manually with environment variables and `.Rprofile`.
+
+1.  `Sys.setenv(RETICULATE_PYTHON = 'path/to/venv')` (otherwise it will try to install conda and barf)
+
+    1.  I would have thought I'd have to do this before the `library`, but it seems to work.
+
+    2.  Better is to have a path to venv in `.Rprofile`, anyway
+
+    3.  *NOTE* sometimes if the `.venv` *is* in the outer directory, I'm getting weird errors when I try to `Sys.setenv` or otherwise set the path to the venv (it's either prepending `~/virtualenvs` or `C::/` unless I pass a full fixed path. Seems to work in that case to just not set the environment variable though, and {reticulate} sorts it out correctly.

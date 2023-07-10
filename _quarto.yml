@@ -90,8 +90,8 @@ website:
           contents:
             - href: RpyEnvs/python_setup.qmd
               text: "Python environments with pyenv and poetry"
-            - href: RpyEnvs/python_updated_functions.qmd
-              text: "Small python bits"
+            - href: RpyEnvs/py_in_rpkg.qmd
+              text: "Wrapping python in R package"              
             - href: RpyEnvs/RandPython.qmd
               text: "Using R and python together"
             - href: RpyEnvs/R_py_shared_projects.qmd
@@ -102,10 +102,10 @@ website:
               text: "Passing types between R and python"
             - href: RpyEnvs/py_r_project_overview.qmd
               text: "Overview of building R-py package"
-            - href: RpyEnvs/R_py_package.qmd
-              text: "Wrapping python in R package"
             - href: RpyEnvs/python_nameerror.qmd
               text: "Intermittent NameError py-R"
+            - href: RpyEnvs/python_updated_functions.qmd
+              text: "Small python bits"              
               
         - section: "Setting up projects"
           contents:
