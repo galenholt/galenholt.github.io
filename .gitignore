@@ -18,3 +18,5 @@ output/
 *.rdx
 
 *_cache
+
+CV/

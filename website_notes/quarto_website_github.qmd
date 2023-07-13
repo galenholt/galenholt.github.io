@@ -47,12 +47,16 @@ If I `render` a single file, does it render the whole website? seems like yes. I
 
 ## Pushing to github
 
-The publishing the `gh-pages` branch seems the nicest, but there's a bit warning not to do that on Windows. So, I guess I'll do the render to docs way.
+The publishing the `gh-pages` branch seems the nicest, but when I set this up there was a big warning not to do that on Windows. So, I guess I did it the render to docs way. I think I'll move to the `gh-pages` way now that the warning is gone, but for posterity:
+
+### Docs
 
 add `output-dir: docs` to the `_quarto.yml` and then create a `.nojekyll` file. Then `quarto render` to render to docs. I think I'll also add a `_quarto.yml.local` with
 
-    execute:
-      cache: true
+```         
+execute:
+  cache: true
+```
 
 to cache output and avoid long re-renders ( I hope). Seems to- re-clicking render was much faster.
 
@@ -61,3 +65,7 @@ To set to `docs`, go to repo, then settings --\> Pages (on left) --\> deploy fro
 So, I've been developing on `dev`, I guess I'll merge main and see what happens.
 
 **Don't forget to merge and push 'main'** if using the publish to `/docs` method. Otherwise no changes will actually appear.
+
+### Switching to gh-pages
+
+I think I'll just toss all the stuff I made above and follow the instructions for gh-pages.

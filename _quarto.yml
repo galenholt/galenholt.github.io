@@ -41,6 +41,11 @@ website:
               text: "Building JSON syntax from R for API calls"
             - href: small_helpers/list_names.qmd
               text: "Naming rules for lists"
+            - href: publishing/private_github_figshare.qmd
+              text: "Creating Figshare from private github"
+            - href: small_helpers/error_handling.qmd
+              text: "Intro to error handling"
+              
               
         - section: "Plotting"
           contents:
@@ -67,10 +72,18 @@ website:
             - href: website_notes/updating_website.qmd
               text: "Updating and maintaining website"
               
-        - section: "Theory and simulation"
+        - section: "Theory, simulation, statistics, probability"
           contents:
             - href: simmodelling/twoDautocorr.qmd
               text: "Generate 2d autocorrelation"
+            - href: stats_probability/expected_shannon.qmd
+              text: "Bootstrapping the expected shannon diversity"
+            - href: stats_probability/fitting_lognormals.qmd
+              text: "Intro to fitting lognormals"
+            - href: stats_probability/shifting_normals.qmd
+              text: "Basic shifts of normal moments"
+            - href: stats_probability/fitting_truncated.qmd
+              text: "Shifting and fitting truncated lognormals"
               
         - section: "Drones"
           contents:
@@ -132,6 +145,8 @@ website:
               text: 'Experimenting with API calls for {vicwater}'
             - href: data_acquisition/gauge_data_pre_gauge.qmd
               text: "Data from pre-gauged periods"
+            - href: data_acquisition/ALA_data_pull.qmd
+              text: "Pulling data from Atlas of Living Australia"
               
         - section: "R parallel processing (general)"
           contents:
@@ -143,6 +158,8 @@ website:
               text: "Speed-testing parallel"
             - href: parallelism/globals_speed.qmd
               text: "Global objects and parallel speed"
+            - href: parallelism/nested_dependent_iterations.qmd
+              text: "Dependencies of inner parallelism on outer"
               
         - section: "R parallel processing on HPC"
           contents:

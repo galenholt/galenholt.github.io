@@ -1,0 +1,14 @@
+---
+title: "Private github and figshare"
+author: "Galen Holt"
+---
+
+While open-access from the get-go is nice, we often are in a situation where we are working in private git repos until publication or other forms of release. The catch is that when the code is needed for journal submission, we need to provide it to the reviewers without a full public release until acceptance. How can we do this?
+
+My university uses Figshare as the backend to our mandated data repo, so this will address using figshare, though Dryad etc are hopefully similar.
+
+Figshare has the ability to generate a private embargoed dataset with pre-allocated DOI and private link, which can be made public on acceptance, as outlined in their [docs](https://help.figshare.com/article/publishing-a-dataset-at-the-same-time-as-the-associated-paper). So one option would just be to do that with a raw dump of the source code. That's less than ideal- once publication happens, we want to point people to github, not a single snapshot of copied code.
+
+The solution is to link figshare with github. The [docs](https://help.figshare.com/article/how-to-connect-figshare-with-your-github-account) suggest it will only link with public repos, but it can see all of them. *One potential catch is that my institutional figshare simply does not have the button to connect to github (or gitlab, or bitbucket ...)*. I have no idea why, but the only solution I've found is to just create a personal figshare account, where the login works fine.
+
+Then, select the repo, and create a new figshare item. The docs linked above for making something private until publication would work, but at the initial submission stage, we may not want to actually reserve DOIs for this particular version- it's likely there will be changes in revision and *those* are what we will want to actually have linked to the paper with a DOI. It doesn't look like we can update the data, so I'm assuming that what will end up happening is we will create a new Figshare item with whatever the code is at acceptance (and make a Github 'release' for that).
