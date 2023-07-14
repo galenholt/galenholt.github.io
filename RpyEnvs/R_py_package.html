@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Galen Holt">
+
+<title>Galen - Wrapping python in R package</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Galen</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../research.html">
+ <span class="menu-text">Research</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../code_demos.html" aria-current="page">
+ <span class="menu-text">Code Demos</span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Wrapping python in R package</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code_demos.html" class="sidebar-item-text sidebar-link">Code Demos</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Small how-tos</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/smallpieces.html" class="sidebar-item-text sidebar-link">Bits and pieces</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/quarto_notes.html" class="sidebar-item-text sidebar-link">Quarto notes</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../setup/rstudio_themes.html" class="sidebar-item-text sidebar-link">Editing Rstudio themes</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/zip_downloading.html" class="sidebar-item-text sidebar-link">Download and unpack zips</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/json_api_construction.html" class="sidebar-item-text sidebar-link">Building JSON syntax from R for API calls</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/list_names.html" class="sidebar-item-text sidebar-link">Naming rules for lists</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Plotting</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/ggplot_themes.html" class="sidebar-item-text sidebar-link">ggplot themes</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/setting_colors_for_groups.html" class="sidebar-item-text sidebar-link">Consistent colors</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/tweaks_tricks.html" class="sidebar-item-text sidebar-link">Saving and themeing plots</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/hcl_exploration.html" class="sidebar-item-text sidebar-link">Exploring HCL colorspace</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/rgb_to_hex.html" class="sidebar-item-text sidebar-link">Converting RGB to hex colors</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/fonts.html" class="sidebar-item-text sidebar-link">Fonts</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/faded_colors.html" class="sidebar-item-text sidebar-link">Faded 2d colour ramps</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/math_in_ggplot.html" class="sidebar-item-text sidebar-link">Latex in ggplot with latex2exp</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">Website</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../website_notes/quarto_website_github.html" class="sidebar-item-text sidebar-link">Getting started</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../website_notes/updating_website.html" class="sidebar-item-text sidebar-link">Updating and maintaining website</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">Theory and simulation</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../simmodelling/twoDautocorr.html" class="sidebar-item-text sidebar-link">Generate 2d autocorrelation</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">Drones</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../drones/overlaps_reactive.html" class="sidebar-item-text sidebar-link">Calculations for flight planning</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../drones/overlaps.html" class="sidebar-item-text sidebar-link">Figuring out flight plan calcs</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pix4d/read_pix4d_outputs.html" class="sidebar-item-text sidebar-link">Reading and plotting pix4d outputs</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">Observable</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../observable/trying_observable.html" class="sidebar-item-text sidebar-link">Figuring out how to use ojs chunks</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">R and python</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/python_setup.html" class="sidebar-item-text sidebar-link">Python environments with pyenv and poetry</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/python_updated_functions.html" class="sidebar-item-text sidebar-link">Small python bits</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/RandPython.html" class="sidebar-item-text sidebar-link">Using R and python together</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/R_py_shared_projects.html" class="sidebar-item-text sidebar-link">Shared R-py project structure</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/py_r_dates.html" class="sidebar-item-text sidebar-link">Passing complex objects py-R</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/R_py_type_passing.html" class="sidebar-item-text sidebar-link">Passing types between R and python</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/py_r_project_overview.html" class="sidebar-item-text sidebar-link">Overview of building R-py package</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/R_py_package.html" class="sidebar-item-text sidebar-link active">Wrapping python in R package</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/python_nameerror.html" class="sidebar-item-text sidebar-link">Intermittent NameError py-R</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">Setting up projects</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/rig.html" class="sidebar-item-text sidebar-link">Managing old R versions with rig</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/managingprivate.html" class="sidebar-item-text sidebar-link">Private data for website repo</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../setup/R_in_VS.html" class="sidebar-item-text sidebar-link">Using R in VScode</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/end_run_renv.html" class="sidebar-item-text sidebar-link">Dealing with renv failures</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true">Building packages</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../package/package_creation.html" class="sidebar-item-text sidebar-link">First pass at building a package</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../vicwater/vicwater_testing.html" class="sidebar-item-text sidebar-link">Testing VicWater API</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="true">Data</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data_acquisition/bom_gauges.html" class="sidebar-item-text sidebar-link">BOM gauge locations with httr2</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../vicwater/vicwater_api_howtocall.html" class="sidebar-item-text sidebar-link">Experimenting with API calls for {vicwater}</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data_acquisition/gauge_data_pre_gauge.html" class="sidebar-item-text sidebar-link">Data from pre-gauged periods</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" aria-expanded="true">R parallel processing (general)</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/interrogating_parallel.html" class="sidebar-item-text sidebar-link">Interrogating parallel resources</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/nested_parallel.html" class="sidebar-item-text sidebar-link">Testing nested parallelism</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/parallel_speed.html" class="sidebar-item-text sidebar-link">Speed-testing parallel</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/globals_speed.html" class="sidebar-item-text sidebar-link">Global objects and parallel speed</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" aria-expanded="true">R parallel processing on HPC</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/hpc_ephemera.html" class="sidebar-item-text sidebar-link">HPC notes</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/plans_and_hpc.html" class="sidebar-item-text sidebar-link">Using single-machine plans on HPC</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/initial_future_batchtools.html" class="sidebar-item-text sidebar-link">Figuring out future.batchtools</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/changing_batchtools_template.html" class="sidebar-item-text sidebar-link">Switching templates, matching to resources</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/template_modification.html" class="sidebar-item-text sidebar-link">Modifying templates</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/master_persistence.html" class="sidebar-item-text sidebar-link">Consequences of master timing out</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/nested_parallel_hpc.html" class="sidebar-item-text sidebar-link">Nested parallel on HPC nodes and cores</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/conditional_plans.html" class="sidebar-item-text sidebar-link">Conditional plans for local and HPC</a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#works-with-load_all" id="toc-works-with-load_all" class="nav-link active" data-scroll-target="#works-with-load_all">Works with load_all</a>
+  <ul class="collapse">
+  <li><a href="#environment" id="toc-environment" class="nav-link" data-scroll-target="#environment">Environment</a></li>
+  <li><a href="#exposing-functions" id="toc-exposing-functions" class="nav-link" data-scroll-target="#exposing-functions">Exposing functions</a></li>
+  <li><a href="#breaking-issues" id="toc-breaking-issues" class="nav-link" data-scroll-target="#breaking-issues">Breaking issues</a></li>
+  </ul></li>
+  <li><a href="#fixing-environment-path" id="toc-fixing-environment-path" class="nav-link" data-scroll-target="#fixing-environment-path">Fixing environment path</a></li>
+  <li><a href="#exporting-python-functions" id="toc-exporting-python-functions" class="nav-link" data-scroll-target="#exporting-python-functions">Exporting python functions</a>
+  <ul class="collapse">
+  <li><a href="#write-exported-r-wrappers" id="toc-write-exported-r-wrappers" class="nav-link" data-scroll-target="#write-exported-r-wrappers">Write exported R wrappers</a></li>
+  </ul></li>
+  <li><a href="#can-i-use-onload" id="toc-can-i-use-onload" class="nav-link" data-scroll-target="#can-i-use-onload">Can I use onLoad?</a>
+  <ul class="collapse">
+  <li><a href="#back-to-load_all" id="toc-back-to-load_all" class="nav-link" data-scroll-target="#back-to-load_all">Back to load_all</a></li>
+  <li><a href="#import-module" id="toc-import-module" class="nav-link" data-scroll-target="#import-module">Import module</a></li>
+  <li><a href="#running" id="toc-running" class="nav-link" data-scroll-target="#running">Running</a></li>
+  <li><a href="#another-issue" id="toc-another-issue" class="nav-link" data-scroll-target="#another-issue">Another issue</a></li>
+  </ul></li>
+  <li><a href="#solution-for-now" id="toc-solution-for-now" class="nav-link" data-scroll-target="#solution-for-now">Solution (for now)</a>
+  <ul class="collapse">
+  <li><a href="#how-to-test-relatively-quickly-in-a-clean-session-" id="toc-how-to-test-relatively-quickly-in-a-clean-session-" class="nav-link" data-scroll-target="#how-to-test-relatively-quickly-in-a-clean-session-">How to test (relatively) quickly in a clean session-</a></li>
+  </ul></li>
+  <li><a href="#passing-types" id="toc-passing-types" class="nav-link" data-scroll-target="#passing-types">Passing types</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Wrapping python in R package</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Galen Holt </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>I have a package that is mostly R, but needs to call some python functions. Those functions are themselves fairly lightweight wrappers of functions from another python package. So, the basic structure is that I have a package with the usual R package structure, and a python script in <code>inst/python/pyscript.py</code> that contains some function definitions.</p>
+<p>There are two main issues I need to address here</p>
+<ol type="1">
+<li>How to set the python environment for package dev and for the user</li>
+<li>How to expose the python functions for both dev and the user</li>
+</ol>
+<p>Solving these was surprisingly quick for dev, using <code>devtools::load_all</code>-</p>
+<section id="works-with-load_all" class="level2">
+<h2 class="anchored" data-anchor-id="works-with-load_all">Works with load_all</h2>
+<p>I began dev with the following setup, and it just worked with <code>load_all</code></p>
+<section id="environment" class="level3">
+<h3 class="anchored" data-anchor-id="environment">Environment</h3>
+<p>The python environment I’m using is in a separate directory in the same repo, so I can point to it by going up and over with <code>../pydirectory</code></p>
+<p>In <code>.Rprofile</code>, set <code>Sys.setenv(RETICULATE_PYTHON = '../pydir/.venv/Scripts/python.exe')</code></p>
+<p>I also followed instructions from <a href="https://rstudio.github.io/reticulate/articles/python_dependencies.html">reticulate</a> to handle dependencies in the <code>.onLoad</code> function and <code>DESCRIPTION</code> file, but am pretty sure that doesn’t come into play when I use <code>load_all</code>.</p>
+</section>
+<section id="exposing-functions" class="level3">
+<h3 class="anchored" data-anchor-id="exposing-functions">Exposing functions</h3>
+<p>The <code>reticulate::source_python('pyfile.py')</code> function makes functions in <code>pyfile.py</code> directly callable. So I naively created <code>R/loadpys.R</code> that contains only this line, since everything in R gets read on package load: <code>reticulate::source_python(system.file("python/pyfile.py", package = 'packagename'))</code> .</p>
+</section>
+<section id="breaking-issues" class="level3">
+<h3 class="anchored" data-anchor-id="breaking-issues">Breaking issues</h3>
+<p>When I try to actually install the package (or <code>check</code>, <code>build</code>, etc), I first got errors about not being able to find the python environment at <code>../pydir/.venv/Scripts/python.exe</code> .</p>
+<p>When the package is built, I do not have access to the python functions. Presumably this is because <code>load_all</code> puts everything into memory, including private functions, but actually installing only gets the exported ones.</p>
+</section>
+</section>
+<section id="fixing-environment-path" class="level2">
+<h2 class="anchored" data-anchor-id="fixing-environment-path">Fixing environment path</h2>
+<p>Running <code>devtools::check</code> seems to have worked to just replace the relative path to the environment with a full path, e.g.</p>
+<p><code>Sys.setenv(RETICULATE_PYTHON = 'C:/Users/USER/Documents/REPO_DIR/pydir/.venv/Scripts/python.exe')</code>.</p>
+<p>It’s not clear to me how this will work for installing the package elsewhere (e.g.&nbsp;by a user, not from within the repo during dev). Obviously they’ll need their own python env, and so will need to set that up. Will come back to that once I can actually get the package built with the functions.</p>
+</section>
+<section id="exporting-python-functions" class="level2">
+<h2 class="anchored" data-anchor-id="exporting-python-functions">Exporting python functions</h2>
+<p>There are brief instructions at the <a href="https://rstudio.github.io/reticulate/articles/package.html">reticulate vignettes</a> for wrapping python modules. Presumably this would work, but it’s unclear how to call them, whether they would be exported, and whether they’d need to be called python-style with <code>module.function</code>, or just the bare names. It also conflicts with the advice in the <a href="https://rstudio.github.io/reticulate/articles/python_dependencies.html">vignette about package dependencies</a> which seems to be more recent. It’s not completely clear what still applies- clearly the ways of specifying environments has changed, but has the way to access functions changed as well? And how do we make them available to a user (and not just internally)?</p>
+<section id="write-exported-r-wrappers" class="level3">
+<h3 class="anchored" data-anchor-id="write-exported-r-wrappers">Write exported R wrappers</h3>
+<p>In <code>loadpys.R</code>, instead of just having <code>reticulate::source_python(system.file("python/pyfile.py", package = 'packagename'))</code> call, write an R wrapper for the functions we want to export. <strong>NOTE</strong> that we have to put the <code>source_python</code> <em>inside</em> the R function (it does not work to have it at the head of the file).</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pyfun_R <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  reticulate<span class="sc">::</span><span class="fu">source_python</span>(<span class="fu">system.file</span>(<span class="st">"python/pyfile.py"</span>, </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">package =</span> <span class="st">'packagename'</span>))</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pyfun</span>(...)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>That seems to work if we make sure there’s a <code>@export</code> in the roxygen documentation. But it’s not exactly pretty.</p>
+<p><em>Note</em>- it also works if we bring over the full arguments instead of dots, which would be better for documenting, probably. Guess it depends if we want to read R or python documentation.</p>
+<p><em>Note</em>- the following error happens when the <code>source_python</code> isn’t in the function definition.</p>
+<pre><code>Error in `(function (command = NULL, args = character(), error_on_status = TRUE, …`:</code></pre>
+</section>
+</section>
+<section id="can-i-use-onload" class="level2">
+<h2 class="anchored" data-anchor-id="can-i-use-onload">Can I use onLoad?</h2>
+<p>The <a href="https://rstudio.github.io/reticulate/articles/package.html">instructions from reticulate</a> describe bringing in a module. I <em>think</em> that is ultimately how we should do things, but unclear how difficult.</p>
+<section id="back-to-load_all" class="level3">
+<h3 class="anchored" data-anchor-id="back-to-load_all">Back to load_all</h3>
+<p>To test, let’s just see what we get when we <code>devtools::load_all()</code></p>
+</section>
+<section id="import-module" class="level3">
+<h3 class="anchored" data-anchor-id="import-module">Import module</h3>
+<p>The instructions above reference importing a module that is installed. We should be able to do that by making our python code a small package. But in the meantime, let’s use <code>reticulate::import_from_path</code>.</p>
+<p>Using <code>load_all</code>, <code>py_functions &lt;&lt;- reticulate::import_from_path("pyfile", path = "inst/python", delay_load = TRUE)</code> works. I get an object <code>py_functions</code> and can access the individual functions with <code>py_functions$func1</code> etc. <em>Note</em>- it also works to pass the path to the python directory <code>py_functions &lt;&lt;- reticulate::import_from_path("pyfile", path = "inst/python", delay_load = TRUE)</code>.</p>
+</section>
+<section id="running" class="level3">
+<h3 class="anchored" data-anchor-id="running">Running</h3>
+<p>That runs after a <code>load_all</code> by calling <code>pyfile$pyfun(args)</code>. But does it still need to be exported in an R wrapper to actually use as a package? <strong>YES</strong>- building the package can’t find the function.</p>
+<p>And if we do it this way, are the python functions just floating around in the user’s global environment? That would be bad. <strong>NO</strong>- they don’t seem to be.</p>
+<p>It <em>does</em> seem to fail when I try to run the vignette in a different directory after <code>devtools::install_github()</code>. So that implies the method really isn’t working right. Why does it work for <code>load_all</code>?</p>
+</section>
+<section id="another-issue" class="level3">
+<h3 class="anchored" data-anchor-id="another-issue">Another issue</h3>
+<p>The approach above seems to work, I can <code>devtools::install()</code>` and run the package, using the exported R functions.</p>
+<p>The catch is that <code>devtools::check()</code> hangs on building a vignette that uses those functions (even though I can run that same vignette after <code>devtools::install()</code>.</p>
+<p>Is it that the python env gets called in one of them but not the other? setting <code>RETICULATE_PYTHON</code> in the vignette doesn’t help.</p>
+<p>Does it actually not work, and I’m just carrying around info to make it work somewhere? Nope, it doesn’t work, after using <code>devtools::install_local</code> to install into a separate R session.</p>
+</section>
+</section>
+<section id="solution-for-now" class="level2">
+<h2 class="anchored" data-anchor-id="solution-for-now">Solution (for now)</h2>
+<p>Use <code>reticulate::source_python</code>, but with <code>envir = globalenv()</code>, which seems to accomplish what the <code>&lt;&lt;-</code> was doing with <code>reticulate::import</code> in <code>.onLoad</code>. And in fact we can do that in <code>.onLoad</code>. so my <code>.onLoad</code>now looks like</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>.onLoad <span class="ot">&lt;-</span> <span class="cf">function</span>(libname, pkgname) {</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  reticulate<span class="sc">::</span><span class="fu">configure_environment</span>(pkgname)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  reticulate<span class="sc">::</span><span class="fu">source_python</span>(<span class="fu">system.file</span>(<span class="st">"python/controller_functions.py"</span>, </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">package =</span> <span class="st">'werptoolkitr'</span>), </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>                            <span class="at">envir =</span> <span class="fu">globalenv</span>())</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>That <em>doesn’t</em> allow the user to <code>library(package)</code> and then set up their python- they’ll need to have python sorted ahead of time. Using the <code>delay_load = TRUE</code>in <code>reticulate::import</code>would be better, but it doesn’t seem to work without a full py package.</p>
+<section id="how-to-test-relatively-quickly-in-a-clean-session-" class="level3">
+<h3 class="anchored" data-anchor-id="how-to-test-relatively-quickly-in-a-clean-session-">How to test (relatively) quickly in a clean session-</h3>
+<ol type="1">
+<li><p>Start a new Rproject</p></li>
+<li><p>Run <code>devtools::install_local("path/to/package", force = TRUE)</code> .</p>
+<ol type="1">
+<li>Without the <code>force = TRUE</code> this almost never rebuilds even with changes.</li>
+</ol></li>
+<li><p>Then <code>library(packagename)</code></p></li>
+<li><p><code>Sys.setenv(RETICULATE_PYTHON = 'path/to/venv')</code> (otherwise it will try to install conda and barf)</p>
+<ol type="1">
+<li><p>I would have thought I’d have to do this before the <code>library</code>, but it seems to work.</p></li>
+<li><p>Better is to have a path to venv in <code>.Rprofile</code>, anyway</p></li>
+<li><p><em>NOTE</em> if the <code>.venv</code> <em>is</em> in the outer directory, I’m getting weird errors when I try to <code>Sys.setenv</code> or otherwise set the path to the venv (it’s either prepending <code>~/virtualenvs</code> or <code>C::/</code> unless I pass a full fixed path. Seems to work in that case to just not set the environment variable though, and {reticulate} sorts it out correctly.</p></li>
+</ol></li>
+<li><p>Try to use the functions and see if they break.</p></li>
+</ol>
+</section>
+</section>
+<section id="passing-types" class="level2">
+<h2 class="anchored" data-anchor-id="passing-types">Passing types</h2>
+<p>We might need to call functions with arguments of a specific type (lists, dicts) that are not necessarily the same between languages. See <a href="../RpyEnvs/R_py_type_passing.html">my testing of type-passing</a>.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

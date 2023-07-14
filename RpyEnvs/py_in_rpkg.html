@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Galen Holt">
+
+<title>Galen Holt - Wrapping python in an R package</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<meta property="og:title" content="Galen Holt - Wrapping python in an R package">
+<meta property="og:description" content="I’ve been slowly sorting this out with trial and error, but haven’t really come up with a satisfactory solution.">
+<meta property="og:site-name" content="Galen Holt">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Galen Holt</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../research.html">
+ <span class="menu-text">Research</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../code_demos.html" aria-current="page">
+ <span class="menu-text">Code Demos</span></a>
+  </li>  
+</ul>
+              <div class="quarto-toggle-container">
+                  <a href="" class="quarto-color-scheme-toggle nav-link" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+              </div>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Wrapping python in an R package</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code_demos.html" class="sidebar-item-text sidebar-link">Code Demos</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Small how-tos</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/smallpieces.html" class="sidebar-item-text sidebar-link">Bits and pieces</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/quarto_notes.html" class="sidebar-item-text sidebar-link">Quarto notes</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../setup/rstudio_themes.html" class="sidebar-item-text sidebar-link">Editing Rstudio themes</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/zip_downloading.html" class="sidebar-item-text sidebar-link">Download and unpack zips</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/json_api_construction.html" class="sidebar-item-text sidebar-link">Building JSON syntax from R for API calls</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/list_names.html" class="sidebar-item-text sidebar-link">Naming rules for lists</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../publishing/private_github_figshare.html" class="sidebar-item-text sidebar-link">Creating Figshare from private github</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/error_handling.html" class="sidebar-item-text sidebar-link">Intro to error handling</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Plotting</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/ggplot_themes.html" class="sidebar-item-text sidebar-link">ggplot themes</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/setting_colors_for_groups.html" class="sidebar-item-text sidebar-link">Consistent colors</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/tweaks_tricks.html" class="sidebar-item-text sidebar-link">Saving and themeing plots</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/hcl_exploration.html" class="sidebar-item-text sidebar-link">Exploring HCL colorspace</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/rgb_to_hex.html" class="sidebar-item-text sidebar-link">Converting RGB to hex colors</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/fonts.html" class="sidebar-item-text sidebar-link">Fonts</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/faded_colors.html" class="sidebar-item-text sidebar-link">Faded 2d colour ramps</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/math_in_ggplot.html" class="sidebar-item-text sidebar-link">Latex in ggplot with latex2exp</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">Website</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../website_notes/quarto_website_github.html" class="sidebar-item-text sidebar-link">Getting started</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../website_notes/updating_website.html" class="sidebar-item-text sidebar-link">Updating and maintaining website</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">Theory, simulation, statistics, probability</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../simmodelling/twoDautocorr.html" class="sidebar-item-text sidebar-link">Generate 2d autocorrelation</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats_probability/expected_shannon.html" class="sidebar-item-text sidebar-link">Bootstrapping the expected shannon diversity</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats_probability/fitting_lognormals.html" class="sidebar-item-text sidebar-link">Intro to fitting lognormals</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats_probability/shifting_normals.html" class="sidebar-item-text sidebar-link">Basic shifts of normal moments</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats_probability/fitting_truncated.html" class="sidebar-item-text sidebar-link">Shifting and fitting truncated lognormals</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">Drones</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../drones/overlaps_reactive.html" class="sidebar-item-text sidebar-link">Calculations for flight planning</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../drones/overlaps.html" class="sidebar-item-text sidebar-link">Figuring out flight plan calcs</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pix4d/read_pix4d_outputs.html" class="sidebar-item-text sidebar-link">Reading and plotting pix4d outputs</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">Observable</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../observable/trying_observable.html" class="sidebar-item-text sidebar-link">Figuring out how to use ojs chunks</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">R and python</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/python_setup.html" class="sidebar-item-text sidebar-link">Python environments with pyenv and poetry</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/py_in_rpkg.html" class="sidebar-item-text sidebar-link active">Wrapping python in R package</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/RandPython.html" class="sidebar-item-text sidebar-link">Using R and python together</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/R_py_shared_projects.html" class="sidebar-item-text sidebar-link">Shared R-py project structure</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/py_r_dates.html" class="sidebar-item-text sidebar-link">Passing complex objects py-R</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/R_py_type_passing.html" class="sidebar-item-text sidebar-link">Passing types between R and python</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/py_r_project_overview.html" class="sidebar-item-text sidebar-link">Overview of building R-py package</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/python_nameerror.html" class="sidebar-item-text sidebar-link">Intermittent NameError py-R</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/python_updated_functions.html" class="sidebar-item-text sidebar-link">Small python bits</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">Setting up projects</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/rig.html" class="sidebar-item-text sidebar-link">Managing old R versions with rig</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/managingprivate.html" class="sidebar-item-text sidebar-link">Private data for website repo</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../setup/R_in_VS.html" class="sidebar-item-text sidebar-link">Using R in VScode</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/end_run_renv.html" class="sidebar-item-text sidebar-link">Dealing with renv failures</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true">Building packages</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../package/package_creation.html" class="sidebar-item-text sidebar-link">First pass at building a package</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../vicwater/vicwater_testing.html" class="sidebar-item-text sidebar-link">Testing VicWater API</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="true">Data</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data_acquisition/bom_gauges.html" class="sidebar-item-text sidebar-link">BOM gauge locations with httr2</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../vicwater/vicwater_api_howtocall.html" class="sidebar-item-text sidebar-link">Experimenting with API calls for {vicwater}</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data_acquisition/gauge_data_pre_gauge.html" class="sidebar-item-text sidebar-link">Data from pre-gauged periods</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data_acquisition/ALA_data_pull.html" class="sidebar-item-text sidebar-link">Pulling data from Atlas of Living Australia</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" aria-expanded="true">R parallel processing (general)</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/interrogating_parallel.html" class="sidebar-item-text sidebar-link">Interrogating parallel resources</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/nested_parallel.html" class="sidebar-item-text sidebar-link">Testing nested parallelism</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/parallel_speed.html" class="sidebar-item-text sidebar-link">Speed-testing parallel</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/globals_speed.html" class="sidebar-item-text sidebar-link">Global objects and parallel speed</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/nested_dependent_iterations.html" class="sidebar-item-text sidebar-link">Dependencies of inner parallelism on outer</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" aria-expanded="true">R parallel processing on HPC</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/hpc_ephemera.html" class="sidebar-item-text sidebar-link">HPC notes</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/plans_and_hpc.html" class="sidebar-item-text sidebar-link">Using single-machine plans on HPC</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/initial_future_batchtools.html" class="sidebar-item-text sidebar-link">Figuring out future.batchtools</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/changing_batchtools_template.html" class="sidebar-item-text sidebar-link">Switching templates, matching to resources</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/template_modification.html" class="sidebar-item-text sidebar-link">Modifying templates</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/master_persistence.html" class="sidebar-item-text sidebar-link">Consequences of master timing out</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/nested_parallel_hpc.html" class="sidebar-item-text sidebar-link">Nested parallel on HPC nodes and cores</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/conditional_plans.html" class="sidebar-item-text sidebar-link">Conditional plans for local and HPC</a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#goal" id="toc-goal" class="nav-link active" data-scroll-target="#goal">Goal</a></li>
+  <li><a href="#conclusions-and-demos" id="toc-conclusions-and-demos" class="nav-link" data-scroll-target="#conclusions-and-demos">Conclusions and demos</a>
+  <ul class="collapse">
+  <li><a href="#dev-setup" id="toc-dev-setup" class="nav-link" data-scroll-target="#dev-setup">Dev setup</a></li>
+  </ul></li>
+  <li><a href="#wrapping-python" id="toc-wrapping-python" class="nav-link" data-scroll-target="#wrapping-python">Wrapping python</a>
+  <ul class="collapse">
+  <li><a href="#wrappers-to-keep-r-clean" id="toc-wrappers-to-keep-r-clean" class="nav-link" data-scroll-target="#wrappers-to-keep-r-clean">Wrappers to keep R clean</a></li>
+  <li><a href="#functions-with-py-dependencies" id="toc-functions-with-py-dependencies" class="nav-link" data-scroll-target="#functions-with-py-dependencies">Functions with py dependencies</a>
+  <ul class="collapse">
+  <li><a href="#wrapping-in-various-ways" id="toc-wrapping-in-various-ways" class="nav-link" data-scroll-target="#wrapping-in-various-ways">Wrapping in various ways</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#managing-user-environments" id="toc-managing-user-environments" class="nav-link" data-scroll-target="#managing-user-environments">Managing user environments</a>
+  <ul class="collapse">
+  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">setup</a></li>
+  <li><a href="#no-configreticulate-no-preexisting-python" id="toc-no-configreticulate-no-preexisting-python" class="nav-link" data-scroll-target="#no-configreticulate-no-preexisting-python">No <code>Config/reticulate</code> , no preexisting python</a></li>
+  <li><a href="#pre-setting-py-env" id="toc-pre-setting-py-env" class="nav-link" data-scroll-target="#pre-setting-py-env">Pre-setting py env</a></li>
+  <li><a href="#using-configreticulate" id="toc-using-configreticulate" class="nav-link" data-scroll-target="#using-configreticulate">Using <code>Config/reticulate</code></a></li>
+  <li><a href="#bare-no-py" id="toc-bare-no-py" class="nav-link" data-scroll-target="#bare-no-py">Bare, no py</a></li>
+  <li><a href="#existing-py-env-with-pandas" id="toc-existing-py-env-with-pandas" class="nav-link" data-scroll-target="#existing-py-env-with-pandas">Existing py env with pandas</a></li>
+  <li><a href="#existing-py-env-without-pandas" id="toc-existing-py-env-without-pandas" class="nav-link" data-scroll-target="#existing-py-env-without-pandas">Existing py env <em>without</em> pandas</a></li>
+  <li><a href="#active-in-session-python-without-pandas" id="toc-active-in-session-python-without-pandas" class="nav-link" data-scroll-target="#active-in-session-python-without-pandas">Active in-session python without pandas</a>
+  <ul class="collapse">
+  <li><a href="#using-.onload" id="toc-using-.onload" class="nav-link" data-scroll-target="#using-.onload">using .onLoad</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#build-notes" id="toc-build-notes" class="nav-link" data-scroll-target="#build-notes">Build notes</a>
+  <ul class="collapse">
+  <li><a href="#passing-types" id="toc-passing-types" class="nav-link" data-scroll-target="#passing-types">Passing types</a></li>
+  <li><a href="#python-venv-locations" id="toc-python-venv-locations" class="nav-link" data-scroll-target="#python-venv-locations">Python venv locations</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Wrapping python in an R package</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Galen Holt </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="goal" class="level1">
+<h1>Goal</h1>
+<p>I’ve been slowly sorting this out with trial and error, but haven’t really come up with a satisfactory solution. I have things that work, but they’re not ideal- often either make the user do too much, or clutter up the global environment with python objects as soon as we <code>library</code> in the package. So I’ve created a <a href="https://github.com/galenholt/py_in_rpkg">test repo</a> to build a package and test different options.</p>
+<p>What do I want? There are potentially a few different things we might want to do, and I may or may not get to all of them.</p>
+<ol type="1">
+<li>Access functions in an existing python package</li>
+<li>Access a small set of functions in <code>inst/python</code> in the R package
+<ol type="1">
+<li>One option here is clearly to make these a py package and revert to (1)
+<ol type="1">
+<li>The function <code>reticulate::import_from_path</code> just imports a module like <code>reticulate::import</code>, it just does so from a local path, and so these are functionally equivalent.</li>
+</ol></li>
+<li>These may only use base python (simplest, but unlikely)</li>
+<li>These may depend on python packages (most likely)</li>
+</ol></li>
+<li>Auto-install (or at least help the user install) necessary python dependencies<br>
+</li>
+</ol>
+</section>
+<section id="conclusions-and-demos" class="level1">
+<h1>Conclusions and demos</h1>
+<p>In figuring this out, I set up a <a href="https://github.com/galenholt/py_in_rpkg">simple dummy R package</a> that wraps python in a few different ways for testing. Some of the tests below are still there but commented out because they may be useful in some situations, and others were obviously bad and have been dropped.</p>
+<p>To test how all this works, including the auto-installation and management of python environments, install the dummy package with</p>
+<p>You can install the development version of PyInRpkg from <a href="https://github.com/">GitHub</a> with:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("devtools")</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"galenholt/py_in_rpkg"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The first time a function is called from it that depends on python, it will either build a python environment if one does not exist, or modify one if it does to have the necessary dependencies (pandas).</p>
+<p>It <em>should</em> be robust to being in pre-created sandboxed python environments created by conda, poetry, etc or the system version, and should be robust to installation and use even with currently-active python in the interactive R session with <code>reticulate</code>.</p>
+<section id="dev-setup" class="level2">
+<h2 class="anchored" data-anchor-id="dev-setup">Dev setup</h2>
+<p>We need a python environment for the package (needed for dev, we’ll sort out how they get configured for users below). I’ve gone with just <code>poetry init</code> and <code>poetry install</code> in the git repo/ outer project directory, which doesn’t create a full python package structure but will at least create a <code>.venv</code>, which is all I really need.</p>
+</section>
+</section>
+<section id="wrapping-python" class="level1">
+<h1>Wrapping python</h1>
+<p>If we put a simple function, e.g.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> adder(x, y):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span>(x <span class="op">+</span> y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>in a file <code>inst/python/adder.py</code> , we can</p>
+<p><code>{r} reticulate::source_python('inst/python/adder.py')</code></p>
+<p>and access the <code>adder</code> function. (probably without the ‘inst’ when we build the package).</p>
+<p>But that puts a bunch of python objects in our environment.</p>
+<p>If we also put an empty <code>__init__.py</code> file in <code>inst/python</code>, {reticulate} will see it as a module and we can use <code>import_from_path</code></p>
+<p><code>{r} reticulate::import_from_path('adder', path = 'inst/python/adder.py', delay_load = TRUE)</code></p>
+<p>That yields much less junk in the environment, just <code>adder</code> as a python module. And we can use it with $ notation to get the function within the module.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>adder<span class="sc">$</span><span class="fu">adder</span>(<span class="dv">3</span>,<span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now we need to figure out how to actually use that in a package, whether we can avoid even having the <code>adder</code> module kicking around as soon as we load the package, etc.</p>
+<p>If we use <code>.onLoad</code> in a <code>zzz.R</code> file,</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>.onLoad <span class="ot">&lt;-</span> <span class="cf">function</span>(libname, pkgname) {</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  adder <span class="ot">&lt;&lt;-</span> reticulate<span class="sc">::</span><span class="fu">import_from_path</span>(<span class="st">"adder"</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">path =</span> <span class="fu">system.file</span>(<span class="st">"python"</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>                                                            <span class="at">package =</span> <span class="st">'PyInRpkg'</span>),</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">delay_load =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We get the <code>adder</code> module in the environment when we <code>library(PyInRpkg)</code>, and as above, can use it with <code>adder$adder(3,4)</code>.</p>
+<p>That’s a bit messy still- adder is visible in the global environment, and we have to call it with the funny pseudo-python <code>module$method</code> notation, which has some advantages (direct access to the python), but won’t feel like seamless R to the user. I thought the <code>delay_load = TRUE</code> meant it didn’t load in until used, but it seems to load in immediately. And making the assignment local <code>&lt;-</code> instead of global <code>&lt;&lt;-</code> just makes it not work.</p>
+<section id="wrappers-to-keep-r-clean" class="level2">
+<h2 class="anchored" data-anchor-id="wrappers-to-keep-r-clean">Wrappers to keep R clean</h2>
+<p>One option might be instead of <code>import</code> ing in <code>.onLoad</code> to <code>import</code> within R wrapper functions. Then the python never ends up in the user’s environment. And we can document the functions in R (via the wrappers). And, we can deprecate py functions through time by simply re-writing them into the R wrappers (this applies mostly to setup-type functions, not big things like all of scipy or something). But, does that yield weird things when the package is loaded?</p>
+<p>This works- writing and exporting an R function that does the onload, e.g.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>adder_wrap <span class="ot">&lt;-</span> <span class="cf">function</span>(x,y) {</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  adder <span class="ot">&lt;-</span> reticulate<span class="sc">::</span><span class="fu">import_from_path</span>(<span class="st">"adder"</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">path =</span> <span class="fu">system.file</span>(<span class="st">"python"</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                                                           <span class="at">package =</span> <span class="st">'PyInRpkg'</span>),</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">delay_load =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  adder<span class="sc">$</span><span class="fu">adder</span>(x,y)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>keeps everything clean, and we can document and test the function in R. The downside is that the first time we run that function, it is really slow. Likely on the same order as the increased time <code>library(package)</code> takes when the import is on <code>.onLoad</code>). It does get much faster subsequently, so this may not be a huge issue, though it’s possible if we were calling it thousands of times there would be significant overhead (but then maybe that would suggest a different flow, writing whatever loop in python and <code>import</code> ing that loop.</p>
+<p>The other advantage here is that in more complex situations, where we need to pass objects of more complex types (dates, lists, dicts), we can control that in the wrapper function, letting the user pass in standard R types and converting them, rather than make the user know that named lists become dicts, as they would need to when the <code>adder</code> module itself is exposed.</p>
+</section>
+<section id="functions-with-py-dependencies" class="level2">
+<h2 class="anchored" data-anchor-id="functions-with-py-dependencies">Functions with py dependencies</h2>
+<p>I’m not super interested in just wrapping a python package. But what I <em>will</em> need to do is have the R-package-specific python depend on other python packages; it won’t be as simple as <code>adder</code>.</p>
+<p>That means we have to do two things- managing a python environment and checking to see if the methods above (both through <code>.onLoad</code> or in wrapper functions) work to import python modules with dependencies.</p>
+<p>In any case, the python module that comes with the package should have functions that do <em>all</em> the python interaction; e..g. we don’t really want to be passing in and out of python a bunch. That makes things like method chaining work how they’re supposed to.</p>
+<p>I think I’ll use <code>pandas</code> to test since it’s common, and will be a bit more interesting/complex than <code>numpy</code>, for example.</p>
+<p>That works just as before- if we have a function in <code>/inst/python/pdsummary.py</code>,</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> pdsummary(df, group):</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  summarydf <span class="op">=</span> df.groupby(group).mean()</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span>(summarydf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We can use <code>.onLoad</code> to get it into the global environment and pass it R dataframes,</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>.onLoad <span class="ot">&lt;-</span> <span class="cf">function</span>(libname, pkgname) {</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  pdsummary <span class="ot">&lt;&lt;-</span> reticulate<span class="sc">::</span><span class="fu">import_from_path</span>(<span class="st">"pdsummary"</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">path =</span> <span class="fu">system.file</span>(<span class="st">"python"</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>                                                            <span class="at">package =</span> <span class="st">'PyInRpkg'</span>),</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">delay_load =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>and it works as before with the <code>module$method</code> notation</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>pdsummary<span class="sc">$</span><span class="fu">pdsummary</span>(iris, <span class="st">'Species'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>If I have a few functions in the module, can I <code>import</code> the module at the top of a .R with a bunch of wrappers, and then use it in each? Or does that load immediately?</p>
+<p>If we make a few py functions in one file, some of which depend on <code>pandas</code></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> pdmean(df, group):</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  df <span class="op">=</span> df.groupby(group).mean()</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span>(df)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> pdvar(df, group):</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  df <span class="op">=</span> df.groupby(group).var()</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span>(df)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> pdselect(df, cols):</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  df <span class="op">=</span> df[cols]</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span>(df)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> divide(x,y):</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span>(x<span class="op">/</span>y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Then we can <code>import</code> in <code>.onLoad</code> and have access to all of them with <code>multipy$NAME</code></p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>.onLoad <span class="ot">&lt;-</span> <span class="cf">function</span>(libname, pkgname) {</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  multipy <span class="ot">&lt;&lt;-</span> reticulate<span class="sc">::</span><span class="fu">import_from_path</span>(<span class="st">"multipython"</span>,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">path =</span> <span class="fu">system.file</span>(<span class="st">"python"</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>                                                            <span class="at">package =</span> <span class="st">'PyInRpkg'</span>),</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">delay_load =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>And we can use them</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>multipy<span class="sc">$</span><span class="fu">pdmean</span>(iris, <span class="st">'Species'</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>multipy<span class="sc">$</span><span class="fu">pdvar</span>(iris, <span class="st">'Species'</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>multipy<span class="sc">$</span><span class="fu">pdselect</span>(iris, <span class="fu">c</span>(<span class="st">'Species'</span>, <span class="st">'Sepal.Length'</span>))</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>multipy<span class="sc">$</span><span class="fu">divide</span>(<span class="dv">10</span>, <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="wrapping-in-various-ways" class="level3">
+<h3 class="anchored" data-anchor-id="wrapping-in-various-ways">Wrapping in various ways</h3>
+<p>And, as before, we can do the <code>import</code> inside wrapper functions, and then it doesn’t clutter up the world and only gets imported on first use. We have to <code>@export</code> them, and we can cheat a bit and use the <code>…</code> as the argument. This is a bit dangerous- the user needs to know the arguments to the python function, since they won’t really end up documented in the R wrapper. It’s not best practice, but it does work.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#' wrap pandas grouped mean</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param df</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param group</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co">#' @return</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co">#' @export</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co">#' @examples</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>wrap_mean <span class="ot">&lt;-</span> <span class="cf">function</span>(df, group) {</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  multipy <span class="ot">&lt;-</span> reticulate<span class="sc">::</span><span class="fu">import_from_path</span>(<span class="st">"multipython"</span>,</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>                                           <span class="at">path =</span> <span class="fu">system.file</span>(<span class="st">"python"</span>,</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>                                                              <span class="at">package =</span> <span class="st">'PyInRpkg'</span>),</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>                                           <span class="at">delay_load =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(multipy<span class="sc">$</span><span class="fu">pdmean</span>(df, group))</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="co">#' wrap pandas grouped var</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param ... df, character group column</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a><span class="co">#' @return</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a><span class="co">#' @export</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a><span class="co">#' @examples</span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>wrap_var <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>  multipy <span class="ot">&lt;-</span> reticulate<span class="sc">::</span><span class="fu">import_from_path</span>(<span class="st">"multipython"</span>,</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>                                           <span class="at">path =</span> <span class="fu">system.file</span>(<span class="st">"python"</span>,</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>                                                              <span class="at">package =</span> <span class="st">'PyInRpkg'</span>),</span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>                                           <span class="at">delay_load =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(multipy<span class="sc">$</span><span class="fu">pdvar</span>(...))</span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a><span class="co">#' wrap pandas column select</span></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param ... df, columns to select as character vector</span></span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a><span class="co">#' @return</span></span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a><span class="co">#' @export</span></span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a><span class="co">#' @examples</span></span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>wrap_select <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a>  multipy <span class="ot">&lt;-</span> reticulate<span class="sc">::</span><span class="fu">import_from_path</span>(<span class="st">"multipython"</span>,</span>
+<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a>                                           <span class="at">path =</span> <span class="fu">system.file</span>(<span class="st">"python"</span>,</span>
+<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a>                                                              <span class="at">package =</span> <span class="st">'PyInRpkg'</span>),</span>
+<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a>                                           <span class="at">delay_load =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(multipy<span class="sc">$</span><span class="fu">pdselect</span>(...))</span>
+<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a><span class="co">#' Wrap python divide</span></span>
+<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param ... two values</span></span>
+<span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb12-54"><a href="#cb12-54" aria-hidden="true" tabindex="-1"></a><span class="co">#' @return</span></span>
+<span id="cb12-55"><a href="#cb12-55" aria-hidden="true" tabindex="-1"></a><span class="co">#' @export</span></span>
+<span id="cb12-56"><a href="#cb12-56" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb12-57"><a href="#cb12-57" aria-hidden="true" tabindex="-1"></a><span class="co">#' @examples</span></span>
+<span id="cb12-58"><a href="#cb12-58" aria-hidden="true" tabindex="-1"></a>wrap_divide <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
+<span id="cb12-59"><a href="#cb12-59" aria-hidden="true" tabindex="-1"></a>  multipy <span class="ot">&lt;-</span> reticulate<span class="sc">::</span><span class="fu">import_from_path</span>(<span class="st">"multipython"</span>,</span>
+<span id="cb12-60"><a href="#cb12-60" aria-hidden="true" tabindex="-1"></a>                                           <span class="at">path =</span> <span class="fu">system.file</span>(<span class="st">"python"</span>,</span>
+<span id="cb12-61"><a href="#cb12-61" aria-hidden="true" tabindex="-1"></a>                                                              <span class="at">package =</span> <span class="st">'PyInRpkg'</span>),</span>
+<span id="cb12-62"><a href="#cb12-62" aria-hidden="true" tabindex="-1"></a>                                           <span class="at">delay_load =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb12-63"><a href="#cb12-63" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(multipy<span class="sc">$</span><span class="fu">divide</span>(...))</span>
+<span id="cb12-64"><a href="#cb12-64" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>It still is slow on the first use and fast on subsequent, even when calling different functions.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wrap_mean</span>(iris, <span class="st">'Species'</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">wrap_var</span>(iris, <span class="st">'Species'</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">wrap_select</span>(iris, <span class="fu">c</span>(<span class="st">'Species'</span>, <span class="st">'Sepal.Length'</span>))</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="fu">wrap_divide</span>(<span class="dv">10</span>,<span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>If we don’t want the <code>import</code> inside <em>each</em> function, we can put it at the head of the Rscript. In the demo package, I demo this with a new set of python functions in <code>multi2.py</code></p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> pdmin(df, group):</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  df <span class="op">=</span> df.groupby(group).<span class="bu">min</span>()</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span>(df)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> pdsum(df, group):</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  df <span class="op">=</span> df.groupby(group).<span class="bu">sum</span>()</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span>(df)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> minus(x,y):</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span>(x<span class="op">-</span>y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>And then wrap it with the <code>import</code> <em>outside</em> the functions</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>multi2 <span class="ot">&lt;-</span> reticulate<span class="sc">::</span><span class="fu">import_from_path</span>(<span class="st">"multi2"</span>,</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">path =</span> <span class="fu">system.file</span>(<span class="st">"python"</span>,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>                                                          <span class="at">package =</span> <span class="st">'PyInRpkg'</span>),</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">delay_load =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co">#' Wrap pandas group sd</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param df</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param group</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="co">#' @return</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="co">#' @export</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="co">#' @examples</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>wrap_min <span class="ot">&lt;-</span> <span class="cf">function</span>(df, group) {</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(multi2<span class="sc">$</span><span class="fu">pdmin</span>(df, group))</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a><span class="co">#' Wrap pandas group sum</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param df</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param group</span></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a><span class="co">#' @return</span></span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a><span class="co">#' @export</span></span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a><span class="co">#' @examples</span></span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>wrap_sum <span class="ot">&lt;-</span> <span class="cf">function</span>(df, group) {</span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(multi2<span class="sc">$</span><span class="fu">pdsum</span>(df, group))</span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a><span class="co">#' wrap python subtraction</span></span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param df</span></span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param group</span></span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a><span class="co">#' @return</span></span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a><span class="co">#' @export</span></span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a><span class="co">#' @examples</span></span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a>wrap_minus <span class="ot">&lt;-</span> <span class="cf">function</span>(df, group) {</span>
+<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(multi2<span class="sc">$</span><span class="fu">minus</span>(df, group))</span>
+<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>And that still works</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wrap_min</span>(iris, <span class="st">'Species'</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">wrap_sum</span>(iris, <span class="st">'Species'</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">wrap_minus</span>(<span class="dv">5</span>,<span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Just like before, that is slow the first time, and fast subsequently. It does <em>not</em> put the imported module into the R environment, so as far as I can tell, it’s equivalent to when we put the module import in each function. It’s just a bit cleaner to only have the <code>import</code> line once.</p>
+<p>That made me think maybe we could do the <code>import</code> with <code>&lt;-</code> instead of <code>&lt;&lt;-</code> in <code>.onLoad</code>, and then use that in functions, but it doesn’t work that way, unfortunately.</p>
+</section>
+</section>
+</section>
+<section id="managing-user-environments" class="level1">
+<h1>Managing user environments</h1>
+<p>So far, I’ve been worrying about making the functions work, given a set up python environment. Now we need to deal with ensuring that python environment exists and works. We need to deal with availablity of python itself for the simple things, and pandas for others.</p>
+<p>I have to include <code>pandas</code> in my dev environment to test, but will need to test package installations in clean locations (as if a user), to understand how the DESCRIPTION and <code>.onLoad</code> changes described here actually work to ensure users have the right dependencies available.</p>
+<p>I think this is where the <code>Config/reticulate</code> line in <code>DESCRIPTION</code> comes in, but need to test that I can actually get it to work.</p>
+<p>I’m going to again set up a series of tests, where I will create empty R projects with <code>renv</code> to manage environments to keep things sandboxed, and then install the package, load it, and try to use it- both the <code>adder_wrap</code> function that only needs python but no py packages and the <code>wrap_min</code>, <code>wrap_sum</code>, and <code>wrap_minus</code>, which require pandas</p>
+<section id="setup" class="level2">
+<h2 class="anchored" data-anchor-id="setup">setup</h2>
+<p>To make this easier on myself, the commands to set this up after I create the project are</p>
+<div class="cell" data-hash="py_in_rpkg_cache/html/unnamed-chunk-1_4827ee895c34f56d384f01ff51954763">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">install</span>(<span class="st">'devtools'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Installing devtools [2.4.5] ...
+    OK [linked cache]</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># I have the package in /Documents, so.</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_local</span>(<span class="st">'~/py_in_rpkg'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rcpp       (1.0.9 -&gt; 1.0.11) [CRAN]
+rlang      (1.0.6 -&gt; 1.1.1 ) [CRAN]
+png        (0.1-7 -&gt; 0.1-8 ) [CRAN]
+jsonlite   (1.8.4 -&gt; 1.8.7 ) [CRAN]
+RcppTOML   (0.1.7 -&gt; 0.2.2 ) [CRAN]
+reticulate (1.27  -&gt; 1.30  ) [CRAN]</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Installing 6 packages: Rcpp, rlang, png, jsonlite, RcppTOML, reticulate</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Installing packages into 'C:/Users/galen/Documents/Website/galen_website/renv/library/R-4.2/x86_64-w64-mingw32'
+(as 'lib' is unspecified)</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>package 'Rcpp' successfully unpacked and MD5 sums checked
+package 'rlang' successfully unpacked and MD5 sums checked
+package 'png' successfully unpacked and MD5 sums checked
+package 'jsonlite' successfully unpacked and MD5 sums checked</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: cannot remove prior installation of package 'jsonlite'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in file.copy(savedcopy, lib, recursive = TRUE): problem copying
+C:\Users\galen\Documents\Website\galen_website\renv\library\R-4.2\x86_64-w64-mingw32\00LOCK\jsonlite\libs\x64\jsonlite.dll
+to
+C:\Users\galen\Documents\Website\galen_website\renv\library\R-4.2\x86_64-w64-mingw32\jsonlite\libs\x64\jsonlite.dll:
+Permission denied</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: restored 'jsonlite'</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>package 'RcppTOML' successfully unpacked and MD5 sums checked
+package 'reticulate' successfully unpacked and MD5 sums checked
+
+The downloaded binary packages are in
+    C:\Users\galen\AppData\Local\Temp\RtmpOiRC0F\downloaded_packages
+── R CMD build ─────────────────────────────────────────────────────────────────
+* checking for file 'C:\Users\galen\AppData\Local\Temp\RtmpOiRC0F\filec442e29749b\py_in_rpkg/DESCRIPTION' ... OK
+* preparing 'PyInRpkg':
+* checking DESCRIPTION meta-information ... OK
+* checking for LF line-endings in source and make files and shell scripts
+* checking for empty or unneeded directories
+* building 'PyInRpkg_0.0.0.9000.tar.gz'
+</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Installing package into 'C:/Users/galen/Documents/Website/galen_website/renv/library/R-4.2/x86_64-w64-mingw32'
+(as 'lib' is unspecified)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(PyInRpkg)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="no-configreticulate-no-preexisting-python" class="level2">
+<h2 class="anchored" data-anchor-id="no-configreticulate-no-preexisting-python">No <code>Config/reticulate</code> , no preexisting python</h2>
+<p>Install works, <code>library</code> works.</p>
+<p>Running <code>adder_wrap(1,3)</code> kicks off a conda install of a bunch of python stuff. It then insalls a bunch of python and packages, and while the original <code>adder_wrap</code> call gets lost, a new one works fine.</p>
+<p>When I try to use <code>wrap_min</code>, though, I get</p>
+<pre><code>Error: Error loading Python module multi2</code></pre>
+<p>This is a cryptic error, I think because the <code>wrap_min</code> function is in the R file that uses <code>import_from_path</code> at the head of the R file. If I use <code>wrap_mean</code>, which is in the R file that uses <code>import_from_path</code> inside each wrapper function, I get</p>
+<pre><code>Error in py_module_import(module, convert = convert) :    ModuleNotFoundError: No module named 'pandas'</code></pre>
+<p>That’s more helpful.</p>
+<p>I think before I move on to trying to manage the package dependencies with Config/reticulate or pre-loading, I want to try two things-</p>
+<ol type="1">
+<li>Just closing and reopening- does the whole python install have to happen again?
+<ol type="1">
+<li><strong>No.</strong></li>
+</ol></li>
+<li>Starting <em>another</em> clean directory- does it grab the python env we just built, or does it build a new one per-project?
+<ol type="1">
+<li><strong>It builds a new one, but MUCH faster- must be cross-linking packages and/or python itself</strong></li>
+</ol></li>
+</ol>
+</section>
+<section id="pre-setting-py-env" class="level2">
+<h2 class="anchored" data-anchor-id="pre-setting-py-env">Pre-setting py env</h2>
+<p>Instead of starting blank, what if I manually control the python environment by initializing a poetry project? e.g.&nbsp;go create a poetry project <code>poetry new prepoetry</code>, then <code>cd prepoetry</code>, <code>poetry add pandas</code> to create a <code>.venv</code> with <code>pandas</code> installed. <em>Then</em> create the R project in <code>prepoetry</code> directory.</p>
+<p>Now, when I use <code>adder_wrap(1,5)</code>, it works without building any new python envs. As usual, the first run is slow, later are fast.</p>
+<p>And both <code>wrap_min(iris, 'Species')</code> and <code>wrap_mean(iris, 'Species')</code> work (<code>import_from_module</code> external and internal to the functions, respectively). No additional python building has to happen. First run is slow (even when <code>adder_wrap</code> has been used), but later are fast, <em>even across R functions in different files</em>, as here. So it must have to do some behind the scenes python the first time we use pandas.</p>
+</section>
+<section id="using-configreticulate" class="level2">
+<h2 class="anchored" data-anchor-id="using-configreticulate">Using <code>Config/reticulate</code></h2>
+<p>In theory, including a <code>Config/reticulate:</code> entry in the <code>DESCRIPTION</code> <a href="https://rstudio.github.io/reticulate/articles/python_dependencies.html">should handle the dependencies</a>. I <em>think</em> those docs also say that we will need a <code>.onLoad</code> with <code>reticulate::configure_environment</code> to get it to work.</p>
+<p>First, add</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>Config<span class="sc">/</span>reticulate<span class="sc">:</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">packages =</span> <span class="fu">list</span>(</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">list</span>(<span class="at">package =</span> <span class="st">"pandas"</span>)</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>To the description. I’m ignoring the <code>version</code> and <code>pip</code> arguments for now.</p>
+<p>I’ll need to do a few tests here-</p>
+<ul>
+<li><p>Bare directory, no py environments</p></li>
+<li><p>Existing py environments with the dependencies already</p></li>
+<li><p>Existing py environments <em>without</em> the right dependencies</p></li>
+</ul>
+<p>I’m starting <em>without</em> the <code>reticulate::configure_environment</code> in <code>.onLoad</code> so I can see why/when it’s necessary.</p>
+</section>
+<section id="bare-no-py" class="level2">
+<h2 class="anchored" data-anchor-id="bare-no-py">Bare, no py</h2>
+<p>Everything works, even without the <code>reticulate::configure_environment</code>. It installs python <em>and</em> pandas on the first use of a function, and the <code>adder_wrap</code>, <code>wrap_min</code>, and <code>wrap_mean</code> all work.</p>
+</section>
+<section id="existing-py-env-with-pandas" class="level2">
+<h2 class="anchored" data-anchor-id="existing-py-env-with-pandas">Existing py env with pandas</h2>
+<p>As above, set up a .venv with <code>poetry</code> , then put an R project in it. Everything works, but it worked before too, since there’s no python configuring that needs to happen.</p>
+</section>
+<section id="existing-py-env-without-pandas" class="level2">
+<h2 class="anchored" data-anchor-id="existing-py-env-without-pandas">Existing py env <em>without</em> pandas</h2>
+<p>I’ll do the same thing as above, but build a .venv with numpy but not pandas.</p>
+<p>In this case, as soon as we use any function, it installs pandas into the .venv, just as it did before for both python and pandas. All the functions work.</p>
+<p>So, what is the point of <code>configure_environment</code>? I thought it was to deal with this? Maybe it’s that I need it to alter python <em>once I’m already using it in a session</em>? E.g. we have a python version running with reticulate for something else, and we then want to use this package? I guess I’ll try that.</p>
+</section>
+<section id="active-in-session-python-without-pandas" class="level2">
+<h2 class="anchored" data-anchor-id="active-in-session-python-without-pandas">Active in-session python without pandas</h2>
+<p>I’ll start a session in a project with numpy, and use reticulate to do some simple numpy to get python running,</p>
+<pre><code>np &lt;- reticulate::import('numpy')
+np$array(list(c(1, 2, 3, 4), c(5, 6, 7, 8), c(9, 10, 11, 12)))</code></pre>
+<p><em>Then</em> I’ll install the package.</p>
+<p>When I try to use it, <code>adder_wrap</code> works, but the pandas-based functions don’t- same errors as earlier, and it <em>hasn’t</em> added pandas to the venv.</p>
+<section id="using-.onload" class="level3">
+<h3 class="anchored" data-anchor-id="using-.onload">using .onLoad</h3>
+<p>If I add a <code>.onLoad</code> function to <code>zzz.R</code>, e.g.</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>.onLoad <span class="ot">&lt;-</span> <span class="cf">function</span>(libname, pkgname) {</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  reticulate<span class="sc">::</span><span class="fu">configure_environment</span>(pkgname)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Then it works. I can load up numpy as before, but as soon as I <code>library(PyInRpkg)</code>, it installs pandas, and then the functions work.</p>
+<p>So, that seems to be the way to avoid weird runtime pitfalls in interactive sessions. It’s a particular case, but likely a fairly common one, so seems like the way to go.</p>
+<p>Does having that in <code>.onLoad</code> affect any of the other ways? e.g.&nbsp;bare projects or preexisting but inactive python environments? Seems to work everywhere.</p>
+</section>
+</section>
+</section>
+<section id="build-notes" class="level1">
+<h1>Build notes</h1>
+<p>The package will have a dev python environment, but it shouldn’t be included in the package build, so put <code>^.venv</code> in <code>Rbuildignore</code>.</p>
+<section id="passing-types" class="level2">
+<h2 class="anchored" data-anchor-id="passing-types">Passing types</h2>
+<p>We might need to call functions with arguments of a specific type (lists, dicts) that are not necessarily the same between languages. This is where wrapper functions can be very helpful. See <a href="../RpyEnvs/R_py_type_passing.html">my testing of type-passing</a>.</p>
+</section>
+<section id="python-venv-locations" class="level2">
+<h2 class="anchored" data-anchor-id="python-venv-locations">Python venv locations</h2>
+<p>I have run into issues with reticulate finding the right virtual env, especially if it’s not in the top-level of the package. In that case, we need to be careful and control more things manually with environment variables and <code>.Rprofile</code>.</p>
+<ol type="1">
+<li><p><code>Sys.setenv(RETICULATE_PYTHON = 'path/to/venv')</code> (otherwise it will try to install conda and barf)</p>
+<ol type="1">
+<li><p>I would have thought I’d have to do this before the <code>library</code>, but it seems to work.</p></li>
+<li><p>Better is to have a path to venv in <code>.Rprofile</code>, anyway</p></li>
+<li><p><em>NOTE</em> sometimes if the <code>.venv</code> <em>is</em> in the outer directory, I’m getting weird errors when I try to <code>Sys.setenv</code> or otherwise set the path to the venv (it’s either prepending <code>~/virtualenvs</code> or <code>C::/</code> unless I pass a full fixed path. Seems to work in that case to just not set the environment variable though, and {reticulate} sorts it out correctly.</p></li>
+</ol></li>
+</ol>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

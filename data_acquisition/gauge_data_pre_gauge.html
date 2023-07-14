@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Galen Holt">
+
+<title>Galen Holt - Gauge data and gauged period</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<meta property="og:title" content="Galen Holt - Gauge data and gauged period">
+<meta property="og:description" content="We often end up needing to pull gauge data for lots of projects.">
+<meta property="og:site-name" content="Galen Holt">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Galen Holt</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../research.html">
+ <span class="menu-text">Research</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../code_demos.html" aria-current="page">
+ <span class="menu-text">Code Demos</span></a>
+  </li>  
+</ul>
+              <div class="quarto-toggle-container">
+                  <a href="" class="quarto-color-scheme-toggle nav-link" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+              </div>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Gauge data and gauged period</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code_demos.html" class="sidebar-item-text sidebar-link">Code Demos</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Small how-tos</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/smallpieces.html" class="sidebar-item-text sidebar-link">Bits and pieces</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/quarto_notes.html" class="sidebar-item-text sidebar-link">Quarto notes</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../setup/rstudio_themes.html" class="sidebar-item-text sidebar-link">Editing Rstudio themes</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/zip_downloading.html" class="sidebar-item-text sidebar-link">Download and unpack zips</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/json_api_construction.html" class="sidebar-item-text sidebar-link">Building JSON syntax from R for API calls</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/list_names.html" class="sidebar-item-text sidebar-link">Naming rules for lists</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../publishing/private_github_figshare.html" class="sidebar-item-text sidebar-link">Creating Figshare from private github</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/error_handling.html" class="sidebar-item-text sidebar-link">Intro to error handling</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Plotting</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/ggplot_themes.html" class="sidebar-item-text sidebar-link">ggplot themes</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/setting_colors_for_groups.html" class="sidebar-item-text sidebar-link">Consistent colors</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/tweaks_tricks.html" class="sidebar-item-text sidebar-link">Saving and themeing plots</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/hcl_exploration.html" class="sidebar-item-text sidebar-link">Exploring HCL colorspace</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/rgb_to_hex.html" class="sidebar-item-text sidebar-link">Converting RGB to hex colors</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/fonts.html" class="sidebar-item-text sidebar-link">Fonts</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/faded_colors.html" class="sidebar-item-text sidebar-link">Faded 2d colour ramps</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/math_in_ggplot.html" class="sidebar-item-text sidebar-link">Latex in ggplot with latex2exp</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">Website</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../website_notes/quarto_website_github.html" class="sidebar-item-text sidebar-link">Getting started</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../website_notes/updating_website.html" class="sidebar-item-text sidebar-link">Updating and maintaining website</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">Theory, simulation, statistics, probability</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../simmodelling/twoDautocorr.html" class="sidebar-item-text sidebar-link">Generate 2d autocorrelation</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats_probability/expected_shannon.html" class="sidebar-item-text sidebar-link">Bootstrapping the expected shannon diversity</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats_probability/fitting_lognormals.html" class="sidebar-item-text sidebar-link">Intro to fitting lognormals</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats_probability/shifting_normals.html" class="sidebar-item-text sidebar-link">Basic shifts of normal moments</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats_probability/fitting_truncated.html" class="sidebar-item-text sidebar-link">Shifting and fitting truncated lognormals</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">Drones</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../drones/overlaps_reactive.html" class="sidebar-item-text sidebar-link">Calculations for flight planning</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../drones/overlaps.html" class="sidebar-item-text sidebar-link">Figuring out flight plan calcs</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pix4d/read_pix4d_outputs.html" class="sidebar-item-text sidebar-link">Reading and plotting pix4d outputs</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">Observable</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../observable/trying_observable.html" class="sidebar-item-text sidebar-link">Figuring out how to use ojs chunks</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">R and python</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/python_setup.html" class="sidebar-item-text sidebar-link">Python environments with pyenv and poetry</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/py_in_rpkg.html" class="sidebar-item-text sidebar-link">Wrapping python in R package</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/RandPython.html" class="sidebar-item-text sidebar-link">Using R and python together</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/R_py_shared_projects.html" class="sidebar-item-text sidebar-link">Shared R-py project structure</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/py_r_dates.html" class="sidebar-item-text sidebar-link">Passing complex objects py-R</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/R_py_type_passing.html" class="sidebar-item-text sidebar-link">Passing types between R and python</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/py_r_project_overview.html" class="sidebar-item-text sidebar-link">Overview of building R-py package</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/python_nameerror.html" class="sidebar-item-text sidebar-link">Intermittent NameError py-R</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/python_updated_functions.html" class="sidebar-item-text sidebar-link">Small python bits</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">Setting up projects</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/rig.html" class="sidebar-item-text sidebar-link">Managing old R versions with rig</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/managingprivate.html" class="sidebar-item-text sidebar-link">Private data for website repo</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../setup/R_in_VS.html" class="sidebar-item-text sidebar-link">Using R in VScode</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/end_run_renv.html" class="sidebar-item-text sidebar-link">Dealing with renv failures</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true">Building packages</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../package/package_creation.html" class="sidebar-item-text sidebar-link">First pass at building a package</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../vicwater/vicwater_testing.html" class="sidebar-item-text sidebar-link">Testing VicWater API</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="true">Data</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data_acquisition/bom_gauges.html" class="sidebar-item-text sidebar-link">BOM gauge locations with httr2</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../vicwater/vicwater_api_howtocall.html" class="sidebar-item-text sidebar-link">Experimenting with API calls for {vicwater}</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data_acquisition/gauge_data_pre_gauge.html" class="sidebar-item-text sidebar-link active">Data from pre-gauged periods</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data_acquisition/ALA_data_pull.html" class="sidebar-item-text sidebar-link">Pulling data from Atlas of Living Australia</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" aria-expanded="true">R parallel processing (general)</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/interrogating_parallel.html" class="sidebar-item-text sidebar-link">Interrogating parallel resources</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/nested_parallel.html" class="sidebar-item-text sidebar-link">Testing nested parallelism</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/parallel_speed.html" class="sidebar-item-text sidebar-link">Speed-testing parallel</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/globals_speed.html" class="sidebar-item-text sidebar-link">Global objects and parallel speed</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/nested_dependent_iterations.html" class="sidebar-item-text sidebar-link">Dependencies of inner parallelism on outer</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" aria-expanded="true">R parallel processing on HPC</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/hpc_ephemera.html" class="sidebar-item-text sidebar-link">HPC notes</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/plans_and_hpc.html" class="sidebar-item-text sidebar-link">Using single-machine plans on HPC</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/initial_future_batchtools.html" class="sidebar-item-text sidebar-link">Figuring out future.batchtools</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/changing_batchtools_template.html" class="sidebar-item-text sidebar-link">Switching templates, matching to resources</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/template_modification.html" class="sidebar-item-text sidebar-link">Modifying templates</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/master_persistence.html" class="sidebar-item-text sidebar-link">Consequences of master timing out</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/nested_parallel_hpc.html" class="sidebar-item-text sidebar-link">Nested parallel on HPC nodes and cores</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/conditional_plans.html" class="sidebar-item-text sidebar-link">Conditional plans for local and HPC</a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#set-some-variables" id="toc-set-some-variables" class="nav-link active" data-scroll-target="#set-some-variables">Set some variables</a></li>
+  <li><a href="#all-dates-pre-gauge" id="toc-all-dates-pre-gauge" class="nav-link" data-scroll-target="#all-dates-pre-gauge">All dates pre-gauge</a></li>
+  <li><a href="#all-dates-with-gauge" id="toc-all-dates-with-gauge" class="nav-link" data-scroll-target="#all-dates-with-gauge">All dates with gauge</a></li>
+  <li><a href="#dates-spanning-gauge-start" id="toc-dates-spanning-gauge-start" class="nav-link" data-scroll-target="#dates-spanning-gauge-start">Dates spanning gauge start</a></li>
+  <li><a href="#solution" id="toc-solution" class="nav-link" data-scroll-target="#solution">Solution</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Gauge data and gauged period</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Galen Holt </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="cell" data-hash="gauge_data_pre_gauge_cache/html/unnamed-chunk-1_bf55a7b351969e4b15d8387f7cdbaca6">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(foreach)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'dplyr'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(vicwater)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reticulate)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-hash="gauge_data_pre_gauge_cache/html/unnamed-chunk-2_3ddb900e270e93168f6535014fbef8f7">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> mdba_gauge_getter <span class="im">as</span> gg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We often end up needing to pull gauge data for lots of projects. If we just want flow data, and especially if we’re working in python, there’s the <a href="https://github.com/MDBAuth/MDBA_Gauge_Getter">mdba_gauge_getter</a>, and I’ve written <a href="https://github.com/galenholt/vicwater">{vicwater}</a> for R and expanded it to cover Victoria, NSW, and Qld. A primary advantage of {vicwater} is that it can access more of the API calls and return any desired variables.</p>
+<p>One issue we often end up having is wanting to grab gauge data for a range of dates that may or may not go earlier than a gauge was put in place. There’s actually an issue with the Kisters API for that, where it silently returns values of 0 for those dates, which is not good. Because it comes from the API itself, it affects both packages.</p>
+<p>For example, we can go to the website and find the period of record for NSW gauge 410007 (<code>gauges_to_pull[138]</code>) is 10/01/1979 - present. We’ll show first what happens for three situations with both <code>mdba_gauge_getter</code> and <code>vicwater</code></p>
+<ol type="1">
+<li><p>all dates pre-gauge</p></li>
+<li><p>all dates within period</p></li>
+<li><p>dates before and after</p></li>
+</ol>
+<p>and then we’ll show how to handle it in {vicwater}.</p>
+<section id="set-some-variables" class="level3">
+<h3 class="anchored" data-anchor-id="set-some-variables">Set some variables</h3>
+<div class="cell" data-hash="gauge_data_pre_gauge_cache/html/unnamed-chunk-3_ed9e41da9c40144ce250d0ddc53daff0">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>gaugenum <span class="ot">&lt;-</span> <span class="st">'410007'</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># initial date (plus a couple days to be sure there's data)</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>gaugestart <span class="ot">=</span> lubridate<span class="sc">::</span><span class="fu">ymd</span>(<span class="dv">19790110</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># a week days later- this data should all exist</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>weeklater <span class="ot">&lt;-</span> lubridate<span class="sc">::</span><span class="fu">ymd</span>(<span class="dv">19790117</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Before initial date</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>weekbefore <span class="ot">=</span> lubridate<span class="sc">::</span><span class="fu">ymd</span>(<span class="dv">19790103</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>daybefore <span class="ot">&lt;-</span> lubridate<span class="sc">::</span><span class="fu">ymd</span>(<span class="dv">19790109</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="all-dates-pre-gauge" class="level2">
+<h2 class="anchored" data-anchor-id="all-dates-pre-gauge">All dates pre-gauge</h2>
+<p>If we ask for the period before the gauge is operational {vicwater} passes the API error through.</p>
+<div class="cell" data-hash="gauge_data_pre_gauge_cache/html/unnamed-chunk-4_9821adcaa1b325230edff96370dc8839">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_ts_traces</span>(<span class="at">state =</span> <span class="st">'NSW'</span>, </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">site_list =</span> gaugenum, </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">var_list =</span> <span class="st">'141'</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">start_time =</span> weekbefore,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">end_time =</span> daybefore,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">interval =</span> <span class="st">'day'</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">data_type =</span> <span class="st">'mean'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: executing %dopar% sequentially: no parallel backend registered</code></pre>
+</div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in {: task 1 failed - "API error number 126. Message: No data within specified period"</code></pre>
+</div>
+</div>
+<p>We get an empty dataframe from <code>mdba_gauge_getter</code></p>
+<div class="cell" data-hash="gauge_data_pre_gauge_cache/html/unnamed-chunk-5_c8b100299d2e8666992a7ade65d32211">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>demo_levs_pre <span class="op">=</span> gg.gauge_pull(r.gaugenum, start_time_user <span class="op">=</span> r.weekbefore, end_time_user <span class="op">=</span> r.daybefore)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>C:\Users\galen\DOCUME~1\Website\GALEN_~1\RpyEnvs\PYTEST~1\VENV~1\Lib\site-packages\mdba_gauge_getter\gauge_getter.py:82: FutureWarning: In a future version of pandas all arguments of StringMethods.split except for the argument 'pat' will be keyword-only.
+  gauges['State'] = gauges['gauge_owner'].str.strip().str.split(' ', 1).str[0]
+INFO:mdba_gauge_getter.gauge_get:NSW - Request 1 of 1
+ERROR:mdba_gauge_getter.gauge_get:No valid data contained in response, skipping</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>demo_levs_pre</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Empty DataFrame
+Columns: [DATASOURCEID, SITEID, SUBJECTID, DATETIME, VALUE, QUALITYCODE]
+Index: []</code></pre>
+</div>
+</div>
+<p>So, that’s slightly different behavior, but neither is returning misleading data.</p>
+</section>
+<section id="all-dates-with-gauge" class="level2">
+<h2 class="anchored" data-anchor-id="all-dates-with-gauge">All dates with gauge</h2>
+<p>Now {vicwater} gives a dataframe.</p>
+<div class="cell" data-hash="gauge_data_pre_gauge_cache/html/unnamed-chunk-6_da6fe7fc05cda5114573ddd110397586">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_ts_traces</span>(<span class="at">state =</span> <span class="st">'NSW'</span>, </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">site_list =</span> gaugenum, </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">var_list =</span> <span class="st">'141'</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">start_time =</span> gaugestart,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">end_time =</span> weeklater,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">interval =</span> <span class="st">'day'</span>,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">data_type =</span> <span class="st">'mean'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 8 × 20
+  error_num compressed timezone site_sho…¹ longi…² site_…³ latit…⁴ org_n…⁵ value
+      &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;    &lt;chr&gt;        &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt;   &lt;dbl&gt;
+1         0 0          10.0     YANCO CK …    146. YANCO …   -34.7 WaterN…  511.
+2         0 0          10.0     YANCO CK …    146. YANCO …   -34.7 WaterN…  552.
+3         0 0          10.0     YANCO CK …    146. YANCO …   -34.7 WaterN…  536.
+4         0 0          10.0     YANCO CK …    146. YANCO …   -34.7 WaterN…  516.
+5         0 0          10.0     YANCO CK …    146. YANCO …   -34.7 WaterN…  513.
+6         0 0          10.0     YANCO CK …    146. YANCO …   -34.7 WaterN…  486.
+7         0 0          10.0     YANCO CK …    146. YANCO …   -34.7 WaterN…  492.
+8         0 0          10.0     YANCO CK …    146. YANCO …   -34.7 WaterN…  533.
+# … with 11 more variables: time &lt;dttm&gt;, quality_codes_id &lt;int&gt;, site &lt;chr&gt;,
+#   variable_short_name &lt;chr&gt;, precision &lt;chr&gt;, subdesc &lt;chr&gt;, variable &lt;chr&gt;,
+#   units &lt;chr&gt;, variable_name &lt;chr&gt;, quality_codes &lt;chr&gt;, data_type &lt;chr&gt;, and
+#   abbreviated variable names ¹​site_short_name, ²​longitude, ³​site_name,
+#   ⁴​latitude, ⁵​org_name</code></pre>
+</div>
+</div>
+<p>As does <code>mdba_gauge_getter</code></p>
+<div class="cell" data-hash="gauge_data_pre_gauge_cache/html/unnamed-chunk-7_d4ee80a053f3ea40a4cd5d810567c306">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>demo_levs_exists <span class="op">=</span> gg.gauge_pull(r.gaugenum, start_time_user <span class="op">=</span> r.gaugestart, end_time_user <span class="op">=</span> r.weeklater)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>INFO:mdba_gauge_getter.gauge_get:NSW - Request 1 of 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>demo_levs_exists</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  DATASOURCEID  SITEID SUBJECTID    DATETIME    VALUE  QUALITYCODE
+0          NSW  410007     WATER  1979-01-10  510.939          255
+1          NSW  410007     WATER  1979-01-11  551.848          130
+2          NSW  410007     WATER  1979-01-12  535.988          130
+3          NSW  410007     WATER  1979-01-13  515.685          130
+4          NSW  410007     WATER  1979-01-14  512.529          130
+5          NSW  410007     WATER  1979-01-15  486.422          130
+6          NSW  410007     WATER  1979-01-16  491.710          130
+7          NSW  410007     WATER  1979-01-17  532.730          130</code></pre>
+</div>
+</div>
+<p>That again returns what it should. All the dates have data.</p>
+</section>
+<section id="dates-spanning-gauge-start" class="level2">
+<h2 class="anchored" data-anchor-id="dates-spanning-gauge-start">Dates spanning gauge start</h2>
+<p>Now {vicwater} gives a dataframe, but that initial period has <code>value = 0</code>, which is wrong. It should be NA, but the API returns 0 silently.</p>
+<div class="cell" data-hash="gauge_data_pre_gauge_cache/html/unnamed-chunk-8_88d4cc7df2aeac288d5b75cb1e22d640">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_ts_traces</span>(<span class="at">state =</span> <span class="st">'NSW'</span>, </span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">site_list =</span> gaugenum, </span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">var_list =</span> <span class="st">'141'</span>,</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">start_time =</span> weekbefore,</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">end_time =</span> weeklater,</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">interval =</span> <span class="st">'day'</span>,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">data_type =</span> <span class="st">'mean'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 15 × 20
+   error_num compressed timezone site_sh…¹ longi…² site_…³ latit…⁴ org_n…⁵ value
+       &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;    &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt;   &lt;dbl&gt;
+ 1         0 0          10.0     YANCO CK…    146. YANCO …   -34.7 WaterN…    0 
+ 2         0 0          10.0     YANCO CK…    146. YANCO …   -34.7 WaterN…    0 
+ 3         0 0          10.0     YANCO CK…    146. YANCO …   -34.7 WaterN…    0 
+ 4         0 0          10.0     YANCO CK…    146. YANCO …   -34.7 WaterN…    0 
+ 5         0 0          10.0     YANCO CK…    146. YANCO …   -34.7 WaterN…    0 
+ 6         0 0          10.0     YANCO CK…    146. YANCO …   -34.7 WaterN…    0 
+ 7         0 0          10.0     YANCO CK…    146. YANCO …   -34.7 WaterN…    0 
+ 8         0 0          10.0     YANCO CK…    146. YANCO …   -34.7 WaterN…  511.
+ 9         0 0          10.0     YANCO CK…    146. YANCO …   -34.7 WaterN…  552.
+10         0 0          10.0     YANCO CK…    146. YANCO …   -34.7 WaterN…  536.
+11         0 0          10.0     YANCO CK…    146. YANCO …   -34.7 WaterN…  516.
+12         0 0          10.0     YANCO CK…    146. YANCO …   -34.7 WaterN…  513.
+13         0 0          10.0     YANCO CK…    146. YANCO …   -34.7 WaterN…  486.
+14         0 0          10.0     YANCO CK…    146. YANCO …   -34.7 WaterN…  492.
+15         0 0          10.0     YANCO CK…    146. YANCO …   -34.7 WaterN…  533.
+# … with 11 more variables: time &lt;dttm&gt;, quality_codes_id &lt;int&gt;, site &lt;chr&gt;,
+#   variable_short_name &lt;chr&gt;, precision &lt;chr&gt;, subdesc &lt;chr&gt;, variable &lt;chr&gt;,
+#   units &lt;chr&gt;, variable_name &lt;chr&gt;, quality_codes &lt;chr&gt;, data_type &lt;chr&gt;, and
+#   abbreviated variable names ¹​site_short_name, ²​longitude, ³​site_name,
+#   ⁴​latitude, ⁵​org_name</code></pre>
+</div>
+</div>
+<p>The same thing happens with <code>mdba_gauge_getter</code></p>
+<div class="cell" data-hash="gauge_data_pre_gauge_cache/html/unnamed-chunk-9_4cd1b0f02eca7625e7c7d3250e16ed07">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>demo_levs_span <span class="op">=</span> gg.gauge_pull(r.gaugenum, start_time_user <span class="op">=</span> r.weekbefore, end_time_user <span class="op">=</span> r.weeklater)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>INFO:mdba_gauge_getter.gauge_get:NSW - Request 1 of 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>demo_levs_span</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   DATASOURCEID  SITEID SUBJECTID    DATETIME    VALUE  QUALITYCODE
+0           NSW  410007     WATER  1979-01-03    0.000          255
+1           NSW  410007     WATER  1979-01-04    0.000          255
+2           NSW  410007     WATER  1979-01-05    0.000          255
+3           NSW  410007     WATER  1979-01-06    0.000          255
+4           NSW  410007     WATER  1979-01-07    0.000          255
+5           NSW  410007     WATER  1979-01-08    0.000          255
+6           NSW  410007     WATER  1979-01-09    0.000          255
+7           NSW  410007     WATER  1979-01-10  510.939          255
+8           NSW  410007     WATER  1979-01-11  551.848          130
+9           NSW  410007     WATER  1979-01-12  535.988          130
+10          NSW  410007     WATER  1979-01-13  515.685          130
+11          NSW  410007     WATER  1979-01-14  512.529          130
+12          NSW  410007     WATER  1979-01-15  486.422          130
+13          NSW  410007     WATER  1979-01-16  491.710          130
+14          NSW  410007     WATER  1979-01-17  532.730          130</code></pre>
+</div>
+</div>
+<p>So, that’s not good. Especially the silent part</p>
+</section>
+<section id="solution" class="level1">
+<h1>Solution</h1>
+<p>I can’t figure out how to use <code>mdba_gauge_getter</code> to automatically query the period of record. So for that, you have to make sure to check for every request.</p>
+<p>On the other hand, {vicwater} can hit other API calls (<code>get_variable_list</code>) that return the period of record, and then use them to call <code>get_ts_traces</code>. We can do this manually, which is a bit of a hassle, because <code>get_variable_list</code> returns all the variables, and we have to remember to filter for ‘100’ if we want ‘100’ or ‘140’, or ‘141’ (see <a href="../vicwater/vicwater_testing.html">testing vicwater</a>).</p>
+<p>With multiple sites, we always will have to loop, since the <code>start_time</code>s (and maybe <code>end_time</code>) will differ.</p>
+<div class="cell" data-hash="gauge_data_pre_gauge_cache/html/unnamed-chunk-10_8b3fbd4bc4373623eeb11ab45576b725">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>varl <span class="ot">&lt;-</span> <span class="fu">get_variable_list</span>(<span class="at">state =</span> <span class="st">'NSW'</span>, </span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>                          <span class="at">site_list =</span> <span class="fu">c</span>(<span class="st">'422028'</span>, <span class="st">'410007'</span>),</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>                          <span class="at">datasource =</span> <span class="st">'A'</span>)</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>varl100 <span class="ot">&lt;-</span> varl <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(variable <span class="sc">==</span> <span class="st">"100.00"</span>)</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="co"># If we have multiple sites, we have to loop over them.</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>siteout_m <span class="ot">&lt;-</span> <span class="fu">foreach</span>(<span class="at">i =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(varl100)) <span class="sc">%do%</span> {</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">get_ts_traces</span>(<span class="at">state =</span> <span class="st">'NSW'</span>, </span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>                <span class="at">site_list =</span> varl100<span class="sc">$</span>site[i], </span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>                <span class="at">var_list =</span> <span class="st">'141'</span>,</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>                <span class="at">start_time =</span> varl100<span class="sc">$</span>period_start[i],</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>                <span class="at">end_time =</span> varl100<span class="sc">$</span>period_end[i],</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>                <span class="at">interval =</span> <span class="st">'day'</span>,</span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>                <span class="at">data_type =</span> <span class="st">'mean'</span>)</span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>That produces a list of dataframes for the period of record, which we can check do not have leading zeros.</p>
+<div class="cell" data-hash="gauge_data_pre_gauge_cache/html/unnamed-chunk-11_ad18609d3daec84f0fa8fcb77857f0b6">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(siteout_m[[<span class="dv">1</span>]] <span class="sc">|&gt;</span> <span class="fu">select</span>(time, value, site_name, <span class="fu">everything</span>() ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 20
+  time                value site_name    error…¹ compr…² timez…³ site_…⁴ longi…⁵
+  &lt;dttm&gt;              &lt;dbl&gt; &lt;chr&gt;          &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;     &lt;dbl&gt;
+1 1999-06-26 16:38:00  707. BARWON RIVE…       0 0       10.0    BARWON…    146.
+2 1999-06-27 16:38:00  782. BARWON RIVE…       0 0       10.0    BARWON…    146.
+3 1999-06-28 16:38:00  858. BARWON RIVE…       0 0       10.0    BARWON…    146.
+4 1999-06-29 16:38:00  905. BARWON RIVE…       0 0       10.0    BARWON…    146.
+5 1999-06-30 16:38:00  933. BARWON RIVE…       0 0       10.0    BARWON…    146.
+6 1999-07-01 16:38:00  952. BARWON RIVE…       0 0       10.0    BARWON…    146.
+# … with 12 more variables: latitude &lt;dbl&gt;, org_name &lt;chr&gt;,
+#   quality_codes_id &lt;int&gt;, site &lt;chr&gt;, variable_short_name &lt;chr&gt;,
+#   precision &lt;chr&gt;, subdesc &lt;chr&gt;, variable &lt;chr&gt;, units &lt;chr&gt;,
+#   variable_name &lt;chr&gt;, quality_codes &lt;chr&gt;, data_type &lt;chr&gt;, and abbreviated
+#   variable names ¹​error_num, ²​compressed, ³​timezone, ⁴​site_short_name,
+#   ⁵​longitude</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(siteout_m[[<span class="dv">2</span>]] <span class="sc">|&gt;</span> <span class="fu">select</span>(time, value, site_name, <span class="fu">everything</span>() ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 20
+  time                value site_name    error…¹ compr…² timez…³ site_…⁴ longi…⁵
+  &lt;dttm&gt;              &lt;dbl&gt; &lt;chr&gt;          &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;     &lt;dbl&gt;
+1 1979-01-10 11:30:00  528. YANCO CREEK…       0 0       10.0    YANCO …    146.
+2 1979-01-11 11:30:00  551. YANCO CREEK…       0 0       10.0    YANCO …    146.
+3 1979-01-12 11:30:00  523. YANCO CREEK…       0 0       10.0    YANCO …    146.
+4 1979-01-13 11:30:00  514. YANCO CREEK…       0 0       10.0    YANCO …    146.
+5 1979-01-14 11:30:00  504. YANCO CREEK…       0 0       10.0    YANCO …    146.
+6 1979-01-15 11:30:00  480. YANCO CREEK…       0 0       10.0    YANCO …    146.
+# … with 12 more variables: latitude &lt;dbl&gt;, org_name &lt;chr&gt;,
+#   quality_codes_id &lt;int&gt;, site &lt;chr&gt;, variable_short_name &lt;chr&gt;,
+#   precision &lt;chr&gt;, subdesc &lt;chr&gt;, variable &lt;chr&gt;, units &lt;chr&gt;,
+#   variable_name &lt;chr&gt;, quality_codes &lt;chr&gt;, data_type &lt;chr&gt;, and abbreviated
+#   variable names ¹​error_num, ²​compressed, ³​timezone, ⁴​site_short_name,
+#   ⁵​longitude</code></pre>
+</div>
+</div>
+<p>The cleaner way is to use <code>get_ts_traces2</code>, which does the hunting for dates automatically when given <code>start_time = 'all'</code> and <code>end_time = 'all'</code>.</p>
+<div class="cell" data-hash="gauge_data_pre_gauge_cache/html/unnamed-chunk-12_85b8cabb53d0c012a7504b2353e4804a">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>siteout_a <span class="ot">&lt;-</span> <span class="fu">get_ts_traces2</span>(<span class="at">state =</span> <span class="st">'NSW'</span>, </span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">site_list =</span> <span class="fu">c</span>(<span class="st">'422028'</span>, <span class="st">'410007'</span>), </span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>                            <span class="at">var_list =</span> <span class="st">"141"</span>,</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>                            <span class="at">start_time =</span> <span class="st">'all'</span>,</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>                            <span class="at">end_time =</span> <span class="st">'all'</span>,</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>                            <span class="at">interval =</span> <span class="st">'day'</span>,</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>                            <span class="at">data_type =</span> <span class="st">'mean'</span>,</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>                            <span class="at">returnformat =</span> <span class="st">'sitelist'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>That’s really just a wrapper over the manual method above, and also does not contain leading zeros. It can return a long dataframe if <code>returnformat = 'df'</code>, but for comparison I’ve used <code>returnformat = 'sitelist'</code>.</p>
+<div class="cell" data-hash="gauge_data_pre_gauge_cache/html/unnamed-chunk-13_1e35249b1f7658ae6b2332dfdeece6d4">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(siteout_a[[<span class="dv">1</span>]] <span class="sc">|&gt;</span> <span class="fu">select</span>(time, value, site_name, <span class="fu">everything</span>() ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 20
+  time                value site_name    error…¹ compr…² timez…³ site_…⁴ longi…⁵
+  &lt;dttm&gt;              &lt;dbl&gt; &lt;chr&gt;          &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;     &lt;dbl&gt;
+1 1979-01-10 11:30:00  528. YANCO CREEK…       0 0       10.0    YANCO …    146.
+2 1979-01-11 11:30:00  551. YANCO CREEK…       0 0       10.0    YANCO …    146.
+3 1979-01-12 11:30:00  523. YANCO CREEK…       0 0       10.0    YANCO …    146.
+4 1979-01-13 11:30:00  514. YANCO CREEK…       0 0       10.0    YANCO …    146.
+5 1979-01-14 11:30:00  504. YANCO CREEK…       0 0       10.0    YANCO …    146.
+6 1979-01-15 11:30:00  480. YANCO CREEK…       0 0       10.0    YANCO …    146.
+# … with 12 more variables: latitude &lt;dbl&gt;, org_name &lt;chr&gt;,
+#   quality_codes_id &lt;int&gt;, site &lt;chr&gt;, variable_short_name &lt;chr&gt;,
+#   precision &lt;chr&gt;, subdesc &lt;chr&gt;, variable &lt;chr&gt;, units &lt;chr&gt;,
+#   variable_name &lt;chr&gt;, quality_codes &lt;chr&gt;, data_type &lt;chr&gt;, and abbreviated
+#   variable names ¹​error_num, ²​compressed, ³​timezone, ⁴​site_short_name,
+#   ⁵​longitude</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(siteout_a[[<span class="dv">2</span>]] <span class="sc">|&gt;</span> <span class="fu">select</span>(time, value, site_name, <span class="fu">everything</span>() ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 20
+  time                value site_name    error…¹ compr…² timez…³ site_…⁴ longi…⁵
+  &lt;dttm&gt;              &lt;dbl&gt; &lt;chr&gt;          &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;     &lt;dbl&gt;
+1 1999-06-26 16:38:00  707. BARWON RIVE…       0 0       10.0    BARWON…    146.
+2 1999-06-27 16:38:00  782. BARWON RIVE…       0 0       10.0    BARWON…    146.
+3 1999-06-28 16:38:00  858. BARWON RIVE…       0 0       10.0    BARWON…    146.
+4 1999-06-29 16:38:00  905. BARWON RIVE…       0 0       10.0    BARWON…    146.
+5 1999-06-30 16:38:00  933. BARWON RIVE…       0 0       10.0    BARWON…    146.
+6 1999-07-01 16:38:00  952. BARWON RIVE…       0 0       10.0    BARWON…    146.
+# … with 12 more variables: latitude &lt;dbl&gt;, org_name &lt;chr&gt;,
+#   quality_codes_id &lt;int&gt;, site &lt;chr&gt;, variable_short_name &lt;chr&gt;,
+#   precision &lt;chr&gt;, subdesc &lt;chr&gt;, variable &lt;chr&gt;, units &lt;chr&gt;,
+#   variable_name &lt;chr&gt;, quality_codes &lt;chr&gt;, data_type &lt;chr&gt;, and abbreviated
+#   variable names ¹​error_num, ²​compressed, ³​timezone, ⁴​site_short_name,
+#   ⁵​longitude</code></pre>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

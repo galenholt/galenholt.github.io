@@ -1,0 +1,3181 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Galen Holt - Quarto notes</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<meta property="og:title" content="Galen Holt - Quarto notes">
+<meta property="og:description" content="If there’s not a Quarto project (which is not the same as an Rproject), i.e.&nbsp;the .qmds are standalone, then the above rmarkdown method works to set the root to the Rproject.">
+<meta property="og:site-name" content="Galen Holt">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Galen Holt</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../research.html">
+ <span class="menu-text">Research</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../code_demos.html" aria-current="page">
+ <span class="menu-text">Code Demos</span></a>
+  </li>  
+</ul>
+              <div class="quarto-toggle-container">
+                  <a href="" class="quarto-color-scheme-toggle nav-link" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+              </div>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Quarto notes</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code_demos.html" class="sidebar-item-text sidebar-link">Code Demos</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Small how-tos</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/smallpieces.html" class="sidebar-item-text sidebar-link">Bits and pieces</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/quarto_notes.html" class="sidebar-item-text sidebar-link active">Quarto notes</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../setup/rstudio_themes.html" class="sidebar-item-text sidebar-link">Editing Rstudio themes</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/zip_downloading.html" class="sidebar-item-text sidebar-link">Download and unpack zips</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/json_api_construction.html" class="sidebar-item-text sidebar-link">Building JSON syntax from R for API calls</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/list_names.html" class="sidebar-item-text sidebar-link">Naming rules for lists</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../publishing/private_github_figshare.html" class="sidebar-item-text sidebar-link">Creating Figshare from private github</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/error_handling.html" class="sidebar-item-text sidebar-link">Intro to error handling</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Plotting</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/ggplot_themes.html" class="sidebar-item-text sidebar-link">ggplot themes</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/setting_colors_for_groups.html" class="sidebar-item-text sidebar-link">Consistent colors</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/tweaks_tricks.html" class="sidebar-item-text sidebar-link">Saving and themeing plots</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/hcl_exploration.html" class="sidebar-item-text sidebar-link">Exploring HCL colorspace</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/rgb_to_hex.html" class="sidebar-item-text sidebar-link">Converting RGB to hex colors</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/fonts.html" class="sidebar-item-text sidebar-link">Fonts</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/faded_colors.html" class="sidebar-item-text sidebar-link">Faded 2d colour ramps</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/math_in_ggplot.html" class="sidebar-item-text sidebar-link">Latex in ggplot with latex2exp</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">Website</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../website_notes/quarto_website_github.html" class="sidebar-item-text sidebar-link">Getting started</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../website_notes/updating_website.html" class="sidebar-item-text sidebar-link">Updating and maintaining website</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">Theory, simulation, statistics, probability</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../simmodelling/twoDautocorr.html" class="sidebar-item-text sidebar-link">Generate 2d autocorrelation</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats_probability/expected_shannon.html" class="sidebar-item-text sidebar-link">Bootstrapping the expected shannon diversity</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats_probability/fitting_lognormals.html" class="sidebar-item-text sidebar-link">Intro to fitting lognormals</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats_probability/shifting_normals.html" class="sidebar-item-text sidebar-link">Basic shifts of normal moments</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats_probability/fitting_truncated.html" class="sidebar-item-text sidebar-link">Shifting and fitting truncated lognormals</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">Drones</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../drones/overlaps_reactive.html" class="sidebar-item-text sidebar-link">Calculations for flight planning</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../drones/overlaps.html" class="sidebar-item-text sidebar-link">Figuring out flight plan calcs</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pix4d/read_pix4d_outputs.html" class="sidebar-item-text sidebar-link">Reading and plotting pix4d outputs</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">Observable</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../observable/trying_observable.html" class="sidebar-item-text sidebar-link">Figuring out how to use ojs chunks</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">R and python</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/python_setup.html" class="sidebar-item-text sidebar-link">Python environments with pyenv and poetry</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/py_in_rpkg.html" class="sidebar-item-text sidebar-link">Wrapping python in R package</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/RandPython.html" class="sidebar-item-text sidebar-link">Using R and python together</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/R_py_shared_projects.html" class="sidebar-item-text sidebar-link">Shared R-py project structure</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/py_r_dates.html" class="sidebar-item-text sidebar-link">Passing complex objects py-R</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/R_py_type_passing.html" class="sidebar-item-text sidebar-link">Passing types between R and python</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/py_r_project_overview.html" class="sidebar-item-text sidebar-link">Overview of building R-py package</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/python_nameerror.html" class="sidebar-item-text sidebar-link">Intermittent NameError py-R</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/python_updated_functions.html" class="sidebar-item-text sidebar-link">Small python bits</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">Setting up projects</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/rig.html" class="sidebar-item-text sidebar-link">Managing old R versions with rig</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/managingprivate.html" class="sidebar-item-text sidebar-link">Private data for website repo</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../setup/R_in_VS.html" class="sidebar-item-text sidebar-link">Using R in VScode</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/end_run_renv.html" class="sidebar-item-text sidebar-link">Dealing with renv failures</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true">Building packages</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../package/package_creation.html" class="sidebar-item-text sidebar-link">First pass at building a package</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../vicwater/vicwater_testing.html" class="sidebar-item-text sidebar-link">Testing VicWater API</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="true">Data</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data_acquisition/bom_gauges.html" class="sidebar-item-text sidebar-link">BOM gauge locations with httr2</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../vicwater/vicwater_api_howtocall.html" class="sidebar-item-text sidebar-link">Experimenting with API calls for {vicwater}</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data_acquisition/gauge_data_pre_gauge.html" class="sidebar-item-text sidebar-link">Data from pre-gauged periods</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data_acquisition/ALA_data_pull.html" class="sidebar-item-text sidebar-link">Pulling data from Atlas of Living Australia</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" aria-expanded="true">R parallel processing (general)</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/interrogating_parallel.html" class="sidebar-item-text sidebar-link">Interrogating parallel resources</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/nested_parallel.html" class="sidebar-item-text sidebar-link">Testing nested parallelism</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/parallel_speed.html" class="sidebar-item-text sidebar-link">Speed-testing parallel</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/globals_speed.html" class="sidebar-item-text sidebar-link">Global objects and parallel speed</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/nested_dependent_iterations.html" class="sidebar-item-text sidebar-link">Dependencies of inner parallelism on outer</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" aria-expanded="true">R parallel processing on HPC</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/hpc_ephemera.html" class="sidebar-item-text sidebar-link">HPC notes</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/plans_and_hpc.html" class="sidebar-item-text sidebar-link">Using single-machine plans on HPC</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/initial_future_batchtools.html" class="sidebar-item-text sidebar-link">Figuring out future.batchtools</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/changing_batchtools_template.html" class="sidebar-item-text sidebar-link">Switching templates, matching to resources</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/template_modification.html" class="sidebar-item-text sidebar-link">Modifying templates</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/master_persistence.html" class="sidebar-item-text sidebar-link">Consequences of master timing out</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/nested_parallel_hpc.html" class="sidebar-item-text sidebar-link">Nested parallel on HPC nodes and cores</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/conditional_plans.html" class="sidebar-item-text sidebar-link">Conditional plans for local and HPC</a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#quarto-root-directory" id="toc-quarto-root-directory" class="nav-link active" data-scroll-target="#quarto-root-directory">Quarto root directory</a>
+  <ul class="collapse">
+  <li><a href="#linking-pages" id="toc-linking-pages" class="nav-link" data-scroll-target="#linking-pages">Linking pages</a></li>
+  <li><a href="#nested-rprojects" id="toc-nested-rprojects" class="nav-link" data-scroll-target="#nested-rprojects">Nested Rprojects</a></li>
+  </ul></li>
+  <li><a href="#headers-in-vs-code-vs-rstudio" id="toc-headers-in-vs-code-vs-rstudio" class="nav-link" data-scroll-target="#headers-in-vs-code-vs-rstudio">Headers in VS code vs Rstudio</a></li>
+  <li><a href="#python-paths" id="toc-python-paths" class="nav-link" data-scroll-target="#python-paths">Python paths</a>
+  <ul class="collapse">
+  <li><a href="#rprofile" id="toc-rprofile" class="nav-link" data-scroll-target="#rprofile">Rprofile</a></li>
+  <li><a href="#quarto-environment" id="toc-quarto-environment" class="nav-link" data-scroll-target="#quarto-environment">Quarto environment</a></li>
+  </ul></li>
+  <li><a href="#table-printing" id="toc-table-printing" class="nav-link" data-scroll-target="#table-printing">Table printing</a>
+  <ul class="collapse">
+  <li><a href="#style" id="toc-style" class="nav-link" data-scroll-target="#style">Style</a></li>
+  <li><a href="#row-number" id="toc-row-number" class="nav-link" data-scroll-target="#row-number">Row number</a></li>
+  <li><a href="#figure-captions-with-variables" id="toc-figure-captions-with-variables" class="nav-link" data-scroll-target="#figure-captions-with-variables">Figure captions with variables</a></li>
+  </ul></li>
+  <li><a href="#website" id="toc-website" class="nav-link" data-scroll-target="#website">Website</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Quarto notes</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="cell" data-hash="quarto_notes_cache/html/unnamed-chunk-1_c424d2d99e083a1889045fe398c51880">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="quarto-root-directory" class="level2">
+<h2 class="anchored" data-anchor-id="quarto-root-directory">Quarto root directory</h2>
+<p>If there’s not a Quarto project (<em>which is not the same as an Rproject</em>), i.e.&nbsp;the .qmds are standalone, then the above rmarkdown method works to set the root to the Rproject. But if there is a Quarto project (I’ve moved to almost always doing this), then we can set the Quarto root directory in the _quarto.yml for the project. There are actually two useful settings we can make there- a project-wide output directory, and what to use to execute. There are (to my knowledge) two options for <code>execute-dir</code>- <code>execute-dir: file</code> and <code>execute-dir: project</code>, which set the root for rendering as the file location or the project. It almost always makes most sense to use <code>project</code>, because then everything uses the same reference for relative paths. For this website, that yaml is</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">project</span><span class="kw">:</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">type</span><span class="kw">:</span><span class="at"> website</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">output-dir</span><span class="kw">:</span><span class="at"> docs</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">execute-dir</span><span class="kw">:</span><span class="at"> project</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="linking-pages" class="level3">
+<h3 class="anchored" data-anchor-id="linking-pages">Linking pages</h3>
+<p>This is fairly specific to websites (and I guess books?). Sorted out in the <a href="../website_notes/updating_website.html">website-specific page</a>. Takehome is links need to be relative to the file. And so those in different directories often have to use <code>../other_dir/other_file.qmd</code> to get up and over.</p>
+</section>
+<section id="nested-rprojects" class="level3">
+<h3 class="anchored" data-anchor-id="nested-rprojects">Nested Rprojects</h3>
+<p>The only exception that I’ve run into so far is a weird situation where I have a Quarto project with an Rproject in a subdirectory because I want the Quarto to have access to several different code projects. The catch is that if I use paths relative to the R project and ask Quarto to render, all the paths are wrong. They are also wrong if I <code>Run</code> or run the code cells interactively. If I add the Rmarkdown setup chunk above <code>knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())</code>, then <code>Run</code> and interactive stuff works, but when I try to <code>quarto render</code>, it can’t find the Rproject because it’s looking at the same level and up, and the Rproj is in a directory down.</p>
+<p>So, the workaround I’ve come up with is to set <code>execute-dir: file</code>, so the dir is set to the file dir, which is inside the Rproject. Then, use an Rmarkdown-style setup chunk with <code>knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())</code> to reset the directory to the Rproject root dir.</p>
+<div class="cell" data-hash="quarto_notes_cache/html/setup_65e2b6b23d15c9dd0ab532c7eb739b22">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r setup}</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_knit<span class="sc">$</span><span class="fu">set</span>(<span class="at">root.dir =</span> rprojroot<span class="sc">::</span><span class="fu">find_rstudio_root_file</span>())</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Then the code both <code>Run</code>s and <code>render</code>s, and we don’t have to keep track of paths relative to two different nested projects manually. This approach works if the internal projects are self-contained (and we often want them to be). But if we need to render something across several, we’ll need to do something different.</p>
+<p>Other options that might work but I haven’t tried are parameterised notebooks (with conditional params?) Or using freeze and virtual environments (see <a href="https://quarto.org/docs/projects/code-execution.html">docs</a>)</p>
+<p>What I really want is a way to set the <code>execute-dir</code> on a file-by-file basis in the header yaml, but that doesn’t seem to work.</p>
+</section>
+</section>
+<section id="headers-in-vs-code-vs-rstudio" class="level2">
+<h2 class="anchored" data-anchor-id="headers-in-vs-code-vs-rstudio">Headers in VS code vs Rstudio</h2>
+<p>I had a few notebooks that ran fine in Rstudio, but wouldn’t render in VS (or from command line). I got the very cryptic error <code>YAMLException: can not read a block mapping entry; a multiline key may not be an implicit key</code> with a line and col number that didn’t seem to correspond to anything with YAML in the project- not the file header, not the _quarto.yml, not _quarto.yaml.local, and nothing particularly useful showed up on google.</p>
+<p>The solution seems to be to add an explicit line for <code>editor: visual</code> in the file header, e.g.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> Test</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">author</span><span class="kw">:</span><span class="at"> Galen Holt</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span><span class="kw">:</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">html</span><span class="kw">:</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">df-print</span><span class="kw">:</span><span class="at"> paged</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">editor</span><span class="kw">:</span><span class="at"> visual</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>It <em>doesn’t</em> seem to matter if the title and author are wrapped in double-quotes (which was one suggestion online).</p>
+<p>I <em>think</em> what’s happening is that Rstudio’s visual editor is adding some hidden formatting syntax that gets exposed and looks like YAML to VS and the quarto CLI.</p>
+</section>
+<section id="python-paths" class="level2">
+<h2 class="anchored" data-anchor-id="python-paths">Python paths</h2>
+<p>If we use {reticulate}, R wants to know where the python lives, and gets grumpy if it can’t find it. Sometimes it silently points somewhere we don’t want, and other times we see errors like</p>
+<pre><code>Error creating conda environment 'C:/Users/galen/Documents/Website/galen_website/renv/python/r-reticulate' [exit code 1]</code></pre>
+<section id="rprofile" class="level3">
+<h3 class="anchored" data-anchor-id="rprofile">Rprofile</h3>
+<p>The main solution is to edit <code>.Rprofile</code> to set the <code>RETICULATE_PYTHON</code> environment variable,</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">RETICULATE_PYTHON =</span> <span class="st">'../werptoolkitpy/.venv/Scripts/python.exe'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Note that this can either be a full path, or relative to the R project directory- in the situation above, I have the R project nested in a Quarto project that also contains a py project, so we need to go up and over to get to the <code>.venv</code>.</p>
+<p>This is needed to get any of the reticulate code to work (though you can set it on a file-by-file basis.</p>
+<p>Additional issues can come up with Quarto though.</p>
+</section>
+<section id="quarto-environment" class="level3">
+<h3 class="anchored" data-anchor-id="quarto-environment">Quarto environment</h3>
+<p>When we run Quarto inside Rstudio in parallel with an R project, everything works fine. But, if Quarto is run through VScode, for some reason it doesn’t hit the .Rprofile and so doesn’t run the line we just added, and we’re back to using the wrong python and errors about conda. To make it more complex, Quarto has <em>its own</em> python environment variable <code>QUARTO_PYTHON</code>. This is all more complicated when the Quarto project directory doesn’t match the R project directory.</p>
+<p>The solution is to set up a <code>_environment</code> file in the Quarto project directory to set those variables according to <a href="https://quarto.org/docs/projects/environment.html#overview">the docs</a> (and maybe <code>PY_PYTHON</code> too, just to be safe- I can’t find the docs to know how these differ). For my case, my <code>_environment</code> file looks like</p>
+<pre><code>RETICULATE_PYTHON='../werptoolkitpy/.venv/Scripts/python.exe'
+QUARTO_PYTHON='werptoolkitpy/.venv/Scripts/python.exe'
+PY_PYTHON='werptoolkitpy/.venv/Scripts/python.exe'</code></pre>
+<p>Here, again, I have Rproject nested in Quarto proj, <em>but they access this file differently</em> so the paths differ even though they point to the same place. <code>RETICULATE_PYTHON</code> needs to get up and out of the R subdir and over to the py side of things, while the Quarto project is the outer dir and so <code>QUARTO_PYTHON</code> can go straight in to the py subdir.</p>
+<p>As far as I can tell, this <em>does NOT</em> supersede the necessity of setting <code>.Rprofile</code>, which is needed for the R code to run. This stuff in <code>_environment</code> is in <em>addition</em> so Quarto (especially in VS) can access the right info.</p>
+</section>
+</section>
+<section id="table-printing" class="level2">
+<h2 class="anchored" data-anchor-id="table-printing">Table printing</h2>
+<section id="style" class="level3">
+<h3 class="anchored" data-anchor-id="style">Style</h3>
+<p>Use the yaml header to declare style, one of <code>paged</code>, <code>kable</code>, <code>tibble</code>, and <code>default</code> as in <a href="https://quarto.org/docs/computations/r.html#data-frames">documentation</a>. In a twist, <code>default</code> seems to be the way to do some customisation using S3, see <a href="https://debruine.github.io/quarto_demo/table.html" class="uri">https://debruine.github.io/quarto_demo/table.html</a>, though I haven’t played with that.</p>
+<p>So, typically the yaml header would be something like</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span><span class="kw">:</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">html</span><span class="kw">:</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">df-print</span><span class="kw">:</span><span class="at"> paged</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Can I change that for a single chunk? Work on that later. Putting it in as <code>#| df-print: option</code> isn’t recognized.</p>
+</section>
+<section id="row-number" class="level3">
+<h3 class="anchored" data-anchor-id="row-number">Row number</h3>
+<p>The different <code>df-print</code> options have different defaults of how much they print (and with paged it doesn’t matter so much). As far as I can tell, <code>tibble</code> prints the whole thing, and <code>kable</code> prints 10 rows. Sometimes we want to control that though - maybe we have a df with 13 rows, and we want to just print the whole thing.</p>
+<p>The default is 10, though that’s not working when I render to the web for some reason</p>
+<div class="cell" data-hash="quarto_notes_cache/html/unnamed-chunk-2_9f46229a8cc95f2ea8481332b99644ff">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>iris</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Sepal.Length</th>
+<th style="text-align: right;">Sepal.Width</th>
+<th style="text-align: right;">Petal.Length</th>
+<th style="text-align: right;">Petal.Width</th>
+<th style="text-align: left;">Species</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">3.5</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4.9</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4.7</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4.6</td>
+<td style="text-align: right;">3.1</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">3.6</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.4</td>
+<td style="text-align: right;">3.9</td>
+<td style="text-align: right;">1.7</td>
+<td style="text-align: right;">0.4</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4.6</td>
+<td style="text-align: right;">3.4</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: right;">0.3</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">3.4</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4.4</td>
+<td style="text-align: right;">2.9</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4.9</td>
+<td style="text-align: right;">3.1</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.4</td>
+<td style="text-align: right;">3.7</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4.8</td>
+<td style="text-align: right;">3.4</td>
+<td style="text-align: right;">1.6</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4.8</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4.3</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">1.1</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.8</td>
+<td style="text-align: right;">4.0</td>
+<td style="text-align: right;">1.2</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.7</td>
+<td style="text-align: right;">4.4</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">0.4</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.4</td>
+<td style="text-align: right;">3.9</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: right;">0.4</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">3.5</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: right;">0.3</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.7</td>
+<td style="text-align: right;">3.8</td>
+<td style="text-align: right;">1.7</td>
+<td style="text-align: right;">0.3</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">3.8</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">0.3</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.4</td>
+<td style="text-align: right;">3.4</td>
+<td style="text-align: right;">1.7</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">3.7</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">0.4</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4.6</td>
+<td style="text-align: right;">3.6</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">3.3</td>
+<td style="text-align: right;">1.7</td>
+<td style="text-align: right;">0.5</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4.8</td>
+<td style="text-align: right;">3.4</td>
+<td style="text-align: right;">1.9</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">1.6</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">3.4</td>
+<td style="text-align: right;">1.6</td>
+<td style="text-align: right;">0.4</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.2</td>
+<td style="text-align: right;">3.5</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.2</td>
+<td style="text-align: right;">3.4</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4.7</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: right;">1.6</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4.8</td>
+<td style="text-align: right;">3.1</td>
+<td style="text-align: right;">1.6</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.4</td>
+<td style="text-align: right;">3.4</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">0.4</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.2</td>
+<td style="text-align: right;">4.1</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.5</td>
+<td style="text-align: right;">4.2</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4.9</td>
+<td style="text-align: right;">3.1</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: right;">1.2</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.5</td>
+<td style="text-align: right;">3.5</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4.9</td>
+<td style="text-align: right;">3.6</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4.4</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">3.4</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">3.5</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: right;">0.3</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4.5</td>
+<td style="text-align: right;">2.3</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: right;">0.3</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4.4</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">3.5</td>
+<td style="text-align: right;">1.6</td>
+<td style="text-align: right;">0.6</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">3.8</td>
+<td style="text-align: right;">1.9</td>
+<td style="text-align: right;">0.4</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4.8</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: right;">0.3</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">3.8</td>
+<td style="text-align: right;">1.6</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4.6</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.3</td>
+<td style="text-align: right;">3.7</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">3.3</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7.0</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: right;">4.7</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: right;">4.5</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.9</td>
+<td style="text-align: right;">3.1</td>
+<td style="text-align: right;">4.9</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.5</td>
+<td style="text-align: right;">2.3</td>
+<td style="text-align: right;">4.0</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.5</td>
+<td style="text-align: right;">2.8</td>
+<td style="text-align: right;">4.6</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.7</td>
+<td style="text-align: right;">2.8</td>
+<td style="text-align: right;">4.5</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.3</td>
+<td style="text-align: right;">3.3</td>
+<td style="text-align: right;">4.7</td>
+<td style="text-align: right;">1.6</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4.9</td>
+<td style="text-align: right;">2.4</td>
+<td style="text-align: right;">3.3</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.6</td>
+<td style="text-align: right;">2.9</td>
+<td style="text-align: right;">4.6</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.2</td>
+<td style="text-align: right;">2.7</td>
+<td style="text-align: right;">3.9</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">2.0</td>
+<td style="text-align: right;">3.5</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.9</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">4.2</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.0</td>
+<td style="text-align: right;">2.2</td>
+<td style="text-align: right;">4.0</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.1</td>
+<td style="text-align: right;">2.9</td>
+<td style="text-align: right;">4.7</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.6</td>
+<td style="text-align: right;">2.9</td>
+<td style="text-align: right;">3.6</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.7</td>
+<td style="text-align: right;">3.1</td>
+<td style="text-align: right;">4.4</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.6</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">4.5</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.8</td>
+<td style="text-align: right;">2.7</td>
+<td style="text-align: right;">4.1</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.2</td>
+<td style="text-align: right;">2.2</td>
+<td style="text-align: right;">4.5</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.6</td>
+<td style="text-align: right;">2.5</td>
+<td style="text-align: right;">3.9</td>
+<td style="text-align: right;">1.1</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.9</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: right;">4.8</td>
+<td style="text-align: right;">1.8</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.1</td>
+<td style="text-align: right;">2.8</td>
+<td style="text-align: right;">4.0</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.3</td>
+<td style="text-align: right;">2.5</td>
+<td style="text-align: right;">4.9</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.1</td>
+<td style="text-align: right;">2.8</td>
+<td style="text-align: right;">4.7</td>
+<td style="text-align: right;">1.2</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">2.9</td>
+<td style="text-align: right;">4.3</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.6</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">4.4</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.8</td>
+<td style="text-align: right;">2.8</td>
+<td style="text-align: right;">4.8</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.7</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">1.7</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.0</td>
+<td style="text-align: right;">2.9</td>
+<td style="text-align: right;">4.5</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.7</td>
+<td style="text-align: right;">2.6</td>
+<td style="text-align: right;">3.5</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.5</td>
+<td style="text-align: right;">2.4</td>
+<td style="text-align: right;">3.8</td>
+<td style="text-align: right;">1.1</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.5</td>
+<td style="text-align: right;">2.4</td>
+<td style="text-align: right;">3.7</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.8</td>
+<td style="text-align: right;">2.7</td>
+<td style="text-align: right;">3.9</td>
+<td style="text-align: right;">1.2</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.0</td>
+<td style="text-align: right;">2.7</td>
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">1.6</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.4</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">4.5</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.0</td>
+<td style="text-align: right;">3.4</td>
+<td style="text-align: right;">4.5</td>
+<td style="text-align: right;">1.6</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.7</td>
+<td style="text-align: right;">3.1</td>
+<td style="text-align: right;">4.7</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.3</td>
+<td style="text-align: right;">2.3</td>
+<td style="text-align: right;">4.4</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.6</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">4.1</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.5</td>
+<td style="text-align: right;">2.5</td>
+<td style="text-align: right;">4.0</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.5</td>
+<td style="text-align: right;">2.6</td>
+<td style="text-align: right;">4.4</td>
+<td style="text-align: right;">1.2</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.1</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">4.6</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.8</td>
+<td style="text-align: right;">2.6</td>
+<td style="text-align: right;">4.0</td>
+<td style="text-align: right;">1.2</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">2.3</td>
+<td style="text-align: right;">3.3</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.6</td>
+<td style="text-align: right;">2.7</td>
+<td style="text-align: right;">4.2</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.7</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">4.2</td>
+<td style="text-align: right;">1.2</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.7</td>
+<td style="text-align: right;">2.9</td>
+<td style="text-align: right;">4.2</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.2</td>
+<td style="text-align: right;">2.9</td>
+<td style="text-align: right;">4.3</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">2.5</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">1.1</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.7</td>
+<td style="text-align: right;">2.8</td>
+<td style="text-align: right;">4.1</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.3</td>
+<td style="text-align: right;">3.3</td>
+<td style="text-align: right;">6.0</td>
+<td style="text-align: right;">2.5</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.8</td>
+<td style="text-align: right;">2.7</td>
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">1.9</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7.1</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">5.9</td>
+<td style="text-align: right;">2.1</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.3</td>
+<td style="text-align: right;">2.9</td>
+<td style="text-align: right;">5.6</td>
+<td style="text-align: right;">1.8</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.5</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">5.8</td>
+<td style="text-align: right;">2.2</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">7.6</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">6.6</td>
+<td style="text-align: right;">2.1</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4.9</td>
+<td style="text-align: right;">2.5</td>
+<td style="text-align: right;">4.5</td>
+<td style="text-align: right;">1.7</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">7.3</td>
+<td style="text-align: right;">2.9</td>
+<td style="text-align: right;">6.3</td>
+<td style="text-align: right;">1.8</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.7</td>
+<td style="text-align: right;">2.5</td>
+<td style="text-align: right;">5.8</td>
+<td style="text-align: right;">1.8</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">7.2</td>
+<td style="text-align: right;">3.6</td>
+<td style="text-align: right;">6.1</td>
+<td style="text-align: right;">2.5</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.5</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">2.0</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">2.7</td>
+<td style="text-align: right;">5.3</td>
+<td style="text-align: right;">1.9</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.8</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">5.5</td>
+<td style="text-align: right;">2.1</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.7</td>
+<td style="text-align: right;">2.5</td>
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">2.0</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.8</td>
+<td style="text-align: right;">2.8</td>
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">2.4</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: right;">5.3</td>
+<td style="text-align: right;">2.3</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.5</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">5.5</td>
+<td style="text-align: right;">1.8</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">7.7</td>
+<td style="text-align: right;">3.8</td>
+<td style="text-align: right;">6.7</td>
+<td style="text-align: right;">2.2</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7.7</td>
+<td style="text-align: right;">2.6</td>
+<td style="text-align: right;">6.9</td>
+<td style="text-align: right;">2.3</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.0</td>
+<td style="text-align: right;">2.2</td>
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.9</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: right;">5.7</td>
+<td style="text-align: right;">2.3</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.6</td>
+<td style="text-align: right;">2.8</td>
+<td style="text-align: right;">4.9</td>
+<td style="text-align: right;">2.0</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7.7</td>
+<td style="text-align: right;">2.8</td>
+<td style="text-align: right;">6.7</td>
+<td style="text-align: right;">2.0</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.3</td>
+<td style="text-align: right;">2.7</td>
+<td style="text-align: right;">4.9</td>
+<td style="text-align: right;">1.8</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.7</td>
+<td style="text-align: right;">3.3</td>
+<td style="text-align: right;">5.7</td>
+<td style="text-align: right;">2.1</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">7.2</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: right;">6.0</td>
+<td style="text-align: right;">1.8</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.2</td>
+<td style="text-align: right;">2.8</td>
+<td style="text-align: right;">4.8</td>
+<td style="text-align: right;">1.8</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.1</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">4.9</td>
+<td style="text-align: right;">1.8</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">2.8</td>
+<td style="text-align: right;">5.6</td>
+<td style="text-align: right;">2.1</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">7.2</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">5.8</td>
+<td style="text-align: right;">1.6</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7.4</td>
+<td style="text-align: right;">2.8</td>
+<td style="text-align: right;">6.1</td>
+<td style="text-align: right;">1.9</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">7.9</td>
+<td style="text-align: right;">3.8</td>
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">2.0</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">2.8</td>
+<td style="text-align: right;">5.6</td>
+<td style="text-align: right;">2.2</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.3</td>
+<td style="text-align: right;">2.8</td>
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.1</td>
+<td style="text-align: right;">2.6</td>
+<td style="text-align: right;">5.6</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">7.7</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">6.1</td>
+<td style="text-align: right;">2.3</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.3</td>
+<td style="text-align: right;">3.4</td>
+<td style="text-align: right;">5.6</td>
+<td style="text-align: right;">2.4</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">3.1</td>
+<td style="text-align: right;">5.5</td>
+<td style="text-align: right;">1.8</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.0</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">4.8</td>
+<td style="text-align: right;">1.8</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.9</td>
+<td style="text-align: right;">3.1</td>
+<td style="text-align: right;">5.4</td>
+<td style="text-align: right;">2.1</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.7</td>
+<td style="text-align: right;">3.1</td>
+<td style="text-align: right;">5.6</td>
+<td style="text-align: right;">2.4</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.9</td>
+<td style="text-align: right;">3.1</td>
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">2.3</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.8</td>
+<td style="text-align: right;">2.7</td>
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">1.9</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.8</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: right;">5.9</td>
+<td style="text-align: right;">2.3</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.7</td>
+<td style="text-align: right;">3.3</td>
+<td style="text-align: right;">5.7</td>
+<td style="text-align: right;">2.5</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.7</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">5.2</td>
+<td style="text-align: right;">2.3</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.3</td>
+<td style="text-align: right;">2.5</td>
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">1.9</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.5</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">5.2</td>
+<td style="text-align: right;">2.0</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.2</td>
+<td style="text-align: right;">3.4</td>
+<td style="text-align: right;">5.4</td>
+<td style="text-align: right;">2.3</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.9</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">1.8</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>To print more rows, we can use the <code>rows.print</code> option. <em>NOTE</em>- this used to work, and now does not. Will need to sort out a new solution.</p>
+<div class="cell" data-rows.print="15" data-hash="quarto_notes_cache/html/unnamed-chunk-3_432e72a82a84ed2c8483127afcd2b88d">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| rows.print: 15</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>iris</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Sepal.Length</th>
+<th style="text-align: right;">Sepal.Width</th>
+<th style="text-align: right;">Petal.Length</th>
+<th style="text-align: right;">Petal.Width</th>
+<th style="text-align: left;">Species</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">3.5</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4.9</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4.7</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4.6</td>
+<td style="text-align: right;">3.1</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">3.6</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.4</td>
+<td style="text-align: right;">3.9</td>
+<td style="text-align: right;">1.7</td>
+<td style="text-align: right;">0.4</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4.6</td>
+<td style="text-align: right;">3.4</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: right;">0.3</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">3.4</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4.4</td>
+<td style="text-align: right;">2.9</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4.9</td>
+<td style="text-align: right;">3.1</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.4</td>
+<td style="text-align: right;">3.7</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4.8</td>
+<td style="text-align: right;">3.4</td>
+<td style="text-align: right;">1.6</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4.8</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4.3</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">1.1</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.8</td>
+<td style="text-align: right;">4.0</td>
+<td style="text-align: right;">1.2</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.7</td>
+<td style="text-align: right;">4.4</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">0.4</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.4</td>
+<td style="text-align: right;">3.9</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: right;">0.4</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">3.5</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: right;">0.3</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.7</td>
+<td style="text-align: right;">3.8</td>
+<td style="text-align: right;">1.7</td>
+<td style="text-align: right;">0.3</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">3.8</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">0.3</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.4</td>
+<td style="text-align: right;">3.4</td>
+<td style="text-align: right;">1.7</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">3.7</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">0.4</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4.6</td>
+<td style="text-align: right;">3.6</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">3.3</td>
+<td style="text-align: right;">1.7</td>
+<td style="text-align: right;">0.5</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4.8</td>
+<td style="text-align: right;">3.4</td>
+<td style="text-align: right;">1.9</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">1.6</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">3.4</td>
+<td style="text-align: right;">1.6</td>
+<td style="text-align: right;">0.4</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.2</td>
+<td style="text-align: right;">3.5</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.2</td>
+<td style="text-align: right;">3.4</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4.7</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: right;">1.6</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4.8</td>
+<td style="text-align: right;">3.1</td>
+<td style="text-align: right;">1.6</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.4</td>
+<td style="text-align: right;">3.4</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">0.4</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.2</td>
+<td style="text-align: right;">4.1</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.5</td>
+<td style="text-align: right;">4.2</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4.9</td>
+<td style="text-align: right;">3.1</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: right;">1.2</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.5</td>
+<td style="text-align: right;">3.5</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4.9</td>
+<td style="text-align: right;">3.6</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4.4</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">3.4</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">3.5</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: right;">0.3</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4.5</td>
+<td style="text-align: right;">2.3</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: right;">0.3</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4.4</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">3.5</td>
+<td style="text-align: right;">1.6</td>
+<td style="text-align: right;">0.6</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">3.8</td>
+<td style="text-align: right;">1.9</td>
+<td style="text-align: right;">0.4</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4.8</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: right;">0.3</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">3.8</td>
+<td style="text-align: right;">1.6</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4.6</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.3</td>
+<td style="text-align: right;">3.7</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">3.3</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7.0</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: right;">4.7</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: right;">4.5</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.9</td>
+<td style="text-align: right;">3.1</td>
+<td style="text-align: right;">4.9</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.5</td>
+<td style="text-align: right;">2.3</td>
+<td style="text-align: right;">4.0</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.5</td>
+<td style="text-align: right;">2.8</td>
+<td style="text-align: right;">4.6</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.7</td>
+<td style="text-align: right;">2.8</td>
+<td style="text-align: right;">4.5</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.3</td>
+<td style="text-align: right;">3.3</td>
+<td style="text-align: right;">4.7</td>
+<td style="text-align: right;">1.6</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4.9</td>
+<td style="text-align: right;">2.4</td>
+<td style="text-align: right;">3.3</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.6</td>
+<td style="text-align: right;">2.9</td>
+<td style="text-align: right;">4.6</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.2</td>
+<td style="text-align: right;">2.7</td>
+<td style="text-align: right;">3.9</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">2.0</td>
+<td style="text-align: right;">3.5</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.9</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">4.2</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.0</td>
+<td style="text-align: right;">2.2</td>
+<td style="text-align: right;">4.0</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.1</td>
+<td style="text-align: right;">2.9</td>
+<td style="text-align: right;">4.7</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.6</td>
+<td style="text-align: right;">2.9</td>
+<td style="text-align: right;">3.6</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.7</td>
+<td style="text-align: right;">3.1</td>
+<td style="text-align: right;">4.4</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.6</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">4.5</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.8</td>
+<td style="text-align: right;">2.7</td>
+<td style="text-align: right;">4.1</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.2</td>
+<td style="text-align: right;">2.2</td>
+<td style="text-align: right;">4.5</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.6</td>
+<td style="text-align: right;">2.5</td>
+<td style="text-align: right;">3.9</td>
+<td style="text-align: right;">1.1</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.9</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: right;">4.8</td>
+<td style="text-align: right;">1.8</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.1</td>
+<td style="text-align: right;">2.8</td>
+<td style="text-align: right;">4.0</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.3</td>
+<td style="text-align: right;">2.5</td>
+<td style="text-align: right;">4.9</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.1</td>
+<td style="text-align: right;">2.8</td>
+<td style="text-align: right;">4.7</td>
+<td style="text-align: right;">1.2</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">2.9</td>
+<td style="text-align: right;">4.3</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.6</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">4.4</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.8</td>
+<td style="text-align: right;">2.8</td>
+<td style="text-align: right;">4.8</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.7</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">1.7</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.0</td>
+<td style="text-align: right;">2.9</td>
+<td style="text-align: right;">4.5</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.7</td>
+<td style="text-align: right;">2.6</td>
+<td style="text-align: right;">3.5</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.5</td>
+<td style="text-align: right;">2.4</td>
+<td style="text-align: right;">3.8</td>
+<td style="text-align: right;">1.1</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.5</td>
+<td style="text-align: right;">2.4</td>
+<td style="text-align: right;">3.7</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.8</td>
+<td style="text-align: right;">2.7</td>
+<td style="text-align: right;">3.9</td>
+<td style="text-align: right;">1.2</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.0</td>
+<td style="text-align: right;">2.7</td>
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">1.6</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.4</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">4.5</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.0</td>
+<td style="text-align: right;">3.4</td>
+<td style="text-align: right;">4.5</td>
+<td style="text-align: right;">1.6</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.7</td>
+<td style="text-align: right;">3.1</td>
+<td style="text-align: right;">4.7</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.3</td>
+<td style="text-align: right;">2.3</td>
+<td style="text-align: right;">4.4</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.6</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">4.1</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.5</td>
+<td style="text-align: right;">2.5</td>
+<td style="text-align: right;">4.0</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.5</td>
+<td style="text-align: right;">2.6</td>
+<td style="text-align: right;">4.4</td>
+<td style="text-align: right;">1.2</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.1</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">4.6</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.8</td>
+<td style="text-align: right;">2.6</td>
+<td style="text-align: right;">4.0</td>
+<td style="text-align: right;">1.2</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">2.3</td>
+<td style="text-align: right;">3.3</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.6</td>
+<td style="text-align: right;">2.7</td>
+<td style="text-align: right;">4.2</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.7</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">4.2</td>
+<td style="text-align: right;">1.2</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.7</td>
+<td style="text-align: right;">2.9</td>
+<td style="text-align: right;">4.2</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.2</td>
+<td style="text-align: right;">2.9</td>
+<td style="text-align: right;">4.3</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">2.5</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">1.1</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.7</td>
+<td style="text-align: right;">2.8</td>
+<td style="text-align: right;">4.1</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: left;">versicolor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.3</td>
+<td style="text-align: right;">3.3</td>
+<td style="text-align: right;">6.0</td>
+<td style="text-align: right;">2.5</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.8</td>
+<td style="text-align: right;">2.7</td>
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">1.9</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7.1</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">5.9</td>
+<td style="text-align: right;">2.1</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.3</td>
+<td style="text-align: right;">2.9</td>
+<td style="text-align: right;">5.6</td>
+<td style="text-align: right;">1.8</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.5</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">5.8</td>
+<td style="text-align: right;">2.2</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">7.6</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">6.6</td>
+<td style="text-align: right;">2.1</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4.9</td>
+<td style="text-align: right;">2.5</td>
+<td style="text-align: right;">4.5</td>
+<td style="text-align: right;">1.7</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">7.3</td>
+<td style="text-align: right;">2.9</td>
+<td style="text-align: right;">6.3</td>
+<td style="text-align: right;">1.8</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.7</td>
+<td style="text-align: right;">2.5</td>
+<td style="text-align: right;">5.8</td>
+<td style="text-align: right;">1.8</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">7.2</td>
+<td style="text-align: right;">3.6</td>
+<td style="text-align: right;">6.1</td>
+<td style="text-align: right;">2.5</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.5</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">2.0</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">2.7</td>
+<td style="text-align: right;">5.3</td>
+<td style="text-align: right;">1.9</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.8</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">5.5</td>
+<td style="text-align: right;">2.1</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.7</td>
+<td style="text-align: right;">2.5</td>
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">2.0</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.8</td>
+<td style="text-align: right;">2.8</td>
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">2.4</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: right;">5.3</td>
+<td style="text-align: right;">2.3</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.5</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">5.5</td>
+<td style="text-align: right;">1.8</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">7.7</td>
+<td style="text-align: right;">3.8</td>
+<td style="text-align: right;">6.7</td>
+<td style="text-align: right;">2.2</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7.7</td>
+<td style="text-align: right;">2.6</td>
+<td style="text-align: right;">6.9</td>
+<td style="text-align: right;">2.3</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.0</td>
+<td style="text-align: right;">2.2</td>
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.9</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: right;">5.7</td>
+<td style="text-align: right;">2.3</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.6</td>
+<td style="text-align: right;">2.8</td>
+<td style="text-align: right;">4.9</td>
+<td style="text-align: right;">2.0</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7.7</td>
+<td style="text-align: right;">2.8</td>
+<td style="text-align: right;">6.7</td>
+<td style="text-align: right;">2.0</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.3</td>
+<td style="text-align: right;">2.7</td>
+<td style="text-align: right;">4.9</td>
+<td style="text-align: right;">1.8</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.7</td>
+<td style="text-align: right;">3.3</td>
+<td style="text-align: right;">5.7</td>
+<td style="text-align: right;">2.1</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">7.2</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: right;">6.0</td>
+<td style="text-align: right;">1.8</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.2</td>
+<td style="text-align: right;">2.8</td>
+<td style="text-align: right;">4.8</td>
+<td style="text-align: right;">1.8</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.1</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">4.9</td>
+<td style="text-align: right;">1.8</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">2.8</td>
+<td style="text-align: right;">5.6</td>
+<td style="text-align: right;">2.1</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">7.2</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">5.8</td>
+<td style="text-align: right;">1.6</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7.4</td>
+<td style="text-align: right;">2.8</td>
+<td style="text-align: right;">6.1</td>
+<td style="text-align: right;">1.9</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">7.9</td>
+<td style="text-align: right;">3.8</td>
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">2.0</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">2.8</td>
+<td style="text-align: right;">5.6</td>
+<td style="text-align: right;">2.2</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.3</td>
+<td style="text-align: right;">2.8</td>
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.1</td>
+<td style="text-align: right;">2.6</td>
+<td style="text-align: right;">5.6</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">7.7</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">6.1</td>
+<td style="text-align: right;">2.3</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.3</td>
+<td style="text-align: right;">3.4</td>
+<td style="text-align: right;">5.6</td>
+<td style="text-align: right;">2.4</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">3.1</td>
+<td style="text-align: right;">5.5</td>
+<td style="text-align: right;">1.8</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.0</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">4.8</td>
+<td style="text-align: right;">1.8</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.9</td>
+<td style="text-align: right;">3.1</td>
+<td style="text-align: right;">5.4</td>
+<td style="text-align: right;">2.1</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.7</td>
+<td style="text-align: right;">3.1</td>
+<td style="text-align: right;">5.6</td>
+<td style="text-align: right;">2.4</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.9</td>
+<td style="text-align: right;">3.1</td>
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">2.3</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.8</td>
+<td style="text-align: right;">2.7</td>
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">1.9</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.8</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: right;">5.9</td>
+<td style="text-align: right;">2.3</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.7</td>
+<td style="text-align: right;">3.3</td>
+<td style="text-align: right;">5.7</td>
+<td style="text-align: right;">2.5</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.7</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">5.2</td>
+<td style="text-align: right;">2.3</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.3</td>
+<td style="text-align: right;">2.5</td>
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">1.9</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6.5</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">5.2</td>
+<td style="text-align: right;">2.0</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6.2</td>
+<td style="text-align: right;">3.4</td>
+<td style="text-align: right;">5.4</td>
+<td style="text-align: right;">2.3</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.9</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">1.8</td>
+<td style="text-align: left;">virginica</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="figure-captions-with-variables" class="level3">
+<h3 class="anchored" data-anchor-id="figure-captions-with-variables">Figure captions with variables</h3>
+<p>Sometimes we want figure captions to auto-update, e.g.&nbsp;maybe we want them to provide some parameter values. In that case, we can provide <code>!expr</code>, for example</p>
+<div class="cell" data-hash="quarto_notes_cache/html/unnamed-chunk-4_a84adfa9cea9429b0ee4feb9c6a0033c">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>param_val <span class="ot">&lt;-</span> <span class="dv">17</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-hash="quarto_notes_cache/html/unnamed-chunk-5_dfea8c4a6cc9f881283aa3dad76ff127">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: !expr glue::glue("Iris petals multiplied by {param_val}")</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris, <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length <span class="sc">*</span> param_val, <span class="at">y =</span> Petal.Width <span class="sc">*</span> param_val, <span class="at">color =</span> Species)) <span class="sc">+</span> <span class="fu">geom_point</span>()</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="quarto_notes_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Iris petals multiplied by 17</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>That’s a bit annoying that we have to build the whole cap as an R expression, but we should be able to use <code>glue</code>, <code>paste</code>, or whatever syntax (will need to sort something out for math and greek, maybe <code>expression</code> or <code>bquote</code>? <code>latex2exp</code> isn’t just working out of the box).</p>
+<div class="cell" data-hash="quarto_notes_cache/html/unnamed-chunk-6_d8d40f7e42750c195e4fc9128a439542">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: !expr latex2exp::TeX("$\\alpha$")</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris, <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length <span class="sc">*</span> param_val, <span class="at">y =</span> Petal.Width <span class="sc">*</span> param_val, <span class="at">color =</span> Species)) <span class="sc">+</span> <span class="fu">geom_point</span>()</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="quarto_notes_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">alpha</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="website" class="level2">
+<h2 class="anchored" data-anchor-id="website">Website</h2>
+<p><a href="../website/quarto_website_github.qmd">Starting</a> and <a href="../website/updating_website.qmd">updating</a> quarto websites has a few tricks, written up in more detail at those links.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Galen Holt">
+
+<title>Galen Holt - Using future.batchtools</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<meta property="og:title" content="Galen Holt - Using future.batchtools">
+<meta property="og:description" content="I need to sort out how to use futures for parallel processing on the HPC.There’s a few things I’ve tried previously that didn’t work, and a way I’ve cobbled together that’s not ideal.">
+<meta property="og:site-name" content="Galen Holt">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Galen Holt</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../research.html">
+ <span class="menu-text">Research</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../code_demos.html" aria-current="page">
+ <span class="menu-text">Code Demos</span></a>
+  </li>  
+</ul>
+              <div class="quarto-toggle-container">
+                  <a href="" class="quarto-color-scheme-toggle nav-link" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+              </div>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Using future.batchtools</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code_demos.html" class="sidebar-item-text sidebar-link">Code Demos</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Small how-tos</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/smallpieces.html" class="sidebar-item-text sidebar-link">Bits and pieces</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/quarto_notes.html" class="sidebar-item-text sidebar-link">Quarto notes</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../setup/rstudio_themes.html" class="sidebar-item-text sidebar-link">Editing Rstudio themes</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/zip_downloading.html" class="sidebar-item-text sidebar-link">Download and unpack zips</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/json_api_construction.html" class="sidebar-item-text sidebar-link">Building JSON syntax from R for API calls</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/list_names.html" class="sidebar-item-text sidebar-link">Naming rules for lists</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../publishing/private_github_figshare.html" class="sidebar-item-text sidebar-link">Creating Figshare from private github</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/error_handling.html" class="sidebar-item-text sidebar-link">Intro to error handling</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Plotting</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/ggplot_themes.html" class="sidebar-item-text sidebar-link">ggplot themes</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/setting_colors_for_groups.html" class="sidebar-item-text sidebar-link">Consistent colors</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/tweaks_tricks.html" class="sidebar-item-text sidebar-link">Saving and themeing plots</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/hcl_exploration.html" class="sidebar-item-text sidebar-link">Exploring HCL colorspace</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/rgb_to_hex.html" class="sidebar-item-text sidebar-link">Converting RGB to hex colors</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/fonts.html" class="sidebar-item-text sidebar-link">Fonts</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/faded_colors.html" class="sidebar-item-text sidebar-link">Faded 2d colour ramps</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/math_in_ggplot.html" class="sidebar-item-text sidebar-link">Latex in ggplot with latex2exp</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">Website</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../website_notes/quarto_website_github.html" class="sidebar-item-text sidebar-link">Getting started</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../website_notes/updating_website.html" class="sidebar-item-text sidebar-link">Updating and maintaining website</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">Theory, simulation, statistics, probability</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../simmodelling/twoDautocorr.html" class="sidebar-item-text sidebar-link">Generate 2d autocorrelation</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats_probability/expected_shannon.html" class="sidebar-item-text sidebar-link">Bootstrapping the expected shannon diversity</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats_probability/fitting_lognormals.html" class="sidebar-item-text sidebar-link">Intro to fitting lognormals</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats_probability/shifting_normals.html" class="sidebar-item-text sidebar-link">Basic shifts of normal moments</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats_probability/fitting_truncated.html" class="sidebar-item-text sidebar-link">Shifting and fitting truncated lognormals</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">Drones</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../drones/overlaps_reactive.html" class="sidebar-item-text sidebar-link">Calculations for flight planning</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../drones/overlaps.html" class="sidebar-item-text sidebar-link">Figuring out flight plan calcs</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pix4d/read_pix4d_outputs.html" class="sidebar-item-text sidebar-link">Reading and plotting pix4d outputs</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">Observable</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../observable/trying_observable.html" class="sidebar-item-text sidebar-link">Figuring out how to use ojs chunks</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">R and python</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/python_setup.html" class="sidebar-item-text sidebar-link">Python environments with pyenv and poetry</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/py_in_rpkg.html" class="sidebar-item-text sidebar-link">Wrapping python in R package</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/RandPython.html" class="sidebar-item-text sidebar-link">Using R and python together</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/R_py_shared_projects.html" class="sidebar-item-text sidebar-link">Shared R-py project structure</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/py_r_dates.html" class="sidebar-item-text sidebar-link">Passing complex objects py-R</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/R_py_type_passing.html" class="sidebar-item-text sidebar-link">Passing types between R and python</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/py_r_project_overview.html" class="sidebar-item-text sidebar-link">Overview of building R-py package</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/python_nameerror.html" class="sidebar-item-text sidebar-link">Intermittent NameError py-R</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/python_updated_functions.html" class="sidebar-item-text sidebar-link">Small python bits</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">Setting up projects</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/rig.html" class="sidebar-item-text sidebar-link">Managing old R versions with rig</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/managingprivate.html" class="sidebar-item-text sidebar-link">Private data for website repo</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../setup/R_in_VS.html" class="sidebar-item-text sidebar-link">Using R in VScode</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/end_run_renv.html" class="sidebar-item-text sidebar-link">Dealing with renv failures</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true">Building packages</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../package/package_creation.html" class="sidebar-item-text sidebar-link">First pass at building a package</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../vicwater/vicwater_testing.html" class="sidebar-item-text sidebar-link">Testing VicWater API</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="true">Data</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data_acquisition/bom_gauges.html" class="sidebar-item-text sidebar-link">BOM gauge locations with httr2</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../vicwater/vicwater_api_howtocall.html" class="sidebar-item-text sidebar-link">Experimenting with API calls for {vicwater}</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data_acquisition/gauge_data_pre_gauge.html" class="sidebar-item-text sidebar-link">Data from pre-gauged periods</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data_acquisition/ALA_data_pull.html" class="sidebar-item-text sidebar-link">Pulling data from Atlas of Living Australia</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" aria-expanded="true">R parallel processing (general)</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/interrogating_parallel.html" class="sidebar-item-text sidebar-link">Interrogating parallel resources</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/nested_parallel.html" class="sidebar-item-text sidebar-link">Testing nested parallelism</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/parallel_speed.html" class="sidebar-item-text sidebar-link">Speed-testing parallel</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/globals_speed.html" class="sidebar-item-text sidebar-link">Global objects and parallel speed</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/nested_dependent_iterations.html" class="sidebar-item-text sidebar-link">Dependencies of inner parallelism on outer</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" aria-expanded="true">R parallel processing on HPC</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/hpc_ephemera.html" class="sidebar-item-text sidebar-link">HPC notes</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/plans_and_hpc.html" class="sidebar-item-text sidebar-link">Using single-machine plans on HPC</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/initial_future_batchtools.html" class="sidebar-item-text sidebar-link active">Figuring out future.batchtools</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/changing_batchtools_template.html" class="sidebar-item-text sidebar-link">Switching templates, matching to resources</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/template_modification.html" class="sidebar-item-text sidebar-link">Modifying templates</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/master_persistence.html" class="sidebar-item-text sidebar-link">Consequences of master timing out</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/nested_parallel_hpc.html" class="sidebar-item-text sidebar-link">Nested parallel on HPC nodes and cores</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/conditional_plans.html" class="sidebar-item-text sidebar-link">Conditional plans for local and HPC</a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#what-do-i-want" id="toc-what-do-i-want" class="nav-link active" data-scroll-target="#what-do-i-want">What do I want?</a>
+  <ul class="collapse">
+  <li><a href="#some-questions" id="toc-some-questions" class="nav-link" data-scroll-target="#some-questions">Some questions</a></li>
+  </ul></li>
+  <li><a href="#getting-it-to-run" id="toc-getting-it-to-run" class="nav-link" data-scroll-target="#getting-it-to-run">Getting it to run</a>
+  <ul class="collapse">
+  <li><a href="#to-get-it-working" id="toc-to-get-it-working" class="nav-link" data-scroll-target="#to-get-it-working">To get it working</a></li>
+  <li><a href="#to-make-it-work-better" id="toc-to-make-it-work-better" class="nav-link" data-scroll-target="#to-make-it-work-better">To make it work better</a></li>
+  <li><a href="#templates" id="toc-templates" class="nav-link" data-scroll-target="#templates">Templates</a></li>
+  <li><a href="#try-a-simple-job" id="toc-try-a-simple-job" class="nav-link" data-scroll-target="#try-a-simple-job">Try a simple job</a>
+  <ul class="collapse">
+  <li><a href="#available-workers" id="toc-available-workers" class="nav-link" data-scroll-target="#available-workers">available workers:</a></li>
+  <li><a href="#total-workers" id="toc-total-workers" class="nav-link" data-scroll-target="#total-workers">total workers:</a></li>
+  <li><a href="#unique-workers" id="toc-unique-workers" class="nav-link" data-scroll-target="#unique-workers">unique workers:</a></li>
+  <li><a href="#available-cores" id="toc-available-cores" class="nav-link" data-scroll-target="#available-cores">available Cores:</a></li>
+  <li><a href="#main-pid" id="toc-main-pid" class="nav-link" data-scroll-target="#main-pid">Main PID:</a></li>
+  <li><a href="#unique-processes" id="toc-unique-processes" class="nav-link" data-scroll-target="#unique-processes">Unique processes</a></li>
+  </ul></li>
+  <li><a href="#nodes-and-pids" id="toc-nodes-and-pids" class="nav-link" data-scroll-target="#nodes-and-pids">Nodes and pids</a></li>
+  <li><a href="#calling-and-output" id="toc-calling-and-output" class="nav-link" data-scroll-target="#calling-and-output">Calling and output</a></li>
+  <li><a href="#todo" id="toc-todo" class="nav-link" data-scroll-target="#todo">TODO</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Using future.batchtools</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Galen Holt </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>I need to sort out how to use futures for parallel processing on the HPC.There’s a few things I’ve tried previously that didn’t work, and a way I’ve cobbled together that’s not ideal.</p>
+<ul>
+<li><p><code>plan(cluster)</code> sounds like it should work but doesn’t. It might with <a href="https://github.com/USCbiostats/slurmR">{slurmR}</a></p></li>
+<li><p>Just requesting multiple nodes and hoping <code>multisession</code> or <code>multicore</code> find them. <a href="../parallelism/plans_and_hpc.html">They don’t</a>.</p></li>
+<li><p><strong>What I currently do</strong>- array jobs on SLURM to handle the nodes, then get the SLURM_ARRAY_ID in R, use that to chunk the data in scripts built for it, and then <code>doFuture</code> <code>foreach</code> on the cores within that node.</p></li>
+</ul>
+<p>There are some issues with my current approach</p>
+<ul>
+<li><p>It’s not very portable- code has to be different locally and on the HPC</p></li>
+<li><p>It’s not very flexible- we need to know a priori how we want to chunk into the arrays. And so we can’t dynamically assign jobs to nodes based on how many jobs there are.</p>
+<ul>
+<li>If the work is always consistent, this is fine. But sometimes the natural way to split work into arrays is unbalanced, e.g.&nbsp;if we split groups of the data into nodes. That’s often the easiest way to deal with a conditional on SLURM_ARRAY_TASK_ID. But maybe group 1 has 50 things to process on, and group 2 has 200.</li>
+</ul></li>
+</ul>
+<section id="what-do-i-want" class="level2">
+<h2 class="anchored" data-anchor-id="what-do-i-want">What do I want?</h2>
+<p>There are some improvements I want to make that will make my code work better (and faster)</p>
+<ul>
+<li><p>Minor (if any) changes when running locally or on an HPC</p></li>
+<li><p>In-code splitting of work into nodes to balance the work across them</p></li>
+<li><p>Make sure we’re using both nodes and cores within them</p></li>
+</ul>
+<p>The main solution seems to be using <code>future.batchtools</code>, but I wasn’t able to get it working quickly.</p>
+<section id="some-questions" class="level3">
+<h3 class="anchored" data-anchor-id="some-questions">Some questions</h3>
+<p>There are a few big-picture things I have questions about that aren’t clear from reading the docs (in addition to just ‘how do we get a run to work’)</p>
+<ul>
+<li><p>How do jobs actually start? I think, but am not 100% sure, that the R script essentailly builds slurm bash scripts and then calls sbatch. Is that what happens?</p></li>
+<li><p>Do we still use <code>sbatch</code> or other command-line bash at all? Or is everything managed in R? If so, how do we actually start the runs? <code>Rscript</code>? <code>srun</code> on an R control script?</p>
+<ul>
+<li>if <code>Rscript</code>, do we end up with that main R process running in the login node the whole time? What about if <code>srun</code> or…</li>
+<li><a href="https://github.com/HenrikBengtsson/future.batchtools/issues/68">This issue</a> implies we need to leave R running. But can it run with <code>Rscript</code>? <code>srun</code>?<code>sinteractive</code>? <code>sbatch any_R.sh analysis_script.R</code>? With <code>any_R.sh</code> having low resources but maybe long walltime? It looks like <code>srun</code> barfs to the terminal and blocks, while <code>sbatch</code> outputs to file and is non-blocking. So that’s likely the way to go.</li>
+</ul></li>
+<li><p>Does it make sense to manage nodes and cores separately, or do we just ask for a ton of cores and it auto-manages nodes to get them?</p>
+<ul>
+<li><p>I think {slurmR} with <code>plan(cluster)</code> does the latter, but not positive</p></li>
+<li><p>I’m not actually sure what <code>future.batchtools</code> does by default (will check), but I think a list-plan likely makes sense.</p></li>
+</ul></li>
+<li><p>do we use SLURM job arrays? Or does it generate a bunch of batch scripts that get called as separate jobs instead of array jobs? Does it matter?</p>
+<ul>
+<li>what are chunks.</li>
+</ul></li>
+<li><p>If we feed it a big set of iterations, does it send each one to its own node? Its own core? Is there any chunking?</p></li>
+</ul>
+</section>
+</section>
+<section id="getting-it-to-run" class="level1">
+<h1>Getting it to run</h1>
+<p>I’ll use my <a href="https://github.com/galenholt/slurm_r_tests">HPC testing repo</a> to build some template and testing files. There are useful help pages, but somehow none of them quite just make complete sense to me, so I’m going to have to try things and see what happens.</p>
+<p>Useful pages I’m referencing:</p>
+<section id="to-get-it-working" class="level3">
+<h3 class="anchored" data-anchor-id="to-get-it-working">To get it working</h3>
+<p><a href="https://github.com/HenrikBengtsson/future.batchtools">future.batchtools github</a></p>
+<p><a href="https://github.com/mllg/batchtools">batchtools github</a></p>
+</section>
+<section id="to-make-it-work-better" class="level3">
+<h3 class="anchored" data-anchor-id="to-make-it-work-better">To make it work better</h3>
+<p><a href="https://github.com/HenrikBengtsson/future.batchtools/issues/72">list-plans</a></p>
+</section>
+<section id="templates" class="level2">
+<h2 class="anchored" data-anchor-id="templates">Templates</h2>
+<p>I’m still a bit confused by the overall workflow, but it’s clear I need a template. There’s one in <code>future.batchtools</code> <a href="https://github.com/HenrikBengtsson/future.batchtools/blob/develop/inst/templates/slurm.tmpl">github</a>, and a few at the <code>batchtools</code> <a href="https://github.com/mllg/batchtools/tree/master/inst/templates">github</a>.</p>
+<p>Then I <em>think</em> in the <code>plan</code> call, we <code>tweak</code> that? Let’s just get it working. Trying first with the one that comes from <code>future.batchtools</code>. Though the one from <code>batchtools</code> looks like it has more capability for doing things like managing cores on nodes. Maybe try them both as we go?</p>
+<p>I have both of those. I kind of want to test both. The docs say the template should be either at <code>./batchtools.slurm.tmpl</code> (associated with a particular working directory) or <code>~/.batchtools.slurm.tmpl</code> (for all processes to find it). But I want to be able to test multiple templates. I should be able to use</p>
+<pre><code>plan(batchtools_slurm, template = "/path/to/batchtools.slurm.tmpl")</code></pre>
+<p>but its a bit unclear whether the templates still need to be named <code>batchtools.slurm.tmpl</code>, or can have whatever filename we want, as long as I give the path. Guess I’ll test that. Try first with it as <code>batchtools.slurm.tmpl</code> in the repo directory first though.</p>
+</section>
+<section id="try-a-simple-job" class="level2">
+<h2 class="anchored" data-anchor-id="try-a-simple-job">Try a simple job</h2>
+<p>Use the <code>future.batchtools</code> template, and a <code>foreach</code> loop using <code>%:%</code>.</p>
+<p>Start with <code>Rscript filename.R</code></p>
+<p>It starts printing directly to terminal, which is annoying.</p>
+<p>Opening another terminal and typing <code>squeue</code> shows that I have 4 nodes- though actually that was just at that moment.<img src="images/image-1362874418.png" class="img-fluid"></p>
+<p>It doesn’t seem to produce stdout or stderr, which is going to make it tricky to see what happened. See below- this is true <em>unless</em> we run the master R session through <code>sbatch</code>.</p>
+<p>I can copy in from the terminal output:</p>
+<p>::: {#Simple output} Loading required package: foreach Loading required package: future Warning message: package ‘future’ was built under R version 4.0.5 Loading required package: parallelly Warning messages: 1: package ‘future.batchtools’ was built under R version 4.0.5 2: package ‘parallelly’ was built under R version 4.0.5</p>
+<p>Plan is: List of future strategies: 1. batchtools_slurm: - args: function (expr, envir = parent.frame(), substitute = TRUE, globals = TRUE, label = NULL, template = NULL, resources = list(), workers = NULL, registry = list(), …) - tweaked: FALSE - call: plan(batchtools_slurm)</p>
+<section id="available-workers" class="level3">
+<h3 class="anchored" data-anchor-id="available-workers">available workers:</h3>
+<p>localhost localhost localhost localhost localhost localhost localhost localhost</p>
+</section>
+<section id="total-workers" class="level3">
+<h3 class="anchored" data-anchor-id="total-workers">total workers:</h3>
+<p>8</p>
+</section>
+<section id="unique-workers" class="level3">
+<h3 class="anchored" data-anchor-id="unique-workers">unique workers:</h3>
+<p>localhost</p>
+</section>
+<section id="available-cores" class="level3">
+<h3 class="anchored" data-anchor-id="available-cores">available Cores:</h3>
+<section id="non-slurm" class="level4">
+<h4 class="anchored" data-anchor-id="non-slurm">non-slurm</h4>
+<p>8</p>
+</section>
+<section id="slurm-method" class="level4">
+<h4 class="anchored" data-anchor-id="slurm-method">slurm method</h4>
+<p>1</p>
+</section>
+</section>
+<section id="main-pid" class="level3">
+<h3 class="anchored" data-anchor-id="main-pid">Main PID:</h3>
+<p>3195570 There were 50 or more warnings (use warnings() to see the first 50)</p>
+</section>
+<section id="unique-processes" class="level3">
+<h3 class="anchored" data-anchor-id="unique-processes">Unique processes</h3>
+<p>100</p>
+<p>IDs of all cores used</p>
+<p>238059 1524768 1518289 1500375 1513942 3264114 1269189 1345061 2623254 238128 3264182 1269259 1345124 1524852 1518372 3264251 238197 1500450 1514026 1524930 1518447 238268 3264327 1500525 1514101 238335 1525010 1518527 1500596 1514176 3264408 238401 1525084 1518604 1500666 1514254 3264478 1518681 238466 1525164 1500739 1518756 1514328 238530 1500811 1525241 1514402 1518828 1500879 238594 1525316 1514479 3264562 1518901 1500952 238662 1525391 1518977 1514555 1501019 3264640 238727 1525467 1519049 1514630 238791 1501090 1525542 3264715 1519121 1501158 238857 1525621 1519194 1514708 1501225 3264796 238922 1525693 1519271 1514786 1501292 3264863 1525766 238989 1519345 1514861 1525839 1501361 239060 3264939 1519420 1514936 1501428 1525912 239129 3265003 1519494 1501496 1525987</p>
+</section>
+</section>
+<section id="nodes-and-pids" class="level2">
+<h2 class="anchored" data-anchor-id="nodes-and-pids">Nodes and pids</h2>
+<pre><code>           238059 238128 238197 238268 238335 238401 238466 238530 238594</code></pre>
+<p>bilbo 6 6 6 6 6 6 7 6 7 frodo-vs01 0 0 0 0 0 0 0 0 0 frodo-vs02 0 0 0 0 0 0 0 0 0 frodo-vs03 0 0 0 0 0 0 0 0 0 frodo-vs04 0 0 0 0 0 0 0 0 0 gandalf-vm02 0 0 0 0 0 0 0 0 0 gandalf-vm03 0 0 0 0 0 0 0 0 0 gandalf-vm04 0 0 0 0 0 0 0 0 0 gandalf-vm05 0 0 0 0 0 0 0 0 0</p>
+<pre><code>           238662 238727 238791 238857 238922 238989 239060 239129 1269189</code></pre>
+<p>bilbo 6 7 7 6 7 6 7 6 0 frodo-vs01 0 0 0 0 0 0 0 0 0 frodo-vs02 0 0 0 0 0 0 0 0 0 frodo-vs03 0 0 0 0 0 0 0 0 0 frodo-vs04 0 0 0 0 0 0 0 0 0 gandalf-vm02 0 0 0 0 0 0 0 0 0 gandalf-vm03 0 0 0 0 0 0 0 0 7 gandalf-vm04 0 0 0 0 0 0 0 0 0 gandalf-vm05 0 0 0 0 0 0 0 0 0</p>
+<pre><code>           1269259 1345061 1345124 1500375 1500450 1500525 1500596 1500666</code></pre>
+<p>bilbo 0 0 0 0 0 0 0 0 frodo-vs01 0 0 0 0 0 0 0 0 frodo-vs02 0 0 0 0 0 0 0 0 frodo-vs03 0 0 0 6 6 6 6 7 frodo-vs04 0 0 0 0 0 0 0 0 gandalf-vm02 0 0 0 0 0 0 0 0 gandalf-vm03 6 0 0 0 0 0 0 0 gandalf-vm04 0 6 6 0 0 0 0 0 gandalf-vm05 0 0 0 0 0 0 0 0</p>
+<pre><code>           1500739 1500811 1500879 1500952 1501019 1501090 1501158 1501225</code></pre>
+<p>bilbo 0 0 0 0 0 0 0 0 frodo-vs01 0 0 0 0 0 0 0 0 frodo-vs02 0 0 0 0 0 0 0 0 frodo-vs03 6 6 6 6 6 6 6 6 frodo-vs04 0 0 0 0 0 0 0 0 gandalf-vm02 0 0 0 0 0 0 0 0 gandalf-vm03 0 0 0 0 0 0 0 0 gandalf-vm04 0 0 0 0 0 0 0 0 gandalf-vm05 0 0 0 0 0 0 0 0</p>
+<pre><code>           1501292 1501361 1501428 1501496 1513942 1514026 1514101 1514176</code></pre>
+<p>bilbo 0 0 0 0 0 0 0 0 frodo-vs01 0 0 0 0 0 0 0 0 frodo-vs02 0 0 0 0 0 0 0 0 frodo-vs03 7 6 7 6 0 0 0 0 frodo-vs04 0 0 0 0 6 7 6 6 gandalf-vm02 0 0 0 0 0 0 0 0 gandalf-vm03 0 0 0 0 0 0 0 0 gandalf-vm04 0 0 0 0 0 0 0 0 gandalf-vm05 0 0 0 0 0 0 0 0</p>
+<pre><code>           1514254 1514328 1514402 1514479 1514555 1514630 1514708 1514786</code></pre>
+<p>bilbo 0 0 0 0 0 0 0 0 frodo-vs01 0 0 0 0 0 0 0 0 frodo-vs02 0 0 0 0 0 0 0 0 frodo-vs03 0 0 0 0 0 0 0 0 frodo-vs04 6 7 7 6 6 6 6 6 gandalf-vm02 0 0 0 0 0 0 0 0 gandalf-vm03 0 0 0 0 0 0 0 0 gandalf-vm04 0 0 0 0 0 0 0 0 gandalf-vm05 0 0 0 0 0 0 0 0</p>
+<pre><code>           1514861 1514936 1518289 1518372 1518447 1518527 1518604 1518681</code></pre>
+<p>bilbo 0 0 0 0 0 0 0 0 frodo-vs01 0 0 0 0 0 0 0 0 frodo-vs02 0 0 7 7 6 6 6 6 frodo-vs03 0 0 0 0 0 0 0 0 frodo-vs04 6 6 0 0 0 0 0 0 gandalf-vm02 0 0 0 0 0 0 0 0 gandalf-vm03 0 0 0 0 0 0 0 0 gandalf-vm04 0 0 0 0 0 0 0 0 gandalf-vm05 0 0 0 0 0 0 0 0</p>
+<pre><code>           1518756 1518828 1518901 1518977 1519049 1519121 1519194 1519271</code></pre>
+<p>bilbo 0 0 0 0 0 0 0 0 frodo-vs01 0 0 0 0 0 0 0 0 frodo-vs02 6 6 7 7 6 7 7 6 frodo-vs03 0 0 0 0 0 0 0 0 frodo-vs04 0 0 0 0 0 0 0 0 gandalf-vm02 0 0 0 0 0 0 0 0 gandalf-vm03 0 0 0 0 0 0 0 0 gandalf-vm04 0 0 0 0 0 0 0 0 gandalf-vm05 0 0 0 0 0 0 0 0</p>
+<pre><code>           1519345 1519420 1519494 1524768 1524852 1524930 1525010 1525084</code></pre>
+<p>bilbo 0 0 0 0 0 0 0 0 frodo-vs01 0 0 0 6 6 6 7 6 frodo-vs02 7 6 7 0 0 0 0 0 frodo-vs03 0 0 0 0 0 0 0 0 frodo-vs04 0 0 0 0 0 0 0 0 gandalf-vm02 0 0 0 0 0 0 0 0 gandalf-vm03 0 0 0 0 0 0 0 0 gandalf-vm04 0 0 0 0 0 0 0 0 gandalf-vm05 0 0 0 0 0 0 0 0</p>
+<pre><code>           1525164 1525241 1525316 1525391 1525467 1525542 1525621 1525693</code></pre>
+<p>bilbo 0 0 0 0 0 0 0 0 frodo-vs01 6 6 6 6 6 6 6 6 frodo-vs02 0 0 0 0 0 0 0 0 frodo-vs03 0 0 0 0 0 0 0 0 frodo-vs04 0 0 0 0 0 0 0 0 gandalf-vm02 0 0 0 0 0 0 0 0 gandalf-vm03 0 0 0 0 0 0 0 0 gandalf-vm04 0 0 0 0 0 0 0 0 gandalf-vm05 0 0 0 0 0 0 0 0</p>
+<pre><code>           1525766 1525839 1525912 1525987 2623254 3264114 3264182 3264251</code></pre>
+<p>bilbo 0 0 0 0 0 0 0 0 frodo-vs01 6 6 6 6 0 0 0 0 frodo-vs02 0 0 0 0 0 0 0 0 frodo-vs03 0 0 0 0 0 0 0 0 frodo-vs04 0 0 0 0 0 0 0 0 gandalf-vm02 0 0 0 0 0 6 7 6 gandalf-vm03 0 0 0 0 0 0 0 0 gandalf-vm04 0 0 0 0 0 0 0 0 gandalf-vm05 0 0 0 0 6 0 0 0</p>
+<pre><code>           3264327 3264408 3264478 3264562 3264640 3264715 3264796 3264863</code></pre>
+<p>bilbo 0 0 0 0 0 0 0 0 frodo-vs01 0 0 0 0 0 0 0 0 frodo-vs02 0 0 0 0 0 0 0 0 frodo-vs03 0 0 0 0 0 0 0 0 frodo-vs04 0 0 0 0 0 0 0 0 gandalf-vm02 7 7 6 6 6 6 6 6 gandalf-vm03 0 0 0 0 0 0 0 0 gandalf-vm04 0 0 0 0 0 0 0 0 gandalf-vm05 0 0 0 0 0 0 0 0</p>
+<pre><code>           3264939 3265003</code></pre>
+<p>bilbo 0 0 frodo-vs01 0 0 frodo-vs02 0 0 frodo-vs03 0 0 frodo-vs04 0 0 gandalf-vm02 6 6 gandalf-vm03 0 0 gandalf-vm04 0 0 gandalf-vm05 0 0 :::</p>
+<p>The formatting of the table is all boogered up, but that looks like I got 9 nodes, and used something like 9-14 PIDs each, each about 7-6 times. It’s a bit confusing, because <code>sinfo --Node --long</code> shows that the number of CPUs is different across those nodes. And that seems to be what happened here. I need to change the output so I can better see what I used. But, roughly, that looks about right- it send jobs to CPUs as needed.</p>
+<div class="cell" data-hash="initial_future_batchtools_cache/html/unnamed-chunk-1_8d7e4881ac2993ff46a5911dbf85d181">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># number of iterations</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="dv">25</span><span class="sc">*</span><span class="dv">25</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 625</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="dv">9</span><span class="sc">*</span><span class="dv">12</span><span class="sc">*</span><span class="dv">6</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 648</code></pre>
+</div>
+</div>
+</section>
+<section id="calling-and-output" class="level2">
+<h2 class="anchored" data-anchor-id="calling-and-output">Calling and output</h2>
+<p>We seem to need to leave an R session running to operate the futures. We can probably do that interactively <code>module load R</code>, <code>R</code>, then run the code, or <code>Rscript</code>. But that’s all interactive. As is <code>srun</code>. And it all prints all printable output to the terminal, and doesn’t save it. I think an <code>sbatch</code> might be the way to go. Try that.</p>
+<p>That does run, and spawn the others</p>
+<p><img src="images/image-1194393989.png" class="img-fluid"></p>
+<p>It’s silly that we need another wrapper call, but maybe that’s ok. Gives us the option to do some auto-setup in an intermediate script.</p>
+<p>repeatedly calling <code>squeue</code> shows something interesting- it looks like it’s creating separate jobs <em>for each task</em>, not doing anything node-aware (e.g.&nbsp;chunking jobs to a node, and then multisessioning). I guess that makes sense, based on the <a href="https://github.com/HenrikBengtsson/future.batchtools/issues/72">help</a> and <a href="../parallelism/interrogating_parallel.html">other testing</a>, but we can almost certainly speed things up by chunking and list-planning.</p>
+<p>If the passing-object overhead really becomes an issue, we might want to just <a href="https://github.com/HenrikBengtsson/future.batchtools/issues/36">use batchtools directly</a>, which I think also could remove the need to leave a master R session running. But I think that gets rid of the major advantage of being able to use essentially the same code locally and on the HPC, just by changing the <code>plan</code>.</p>
+<p>The output using <code>sbatch batchtools_R.sh testing_future_batchtools.R</code> (where <code>batchtools_R.sh</code> is a lightweight master job) is</p>
+<pre><code>ℹ Using R 4.0.3 (lockfile was generated with R 4.2.2)
+
+ Plan is:
+List of future strategies:
+1. batchtools_slurm:
+   - args: function (expr, envir = parent.frame(), substitute = TRUE, globals = TRUE, label = NULL, template = NULL, resources = list(), workers = NULL, registry = list(), ...)
+   - tweaked: FALSE
+   - call: plan(batchtools_slurm)
+
+### available workers:
+gandalf-vm01
+
+
+### total workers:
+1
+
+### unique workers:
+gandalf-vm01
+
+### available Cores:
+
+#### non-slurm
+1
+
+#### slurm method
+1
+
+### Main PID:
+4135554
+
+### Unique processes
+100
+
+IDs of all cores used
+
+241089
+1528094
+1522003
+1503388
+1516888
+3269690
+1522077
+241160
+1528170
+1503459
+1516963
+3269759
+1522156
+1528243
+241230
+3269825
+1271878
+1528317
+1522235
+241297
+1503531
+1528392
+1517044
+1522308
+241367
+1503606
+1528471
+1522380
+1517120
+241436
+3269894
+1528548
+1522456
+1503681
+1517195
+241505
+1522531
+1528626
+3269975
+1271968
+1503749
+241573
+1522605
+3270042
+1528703
+1503817
+241641
+1522682
+1528778
+1517275
+3270121
+1272046
+241709
+1528853
+1522758
+1503892
+1517348
+241778
+1528932
+1522829
+1503961
+1517420
+3270199
+241843
+1529005
+1522901
+1504030
+241910
+1529082
+1517500
+3270277
+1522975
+1504098
+241978
+1529157
+1523051
+1504167
+1517581
+3270355
+1529231
+242042
+1523125
+1504238
+1529306
+1517659
+3270422
+242108
+1523197
+1529384
+1504307
+1517731
+3270488
+242173
+1523272
+1529459
+1504376
+1517812
+3270555
+242239
+1529532
+
+## Nodes and pids
+# A tibble: 100 × 3
+# Groups:   node [7]
+    node             pid n_reps
+    &lt;chr&gt;          &lt;int&gt;  &lt;int&gt;
+  1 bilbo         241089      6
+  2 bilbo         241160      6
+  3 bilbo         241230      7
+  4 bilbo         241297      6
+  5 bilbo         241367      6
+  6 bilbo         241436      6
+  7 bilbo         241505      6
+  8 bilbo         241573      6
+  9 bilbo         241641      7
+ 10 bilbo         241709      6
+ 11 bilbo         241778      7
+ 12 bilbo         241843      6
+ 13 bilbo         241910      6
+ 14 bilbo         241978      7
+ 15 bilbo         242042      6
+ 16 bilbo         242108      6
+ 17 bilbo         242173      6
+ 18 bilbo         242239      6
+ 19 frodo-vs01   1528094      6
+ 20 frodo-vs01   1528170      6
+ 21 frodo-vs01   1528243      6
+ 22 frodo-vs01   1528317      6
+ 23 frodo-vs01   1528392      6
+ 24 frodo-vs01   1528471      7
+ 25 frodo-vs01   1528548      6
+ 26 frodo-vs01   1528626      6
+ 27 frodo-vs01   1528703      6
+ 28 frodo-vs01   1528778      6
+ 29 frodo-vs01   1528853      7
+ 30 frodo-vs01   1528932      6
+ 31 frodo-vs01   1529005      6
+ 32 frodo-vs01   1529082      6
+ 33 frodo-vs01   1529157      6
+ 34 frodo-vs01   1529231      6
+ 35 frodo-vs01   1529306      6
+ 36 frodo-vs01   1529384      6
+ 37 frodo-vs01   1529459      6
+ 38 frodo-vs01   1529532      6
+ 39 frodo-vs02   1522003      7
+ 40 frodo-vs02   1522077      7
+ 41 frodo-vs02   1522156      6
+ 42 frodo-vs02   1522235      7
+ 43 frodo-vs02   1522308      6
+ 44 frodo-vs02   1522380      6
+ 45 frodo-vs02   1522456      6
+ 46 frodo-vs02   1522531      6
+ 47 frodo-vs02   1522605      7
+ 48 frodo-vs02   1522682      6
+ 49 frodo-vs02   1522758      6
+ 50 frodo-vs02   1522829      6
+ 51 frodo-vs02   1522901      7
+ 52 frodo-vs02   1522975      6
+ 53 frodo-vs02   1523051      6
+ 54 frodo-vs02   1523125      7
+ 55 frodo-vs02   1523197      6
+ 56 frodo-vs02   1523272      7
+ 57 frodo-vs03   1503388      6
+ 58 frodo-vs03   1503459      6
+ 59 frodo-vs03   1503531      6
+ 60 frodo-vs03   1503606      6
+ 61 frodo-vs03   1503681      6
+ 62 frodo-vs03   1503749      6
+ 63 frodo-vs03   1503817      6
+ 64 frodo-vs03   1503892      6
+ 65 frodo-vs03   1503961      6
+ 66 frodo-vs03   1504030      6
+ 67 frodo-vs03   1504098      6
+ 68 frodo-vs03   1504167      6
+ 69 frodo-vs03   1504238      6
+ 70 frodo-vs03   1504307      7
+ 71 frodo-vs03   1504376      6
+ 72 frodo-vs04   1516888      6
+ 73 frodo-vs04   1516963      7
+ 74 frodo-vs04   1517044      7
+ 75 frodo-vs04   1517120      6
+ 76 frodo-vs04   1517195      7
+ 77 frodo-vs04   1517275      7
+ 78 frodo-vs04   1517348      6
+ 79 frodo-vs04   1517420      7
+ 80 frodo-vs04   1517500      7
+ 81 frodo-vs04   1517581      7
+ 82 frodo-vs04   1517659      6
+ 83 frodo-vs04   1517731      6
+ 84 frodo-vs04   1517812      6
+ 85 gandalf-vm02 3269690      6
+ 86 gandalf-vm02 3269759      6
+ 87 gandalf-vm02 3269825      6
+ 88 gandalf-vm02 3269894      7
+ 89 gandalf-vm02 3269975      7
+ 90 gandalf-vm02 3270042      6
+ 91 gandalf-vm02 3270121      6
+ 92 gandalf-vm02 3270199      6
+ 93 gandalf-vm02 3270277      6
+ 94 gandalf-vm02 3270355      6
+ 95 gandalf-vm02 3270422      7
+ 96 gandalf-vm02 3270488      6
+ 97 gandalf-vm02 3270555      7
+ 98 gandalf-vm03 1271878      6
+ 99 gandalf-vm03 1271968      6
+100 gandalf-vm03 1272046      6
+
+Time taken for code: 185</code></pre>
+<p>So, we can see the lightweight wrapper uses 1 cpu on one node, but spawns 100 workers, each of which gets used 6-7 times.</p>
+</section>
+<section id="todo" class="level2">
+<h2 class="anchored" data-anchor-id="todo">TODO</h2>
+<p>other templates</p>
+<p>managing resources</p>
+<p>list-plans and nesting</p>
+<p>chunks.as.array</p>
+<p>auto-managing <code>plan</code> locally vs HPC</p>
+<p>consequences of master R session dying (if <code>Rscript</code>, if <code>sbatch</code>ed)</p>
+<p>etc</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

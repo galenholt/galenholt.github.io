@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Galen Holt">
+
+<title>Galen Holt - Trying observablejs chunks</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script type="module" src="../site_libs/quarto-ojs/quarto-ojs-runtime.js"></script>
+<link href="../site_libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
+<script type="ojs-define">
+{"contents":[{"name":"iris","value":{"Sepal_Length":[5.1,4.9,4.7,4.6,5,5.4,4.6,5,4.4,4.9,5.4,4.8,4.8,4.3,5.8,5.7,5.4,5.1,5.7,5.1,5.4,5.1,4.6,5.1,4.8,5,5,5.2,5.2,4.7,4.8,5.4,5.2,5.5,4.9,5,5.5,4.9,4.4,5.1,5,4.5,4.4,5,5.1,4.8,5.1,4.6,5.3,5,7,6.4,6.9,5.5,6.5,5.7,6.3,4.9,6.6,5.2,5,5.9,6,6.1,5.6,6.7,5.6,5.8,6.2,5.6,5.9,6.1,6.3,6.1,6.4,6.6,6.8,6.7,6,5.7,5.5,5.5,5.8,6,5.4,6,6.7,6.3,5.6,5.5,5.5,6.1,5.8,5,5.6,5.7,5.7,6.2,5.1,5.7,6.3,5.8,7.1,6.3,6.5,7.6,4.9,7.3,6.7,7.2,6.5,6.4,6.8,5.7,5.8,6.4,6.5,7.7,7.7,6,6.9,5.6,7.7,6.3,6.7,7.2,6.2,6.1,6.4,7.2,7.4,7.9,6.4,6.3,6.1,7.7,6.3,6.4,6,6.9,6.7,6.9,5.8,6.8,6.7,6.7,6.3,6.5,6.2,5.9],"Sepal_Width":[3.5,3,3.2,3.1,3.6,3.9,3.4,3.4,2.9,3.1,3.7,3.4,3,3,4,4.4,3.9,3.5,3.8,3.8,3.4,3.7,3.6,3.3,3.4,3,3.4,3.5,3.4,3.2,3.1,3.4,4.1,4.2,3.1,3.2,3.5,3.6,3,3.4,3.5,2.3,3.2,3.5,3.8,3,3.8,3.2,3.7,3.3,3.2,3.2,3.1,2.3,2.8,2.8,3.3,2.4,2.9,2.7,2,3,2.2,2.9,2.9,3.1,3,2.7,2.2,2.5,3.2,2.8,2.5,2.8,2.9,3,2.8,3,2.9,2.6,2.4,2.4,2.7,2.7,3,3.4,3.1,2.3,3,2.5,2.6,3,2.6,2.3,2.7,3,2.9,2.9,2.5,2.8,3.3,2.7,3,2.9,3,3,2.5,2.9,2.5,3.6,3.2,2.7,3,2.5,2.8,3.2,3,3.8,2.6,2.2,3.2,2.8,2.8,2.7,3.3,3.2,2.8,3,2.8,3,2.8,3.8,2.8,2.8,2.6,3,3.4,3.1,3,3.1,3.1,3.1,2.7,3.2,3.3,3,2.5,3,3.4,3],"Petal_Length":[1.4,1.4,1.3,1.5,1.4,1.7,1.4,1.5,1.4,1.5,1.5,1.6,1.4,1.1,1.2,1.5,1.3,1.4,1.7,1.5,1.7,1.5,1,1.7,1.9,1.6,1.6,1.5,1.4,1.6,1.6,1.5,1.5,1.4,1.5,1.2,1.3,1.4,1.3,1.5,1.3,1.3,1.3,1.6,1.9,1.4,1.6,1.4,1.5,1.4,4.7,4.5,4.9,4,4.6,4.5,4.7,3.3,4.6,3.9,3.5,4.2,4,4.7,3.6,4.4,4.5,4.1,4.5,3.9,4.8,4,4.9,4.7,4.3,4.4,4.8,5,4.5,3.5,3.8,3.7,3.9,5.1,4.5,4.5,4.7,4.4,4.1,4,4.4,4.6,4,3.3,4.2,4.2,4.2,4.3,3,4.1,6,5.1,5.9,5.6,5.8,6.6,4.5,6.3,5.8,6.1,5.1,5.3,5.5,5,5.1,5.3,5.5,6.7,6.9,5,5.7,4.9,6.7,4.9,5.7,6,4.8,4.9,5.6,5.8,6.1,6.4,5.6,5.1,5.6,6.1,5.6,5.5,4.8,5.4,5.6,5.1,5.1,5.9,5.7,5.2,5,5.2,5.4,5.1],"Petal_Width":[0.2,0.2,0.2,0.2,0.2,0.4,0.3,0.2,0.2,0.1,0.2,0.2,0.1,0.1,0.2,0.4,0.4,0.3,0.3,0.3,0.2,0.4,0.2,0.5,0.2,0.2,0.4,0.2,0.2,0.2,0.2,0.4,0.1,0.2,0.2,0.2,0.2,0.1,0.2,0.2,0.3,0.3,0.2,0.6,0.4,0.3,0.2,0.2,0.2,0.2,1.4,1.5,1.5,1.3,1.5,1.3,1.6,1,1.3,1.4,1,1.5,1,1.4,1.3,1.4,1.5,1,1.5,1.1,1.8,1.3,1.5,1.2,1.3,1.4,1.4,1.7,1.5,1,1.1,1,1.2,1.6,1.5,1.6,1.5,1.3,1.3,1.3,1.2,1.4,1.2,1,1.3,1.2,1.3,1.3,1.1,1.3,2.5,1.9,2.1,1.8,2.2,2.1,1.7,1.8,1.8,2.5,2,1.9,2.1,2,2.4,2.3,1.8,2.2,2.3,1.5,2.3,2,2,1.8,2.1,1.8,1.8,1.8,2.1,1.6,1.9,2,2.2,1.5,1.4,2.3,2.4,1.8,1.8,2.1,2.4,2.3,1.9,2.3,2.5,2.3,1.9,2,2.3,1.8],"Species":["setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","versicolor","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica","virginica"]}}]}
+</script>
+
+
+<meta property="og:title" content="Galen Holt - Trying observablejs chunks">
+<meta property="og:description" content="Quarto has the option of using Observable JS for code chunks. This gives the ability to add interactivity in-browser, without needing to do server-side calcs, as we do with Shiny.">
+<meta property="og:site-name" content="Galen Holt">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Galen Holt</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../research.html">
+ <span class="menu-text">Research</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../code_demos.html" aria-current="page">
+ <span class="menu-text">Code Demos</span></a>
+  </li>  
+</ul>
+              <div class="quarto-toggle-container">
+                  <a href="" class="quarto-color-scheme-toggle nav-link" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+              </div>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Trying observablejs chunks</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code_demos.html" class="sidebar-item-text sidebar-link">Code Demos</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Small how-tos</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/smallpieces.html" class="sidebar-item-text sidebar-link">Bits and pieces</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/quarto_notes.html" class="sidebar-item-text sidebar-link">Quarto notes</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../setup/rstudio_themes.html" class="sidebar-item-text sidebar-link">Editing Rstudio themes</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/zip_downloading.html" class="sidebar-item-text sidebar-link">Download and unpack zips</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/json_api_construction.html" class="sidebar-item-text sidebar-link">Building JSON syntax from R for API calls</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/list_names.html" class="sidebar-item-text sidebar-link">Naming rules for lists</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../publishing/private_github_figshare.html" class="sidebar-item-text sidebar-link">Creating Figshare from private github</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/error_handling.html" class="sidebar-item-text sidebar-link">Intro to error handling</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Plotting</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/ggplot_themes.html" class="sidebar-item-text sidebar-link">ggplot themes</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/setting_colors_for_groups.html" class="sidebar-item-text sidebar-link">Consistent colors</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/tweaks_tricks.html" class="sidebar-item-text sidebar-link">Saving and themeing plots</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/hcl_exploration.html" class="sidebar-item-text sidebar-link">Exploring HCL colorspace</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/rgb_to_hex.html" class="sidebar-item-text sidebar-link">Converting RGB to hex colors</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/fonts.html" class="sidebar-item-text sidebar-link">Fonts</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/faded_colors.html" class="sidebar-item-text sidebar-link">Faded 2d colour ramps</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/math_in_ggplot.html" class="sidebar-item-text sidebar-link">Latex in ggplot with latex2exp</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">Website</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../website_notes/quarto_website_github.html" class="sidebar-item-text sidebar-link">Getting started</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../website_notes/updating_website.html" class="sidebar-item-text sidebar-link">Updating and maintaining website</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">Theory, simulation, statistics, probability</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../simmodelling/twoDautocorr.html" class="sidebar-item-text sidebar-link">Generate 2d autocorrelation</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats_probability/expected_shannon.html" class="sidebar-item-text sidebar-link">Bootstrapping the expected shannon diversity</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats_probability/fitting_lognormals.html" class="sidebar-item-text sidebar-link">Intro to fitting lognormals</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats_probability/shifting_normals.html" class="sidebar-item-text sidebar-link">Basic shifts of normal moments</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats_probability/fitting_truncated.html" class="sidebar-item-text sidebar-link">Shifting and fitting truncated lognormals</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">Drones</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../drones/overlaps_reactive.html" class="sidebar-item-text sidebar-link">Calculations for flight planning</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../drones/overlaps.html" class="sidebar-item-text sidebar-link">Figuring out flight plan calcs</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pix4d/read_pix4d_outputs.html" class="sidebar-item-text sidebar-link">Reading and plotting pix4d outputs</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">Observable</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../observable/trying_observable.html" class="sidebar-item-text sidebar-link active">Figuring out how to use ojs chunks</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">R and python</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/python_setup.html" class="sidebar-item-text sidebar-link">Python environments with pyenv and poetry</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/py_in_rpkg.html" class="sidebar-item-text sidebar-link">Wrapping python in R package</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/RandPython.html" class="sidebar-item-text sidebar-link">Using R and python together</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/R_py_shared_projects.html" class="sidebar-item-text sidebar-link">Shared R-py project structure</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/py_r_dates.html" class="sidebar-item-text sidebar-link">Passing complex objects py-R</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/R_py_type_passing.html" class="sidebar-item-text sidebar-link">Passing types between R and python</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/py_r_project_overview.html" class="sidebar-item-text sidebar-link">Overview of building R-py package</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/python_nameerror.html" class="sidebar-item-text sidebar-link">Intermittent NameError py-R</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/python_updated_functions.html" class="sidebar-item-text sidebar-link">Small python bits</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">Setting up projects</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/rig.html" class="sidebar-item-text sidebar-link">Managing old R versions with rig</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/managingprivate.html" class="sidebar-item-text sidebar-link">Private data for website repo</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../setup/R_in_VS.html" class="sidebar-item-text sidebar-link">Using R in VScode</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/end_run_renv.html" class="sidebar-item-text sidebar-link">Dealing with renv failures</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true">Building packages</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../package/package_creation.html" class="sidebar-item-text sidebar-link">First pass at building a package</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../vicwater/vicwater_testing.html" class="sidebar-item-text sidebar-link">Testing VicWater API</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="true">Data</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data_acquisition/bom_gauges.html" class="sidebar-item-text sidebar-link">BOM gauge locations with httr2</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../vicwater/vicwater_api_howtocall.html" class="sidebar-item-text sidebar-link">Experimenting with API calls for {vicwater}</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data_acquisition/gauge_data_pre_gauge.html" class="sidebar-item-text sidebar-link">Data from pre-gauged periods</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data_acquisition/ALA_data_pull.html" class="sidebar-item-text sidebar-link">Pulling data from Atlas of Living Australia</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" aria-expanded="true">R parallel processing (general)</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/interrogating_parallel.html" class="sidebar-item-text sidebar-link">Interrogating parallel resources</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/nested_parallel.html" class="sidebar-item-text sidebar-link">Testing nested parallelism</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/parallel_speed.html" class="sidebar-item-text sidebar-link">Speed-testing parallel</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/globals_speed.html" class="sidebar-item-text sidebar-link">Global objects and parallel speed</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/nested_dependent_iterations.html" class="sidebar-item-text sidebar-link">Dependencies of inner parallelism on outer</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" aria-expanded="true">R parallel processing on HPC</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/hpc_ephemera.html" class="sidebar-item-text sidebar-link">HPC notes</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/plans_and_hpc.html" class="sidebar-item-text sidebar-link">Using single-machine plans on HPC</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/initial_future_batchtools.html" class="sidebar-item-text sidebar-link">Figuring out future.batchtools</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/changing_batchtools_template.html" class="sidebar-item-text sidebar-link">Switching templates, matching to resources</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/template_modification.html" class="sidebar-item-text sidebar-link">Modifying templates</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/master_persistence.html" class="sidebar-item-text sidebar-link">Consequences of master timing out</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/nested_parallel_hpc.html" class="sidebar-item-text sidebar-link">Nested parallel on HPC nodes and cores</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/conditional_plans.html" class="sidebar-item-text sidebar-link">Conditional plans for local and HPC</a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#issues" id="toc-issues" class="nav-link active" data-scroll-target="#issues">ISSUES</a>
+  <ul class="collapse">
+  <li><a href="#interactive-notebooks" id="toc-interactive-notebooks" class="nav-link" data-scroll-target="#interactive-notebooks">Interactive notebooks</a></li>
+  <li><a href="#no-output" id="toc-no-output" class="nav-link" data-scroll-target="#no-output">No output</a></li>
+  <li><a href="#chunk-options" id="toc-chunk-options" class="nav-link" data-scroll-target="#chunk-options">Chunk options</a></li>
+  <li><a href="#column-names" id="toc-column-names" class="nav-link" data-scroll-target="#column-names">Column names</a></li>
+  <li><a href="#code-changes" id="toc-code-changes" class="nav-link" data-scroll-target="#code-changes">Code changes</a></li>
+  </ul></li>
+  <li><a href="#r-setup" id="toc-r-setup" class="nav-link" data-scroll-target="#r-setup">R setup</a></li>
+  <li><a href="#data-to-ojs" id="toc-data-to-ojs" class="nav-link" data-scroll-target="#data-to-ojs">Data to ojs</a></li>
+  <li><a href="#plots" id="toc-plots" class="nav-link" data-scroll-target="#plots">Plots</a>
+  <ul class="collapse">
+  <li><a href="#scatter" id="toc-scatter" class="nav-link" data-scroll-target="#scatter">Scatter</a></li>
+  <li><a href="#line" id="toc-line" class="nav-link" data-scroll-target="#line">Line</a></li>
+  <li><a href="#point-and-line" id="toc-point-and-line" class="nav-link" data-scroll-target="#point-and-line">Point and line</a></li>
+  </ul></li>
+  <li><a href="#reactivity" id="toc-reactivity" class="nav-link" data-scroll-target="#reactivity">Reactivity</a></li>
+  <li><a href="#making-better-ux" id="toc-making-better-ux" class="nav-link" data-scroll-target="#making-better-ux">Making better UX</a>
+  <ul class="collapse">
+  <li><a href="#fancy-layouts" id="toc-fancy-layouts" class="nav-link" data-scroll-target="#fancy-layouts">Fancy layouts</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Trying observablejs chunks</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Galen Holt </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>Quarto has the option of using Observable JS for code chunks. This gives the ability to add interactivity in-browser, without needing to do server-side calcs, as we do with Shiny. The catch is with Shiny, I can serve R objects (e.g.&nbsp;ggplots) that I’m familiar with. Using observable means I need to figure out how that system works. I’m also a bit unclear how much processing can happen. My understanding is that any actual processing that happens needs to happen in the ojs, not R chunks, so we can’t interactively change a setting in the observable chunk and have that kick off some R. Though I might be wrong.</p>
+<p>I have quite a few use cases in mind if I can get this to work- serving maps, as an interface to {vicwater}, some drone settings, playing with population models, etc.</p>
+<section id="issues" class="level2">
+<h2 class="anchored" data-anchor-id="issues">ISSUES</h2>
+<section id="interactive-notebooks" class="level3">
+<h3 class="anchored" data-anchor-id="interactive-notebooks">Interactive notebooks</h3>
+<p>The ojs chunks dont work in interactive mode, and throw errors like “Error in ojs_define(iris = iris) : could not find function”ojs_define”“. So to work on anything past the first ojs chunk requires rendering. But that brings us to the next issue:</p>
+</section>
+<section id="no-output" class="level3">
+<h3 class="anchored" data-anchor-id="no-output">No output</h3>
+<p>Observable chunks don’t have output unless you use <code>quarto preview</code>, not just <code>quarto render</code>. And <em>the ‘Render’ button in Rstudio <strong>renders and previews</strong></em>, making this more confusing. JUST RUNNING <code>quarto render doc.qmd</code> at the terminal yields a document with code chunks but no output. <a href="https://community.rstudio.com/t/quarto-ojs-fails-to-render-but-previews/155539/2">This is expected behavior</a>, but is super counter intuitive, espcially given the Render button’s name.</p>
+<p>Unfortunately, there is no per-document <code>quarto preview</code> at the terminal like there is for <code>quarto render</code>. So if you’re working in a quarto project (website, book, etc), you have to preview the whole thing just to check a document.</p>
+<p>That means you’ll almost certainly want to turn caching on for the project (probably do anyway if it’s big), but if caching is on for the quarto project, it won’t render because the <code>ojs_define</code>d object can’t be cached. So the chunk with <code>ojs_define</code> needs to have <code>#| cache: false</code> added to it. Or perhaps just turn caching off in the yaml headers for pages using ojs. Depends on how much pre-processing happens in R, probably.</p>
+</section>
+<section id="chunk-options" class="level3">
+<h3 class="anchored" data-anchor-id="chunk-options">Chunk options</h3>
+<p>Python and R both use <code>#| option: value</code> for setting chunk options. ojs cells use <code>//| option: value</code>.</p>
+</section>
+<section id="column-names" class="level3">
+<h3 class="anchored" data-anchor-id="column-names">Column names</h3>
+<p>Observable uses <code>object.thing</code> notation like python, but it also uses the <code>.</code> to reference columns in arquero. That means <code>Sepal_Length</code> is confusing, because it gets referenced as <code>d.Sepal_Length</code>. So change the names.</p>
+<div class="cell" data-hash="trying_observable_cache/html/unnamed-chunk-1_d6ea6980a5cc713f18b03837f53be5c8">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(iris) <span class="ot">&lt;-</span> stringr<span class="sc">::</span><span class="fu">str_replace_all</span>(<span class="fu">names</span>(iris), <span class="st">'</span><span class="sc">\\</span><span class="st">.'</span>, <span class="st">'_'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="code-changes" class="level3">
+<h3 class="anchored" data-anchor-id="code-changes">Code changes</h3>
+<p>I’m running into issues where I change some R code, and it works when I run it interactively, but then when I go to render, the new R code just doesn’t happen. E.g. I’ll add code that makes a dataframe with more values, and I can see them interactively in R, but they don’t appear in the render. I think it has something to do with the cache not resetting with changes, but I’m not positive.</p>
+</section>
+</section>
+<section id="r-setup" class="level2">
+<h2 class="anchored" data-anchor-id="r-setup">R setup</h2>
+<div class="cell" data-hash="trying_observable_cache/html/unnamed-chunk-2_94ed506d71a906a6ea53a6d523a30e86">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>I know the cool thing to do is {palmerpenguins}, but I’m just going to use {iris}.</p>
+<p>I have a feeling ojs is likely just as happy plotting vectors, but I’ll tend to have dataframes from analyses, so let’s stick with that.</p>
+<p>To start, can we reproduce a simple ggplot?</p>
+<div class="cell" data-hash="trying_observable_cache/html/unnamed-chunk-3_bd393c127a9e324e1da99879fd074f05">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iris, <span class="fu">aes</span>(<span class="at">x =</span> Sepal_Length, <span class="at">y =</span> Sepal_Width, <span class="at">color =</span> Species)) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="trying_observable_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Let’s try that without reactivity to start.</p>
+</section>
+<section id="data-to-ojs" class="level2">
+<h2 class="anchored" data-anchor-id="data-to-ojs">Data to ojs</h2>
+<p>It seems like <a href="https://observablehq.com/@uwdata/introducing-arquero">Arquero</a> makes a lot of sense, since it’s dplyr-like. But <a href="https://quarto.org/docs/interactive/ojs/examples/arquero.html">the example</a> (and all other examples I can find) use it to read data in from an external file (csv, json, etc). That’s almost never what I’m going to want to do. So, how do I get a dataframe into Arquero? I’m guessing I can’t just grab it. The <a href="https://quarto.org/docs/interactive/ojs/data-sources.html">data sources documentation</a> says we need to use <code>ojs_define</code> in R to make things available. Let’s see if we can do that and then make it an arquero object?</p>
+<p><strong>NOTE</strong> I’ve not seen this mentioned anywhere, but <code>ojs_define</code> cannot be found in an interactive session- it’s only available on render. So interactively it throws “Error in ojs_define(iris = iris) : could not find function”ojs_define”“. AND, if caching is on for the quarto project, it won’t render because the <code>ojs_define</code>d object can’t be cached.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ojs_define</span>(<span class="at">iris =</span> iris)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Can I see that in ojs? I thought .view made tables? Maybe not if we haven’t imported arquero? But I also thought order didn’t matter for ojs.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5" data-startfrom="70" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 69;"><span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a>iris<span class="op">.</span><span class="fu">view</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-1" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<p>Anyway, we can see it as an object (once we preview instead of render). I’m still grumpy about that.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6" data-startfrom="76" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 75;"><span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a>iris</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-2" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<p>I <em>think</em> we usually need to <code>transpose</code> according to various stackexchanges.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7" data-startfrom="83" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 82;"><span id="cb7-83"><a href="#cb7-83" aria-hidden="true" tabindex="-1"></a>tiris <span class="op">=</span> <span class="fu">transpose</span>(iris)</span>
+<span id="cb7-84"><a href="#cb7-84" aria-hidden="true" tabindex="-1"></a>tiris</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-2" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+<p>Now, the arquero docs seem to suggest I might be able to use <code>from</code> to make it arquero?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8" data-startfrom="90" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 89;"><span id="cb8-90"><a href="#cb8-90" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { aq<span class="op">,</span> op } <span class="im">from</span> <span class="st">'@uwdata/arquero'</span></span>
+<span id="cb8-91"><a href="#cb8-91" aria-hidden="true" tabindex="-1"></a>irtab <span class="op">=</span> aq<span class="op">.</span><span class="fu">from</span>(iris)</span>
+<span id="cb8-92"><a href="#cb8-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-93"><a href="#cb8-93" aria-hidden="true" tabindex="-1"></a>irtab<span class="op">.</span><span class="fu">view</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-4-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-4-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-4-3" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+<p>That <em>does</em> look like it’s the wrong dims, let’s used the transposed.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9" data-startfrom="99" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 98;"><span id="cb9-99"><a href="#cb9-99" aria-hidden="true" tabindex="-1"></a>tirtab <span class="op">=</span> aq<span class="op">.</span><span class="fu">from</span>(tiris)</span>
+<span id="cb9-100"><a href="#cb9-100" aria-hidden="true" tabindex="-1"></a>tirtab<span class="op">.</span><span class="fu">view</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-5-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-5-2" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="plots" class="level2">
+<h2 class="anchored" data-anchor-id="plots">Plots</h2>
+<p>To make a first plot, do something I’m pretty sure should work, stolen directly from <a href="https://stackoverflow.com/questions/73873681/pass-r-object-to-observable-in-quarto">the penguins example that starts with a dataframe</a> and just modifying the name and removing a facet level.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10" data-startfrom="107" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 106;"><span id="cb10-107"><a href="#cb10-107" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">rectY</span>(tiris<span class="op">,</span></span>
+<span id="cb10-108"><a href="#cb10-108" aria-hidden="true" tabindex="-1"></a>  Plot<span class="op">.</span><span class="fu">binX</span>(</span>
+<span id="cb10-109"><a href="#cb10-109" aria-hidden="true" tabindex="-1"></a>    {<span class="dt">y</span><span class="op">:</span> <span class="st">"count"</span>}<span class="op">,</span></span>
+<span id="cb10-110"><a href="#cb10-110" aria-hidden="true" tabindex="-1"></a>    {<span class="dt">x</span><span class="op">:</span> <span class="st">"Sepal_Width"</span><span class="op">,</span> <span class="dt">fill</span><span class="op">:</span> <span class="st">"Species"</span><span class="op">,</span> <span class="dt">thresholds</span><span class="op">:</span> <span class="dv">10</span>}</span>
+<span id="cb10-111"><a href="#cb10-111" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb10-112"><a href="#cb10-112" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb10-113"><a href="#cb10-113" aria-hidden="true" tabindex="-1"></a>    <span class="dt">facet</span><span class="op">:</span> {</span>
+<span id="cb10-114"><a href="#cb10-114" aria-hidden="true" tabindex="-1"></a>      <span class="dt">data</span><span class="op">:</span> tiris<span class="op">,</span></span>
+<span id="cb10-115"><a href="#cb10-115" aria-hidden="true" tabindex="-1"></a>      <span class="dt">y</span><span class="op">:</span> <span class="st">"Species"</span><span class="op">,</span></span>
+<span id="cb10-116"><a href="#cb10-116" aria-hidden="true" tabindex="-1"></a>      <span class="dt">marginRight</span><span class="op">:</span> <span class="dv">80</span></span>
+<span id="cb10-117"><a href="#cb10-117" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+<span id="cb10-118"><a href="#cb10-118" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb10-119"><a href="#cb10-119" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">frame</span>()<span class="op">,</span></span>
+<span id="cb10-120"><a href="#cb10-120" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb10-121"><a href="#cb10-121" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb10-122"><a href="#cb10-122" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-6" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<section id="scatter" class="level3">
+<h3 class="anchored" data-anchor-id="scatter">Scatter</h3>
+<p>Now, can we make a scatter?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11" data-startfrom="130" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 129;"><span id="cb11-130"><a href="#cb11-130" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">dot</span>(tiris<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"Sepal_Length"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"Sepal_Width"</span><span class="op">,</span> <span class="dt">fill</span><span class="op">:</span> <span class="st">"Species"</span>})<span class="op">.</span><span class="fu">plot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-7" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<p>There’s lots of cleanup we could do to make that look different, but let’s go with that for now.</p>
+<p>Can I make a line? It’ll be jumbled, but whatever. Maybe I can <a href="https://uwdata.github.io/arquero/">sort it at least with arquero</a>.</p>
+<p><em>Remember to use the arquero version of the data</em>- this barfs with <code>tiris</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12" data-startfrom="140" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 139;"><span id="cb12-140"><a href="#cb12-140" aria-hidden="true" tabindex="-1"></a>tirtab</span>
+<span id="cb12-141"><a href="#cb12-141" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">orderby</span>(<span class="st">'Sepal_Length'</span>)</span>
+<span id="cb12-142"><a href="#cb12-142" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">view</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-8" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<p>Now, how to plot that? Does the chunk above order <code>tirtab</code> permanently? Doesn’t seem to</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13" data-startfrom="149" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 148;"><span id="cb13-149"><a href="#cb13-149" aria-hidden="true" tabindex="-1"></a>tirtab<span class="op">.</span><span class="fu">view</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-9" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</section>
+<section id="line" class="level3">
+<h3 class="anchored" data-anchor-id="line">Line</h3>
+<p>Let’s try the line with the <code>orderby</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14" data-startfrom="157" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 156;"><span id="cb14-157"><a href="#cb14-157" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">line</span>(tirtab<span class="op">.</span><span class="fu">orderby</span>(<span class="st">'Sepal_Length'</span>)<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"Sepal_Length"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"Sepal_Width"</span><span class="op">,</span> <span class="dt">fill</span><span class="op">:</span> <span class="st">"Species"</span>})<span class="op">.</span><span class="fu">plot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-10" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<p>That seems to have worked, but it sure is goofy looking. Oh. Is it because i’m using <code>fill</code>? Use <code>stroke</code> (not <code>color</code>- this isn’t ggplot).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15" data-startfrom="163" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 162;"><span id="cb15-163"><a href="#cb15-163" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">line</span>(tirtab<span class="op">.</span><span class="fu">orderby</span>(<span class="st">'Sepal_Length'</span>)<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"Sepal_Length"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"Sepal_Width"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"Species"</span>})<span class="op">.</span><span class="fu">plot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-11" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<p>Would be good to not do the data processing inside the plot call.</p>
+<p>I assume that’s as easy as</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16" data-startfrom="172" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 171;"><span id="cb16-172"><a href="#cb16-172" aria-hidden="true" tabindex="-1"></a>irorder <span class="op">=</span> tirtab<span class="op">.</span><span class="fu">orderby</span>(<span class="st">'Sepal_Length'</span>)</span>
+<span id="cb16-173"><a href="#cb16-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-174"><a href="#cb16-174" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">line</span>(irorder<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"Sepal_Length"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"Sepal_Width"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"Species"</span>})<span class="op">.</span><span class="fu">plot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-12-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-12-2" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="point-and-line" class="level3">
+<h3 class="anchored" data-anchor-id="point-and-line">Point and line</h3>
+<p>Need to figure this out. Can I just do both? I think the answer might be to use a <code>Plot.plot</code> with mutliple <code>marks</code>?</p>
+<p>First, how does that syntax work? This should just recreate the above, right?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17" data-startfrom="183" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 182;"><span id="cb17-183"><a href="#cb17-183" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb17-184"><a href="#cb17-184" aria-hidden="true" tabindex="-1"></a>  <span class="dt">grid</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb17-185"><a href="#cb17-185" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb17-186"><a href="#cb17-186" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">line</span>(irorder<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"Sepal_Length"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"Sepal_Width"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"Species"</span>})</span>
+<span id="cb17-187"><a href="#cb17-187" aria-hidden="true" tabindex="-1"></a>  ]</span>
+<span id="cb17-188"><a href="#cb17-188" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-13" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<p>can we just add more <code>Plot.marktype</code>s?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18" data-startfrom="194" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 193;"><span id="cb18-194"><a href="#cb18-194" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb18-195"><a href="#cb18-195" aria-hidden="true" tabindex="-1"></a>  <span class="dt">grid</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb18-196"><a href="#cb18-196" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb18-197"><a href="#cb18-197" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">line</span>(irorder<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"Sepal_Length"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"Sepal_Width"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"Species"</span>})<span class="op">,</span></span>
+<span id="cb18-198"><a href="#cb18-198" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">dot</span>(irorder<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"Sepal_Length"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"Sepal_Width"</span>})</span>
+<span id="cb18-199"><a href="#cb18-199" aria-hidden="true" tabindex="-1"></a>  ]</span>
+<span id="cb18-200"><a href="#cb18-200" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-14" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<p>Cool. Would be nice if there was a ggplot-esque way to use the same x,y,color and just change the marks. Maybe there is? Look for that later.</p>
+<p>Moving toward reactivity, let’s say I only want dots where Sepal_Length &gt; 5 and &lt; 6</p>
+<p>I don’t quite seem to know the filter syntax. Not entirely sure what the d=&gt; means. Seems to be an internal reference to the data, but that feels weird and extra. I can get it to work, but doing anything complicated will require more thinking I think. <em>Note that almost all the examples I can find use</em> <code>op.operation</code> and so confused me for a bit thinking I needed <code>op</code>. The <code>op</code> access mathematical operations like <code>abs</code>, <code>round</code>, etc, and here I just need a simple &gt;&lt;.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19" data-startfrom="211" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 210;"><span id="cb19-211"><a href="#cb19-211" aria-hidden="true" tabindex="-1"></a>sl_filter <span class="op">=</span> irorder</span>
+<span id="cb19-212"><a href="#cb19-212" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> (d<span class="op">.</span><span class="at">Sepal_Length</span> <span class="op">&lt;</span> <span class="dv">6</span> <span class="op">&amp;</span> d<span class="op">.</span><span class="at">Sepal_Length</span> <span class="op">&gt;</span> <span class="dv">5</span>))</span>
+<span id="cb19-213"><a href="#cb19-213" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb19-214"><a href="#cb19-214" aria-hidden="true" tabindex="-1"></a>sl_filter<span class="op">.</span><span class="fu">view</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-15-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-15-2" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+<p>Now use that in a plot</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20" data-startfrom="220" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 219;"><span id="cb20-220"><a href="#cb20-220" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb20-221"><a href="#cb20-221" aria-hidden="true" tabindex="-1"></a>  <span class="dt">grid</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb20-222"><a href="#cb20-222" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb20-223"><a href="#cb20-223" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">line</span>(irorder<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"Sepal_Length"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"Sepal_Width"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"Species"</span>})<span class="op">,</span></span>
+<span id="cb20-224"><a href="#cb20-224" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">dot</span>(sl_filter<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"Sepal_Length"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"Sepal_Width"</span>})</span>
+<span id="cb20-225"><a href="#cb20-225" aria-hidden="true" tabindex="-1"></a>  ]</span>
+<span id="cb20-226"><a href="#cb20-226" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-16" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<p>That seems to work</p>
+</section>
+</section>
+<section id="reactivity" class="level2">
+<h2 class="anchored" data-anchor-id="reactivity">Reactivity</h2>
+<p>The thing here is to use <code>viewof</code> and <code>Inputs.typeofinput</code>. But what are those types? The <a href="https://observablehq.com/@observablehq/inputs">observable docs seem to have a good overview</a>.</p>
+<p>Let’s replicate the above, but also allow selecting the species. Basically following <a href="https://quarto.org/docs/interactive/ojs/ojs-cells.html">the quarto docs</a>, but with a couple modifications. There’s <em>got</em> to be a way to obtain the ranges, species names, etc in code and not hardcode them in.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21" data-startfrom="240" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 239;"><span id="cb21-240"><a href="#cb21-240" aria-hidden="true" tabindex="-1"></a>viewof min_sl <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">range</span>(</span>
+<span id="cb21-241"><a href="#cb21-241" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">4</span><span class="op">,</span> <span class="dv">8</span>]<span class="op">,</span></span>
+<span id="cb21-242"><a href="#cb21-242" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">value</span><span class="op">:</span> <span class="dv">5</span><span class="op">,</span> <span class="dt">step</span><span class="op">:</span> <span class="fl">0.1</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"Min Sepal Length:"</span>}</span>
+<span id="cb21-243"><a href="#cb21-243" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-244"><a href="#cb21-244" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-245"><a href="#cb21-245" aria-hidden="true" tabindex="-1"></a>viewof max_sl <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">range</span>(</span>
+<span id="cb21-246"><a href="#cb21-246" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">4</span><span class="op">,</span> <span class="dv">8</span>]<span class="op">,</span></span>
+<span id="cb21-247"><a href="#cb21-247" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">value</span><span class="op">:</span> <span class="dv">6</span><span class="op">,</span> <span class="dt">step</span><span class="op">:</span> <span class="fl">0.1</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"Max Sepal Length:"</span>}</span>
+<span id="cb21-248"><a href="#cb21-248" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-249"><a href="#cb21-249" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-250"><a href="#cb21-250" aria-hidden="true" tabindex="-1"></a>viewof sp <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">checkbox</span>(</span>
+<span id="cb21-251"><a href="#cb21-251" aria-hidden="true" tabindex="-1"></a>  [<span class="st">"setosa"</span><span class="op">,</span> <span class="st">"versicolor"</span><span class="op">,</span> <span class="st">"virginica"</span>]<span class="op">,</span></span>
+<span id="cb21-252"><a href="#cb21-252" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">value</span><span class="op">:</span> []<span class="op">,</span></span>
+<span id="cb21-253"><a href="#cb21-253" aria-hidden="true" tabindex="-1"></a>    <span class="dt">label</span><span class="op">:</span> <span class="st">"Species"</span></span>
+<span id="cb21-254"><a href="#cb21-254" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb21-255"><a href="#cb21-255" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-17-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-17-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-17-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+<p>I like the tabset thing they do in the help, but to keep it simple just make the plot.</p>
+<p>I’m going to filter the data in its own chunk to try to aid figuring this out.</p>
+<p>The <code>.params</code> here is needed to use the reactive values, and then gets referenced as <code>$</code>, while the data is <code>d</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22" data-startfrom="267" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 266;"><span id="cb22-267"><a href="#cb22-267" aria-hidden="true" tabindex="-1"></a>spfilter <span class="op">=</span> irorder</span>
+<span id="cb22-268"><a href="#cb22-268" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">params</span>({</span>
+<span id="cb22-269"><a href="#cb22-269" aria-hidden="true" tabindex="-1"></a>  <span class="dt">spf</span><span class="op">:</span> sp</span>
+<span id="cb22-270"><a href="#cb22-270" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb22-271"><a href="#cb22-271" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">filter</span>((d<span class="op">,</span> $) <span class="kw">=&gt;</span> op<span class="op">.</span><span class="fu">includes</span>($<span class="op">.</span><span class="at">spf</span><span class="op">,</span> d<span class="op">.</span><span class="at">Species</span>))</span>
+<span id="cb22-272"><a href="#cb22-272" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb22-273"><a href="#cb22-273" aria-hidden="true" tabindex="-1"></a>spfilter<span class="op">.</span><span class="fu">view</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-18-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-18-2" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23" data-startfrom="277" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 276;"><span id="cb23-277"><a href="#cb23-277" aria-hidden="true" tabindex="-1"></a>sizefilter <span class="op">=</span> spfilter</span>
+<span id="cb23-278"><a href="#cb23-278" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">params</span>({</span>
+<span id="cb23-279"><a href="#cb23-279" aria-hidden="true" tabindex="-1"></a>  <span class="dt">minsl</span><span class="op">:</span> min_sl<span class="op">,</span></span>
+<span id="cb23-280"><a href="#cb23-280" aria-hidden="true" tabindex="-1"></a>  <span class="dt">maxsl</span><span class="op">:</span> max_sl</span>
+<span id="cb23-281"><a href="#cb23-281" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb23-282"><a href="#cb23-282" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">filter</span>((d<span class="op">,</span> $) <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">Sepal_Length</span> <span class="op">&gt;</span> $<span class="op">.</span><span class="at">minsl</span> <span class="op">&amp;&amp;</span> d<span class="op">.</span><span class="at">Sepal_Length</span> <span class="op">&lt;</span> $<span class="op">.</span><span class="at">maxsl</span>)</span>
+<span id="cb23-283"><a href="#cb23-283" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb23-284"><a href="#cb23-284" aria-hidden="true" tabindex="-1"></a>sizefilter<span class="op">.</span><span class="fu">view</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-19-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-19-2" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+<p>And plot</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24" data-startfrom="290" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 289;"><span id="cb24-290"><a href="#cb24-290" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb24-291"><a href="#cb24-291" aria-hidden="true" tabindex="-1"></a>  <span class="dt">grid</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb24-292"><a href="#cb24-292" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb24-293"><a href="#cb24-293" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">line</span>(spfilter<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"Sepal_Length"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"Sepal_Width"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"Species"</span>})<span class="op">,</span></span>
+<span id="cb24-294"><a href="#cb24-294" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">dot</span>(sizefilter<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"Sepal_Length"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"Sepal_Width"</span>})</span>
+<span id="cb24-295"><a href="#cb24-295" aria-hidden="true" tabindex="-1"></a>  ]</span>
+<span id="cb24-296"><a href="#cb24-296" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-20" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<p>That seems to work. Can I package it up pretty like in the example?</p>
+</section>
+<section id="making-better-ux" class="level2">
+<h2 class="anchored" data-anchor-id="making-better-ux">Making better UX</h2>
+<p>Let’s build that same thing, but at least kill off displaying code. We need to use different names here because ojs is reactive and so you can’t define variables in two places. Maybe I’ll just use petals instead of sepals.</p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb25" data-startfrom="307" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 306;"><span id="cb25-307"><a href="#cb25-307" aria-hidden="true" tabindex="-1"></a>viewof min_pl <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">range</span>(</span>
+<span id="cb25-308"><a href="#cb25-308" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span><span class="op">,</span> <span class="dv">7</span>]<span class="op">,</span></span>
+<span id="cb25-309"><a href="#cb25-309" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">value</span><span class="op">:</span> <span class="dv">5</span><span class="op">,</span> <span class="dt">step</span><span class="op">:</span> <span class="fl">0.1</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"Min Petal Length:"</span>}</span>
+<span id="cb25-310"><a href="#cb25-310" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb25-311"><a href="#cb25-311" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-312"><a href="#cb25-312" aria-hidden="true" tabindex="-1"></a>viewof max_pl <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">range</span>(</span>
+<span id="cb25-313"><a href="#cb25-313" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span><span class="op">,</span> <span class="dv">7</span>]<span class="op">,</span></span>
+<span id="cb25-314"><a href="#cb25-314" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">value</span><span class="op">:</span> <span class="dv">6</span><span class="op">,</span> <span class="dt">step</span><span class="op">:</span> <span class="fl">0.1</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"Max Petal Length:"</span>}</span>
+<span id="cb25-315"><a href="#cb25-315" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb25-316"><a href="#cb25-316" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-317"><a href="#cb25-317" aria-hidden="true" tabindex="-1"></a>viewof sp2 <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">checkbox</span>(</span>
+<span id="cb25-318"><a href="#cb25-318" aria-hidden="true" tabindex="-1"></a>  [<span class="st">"setosa"</span><span class="op">,</span> <span class="st">"versicolor"</span><span class="op">,</span> <span class="st">"virginica"</span>]<span class="op">,</span></span>
+<span id="cb25-319"><a href="#cb25-319" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">value</span><span class="op">:</span> [<span class="st">"versicolor"</span>]<span class="op">,</span></span>
+<span id="cb25-320"><a href="#cb25-320" aria-hidden="true" tabindex="-1"></a>    <span class="dt">label</span><span class="op">:</span> <span class="st">"Species"</span></span>
+<span id="cb25-321"><a href="#cb25-321" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb25-322"><a href="#cb25-322" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-21-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-21-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-21-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb26" data-startfrom="327" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 326;"><span id="cb26-327"><a href="#cb26-327" aria-hidden="true" tabindex="-1"></a>spfilter2 <span class="op">=</span> irorder</span>
+<span id="cb26-328"><a href="#cb26-328" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">orderby</span>(<span class="st">'Petal_Length'</span>)</span>
+<span id="cb26-329"><a href="#cb26-329" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">params</span>({</span>
+<span id="cb26-330"><a href="#cb26-330" aria-hidden="true" tabindex="-1"></a>  <span class="dt">spf</span><span class="op">:</span> sp2</span>
+<span id="cb26-331"><a href="#cb26-331" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb26-332"><a href="#cb26-332" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">filter</span>((d<span class="op">,</span> $) <span class="kw">=&gt;</span> op<span class="op">.</span><span class="fu">includes</span>($<span class="op">.</span><span class="at">spf</span><span class="op">,</span> d<span class="op">.</span><span class="at">Species</span>))</span>
+<span id="cb26-333"><a href="#cb26-333" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-334"><a href="#cb26-334" aria-hidden="true" tabindex="-1"></a>petfilter <span class="op">=</span> spfilter2</span>
+<span id="cb26-335"><a href="#cb26-335" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">params</span>({</span>
+<span id="cb26-336"><a href="#cb26-336" aria-hidden="true" tabindex="-1"></a>  <span class="dt">minpl</span><span class="op">:</span> min_pl<span class="op">,</span></span>
+<span id="cb26-337"><a href="#cb26-337" aria-hidden="true" tabindex="-1"></a>  <span class="dt">maxpl</span><span class="op">:</span> max_pl</span>
+<span id="cb26-338"><a href="#cb26-338" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb26-339"><a href="#cb26-339" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">filter</span>((d<span class="op">,</span> $) <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">Petal_Length</span> <span class="op">&gt;</span> $<span class="op">.</span><span class="at">minpl</span> <span class="op">&amp;&amp;</span> d<span class="op">.</span><span class="at">Petal_Length</span> <span class="op">&lt;</span> $<span class="op">.</span><span class="at">maxpl</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-22-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-22-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb27" data-startfrom="344" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 343;"><span id="cb27-344"><a href="#cb27-344" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb27-345"><a href="#cb27-345" aria-hidden="true" tabindex="-1"></a>  <span class="dt">grid</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb27-346"><a href="#cb27-346" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb27-347"><a href="#cb27-347" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">line</span>(spfilter2<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"Petal_Length"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"Petal_Width"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"Species"</span>})<span class="op">,</span></span>
+<span id="cb27-348"><a href="#cb27-348" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">dot</span>(petfilter<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"Petal_Length"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"Petal_Width"</span>})</span>
+<span id="cb27-349"><a href="#cb27-349" aria-hidden="true" tabindex="-1"></a>  ]</span>
+<span id="cb27-350"><a href="#cb27-350" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-23" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<section id="fancy-layouts" class="level3">
+<h3 class="anchored" data-anchor-id="fancy-layouts">Fancy layouts</h3>
+<p>See the <a href="https://quarto.org/docs/interactive/layout.html">quarto layouts docs</a> for help here, I’ll only try a couple things.</p>
+<section id="tabset" class="level4">
+<h4 class="anchored" data-anchor-id="tabset">Tabset</h4>
+<p>Make a tabset with the plot and data</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Plot</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Data</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb28" data-startfrom="365" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 364;"><span id="cb28-365"><a href="#cb28-365" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb28-366"><a href="#cb28-366" aria-hidden="true" tabindex="-1"></a>  <span class="dt">grid</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb28-367"><a href="#cb28-367" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb28-368"><a href="#cb28-368" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">line</span>(spfilter2<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"Petal_Length"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"Petal_Width"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"Species"</span>})<span class="op">,</span></span>
+<span id="cb28-369"><a href="#cb28-369" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">dot</span>(petfilter<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"Petal_Length"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"Petal_Width"</span>})</span>
+<span id="cb28-370"><a href="#cb28-370" aria-hidden="true" tabindex="-1"></a>  ]</span>
+<span id="cb28-371"><a href="#cb28-371" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-24" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb29" data-startfrom="378" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 377;"><span id="cb29-378"><a href="#cb29-378" aria-hidden="true" tabindex="-1"></a>petfilter<span class="op">.</span><span class="fu">view</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-25" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="sidebar-panel" class="level4">
+<h4 class="anchored" data-anchor-id="sidebar-panel">Sidebar panel</h4>
+<p>Need to rename the inputs to avoid double-naming</p>
+<div class="panel-grid layout-sidebar ms-md-0 layout-sidebar-left">
+<div class="cell panel-sidebar card bg-light p-2 g-col-24 g-col-lg-7">
+<div class="sourceCode cell-code hidden" id="cb30" data-startfrom="391" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 390;"><span id="cb30-391"><a href="#cb30-391" aria-hidden="true" tabindex="-1"></a>viewof min_pl3 <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">range</span>(</span>
+<span id="cb30-392"><a href="#cb30-392" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span><span class="op">,</span> <span class="dv">7</span>]<span class="op">,</span></span>
+<span id="cb30-393"><a href="#cb30-393" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">value</span><span class="op">:</span> <span class="dv">5</span><span class="op">,</span> <span class="dt">step</span><span class="op">:</span> <span class="fl">0.1</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"Min Petal Length:"</span>}</span>
+<span id="cb30-394"><a href="#cb30-394" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb30-395"><a href="#cb30-395" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-396"><a href="#cb30-396" aria-hidden="true" tabindex="-1"></a>viewof max_pl3 <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">range</span>(</span>
+<span id="cb30-397"><a href="#cb30-397" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">1</span><span class="op">,</span> <span class="dv">7</span>]<span class="op">,</span></span>
+<span id="cb30-398"><a href="#cb30-398" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">value</span><span class="op">:</span> <span class="dv">6</span><span class="op">,</span> <span class="dt">step</span><span class="op">:</span> <span class="fl">0.1</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"Max Petal Length:"</span>}</span>
+<span id="cb30-399"><a href="#cb30-399" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb30-400"><a href="#cb30-400" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-401"><a href="#cb30-401" aria-hidden="true" tabindex="-1"></a>viewof sp3 <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">checkbox</span>(</span>
+<span id="cb30-402"><a href="#cb30-402" aria-hidden="true" tabindex="-1"></a>  [<span class="st">"setosa"</span><span class="op">,</span> <span class="st">"versicolor"</span><span class="op">,</span> <span class="st">"virginica"</span>]<span class="op">,</span></span>
+<span id="cb30-403"><a href="#cb30-403" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">value</span><span class="op">:</span> [<span class="st">"versicolor"</span>]<span class="op">,</span></span>
+<span id="cb30-404"><a href="#cb30-404" aria-hidden="true" tabindex="-1"></a>    <span class="dt">label</span><span class="op">:</span> <span class="st">"Species"</span></span>
+<span id="cb30-405"><a href="#cb30-405" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb30-406"><a href="#cb30-406" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-26-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-26-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-26-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+<div class="panel-fill panel-grid g-col-24 g-col-lg-17 pt-3 pt-lg-0">
+<div class="g-col-24">
+<div class="cell panel-fill">
+<div class="sourceCode cell-code hidden" id="cb31" data-startfrom="411" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 410;"><span id="cb31-411"><a href="#cb31-411" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb31-412"><a href="#cb31-412" aria-hidden="true" tabindex="-1"></a>  <span class="dt">grid</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb31-413"><a href="#cb31-413" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb31-414"><a href="#cb31-414" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">line</span>(spfilter3<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"Petal_Length"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"Petal_Width"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"Species"</span>})<span class="op">,</span></span>
+<span id="cb31-415"><a href="#cb31-415" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">dot</span>(petfilter3<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"Petal_Length"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"Petal_Width"</span>})</span>
+<span id="cb31-416"><a href="#cb31-416" aria-hidden="true" tabindex="-1"></a>  ]</span>
+<span id="cb31-417"><a href="#cb31-417" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-27" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb32" data-startfrom="423" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 422;"><span id="cb32-423"><a href="#cb32-423" aria-hidden="true" tabindex="-1"></a>spfilter3 <span class="op">=</span> irorder</span>
+<span id="cb32-424"><a href="#cb32-424" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">orderby</span>(<span class="st">'Petal_Length'</span>)</span>
+<span id="cb32-425"><a href="#cb32-425" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">params</span>({</span>
+<span id="cb32-426"><a href="#cb32-426" aria-hidden="true" tabindex="-1"></a>  <span class="dt">spf</span><span class="op">:</span> sp3</span>
+<span id="cb32-427"><a href="#cb32-427" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb32-428"><a href="#cb32-428" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">filter</span>((d<span class="op">,</span> $) <span class="kw">=&gt;</span> op<span class="op">.</span><span class="fu">includes</span>($<span class="op">.</span><span class="at">spf</span><span class="op">,</span> d<span class="op">.</span><span class="at">Species</span>))</span>
+<span id="cb32-429"><a href="#cb32-429" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-430"><a href="#cb32-430" aria-hidden="true" tabindex="-1"></a>petfilter3 <span class="op">=</span> spfilter3</span>
+<span id="cb32-431"><a href="#cb32-431" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">params</span>({</span>
+<span id="cb32-432"><a href="#cb32-432" aria-hidden="true" tabindex="-1"></a>  <span class="dt">minpl</span><span class="op">:</span> min_pl3<span class="op">,</span></span>
+<span id="cb32-433"><a href="#cb32-433" aria-hidden="true" tabindex="-1"></a>  <span class="dt">maxpl</span><span class="op">:</span> max_pl3</span>
+<span id="cb32-434"><a href="#cb32-434" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb32-435"><a href="#cb32-435" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">filter</span>((d<span class="op">,</span> $) <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">Petal_Length</span> <span class="op">&gt;</span> $<span class="op">.</span><span class="at">minpl</span> <span class="op">&amp;&amp;</span> d<span class="op">.</span><span class="at">Petal_Length</span> <span class="op">&lt;</span> $<span class="op">.</span><span class="at">maxpl</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-28-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-28-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+<p>I think I’ll stop there. There’s lots more I could do to get better at using observable, and lots more I could do to integrate that with Quarto layouts, but my goal here was to figure out how to get it to work, and those other things will make more sense with specific use cases or their own quartos or something.</p>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script type="ojs-module-contents">
+{"contents":[{"methodName":"interpret","cellName":"ojs-cell-1","inline":false,"source":"iris.view()\n"},{"methodName":"interpret","cellName":"ojs-cell-2","inline":false,"source":"iris\n"},{"methodName":"interpret","cellName":"ojs-cell-3","inline":false,"source":"tiris = transpose(iris)\ntiris\n"},{"methodName":"interpret","cellName":"ojs-cell-4","inline":false,"source":"import { aq, op } from '@uwdata/arquero'\nirtab = aq.from(iris)\n\nirtab.view()\n"},{"methodName":"interpret","cellName":"ojs-cell-5","inline":false,"source":"tirtab = aq.from(tiris)\ntirtab.view()\n"},{"methodName":"interpret","cellName":"ojs-cell-6","inline":false,"source":"Plot.rectY(tiris,\n  Plot.binX(\n    {y: \"count\"},\n    {x: \"Sepal_Width\", fill: \"Species\", thresholds: 10}\n  ))\n  .plot({\n    facet: {\n      data: tiris,\n      y: \"Species\",\n      marginRight: 80\n    },\n    marks: [\n      Plot.frame(),\n    ]\n  }\n)\n"},{"methodName":"interpret","cellName":"ojs-cell-7","inline":false,"source":"Plot.dot(tiris, {x: \"Sepal_Length\", y: \"Sepal_Width\", fill: \"Species\"}).plot()\n"},{"methodName":"interpret","cellName":"ojs-cell-8","inline":false,"source":"tirtab\n  .orderby('Sepal_Length')\n  .view()\n  \n"},{"methodName":"interpret","cellName":"ojs-cell-9","inline":false,"source":"tirtab.view()\n"},{"methodName":"interpret","cellName":"ojs-cell-10","inline":false,"source":"Plot.line(tirtab.orderby('Sepal_Length'), {x: \"Sepal_Length\", y: \"Sepal_Width\", fill: \"Species\"}).plot()\n"},{"methodName":"interpret","cellName":"ojs-cell-11","inline":false,"source":"Plot.line(tirtab.orderby('Sepal_Length'), {x: \"Sepal_Length\", y: \"Sepal_Width\", stroke: \"Species\"}).plot()\n"},{"methodName":"interpret","cellName":"ojs-cell-12","inline":false,"source":"irorder = tirtab.orderby('Sepal_Length')\n\nPlot.line(irorder, {x: \"Sepal_Length\", y: \"Sepal_Width\", stroke: \"Species\"}).plot()\n"},{"methodName":"interpret","cellName":"ojs-cell-13","inline":false,"source":"Plot.plot({\n  grid: false,\n  marks: [\n    Plot.line(irorder, {x: \"Sepal_Length\", y: \"Sepal_Width\", stroke: \"Species\"})\n  ]\n})\n"},{"methodName":"interpret","cellName":"ojs-cell-14","inline":false,"source":"Plot.plot({\n  grid: false,\n  marks: [\n    Plot.line(irorder, {x: \"Sepal_Length\", y: \"Sepal_Width\", stroke: \"Species\"}),\n    Plot.dot(irorder, {x: \"Sepal_Length\", y: \"Sepal_Width\"})\n  ]\n})\n"},{"methodName":"interpret","cellName":"ojs-cell-15","inline":false,"source":"sl_filter = irorder\n  .filter(d => (d.Sepal_Length < 6 & d.Sepal_Length > 5))\n  \nsl_filter.view()\n\n"},{"methodName":"interpret","cellName":"ojs-cell-16","inline":false,"source":"Plot.plot({\n  grid: false,\n  marks: [\n    Plot.line(irorder, {x: \"Sepal_Length\", y: \"Sepal_Width\", stroke: \"Species\"}),\n    Plot.dot(sl_filter, {x: \"Sepal_Length\", y: \"Sepal_Width\"})\n  ]\n})\n"},{"methodName":"interpret","cellName":"ojs-cell-17","inline":false,"source":"viewof min_sl = Inputs.range(\n  [4, 8],\n  {value: 5, step: 0.1, label: \"Min Sepal Length:\"}\n)\n\nviewof max_sl = Inputs.range(\n  [4, 8],\n  {value: 6, step: 0.1, label: \"Max Sepal Length:\"}\n)\n\nviewof sp = Inputs.checkbox(\n  [\"setosa\", \"versicolor\", \"virginica\"],\n  {value: [],\n    label: \"Species\"\n  }\n)\n"},{"methodName":"interpret","cellName":"ojs-cell-18","inline":false,"source":"spfilter = irorder\n  .params({\n  spf: sp\n})\n  .filter((d, $) => op.includes($.spf, d.Species))\n  \nspfilter.view()\n"},{"methodName":"interpret","cellName":"ojs-cell-19","inline":false,"source":"sizefilter = spfilter\n  .params({\n  minsl: min_sl,\n  maxsl: max_sl\n})\n  .filter((d, $) => d.Sepal_Length > $.minsl && d.Sepal_Length < $.maxsl)\n  \nsizefilter.view()\n\n"},{"methodName":"interpret","cellName":"ojs-cell-20","inline":false,"source":"Plot.plot({\n  grid: false,\n  marks: [\n    Plot.line(spfilter, {x: \"Sepal_Length\", y: \"Sepal_Width\", stroke: \"Species\"}),\n    Plot.dot(sizefilter, {x: \"Sepal_Length\", y: \"Sepal_Width\"})\n  ]\n})\n"},{"methodName":"interpret","cellName":"ojs-cell-21","inline":false,"source":"viewof min_pl = Inputs.range(\n  [1, 7],\n  {value: 5, step: 0.1, label: \"Min Petal Length:\"}\n)\n\nviewof max_pl = Inputs.range(\n  [1, 7],\n  {value: 6, step: 0.1, label: \"Max Petal Length:\"}\n)\n\nviewof sp2 = Inputs.checkbox(\n  [\"setosa\", \"versicolor\", \"virginica\"],\n  {value: [\"versicolor\"],\n    label: \"Species\"\n  }\n)\n"},{"methodName":"interpret","cellName":"ojs-cell-22","inline":false,"source":"spfilter2 = irorder\n  .orderby('Petal_Length')\n  .params({\n  spf: sp2\n})\n  .filter((d, $) => op.includes($.spf, d.Species))\n\npetfilter = spfilter2\n  .params({\n  minpl: min_pl,\n  maxpl: max_pl\n})\n  .filter((d, $) => d.Petal_Length > $.minpl && d.Petal_Length < $.maxpl)\n  \n"},{"methodName":"interpret","cellName":"ojs-cell-23","inline":false,"source":"Plot.plot({\n  grid: false,\n  marks: [\n    Plot.line(spfilter2, {x: \"Petal_Length\", y: \"Petal_Width\", stroke: \"Species\"}),\n    Plot.dot(petfilter, {x: \"Petal_Length\", y: \"Petal_Width\"})\n  ]\n})\n"},{"methodName":"interpret","cellName":"ojs-cell-24","inline":false,"source":"Plot.plot({\n  grid: false,\n  marks: [\n    Plot.line(spfilter2, {x: \"Petal_Length\", y: \"Petal_Width\", stroke: \"Species\"}),\n    Plot.dot(petfilter, {x: \"Petal_Length\", y: \"Petal_Width\"})\n  ]\n})\n"},{"methodName":"interpret","cellName":"ojs-cell-25","inline":false,"source":"petfilter.view()\n"},{"methodName":"interpret","cellName":"ojs-cell-26","inline":false,"source":"viewof min_pl3 = Inputs.range(\n  [1, 7],\n  {value: 5, step: 0.1, label: \"Min Petal Length:\"}\n)\n\nviewof max_pl3 = Inputs.range(\n  [1, 7],\n  {value: 6, step: 0.1, label: \"Max Petal Length:\"}\n)\n\nviewof sp3 = Inputs.checkbox(\n  [\"setosa\", \"versicolor\", \"virginica\"],\n  {value: [\"versicolor\"],\n    label: \"Species\"\n  }\n)\n"},{"methodName":"interpret","cellName":"ojs-cell-27","inline":false,"source":"Plot.plot({\n  grid: false,\n  marks: [\n    Plot.line(spfilter3, {x: \"Petal_Length\", y: \"Petal_Width\", stroke: \"Species\"}),\n    Plot.dot(petfilter3, {x: \"Petal_Length\", y: \"Petal_Width\"})\n  ]\n})\n"},{"methodName":"interpret","cellName":"ojs-cell-28","inline":false,"source":"spfilter3 = irorder\n  .orderby('Petal_Length')\n  .params({\n  spf: sp3\n})\n  .filter((d, $) => op.includes($.spf, d.Species))\n\npetfilter3 = spfilter3\n  .params({\n  minpl: min_pl3,\n  maxpl: max_pl3\n})\n  .filter((d, $) => d.Petal_Length > $.minpl && d.Petal_Length < $.maxpl)\n  \n"},{"methodName":"interpretQuiet","source":"shinyInput('min_sl')"},{"methodName":"interpretQuiet","source":"shinyInput('max_sl')"},{"methodName":"interpretQuiet","source":"shinyInput('sp')"},{"methodName":"interpretQuiet","source":"shinyInput('min_pl')"},{"methodName":"interpretQuiet","source":"shinyInput('max_pl')"},{"methodName":"interpretQuiet","source":"shinyInput('sp2')"},{"methodName":"interpretQuiet","source":"shinyInput('min_pl3')"},{"methodName":"interpretQuiet","source":"shinyInput('max_pl3')"},{"methodName":"interpretQuiet","source":"shinyInput('sp3')"}]}
+</script>
+<script type="module">
+window._ojs.paths.runtimeToDoc = "../../observable";
+window._ojs.paths.runtimeToRoot = "../..";
+window._ojs.paths.docToRoot = "..";
+window._ojs.selfContained = false;
+window._ojs.runtime.interpretFromScriptTags();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
