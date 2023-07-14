@@ -187,11 +187,11 @@ website:
       
       
 
-format: html
-  theme:
-    light: flatly
-    dark: flatly
-    # css: styles.css
-  toc: true
+
+theme:
+  light: flatly
+  dark: flatly
+  # css: styles.css
+toc: true
 
 editor: visual
