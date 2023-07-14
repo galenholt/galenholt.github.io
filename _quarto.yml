@@ -2,11 +2,15 @@ project:
   type: website
   output-dir: docs
   execute-dir: project
-  # render: 
-  #   - "*.qmd"
-  #   - "!R_py_type_passing.qmd"
+  render:
+    - "*.qmd"
+    - "!CV"
 website:
-  title: "Galen"
+  title: "Galen Holt"
+  page-footer:
+    left: ""
+    background: secondary
+  open-graph: true
   navbar:
     backgroud: primary
     search: true
@@ -183,11 +187,11 @@ website:
       
       
 
-format:
-  html:
-    theme: cosmo
-    css: styles.css
+format: html
+    theme:
+      light: flatly
+      dark: flatly
+    # css: styles.css
     toc: true
 
 editor: visual
-
