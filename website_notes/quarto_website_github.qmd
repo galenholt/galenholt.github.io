@@ -69,3 +69,16 @@ So, I've been developing on `dev`, I guess I'll merge main and see what happens.
 ### Switching to gh-pages
 
 I think I'll just toss all the stuff I made above and follow the instructions for gh-pages.
+
+In short I stopped tracking `docs/` and `_files` and other things that happen when the site renders.
+
+Then I run the code to create a `gh-pages` branch
+
+```         
+git checkout --orphan gh-pages
+git reset --hard # make sure you've committed changes before running this!
+git commit --allow-empty -m "Initialising gh-pages branch"
+git push origin gh-pages
+```
+
+And then go change the source branch to `gh-pages` as in the [docs](https://quarto.org/docs/publishing/github-pages.html) and delete the `.nojekyll` file. Note that I had to explicitly push the `gh-pages` branch after creating it before github saw it.
