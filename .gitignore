@@ -18,5 +18,7 @@ output/
 *.rdx
 
 *_cache
-
+*_files
+*.html
 CV/
+docs/
