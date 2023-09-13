@@ -1,0 +1,41 @@
+---
+title: "Github notes"
+author: "Galen Holt"
+format: html
+---
+
+## Private repos and access
+
+Authorisation can happen a couple ways- ssh and https with a github PAT. 
+
+### HTTPS with a PAT
+Go to https://github.com/settings/tokens and create a PAT with at least repo scope and copy it. SAVE IT SOMEWHERE OTHER THAN PLAINTEXT. Then, to authorise, the simplest but most dangerous is to use `auth_token = 'YOUR GITHUB PAT'`. 
+
+The better option is to use `credentials::set_github_pat()` to set your PAT using the github signin, which doesn't require you to have it in plaintext. That sets the `GITHUB_PAT` environment variable, which is the default for `auth_token`.  
+
+So, assuming you've created a PAT in github,
+
+``` r
+# install.packages("devtools")
+credentials::set_github_pat()
+devtools::install_github("USER/repo")
+```
+
+### SSH
+See the [github documents](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/) for creating ssh keys. Note that R and helpers want them to be the default names (and often the RSA version). So don't do anything different with names, and if get some errors about not finding them, check if you made ed25519 and not rsa keys.
+
+Then, to install,
+
+``` r
+# install.packages("devtools")
+devtools::install_git("git@github.com:MDBAuth/WERP_toolkit.git", ref = 'master', force = TRUE, upgrade = 'ask')
+```
+
+But, if using R 4.3, the {git2r} package does not support ssh, and so you have to clone the directory, and use
+
+``` r
+`devtools::install_local('path/to/repo', force = TRUE, upgrade = 'ask')`
+```
+
+Hopefully that's fixed soon (or `install_git` moves away from {git2r}- {gert} works with ssh, but install_git can't use it)
+
