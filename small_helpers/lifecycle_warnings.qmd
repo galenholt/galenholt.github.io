@@ -1,0 +1,29 @@
+---
+title: "Intermittent warnings"
+author: "Galen Holt"
+format: html
+---
+
+I've been dealing with debugging a package with a dplyr warning that only appears every 8 hours with the message
+
+``` R
+This warning is displayed once every 8 hours.
+Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.
+```
+
+It causes warnings every time I test the *whole* package with `devtools::test()`, but only every 8 hours otherwise, which makes tracing and debugging impossible.
+
+{rlang} provides a way to set {lifecycle} warning frequencies ([docs](https://lifecycle.r-lib.org/reference/verbosity.html)) so I set in my test script
+
+```{r}
+#| eval: false
+rlang::local_options(lifecycle_verbosity = "warning")
+
+```
+
+I think this should do it too
+
+```{r}
+#| eval: false
+options(lifecycle_verbosity = "warning")
+```
