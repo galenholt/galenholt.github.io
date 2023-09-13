@@ -74,6 +74,31 @@ mtcars %>%
 
 Why is that useful? We can see not only that these aren't fully duplicated rows (which we also could have done with `duplicated` on the whole table), but also actually look at what differs easily.
 
+#### In a list
+
+We might have a list with internal duplicates, e.g.
+
+```{r}
+duplist <- list(a = c('a', 'b'), b = c('b', 'c'), d = c('a', 'c'), e = c('f', 'g'), f = c('f', 'h'), g = c('a', 'l'))
+duplist
+```
+
+We can see which values in the first position are duplicated, but again, not the first instances.
+
+```{r}
+thedups <- duplist[duplicated(purrr::map_chr(duplist, \(x) x[1]))] |>
+      purrr::map_chr(\(x) x[1])
+thedups
+```
+
+We can get all of them by mapping whether the first value is in `thedups` and then dropping empties
+
+```{r}
+all_duplicated <- purrr::map(duplist, \(x) x[x[1] %in% thedups]) |> 
+  purrr::discard(\(x) length(x) == 0)
+all_duplicated
+```
+
 ### Changing the column type on readr
 
 Sometimes with long csvs, readr's guess of col type based on the first thousand rows is wrong. But only for some cols. If we want to not have to specify all of them, we can use `.default` and only specify the offending col.
