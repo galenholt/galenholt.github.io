@@ -166,3 +166,28 @@ The answer, unfortunately, is to use the `.data[['variable_name']]` or `.data$va
 ### Data
 
 Data in `/data` needs to be included with the package (unsurprisingly- it obviously can't be accessed if it's not there). This is easy to have bite though, since my typical default is to gitignore data. Then everything works locally (where the package is originally built and data created), but fails when, for example, we install from github. The obvious answer is to not gitignore data (and so don't change it very often). We do *not* seem to need to export the data like we do functions to have access to it in an installed package, (though documenting data is clearly ideal).
+
+### Using code coverage
+
+Setting up badges and github actions sounds relatively straightforward, but there are tricks that either aren't well-documented or I couldn't figure out at all.
+
+For example, if we set up automated coverage and checking,
+
+```{r}
+#| eval: false
+usethis::use_github_action('test-coverage')
+usethis::use_github_action('check-standard')
+
+
+```
+
+The first thing we need to do is run
+
+```{r}
+#| eval: false
+devtools::build_readme()
+```
+
+To put the badges in.
+
+Getting the coverage to work was *really* unclear to me. After cobbling it together, what seems to work is go to the [codecov](app.codecov.io) website and sign up for an account. Link it to your github, and then choose the repo you want and click 'setup'. That tells you to put in a "repository secret". Do that. It also says to 'add codecov to your github actions', which I didn't do and it seems to work, I think because the `use_github_action` has already set that bit up (though it doesn't have the particular text they say to add). That action seems to only run on `master` or `main`, so if nothing happens on a branch, try pushing there.
