@@ -75,7 +75,7 @@ ac2d <- function(n_x, n_y,
   
   # usually don't want a list with the stats, and can always get later if needed, I suppose
   if (returnStats) {
-    return(lst(U, acstats))
+    return(tibble::lst(U, acstats))
   } else {
     return(U)
   }
@@ -115,5 +115,5 @@ ac2dstats <- function(acmatrix) {
     
   } 
   
-  return(lst(ac_y, ac_x))
+  return(tibble::lst(ac_y, ac_x))
 }
