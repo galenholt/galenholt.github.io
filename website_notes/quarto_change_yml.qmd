@@ -1,0 +1,96 @@
+---
+title: "Switching quarto ymls"
+author: "Galen Holt"
+format: html
+---
+
+Quarto projects with lots of pieces (e.g. this website) are great, but once they get big, rendering single documents can be a pain. By default, both the Rstudio 'Render' button and `quarto render document_name.qmd` at the command line render the whole project as defined in `_quarto.yml`. If we're working on a single document and want to test its rendering, that can be very annoying. For example, if I want to render this document to check it, I don't want to render the entire website. I'm surprised quarto itself doesn't have a way to switch behaviour (and maybe they do, but I haven't found it). The workaround I've come up with is to do a file rename/swap with `_quarto.yml`- have one simple version and one complex version, and trade them out.
+
+We want to have a directory `_yml` to store various `.yaml` files, and then have a simple call to choose between them. To get there, we need to
+
+1.  Build the `_yml` directory
+2.  Move existing `.yaml` files in (presumably the main project definition)
+3.  Generate a minimal `.yaml` to use to render single notebooks
+4.  Write a simple function to move the desired `.yaml` to the main project directory and name it `_quarto.yaml`.
+
+Could this be done most cleanly inside Quarto itself? Yes. It would be really nice to be able to do something like `quarto render filename.qmd -simple` or `quarto render filename.qmd -website`. But until that's the case, maybe this will work.
+
+## Setup
+
+First, set up a new structure programatically. You could always just add files to this manually, if you want a bunch of different yamls. This assumes a single `_quarto_project.yml` with the complete project definition. In the simplest case, `make_multi_yaml` just makes the `_yml` directory. But it can also copy over an existing `_quarto.yml` and make a simple version.
+
+*Note*- this shouldn't be dangerous to run again- the `overwrite` argument to `file.copy` is `FALSE` by default, so it shouldn't overwrite the `_quarto_project.yml` with a simpler version later, but still makes me nervous.
+
+```{r}
+make_multi_yaml <- function(yamdir = '_yml', 
+                            copy_orig = TRUE, 
+                            make_simple = TRUE,
+                            leave_orig = TRUE) {
+  
+  
+  if (!dir.exists(yamdir)) {dir.create(yamdir)}
+  
+  if (copy_orig) {
+      file.copy('_quarto.yml', file.path(yamdir, '_quarto_project.yml'))
+      if (!leave_orig) {file.remove('_quarto.yml')}
+  }
+
+  if (make_simple) {
+    make_simple_yaml(file.path(yamdir, '_quarto_project.yml'), yamdir = yamdir)
+  }
+}
+```
+
+This function just makes a simple yaml from the main one.
+
+```{r}
+make_simple_yaml <- function(proj_yaml_file = NULL,
+                             yamdir = getwd(), 
+                             simple_file = NULL) {
+  # By default, assume yaml is in working directory/_quarto.yml
+  if (is.null(proj_yaml_file)) {
+    proj_yaml_file <- file.path(yamdir, '_quarto.yml')
+  }
+  
+  proj_yaml <- yaml::read_yaml(proj_yaml_file)
+  
+  simple_yaml <- list() 
+  simple_yaml$project <- proj_yaml$project
+  # kill the type in case it's complex (e.g. website, book)
+  simple_yaml$project$type <- NULL
+  # kill render options- only rendering a single doc should allow rendering that doc and no others
+  simple_yaml$project$render <- NULL
+  
+  if (is.null(simple_file)) {
+    simple_file <- file.path(yamdir, '_quarto_simple.yml')
+  }
+  
+  yaml::write_yaml(simple_yaml, simple_file)
+  
+}
+```
+
+## Switching
+
+The main functionality here is to simply copy over a desired `.yaml` file to the project directory and name it `_quarto.yaml` so it gets used on render.
+
+```{r}
+use_quarto_yaml <- function(yamfile = 'project', yamdir = '_yml') {
+  yamfiles <- list.files(yamdir)
+  whichyam <- grepl(yamfile, yamfiles)
+  if (sum(whichyam) > 1) {stop('too many matching yaml files')}
+ 
+  file.copy(file.path(yamdir, yamfiles[whichyam]), '_quarto.yml', overwrite = TRUE)
+  
+  return(invisible())
+}
+```
+
+That uses partial matching, so we can run `use_quarto_yaml('simple')` to switch to that version prior to rendering. This will work whether or not we use the earlier functions to set up the directory- as long as we have unique names for the various yaml options, calling `use_quarto_yaml` switches which is active, e.g. 
+```{{r}}
+use_quarto_yaml('simple')
+```
+
+This is not run here, because it would reset the yaml on the fly during render, which would be bad.
+It should be run interactively, just prior to rendering.
+
