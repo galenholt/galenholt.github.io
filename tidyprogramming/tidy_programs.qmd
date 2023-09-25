@@ -1,0 +1,1983 @@
+---
+title: "Tidy programming"
+author: "Galen Holt"
+format: html
+editor: visual
+---
+
+```{r setup}
+#| message: false
+library(tidyverse)
+```
+
+## The issue
+
+Tidyverse, and particularly dplyr and ggplot, are great for quickly doing very powerful rearrangements and calculations of data and making plots. One of the main way they achieve this is by allowing us to use bare variable names- unquoted, no \$ syntax. However, that becomes tricky when programming and we might want to pass variables as an argument. Passing other things as arguments can also be a pain, e.g. functions for `summarize`. I've encountered many different things that trip me up, depending on what I'm trying to pass, but my fixes are typically ad-hoc and scattered around my code. I'll use this doc as a central place to sort out solutions to various problems as they come up. There's quite a lot of answers [from dplyr itself](https://cran.r-project.org/web/packages/dplyr/vignettes/programming.html), but for some reason I always have to figure things out for myself.
+
+## Passing to group_by
+
+let's say we want to allow the user to pass which functions to group_by. The two usual ways I end up doing this are double-embracing or just using character vectors. Let's demo and test with a grouped mean for mtcars. Embracing allows the user to pass bare names, chars makes them pass characters and we have to use `across(all_of())` which is annoying syntax.
+
+```{r}
+# embracing
+groupbrace <- function(data, groupers) {
+  gm <- data %>%
+    group_by({{groupers}}) %>%
+    summarise(meanmpg = mean(mpg)) %>%
+    ungroup()
+  return(gm)
+}
+
+# characters
+groupchar <- function(data, groupers) {
+  gm <- data %>%
+    group_by(across(all_of(groupers))) %>%
+    summarise(meanmpg = mean(mpg)) %>%
+    ungroup()
+  return(gm)
+}
+```
+
+How do we use those for a single grouping variable?
+
+```{r}
+groupbrace(mtcars, groupers = gear)
+
+groupchar(mtcars, groupers = 'gear')
+```
+
+What happens when we try to group by more than one column?
+
+```{r}
+#| error:false
+
+# groupbrace(mtcars, groupers = c(gear, carb))
+# 
+# groupchar(mtcars, groupers = c('gear', 'carb'))
+```
+
+works with the characters, but the embracing fails (unsurprisingly).
+
+The website says to use `…`, so we can do that as follows:
+
+```{r}
+groupdots <- function(data, ...) {
+  gm <- data %>%
+    group_by(...) %>%
+    summarise(meanmpg = mean(mpg)) %>%
+    ungroup()
+  return(gm)
+}
+
+```
+
+```{r}
+groupdots(mtcars, gear, carb)
+```
+
+That works, but it becomes an issue if we're ALSO supplying arguments for other things in the function. See below.
+
+The website only uses the dots example, but `across()` works like it does with `summarize`. This I think ends up being the answer for bare variable names that don't get mixed up between grouping and summarizing. See below.
+
+```{r}
+groupacross <- function(data, groupers) {
+  gm <- data %>%
+    group_by(across({{groupers}})) %>%
+    summarise(meanmpg = mean(mpg)) %>%
+    ungroup()
+  return(gm)
+}
+
+```
+
+```{r}
+groupacross(mtcars, c(gear, carb))
+```
+
+## Passing to summarise/mutate
+
+I'm going to set this up with a simple group_by in all cases because it sets up the combo, and I almost never actually call summarise on a full dataset anyway.
+
+### Columns to operate on
+
+If we just want one column, but the user supplies its name, we can again embrace or quote.
+
+Names is an issue here too. They can just be left as a fixed value, but if we want to have the name of the new column reflect what's being passed in, we handle that in different ways. With the braces we use the glue :=, and the .names argument if characters.
+
+Now, the dots don't seem to work to pass multiple bare names, I think probably because of issues with names? But we can modify the simple embraced version to use across(), making it more similar to the character version.
+
+```{r}
+# embracing
+sumbrace <- function(data, sumcols) {
+  gm <- data %>%
+    group_by(gear) %>%
+    summarise("mean_{{sumcols}}" := mean({{sumcols}})) %>%
+    ungroup()
+  return(gm)
+}
+
+# characters
+sumchar <- function(data, sumcols) {
+  gm <- data %>%
+    group_by(gear) %>%
+    summarise(across(all_of(sumcols), mean, .names = 'mean_{.col}')) %>%
+    ungroup()
+  return(gm)
+}
+
+# mulitple bare
+sumbaremulti <- function(data, sumcols) {
+  gm <- data %>%
+    group_by(gear) %>%
+    summarise(across({{sumcols}}, mean, .names = 'mean_{.col}')) %>%
+    ungroup()
+  return(gm)
+}
+```
+
+With a single user-supplied column
+
+```{r}
+sumbrace(mtcars, sumcols = mpg)
+
+sumchar(mtcars, sumcols = 'mpg')
+```
+
+Multiple user-supplied cols
+
+```{r}
+sumbaremulti(mtcars, sumcols = c(mpg, hp))
+
+sumchar(mtcars, sumcols = c('mpg', 'hp'))
+```
+
+### Combine with group_by
+
+I often want to pass a set of variable names to group_by *and* a set of names to summarize. If we use the dots method, these would get all jumbled together. So the options are embracing or characters, and when embracing we still need the c(bare1, bare2, ..., bareN) so each component is a single argument.
+
+```{r}
+# characters
+gsumchar <- function(data, groupers, sumcols) {
+  gm <- data %>%
+    group_by(across(all_of(groupers))) %>%
+    summarise(across(all_of(sumcols), mean, .names = 'mean_{.col}')) %>%
+    ungroup()
+  return(gm)
+}
+
+# mulitple bare
+gsumbaremulti <- function(data, groupers, sumcols) {
+  gm <- data %>%
+    group_by(across({{groupers}})) %>%
+    summarise(across({{sumcols}}, mean, .names = 'mean_{.col}')) %>%
+    ungroup()
+  return(gm)
+}
+```
+
+Now we can feed it multiple grouping columns and multiple summary columns
+
+```{r}
+gsumbaremulti(mtcars, groupers = c(gear, carb), sumcols = c(mpg, hp))
+
+gsumchar(mtcars, groupers = c('gear', 'carb'), sumcols = c('mpg', 'hp'))
+```
+
+It's really not clear why I'd ever use the dots version, or why we wouldn't always use the across() wrap to give us generality. I guess if that generality isn't needed? But while dots can be handy, they're vague and it's not like the across() wrap is hard to type.
+
+What this makes very clear is the similarity between the two methods- they're really just using the `select()` syntax in the `across()`, but one has to embrace bare names and the other uses the `all_of()` modifier we always have to include when we want to `select()` with a character vector.
+
+### Passing select syntax
+
+Since we're using that `across`, is it possible to pass other `select()` syntax than variable names? e.g. `is.numeric`, `starts_with()` or `b:f`? Let's test it just with the summarize bit.
+
+```{r}
+gsumbaremulti(mtcars, 
+              groupers = c(gear, carb), 
+              sumcols = is.numeric)
+```
+
+That works but is angry about missing `where()`. Just throwing the bare `select` syntax straight in works though, for the `where()` type arguments but seems to be general- works for `col:col` and `starts_with()` as well.
+
+```{r}
+gsumbaremulti(mtcars, 
+              groupers = c(gear, carb), 
+              sumcols = where(is.numeric))
+```
+
+```{r}
+gsumbaremulti(mtcars, 
+              groupers = c(gear, carb), 
+              sumcols = mpg:disp)
+```
+
+```{r}
+gsumbaremulti(mtcars, 
+              groupers = c(gear, carb), 
+              sumcols = starts_with('d'))
+```
+
+### Select syntax issues
+
+Sometimes we might want to pass a vector of columns to select, but have those that don't exist get ignored- basically, select however many of this set of columns exist in the dataset. With a character vector, that's straightforward with `any_of`. But it fails with bare names, and `any_of` requires characters.
+
+```{r}
+#| error: true
+# These both fail
+mtcars %>% select(c(mpg, fakecolumn))
+mtcars %>% select(any_of(mpg, fakecolumn))
+```
+
+An obvious solution is to use character vectors.
+
+```{r}
+mtcars %>% select(any_of(c('mpg', 'fakecolumn')))
+```
+
+But does that then preclude using other tidyselect syntax such as :, starts_with, etc? Sure, we can swap back and forth if we're accessing select directly, but not if this is embedded in a function. The answer is sometimes- it works with `starts_with` but not `:` (not really shown here because it fails).
+
+```{r}
+mtcars %>% select(any_of(starts_with('d')))
+# mtcars %>% select(any_of(hp:wt))
+```
+
+Is the trick to pass it the whole `any_of` expression? that IS a tidyselect call. Try it in the function directly, to get all the `across` in there correctly. First, this fails if we just pass extra columns:
+
+```{r}
+# gsumbaremulti(mtcars, 
+#               groupers = c(gear, carb), 
+#               sumcols = c(mpg, fakecol))
+```
+
+If we know some might not exist, we can instead pass the whole any_of and character names. Is this cleaner? No, now we're back to characters, but ALSO needing to pass the any_of. So why do it? if we sometimes also need to pass other tidyselect syntax.
+
+```{r}
+gsumbaremulti(mtcars, 
+              groupers = c(gear, carb), 
+              sumcols = any_of(c('mpg', 'fakecol')))
+```
+
+Now, what if *that* is in turn buried in a function, so we need to set the argument outside the call? This might happen if we have a user interface where they choose columns. For example, they might set the cols, and then call a function that calls what we have above.
+
+```{r}
+whichcols <- c('mpg', 'fakecol')
+
+gsumbaremulti(mtcars, 
+              groupers = c(gear, carb), 
+              sumcols = any_of(whichcols))
+```
+
+That's easy enough. But what if whichcols could be tidyselect syntax? That can't be saved to an object. It *can* be saved with `expr`, but then *that* has to be unpacked with `!!`.
+
+```{r}
+# Fails
+# whichcols <- starts_with('m')
+whichcols <- expr(starts_with('m'))
+
+gsumbaremulti(mtcars, 
+              groupers = c(gear, carb), 
+              sumcols = !!whichcols)
+```
+
+That allows passing tidyselect, but does it break the `any_of` situation? Not if we wrap it in expr.
+
+```{r}
+whichcols <- expr(any_of(c('mpg', 'fakecol')))
+
+gsumbaremulti(mtcars, 
+              groupers = c(gear, carb), 
+              sumcols = !!whichcols)
+```
+
+That means that if we might have a character vector and might have tidyselect, we can have a multi-step process to create the expression and pass it to the function. Ie the user can set whichcols directly as an `expr`-wrapped tidyselect, OR if a character vector it makes it itself. See the next two code blocks.
+
+```{r}
+colstosum <- c('mpg', 'fakecol')
+# colstosum <- expr(starts_with('d'))
+
+if (is.character(colstosum)) {
+  whichcols <- expr(any_of(colstosum))
+} else {
+  whichcols <- colstosum
+}
+
+
+gsumbaremulti(mtcars, 
+              groupers = c(gear, carb), 
+              sumcols = !!whichcols)
+```
+
+```{r}
+colstosum <- expr(starts_with('d'))
+
+if (is.character(colstosum)) {
+  whichcols <- expr(any_of(colstosum))
+} else {
+  whichcols <- colstosum
+}
+
+
+gsumbaremulti(mtcars, 
+              groupers = c(gear, carb), 
+              sumcols = !!whichcols)
+```
+
+Because that's ugly, I'm not going to spend more time on it, but it is a workaround for sometimes needing to pass tidyselect syntax and sometimes column names that might not exist. There's likely a more general way to do this using `tidyselect::eval_select`, but what I have here will work for now.
+
+### tidyselect::eval_select
+
+I'm now running into issues where the approach above isn't working well, because sometimes the expression ends up including the name of an object (e.g. a passed-in character vector), and by the time we get to the `{{}}`, we're too far into the call stack and it ends up failing because it essentially tries to do something like `group_by(starts_with(NAME_OF_VECTOR))` instead of `group_by(starts_with(VALUES_IN_VECTOR)`.
+
+So, one way to handle this is to in the outer layer use `tidyselect::eval_select` in the outer layer to get column names and indices. Then we can just pass those around rather than all the promises that get lost doing it other ways. It's a bit cruder, but i think will involve less gymnastics.
+
+#### How does eval_select work?
+
+First, how does `eval_select` work? What do we need to feed it?
+
+A bare tidyselect function fails
+
+```{r}
+#| eval: false
+#| error: true
+colstosum <- starts_with('d')
+tidyselect::eval_select(colstosum, mtcars)
+```
+
+Works if wrapped in `expr`
+
+```{r}
+
+colstosum <- expr(starts_with('d'))
+
+tidyselect::eval_select(colstosum, mtcars)
+
+```
+
+Works with character vectors.
+
+```{r}
+colstosum <- c('disp', 'mpg')
+tidyselect::eval_select(colstosum, mtcars)
+```
+
+Does *not* work if there are values in the character vector that aren't in the data.
+
+```{r}
+#| eval: false
+#| error: true
+colstosum <- c('disp', 'mpg', 'notinmtcars')
+tidyselect::eval_select(colstosum, mtcars)
+```
+
+So we likely still need the conditional to use `any_of`
+
+```{r}
+colstosum <- c('disp', 'mpg', 'notinmtcars')
+
+if (is.character(colstosum)) {
+  whichcols <- expr(any_of(colstosum))
+} else {
+  whichcols <- colstosum
+}
+
+tidyselect::eval_select(whichcols, mtcars)
+```
+
+And, what if we pass an argument to a tidyselect? I don't think this is enough to break the original way without some intervening function calls, but it's the same idea that's breaking it as we move down a stack.
+
+```{r}
+startletter <- 'd'
+
+colstosum <- expr(starts_with(startletter))
+tidyselect::eval_select(colstosum, mtcars)
+```
+
+What actually is that returning? A named vector of indices.
+
+```{r}
+tsout <- tidyselect::eval_select(colstosum, mtcars)
+str(tsout)
+```
+
+So, with the conditional in there to guard against grabbing things that don't exist, that looks like it should work by basically transporting around our selects as character vectors or indices if we evaluate them early enough. In the sort of uses I'm imagining- evaluating this early, and then passing in to further functions- I'd be *really* nervous about using indices, and so would tend to use the names. How might that work?
+
+```{r}
+gsumbaremulti(mtcars, 
+              groupers = c(gear, carb), 
+              sumcols = names(tsout))
+```
+
+#### A function to parse eval_select
+
+What if I actually make the function do the parsing? So I can pass it the characters, bare names, or `expr(selectsyntax)`?
+
+```{r}
+gsumtidy <- function(data, groupers, sumcols) {
+  
+  if (is.character(groupers)) {
+    whichg <- expr(any_of(groupers))
+  } else {
+    whichg <- groupers
+  }
+  
+  if (is.character(sumcols)) {
+    whichs <- expr(any_of(sumcols)) 
+  } else {
+    whichs <- sumcols
+  }
+  
+  gnames <- whichg %>% 
+    tidyselect::eval_select(data) %>% 
+    names()
+  snames <- whichs %>% 
+    tidyselect::eval_select(data) %>% 
+    names()
+  
+  gm <- data %>%
+    group_by(across({{gnames}})) %>%
+    summarise(across({{snames}}, mean, .names = 'mean_{.col}')) %>%
+    ungroup()
+  return(gm)
+  
+}
+```
+
+Test that with different sorts of things.
+
+```{r}
+gsumtidy(mtcars, 
+         groupers = 'cyl', 
+         sumcols = expr(starts_with('d')))
+```
+
+How about if we include extra cols? works fine.
+
+```{r}
+gsumtidy(mtcars, 
+         groupers = c('cyl', 'notinmtcars'), 
+         sumcols = expr(starts_with('d')))
+```
+
+The whole top part of that could be its own function, and get run at any point in a call stack. Returning the names and not the indices, but could return the whole thing I guess, depending on safety of indices.
+
+```{r}
+selectnames <- function(data, selector) {
+  
+  if (is.character(selector)) {
+    whichg <- expr(any_of(selector))
+  } else {
+    whichg <- selector
+  }
+  
+  selnames <- whichg %>% 
+    tidyselect::eval_select(data) %>% 
+    names()
+  
+  return(selnames)
+}
+```
+
+```{r}
+gtidysimple <- function(data, groupers, sumcols) {
+  
+  gnames <- selectnames(data, groupers)
+  snames <- selectnames(data, sumcols)
+  
+  gm <- data %>%
+    group_by(across({{gnames}})) %>%
+    summarise(across({{snames}}, mean, .names = 'mean_{.col}')) %>%
+    ungroup()
+  return(gm)
+  
+}
+```
+
+```{r}
+gtidysimple(mtcars, 
+         groupers = c('cyl', 'notinmtcars'), 
+         sumcols = expr(starts_with('d')))
+```
+
+#### expr() vs enquo()
+
+The above needs to wrap tidyselect syntax with expr to work- passing the bare `starts_with` fails
+
+```{r}
+#| eval: false
+#| error: true
+gtidysimple(mtcars, 
+         groupers = c('cyl', 'notinmtcars'), 
+         sumcols = starts_with('d'))
+```
+
+Likewise with bare names
+
+```{r}
+#| eval: false
+#| error: true
+gtidysimple(mtcars, 
+         groupers = c(cyl, notinmtcars), 
+         sumcols = expr(starts_with('d')))
+```
+
+That's because things other than character vectors need to be "defused" (see `?enquo`). `expr` defuses 'your own local expressions', while `enquo` defuses function arguments. So, there are two options- defuse locally when giving the argument to the funciton with `expr` (as I've done above), or defuse internally with `enquo`.
+
+In that case, we re-write the outer function to `enquo` its arguments.
+
+```{r}
+gtidyquo <- function(data, groupers, sumcols) {
+  
+  gnames <- selectnames(data, enquo(groupers))
+  snames <- selectnames(data, enquo(sumcols))
+  
+  gm <- data %>%
+    group_by(across({{gnames}})) %>%
+    summarise(across({{snames}}, mean, .names = 'mean_{.col}')) %>%
+    ungroup()
+  return(gm)
+  
+}
+```
+
+Now, that should work without wrapping tidyselect syntax in `expr()`, and take bare names or character vectors.
+
+```{r}
+gtidyquo(mtcars, 
+         groupers = cyl, 
+         sumcols = starts_with('d'))
+```
+
+It also takes characters
+
+```{r}
+gtidyquo(mtcars, 
+         groupers = 'cyl', 
+         sumcols = c('disp', 'drat'))
+```
+
+But it's no longer ignoring values not in the data
+
+```{r}
+#| eval: false
+#| error: true
+gtidyquo(mtcars, 
+         groupers = c('cyl', 'notinmtcars'), 
+         sumcols = expr(starts_with('d')))
+```
+
+That's because the internal `enquo(groupers)` in `gtidyquo` means that `selectnames` is always seeing `selector` as language, not character, and so bypassing the `any_of()` conditional. I don't want to drop that whole conditional section from `selectnames`, because that keeps `selectnames` more general (doesn't have to be fed `enquo`'d arguments). Instead, we can use the `strict` argument in `eval_select` to decide whether to fail or silently ignore missings. This choice is probably good to have, rather than enforce one or the other- it's often the case that we *should* fail if missing columns are called, rather than just ignore silently. The same argument can also be used in the conditional as a switch to make the situation with character `selector` fail or pass.
+
+```{r}
+selectnames <- function(data, selector, failmissing = TRUE) {
+  
+  if (is.character(selector)) {
+    if (failmissing) {
+      whichg <- expr(all_of(selector))
+    } else {
+      whichg <- expr(any_of(selector))
+    }
+    
+  } else {
+    whichg <- selector
+  }
+  
+  selnames <- whichg %>% 
+    tidyselect::eval_select(data, strict = failmissing) %>% 
+    names()
+  
+  return(selnames)
+}
+
+```
+
+We also need to rewrite `gtidyquo` to pass failmissing. Could use `…`, but that's vague.
+
+```{r}
+gtidyquo <- function(data, groupers, sumcols, failmissing = TRUE) {
+  
+  gnames <- selectnames(data, enquo(groupers), failmissing)
+  snames <- selectnames(data, enquo(sumcols), failmissing)
+  
+  gm <- data %>%
+    group_by(across({{gnames}})) %>%
+    summarise(across({{snames}}, mean, .names = 'mean_{.col}')) %>%
+    ungroup()
+  return(gm)
+  
+}
+```
+
+Now, does that work with values not in the data?
+
+```{r}
+
+gtidyquo(mtcars, 
+         groupers = c('cyl', 'notinmtcars'), 
+         sumcols = starts_with('d'),
+         failmissing = FALSE)
+```
+
+as bare names
+
+```{r}
+
+gtidyquo(mtcars, 
+         groupers = c(cyl, notinmtcars), 
+         sumcols = starts_with('d'),
+         failmissing = FALSE)
+```
+
+and it should fail if `failmissing = TRUE` (or left off, since that's the default).
+
+```{r}
+#| eval: false
+#| error: true
+gtidyquo(mtcars, 
+         groupers = c('cyl', 'notinmtcars'), 
+         sumcols = starts_with('d'))
+```
+
+#### Conclusions
+
+That seems a bit lame to just translate to characters, but it ends up being a very robust and flexible workaround for situations where passing an object into a tidyselect ends up trying to select the object instead of its contents once we're further down a call stack, and lets us use characters, bare names, and tidyselect and choose whether or not to fail when columns don't exist.
+
+## Functions to use
+
+Sometimes we want to tell the function how to summarise the data. Sometimes we want to do this including arguments, e.g. mean with `na.rm = TRUE`. Sometimes we want to pass multiple functions and have the names appended, and sometimes those functions are user-defined. Further, sometimes they have an argument internal to the data (such as a weighting column) that they need to access.
+
+We'll start simple, though I'll keep the multi-group and multi-col syntax from above because it keeps things general, and allows testing with multiple summarise cols. I'll use the bare names and embracing for the grouping and summarise variables, but that shouldn't affect the way function-passing works if we used the character version instead.
+
+### Passing a function by name
+
+It's typically a good idea to name the resulting column with the function when we don't know what the function will be. And that sets us up for multi-functions.
+
+In the simplest case we can just use a FUN argument. While using the all-caps "FUN" as the argument name seems to be a convention, this isn't a special argument name and it could be whatever we want.
+
+Previously, we had defined the function to apply inside our function, and so we had hardcoded the naming, e.g. `'mean_{.col}`. But now, we won't know what it is. We thus need to get the name of the function as well, using `as.character(substitute).`
+
+```{r}
+funpass <- function(data, groupers, sumcols,
+                    FUN) {
+  # function name as character
+  funname <- as.character(substitute(FUN))
+  
+  # This just avoids clutter in the summarise
+  funcolname <- paste0(funname, '_{.col}')
+  
+  gm <- data %>%
+    group_by(across({{groupers}})) %>%
+    summarise(across({{sumcols}}, FUN, .names = funcolname)) %>%
+    ungroup()
+  return(gm)
+}
+
+```
+
+```{r}
+funpass(mtcars,
+        groupers = gear,
+        sumcols = mpg,
+        FUN = mean)
+```
+
+We run into problems as soon as we try to pass arguments to that function, for example when there are NA and we want to use `na.rm`
+
+```{r}
+nacars <- mtcars %>%
+  mutate(randnum = rnorm(n()),
+         nampg = ifelse(randnum >= 0, mpg, NA))
+```
+
+```{r}
+
+#| error:false
+
+# funpass(nacars,
+#         groupers = gear,
+#         sumcols = nampg,
+#         FUN = mean, na.rm = TRUE)
+  
+  
+```
+
+Using dots syntax works to allow arguments.
+
+```{r}
+funpasst <- function(data, groupers, sumcols,
+                    FUN, ...) {
+  # function name as character
+  funname <- as.character(substitute(FUN))
+  
+  # This just avoids clutter in the summarise
+  funcolname <- paste0(funname, '_{.col}')
+  gm <- data %>%
+    group_by(across({{groupers}})) %>%
+    summarise(across({{sumcols}}, FUN,..., .names = funcolname)) %>%
+    ungroup()
+  return(gm)
+}
+```
+
+```{r}
+
+funpasst(nacars,
+        groupers = gear,
+        sumcols = nampg,
+        FUN = mean, na.rm = TRUE)
+  
+ 
+```
+
+As usual, dots can be an issue if we're doing several things. But we'll get to that. One solution that is also relevant generally is to specify a custom function. In a simple case this could be mean with `na.rm = TRUE`, but it could be anything.
+
+### Custom function
+
+Maybe we want a custom function. That might be as simple as changing the `na.rm` default, or it might be something complicated with a few arguments. Here, I'll demo a version with a swapped `na.rm` default, illustrating a way to avoid passing arguments, and a more complex function that lags values and multiplies them.
+
+```{r}
+meanna <- function(x) {
+  mean(x, na.rm = TRUE)
+}
+
+customfun <- function(x, lag_k = 1, na.rm = TRUE, multiplier) {
+  xl <- lag(x, lag_k)
+  xs <- sum(xl, na.rm = na.rm)*multiplier
+  return(xs)
+}
+```
+
+```{r}
+funpasst(nacars,
+        groupers = gear,
+        sumcols = nampg,
+        FUN = meanna)
+
+
+```
+
+```{r}
+funpasst(nacars,
+        groupers = gear,
+        sumcols = nampg,
+        FUN = customfun, lag_k = 0, multiplier = 10)
+```
+
+and that works with multiple columns and groupers as well
+
+```{r}
+funpasst(nacars,
+        groupers = c(gear, am),
+        sumcols = c(nampg, hp),
+        FUN = customfun, lag_k = 0, multiplier = 10)
+```
+
+### Function with internal data argument
+
+Sometimes we might want to use a function that relies on multiple columns- for example, the mean of one column using weights in another.
+
+In the simplest case, we can hardcode that column. Here in a silly example of finding the mean `hp` weighted by `wt`. I've removed the dots for now, we'll get to other arguments next.
+
+```{r}
+funinternal <- function(data, groupers, sumcols,
+                    FUN) {
+  # function name as character
+  funname <- as.character(substitute(FUN))
+  
+  # This just avoids clutter in the summarise
+  funcolname <- paste0(funname, '_{.col}')
+  gm <- data %>%
+    group_by(across({{groupers}})) %>%
+    summarise(across({{sumcols}}, FUN, wt, .names = funcolname)) %>%
+    ungroup()
+  return(gm)
+}
+```
+
+```{r}
+funinternal(nacars,
+        groupers = gear,
+        sumcols = mpg,
+        FUN = weighted.mean)
+```
+
+and yes, that is weighting- if we just pass mean we get
+
+```{r}
+funpasst(nacars,
+        groupers = gear,
+        sumcols = mpg,
+        FUN = mean)
+```
+
+But what if we need to specify other arguments? We can use dots again.
+
+```{r}
+funinternald <- function(data, groupers, sumcols,
+                    FUN, ...) {
+  # function name as character
+  funname <- as.character(substitute(FUN))
+  
+  # This just avoids clutter in the summarise
+  funcolname <- paste0(funname, '_{.col}')
+  gm <- data %>%
+    group_by(across({{groupers}})) %>%
+    summarise(across({{sumcols}}, FUN, wt, ..., .names = funcolname)) %>%
+    ungroup()
+  return(gm)
+}
+```
+
+```{r}
+funinternald(nacars,
+        groupers = gear,
+        sumcols = nampg,
+        FUN = weighted.mean, na.rm = TRUE)
+```
+
+Another way to do this that might be a bit clearer, especially as the number of arguments grows is to use tilde function specification. This is nearly the same, but makes it clear what arguments belong to the FUN.
+
+```{r}
+funinternaldt <- function(data, groupers, sumcols,
+                    FUN, ...) {
+  # function name as character
+  funname <- as.character(substitute(FUN))
+  
+  # This just avoids clutter in the summarise
+  funcolname <- paste0(funname, '_{.col}')
+  gm <- data %>%
+    group_by(across({{groupers}})) %>%
+    summarise(across({{sumcols}}, ~FUN(., wt, ...), .names = funcolname)) %>%
+    ungroup()
+  return(gm)
+}
+```
+
+That yields the same result, we've just specified the summary function differently.
+
+```{r}
+funinternaldt(nacars,
+        groupers = gear,
+        sumcols = nampg,
+        FUN = weighted.mean, na.rm = TRUE)
+```
+
+### Passing internal columns by name
+
+So far, the internal columns have been hardcoded, and at a known position in the arguments to the FUN. What if we want to specify them on calling the function?
+
+Can we just use the dots? Not with a bare name.
+
+```{r}
+#| error: true
+
+# funpasst(nacars,
+#         groupers = gear,
+#         sumcols = nampg,
+#         FUN = weighted.mean, wt, na.rm = TRUE)
+```
+
+Does it work to use the tilde version?
+
+```{r}
+funtildedots <- function(data, groupers, sumcols,
+                    FUN, ...) {
+  # function name as character
+  funname <- as.character(substitute(FUN))
+  
+  # This just avoids clutter in the summarise
+  funcolname <- paste0(funname, '_{.col}')
+  gm <- data %>%
+    group_by(across({{groupers}})) %>%
+    summarise(across({{sumcols}}, ~FUN(., ...), .names = funcolname)) %>%
+    ungroup()
+  return(gm)
+}
+```
+
+No, that still can't find the bare name- it looks for an object, not something internal to the data.
+
+```{r}
+#| error: true
+#| eval: false
+funtildedots(nacars,
+        groupers = gear,
+        sumcols = nampg,
+        FUN = weighted.mean, wt, na.rm = TRUE)
+```
+
+If we *know* that there will be a second data-variable argument to the function, we might be able to embrace.
+
+```{r}
+funinteralembrace <- function(data, groupers, sumcols,
+                    FUN, arg2, ...) {
+  # function name as character
+  funname <- as.character(substitute(FUN))
+  
+  # This just avoids clutter in the summarise
+  funcolname <- paste0(funname, '_{.col}')
+  gm <- data %>%
+    group_by(across({{groupers}})) %>%
+    summarise(across({{sumcols}}, FUN, {{arg2}}, ..., .names = funcolname)) %>%
+    ungroup()
+  return(gm)
+}
+
+funinteralembraceT <- function(data, groupers, sumcols,
+                    FUN, arg2, ...) {
+  # function name as character
+  funname <- as.character(substitute(FUN))
+  
+  # This just avoids clutter in the summarise
+  funcolname <- paste0(funname, '_{.col}')
+  gm <- data %>%
+    group_by(across({{groupers}})) %>%
+    summarise(across({{sumcols}}, ~FUN(., {{arg2}}, ...), .names = funcolname)) %>%
+    ungroup()
+  return(gm)
+}
+```
+
+That works for both the tilde and non-tilde versions.
+
+```{r}
+funinteralembrace(nacars,
+        groupers = gear,
+        sumcols = nampg,
+        FUN = weighted.mean, 
+        arg2 = wt, na.rm = TRUE)
+```
+
+```{r}
+funinteralembraceT(nacars,
+        groupers = gear,
+        sumcols = nampg,
+        FUN = weighted.mean, 
+        arg2 = wt, na.rm = TRUE)
+```
+
+But what if we want a function that works with FUNS that may or may not require a second data-variable argument? Do the above functions work with something like `mean` that won't have an arg2? **No**.
+
+```{r}
+#| error: true
+#| eval: false
+
+funinteralembrace(nacars,
+        groupers = gear,
+        sumcols = nampg,
+        FUN = mean, na.rm = TRUE)
+
+funinteralembraceT(nacars,
+        groupers = gear,
+        sumcols = nampg,
+        FUN = mean, na.rm = TRUE)
+```
+
+Is there a way to write a function that may have any number from 0 to *n* internal data arguments, *as well as* other non-data arguments (e.g. na.rm etc)? It will be tricky, because some unknown number of items will need to be embraced. Usual methods to unpack the ellipses using `list(...)` won't work, I don't think. And if they do, it's still unclear how many of the items in the list should be embraced. Does it even work if we *know* how many need to be embraced? Test with a simple case of whether we can even do the `list(…)`.
+
+```{r}
+testdots <- function(data, groupers, sumcols,
+                    FUN, ...) {
+  # function name as character
+  funname <- as.character(substitute(FUN))
+  
+  # This just avoids clutter in the summarise
+  funcolname <- paste0(funname, '_{.col}')
+  
+  dots <- list(...)
+  
+  print(dots)
+  
+  # gm <- data %>%
+  #   group_by(across({{groupers}})) %>%
+  #   summarise(across({{sumcols}}, ~FUN(., {{dots[1]}}, ...), .names = funcolname)) %>%
+  #   ungroup()
+  # return(gm)
+}
+```
+
+Even that doesn't work- including bare names in the dots and then embracing doesn't work because list() needs them as objects.
+
+```{r}
+#| error: true
+#| eval: false
+
+testdots(nacars,
+        groupers = gear,
+        sumcols = nampg,
+        FUN = weighted.mean, wt, na.rm = TRUE)
+```
+
+What is it I'm actually trying to do here? Write a function that takes an arbitrary number of data-variable arguments and an arbitrary number of passed env-arguments. That's always going to be tricky, and will get trickier to sort things out like the order of the arguments. Is it possible? Almost certainly. But I think I'll leave sorting it out for later. We have a version that works for a known number of arguments in a known order, which is enough in some situations. A workaround will become apparent anyway after the next section, where I pass in external vectors.
+
+### Function with vector argument passed in
+
+One way to get around the issue above is instead of passing the name of a data variable, pass in the vector itself as an object. This also allows passing in vectors unattached to the dataframe being operated on, though since the'll need to have the same `nrow`s, in most cases they'll be attached.
+
+How does this work? We write the main function to do the grouping and summarizing, and *within it* define the function to evaluate in the summarize, accounting for the various types of arguments and the grouping. This works because the `…` are all env-variables (vectors and scalars) instead of bare names of data-variables. This is all based on `funpasst` above, with the addition of the internal function creation. Because the function we define may be grouped, it needs to be passed the indices for the current group rows so it only operates on those. I'm using tilde notation to keep it clearer how that function gets called in the summarise.
+
+We could write the function that creates the function to evaluate inside the main function, or elsewhere. Writing it inside allows us to take some shortcuts because it can access objects in the outer function environment and avoid explicitly passing as many objects around. Though that can be dangerous.
+
+The `!!!` unpacks a list of function arguments.
+
+```{r}
+arbvecscal <- function(data, groupers, sumcols,
+                    FUN, ...) {
+  # function name as character
+  funname <- as.character(substitute(FUN))
+  # This just avoids clutter in the summarise
+  funcolname <- paste0(funname, '_{.col}')
+  
+  # Define the function to evaluate
+  thisfun <- function(x, indices) {
+    elip <- list(...)
+    
+    # deal with the case of no passed arguments
+    if (length(elip) == 0) {
+      return(rlang::exec(FUN, x))
+    } else {
+      
+      # clip vector ... arguments (e.g. weights) to just the group
+      for (i in 1:length(elip)) {
+        if (length(elip[[i]]) == nrow(data)) {
+          elip[[i]] <- elip[[i]][indices]
+        }
+      }
+      
+      return(rlang::exec(FUN, x, !!!elip))
+    }
+  }
+  
+  # The main group and summarise
+  gm <- data %>%
+    group_by(across({{groupers}})) %>%
+    summarise(across({{sumcols}}, ~thisfun(., cur_group_rows()), .names = funcolname)) %>%
+    ungroup()
+  return(gm)
+}
+```
+
+So, for something like the weighted average with an `na.rm` argument, we specify the vector of weights, rather than their bare name in the dataframe.
+
+```{r}
+arbvecscal(nacars,
+        groupers = gear,
+        sumcols = nampg,
+        FUN = weighted.mean, nacars$wt, na.rm = TRUE)
+```
+
+And that also works if we want a function without any data-variables
+
+```{r}
+arbvecscal(nacars,
+        groupers = gear,
+        sumcols = nampg,
+        FUN = mean, na.rm = TRUE)
+```
+
+If we don't want to pass vectors but pass bare names, we might be able to do that with the same approach, but will need to specify which are which. Then we'd create the vectors internal to the function using the same select syntax as before.
+
+Now the internal function has to be a bit different (simpler) since it doesn't have to do the checking for length since we've specified dataargs.
+
+```{r}
+arbdatanames <- function(data, groupers, sumcols,
+                         FUN, dataargs, ...) {
+  # function name as character
+  funname <- as.character(substitute(FUN))
+  # This just avoids clutter in the summarise
+  funcolname <- paste0(funname, '_{.col}')
+  
+  # make a tibble so it doesn't collapse to vector if only one column
+  datavecs <- data %>%
+    as_tibble() %>%
+    select({{dataargs}})
+  
+  # Define the function to evaluate
+  thisfun <- function(x, indices) {
+    elip <- list(...)
+    
+    # deal with the case of no passed arguments
+    if (length(elip) == 0 & nrow(datavecs) == 0) {
+      return(rlang::exec(FUN, x))
+    } else {
+      
+      # clip data arguments (e.g. weights) to just the group
+      thisdata <- datavecs[indices, ]
+      
+      # make all the arguments a list so we can call it
+      allargs <- c(as.list(thisdata), elip)
+      
+      return(rlang::exec(FUN, x, !!!allargs))
+    }
+  }
+  
+  # The main group and summarise
+  gm <- data %>%
+    group_by(across({{groupers}})) %>%
+    summarise(across({{sumcols}}, ~thisfun(., cur_group_rows()), .names = funcolname)) %>%
+    ungroup()
+  return(gm)
+}
+```
+
+Now, that should work for the weighted mean as well. Note that now the data variables have to be part of the dataframe- this function does not accept vectors passed in from elsewhere.
+
+BUT, it doesn't work because the *names* of the arguments need to be the names in the list of arguments following the `!!!`. And here, `wt` is the name, but `weighted.mean` wants `w`. So we not only need to specify the data-variable name, but the function-argument name for that variable as well. This is getting *very* in the weeds.
+
+```{r}
+#| error: true
+#| eval: false
+
+arbdatanames(nacars,
+        groupers = gear,
+        sumcols = nampg,
+        FUN = weighted.mean, dataargs = wt, na.rm = TRUE)
+```
+
+For example, arguments with the wrong names just get ignored. Names are essential, the execution does not just rely on order like if we called a function directly. Which makes sense for safety, but makes things harder here.
+
+```{r}
+vals = rnorm(10)
+arglist <- list(x = vals, wt = 1:10, na.rm = TRUE)
+rlang::exec(weighted.mean, !!!arglist)
+
+arglist2 <- list(x = vals, w = 1:10, na.rm = TRUE)
+rlang::exec(weighted.mean, !!!arglist2)
+```
+
+It would be nice to pass name-value pairs, but the bare names are going to trip us up, I think. Could do it with paired characters I guess, but we've just spent quite a lot of time trying to avoid that. Would work though. Kind of a pain to setup- would make most sense as two paired columns or vectors. And if we do that, it'd end up being roughly equivalent to just adding another argument to the function for the matched names.
+
+Skipping the rename if `dataargnames` aren't specified allows ignoring it if the columns have the correct names, and helps it work more smoothly if there aren't `dataargs` at all.
+
+```{r}
+arbdatanames <- function(data, groupers, sumcols,
+                         FUN, dataargs, dataargnames = NULL, ...) {
+  # function name as character
+  funname <- as.character(substitute(FUN))
+  # This just avoids clutter in the summarise
+  funcolname <- paste0(funname, '_{.col}')
+  
+  # make a tibble so it doesn't collapse to vector if only one column
+  datavecs <- data %>%
+    as_tibble() %>%
+    select({{dataargs}})
+  
+  if (!is.null(dataargnames)) {
+    names(datavecs) <- dataargnames
+  }
+  
+  
+  # Define the function to evaluate
+  thisfun <- function(x, indices) {
+    elip <- list(...)
+    
+    # deal with the case of no passed arguments
+    if (length(elip) == 0 & nrow(datavecs) == 0) {
+      return(rlang::exec(FUN, x))
+    } else {
+      
+      # clip data arguments (e.g. weights) to just the group
+      thisdata <- datavecs[indices, ]
+      
+      # make all the arguments a list so we can call it
+      allargs <- c(as.list(thisdata), elip)
+      
+      return(rlang::exec(FUN, x, !!!allargs))
+    }
+  }
+  
+  # The main group and summarise
+  gm <- data %>%
+    group_by(across({{groupers}})) %>%
+    summarise(across({{sumcols}}, ~thisfun(., cur_group_rows()), .names = funcolname)) %>%
+    ungroup()
+  return(gm)
+}
+```
+
+Now that works. The alternative would be to have a table of matched `dataargs` and `dataargnames`, and have that table be a single argument to `arbdatanames`, but we'd still have to created it and that'd involve more overhead.
+
+```{r}
+arbdatanames(nacars,
+        groupers = gear,
+        sumcols = nampg,
+        FUN = weighted.mean, dataargs = wt, dataargnames = 'w', 
+        na.rm = TRUE)
+```
+
+And it works in situations without data args.
+
+```{r}
+arbdatanames(nacars,
+        groupers = gear,
+        sumcols = nampg,
+        FUN = mean, na.rm = TRUE)
+```
+
+That should work for \>1 data variable as well. Let's define a function that needs multiple data variables. This is very contrived with just some division and multiplication, but works as a check.
+
+```{r}
+multidat <- function(x, w, d, m, na.rm) {
+  preprep <- x/d*m
+  outcome <- weighted.mean(preprep, w, na.rm = na.rm)
+}
+```
+
+That works. Note that the dependence on argument names means we can specify out of order- we get two very different answers depending on whether we call `cyl` and `hp` `d` and `m` or `m` and `d`.
+
+```{r}
+arbdatanames(nacars,
+        groupers = gear,
+        sumcols = nampg,
+        FUN = multidat, dataargs = c(wt, cyl, hp), dataargnames = c('w', 'd', 'm'), 
+        na.rm = TRUE)
+
+arbdatanames(nacars,
+        groupers = gear,
+        sumcols = nampg,
+        FUN = multidat, dataargs = c(wt, cyl, hp), dataargnames = c('w', 'm', 'd'), 
+        na.rm = TRUE)
+```
+
+Is there any reason to specify `thisfun` externally to the main function? I guess maybe? It forces us to specify arguments, and potentially makes things clearer.
+
+```{r}
+# Define the function to evaluate within the summary
+sumfun <- function(x, indices, FUN, datavecs, ...) {
+  elip <- list(...)
+  
+  # deal with the case of no passed arguments
+  if (length(elip) == 0 & nrow(datavecs) == 0) {
+    return(rlang::exec(FUN, x))
+  } else {
+    
+    # clip data arguments (e.g. weights) to just the group
+    thisdata <- datavecs[indices, ]
+    
+    # make all the arguments a list so we can call it
+    allargs <- c(as.list(thisdata), elip)
+    
+    return(rlang::exec(FUN, x, !!!allargs))
+  }
+}
+
+```
+
+```{r}
+newfun <- function(data, groupers, sumcols,
+                         FUN, dataargs, dataargnames = NULL, ...) {
+  # function name as character
+  funname <- as.character(substitute(FUN))
+  # This just avoids clutter in the summarise
+  funcolname <- paste0(funname, '_{.col}')
+  
+  # make a tibble so it doesn't collapse to vector if only one column
+  datavecs <- data %>%
+    as_tibble() %>%
+    select({{dataargs}})
+  
+  if (!is.null(dataargnames)) {
+    names(datavecs) <- dataargnames
+  }
+  
+  
+  # The main group and summarise
+  gm <- data %>%
+    group_by(across({{groupers}})) %>%
+    summarise(across({{sumcols}}, ~sumfun(., indices = cur_group_rows(), FUN = FUN, datavecs = datavecs, ...), .names = funcolname)) %>%
+    ungroup()
+  return(gm)
+}
+```
+
+That does work just as above. I'm not sure which will be cleaner in practice, but I like that this relies less on borrowing variables from the creating environment.
+
+```{r}
+newfun(nacars,
+        groupers = gear,
+        sumcols = nampg,
+        FUN = weighted.mean, dataargs = wt, dataargnames = 'w', 
+        na.rm = TRUE)
+
+newfun(nacars,
+        groupers = gear,
+        sumcols = nampg,
+        FUN = multidat, dataargs = c(wt, cyl, hp), dataargnames = c('w', 'm', 'd'), 
+        na.rm = TRUE)
+```
+
+## Multiple functions- with appropriate named outputs
+
+### Simple - hardcoded number of functions
+
+Sometimes we might want to calculate multiple summary or mutate functions for the same set of data, and so rather than repeating the above functions multiple times with different `FUN` arguments, it would be good to be able to send them all at once for one run-through. The simplest way to do this is to have a *known* number of functions and write that number of summaries, e.g.
+
+```{r}
+simplemultifun <- function(data, groupers, sumcols,
+                         FUN1, dataargs1, dataargnames1 = NULL,
+                         FUN2, dataargs2, dataargnames2 = NULL, ...) {
+  # function name as character
+  funname1 <- as.character(substitute(FUN1))
+  # This just avoids clutter in the summarise
+  funcolname1 <- paste0(funname1, '_{.col}')
+  
+    # function name as character
+  funname2 <- as.character(substitute(FUN2))
+  # This just avoids clutter in the summarise
+  funcolname2 <- paste0(funname2, '_{.col}')
+  
+  # make a tibble so it doesn't collapse to vector if only one column
+  datavecs1 <- data %>%
+    as_tibble() %>%
+    select({{dataargs1}})
+  
+  if (!is.null(dataargnames1)) {
+    names(datavecs1) <- dataargnames1
+  }
+  
+    # make a tibble so it doesn't collapse to vector if only one column
+  datavecs2 <- data %>%
+    as_tibble() %>%
+    select({{dataargs2}})
+  
+  if (!is.null(dataargnames2)) {
+    names(datavecs2) <- dataargnames2
+  }
+  
+  
+  # The main group and summarise
+  gm <- data %>%
+    group_by(across({{groupers}})) %>%
+    summarise(across({{sumcols}},
+                     ~sumfun(., indices = cur_group_rows(), 
+                             FUN = FUN1, datavecs = datavecs1, ...),
+                     .names = funcolname1),
+              across({{sumcols}},
+                     ~sumfun(., indices = cur_group_rows(),
+                             FUN = FUN2, datavecs = datavecs2, ...),
+                     .names = funcolname2)) %>%
+    ungroup()
+  return(gm)
+}
+```
+
+Then as an example, let's do a weighted mean but unweighted sd. note that they need to share the dots.
+
+```{r}
+simplemultifun(nacars,
+        groupers = gear,
+        sumcols = nampg,
+        FUN1 = weighted.mean, dataargs1 = wt, dataargnames1 = 'w',
+        FUN2 = sd,
+        na.rm = TRUE)
+```
+
+That works, but is really hardcoded in terms of what we can do. It *has* to have two functions. So, let's try to say we can pass an arbitrary set of functions from 1 to n.
+
+*Note that a different data structure out the end is likely to be warranted, especially if we calculate these functions on multiple variables.*- making this long with a column for the variable name and then the values of the functions might be the way to go if we do this for multiple variables.
+
+### Variable number of functions
+
+What we really want here is to be able to pass in an arbitrary number of functions. That will get complicated if they have things like different data-variable arguments. In the simplest case, we can make the FUNS a list, and summarise just handles it. However, this breaks the names and the dots for arguments- the list needs to have all the info in it.
+
+```{r}
+funmulti <- function(data, groupers, sumcols,
+                    FUNS, ...) {
+  
+  gm <- data %>%
+    group_by(across({{groupers}})) %>%
+    summarise(across({{sumcols}}, FUNS)) %>%
+    ungroup()
+  return(gm)
+}
+```
+
+If the list is named (using `lst` here, but `list(mean = mean, sd = sd)` would work too), those names get appended.
+
+```{r}
+funmulti(nacars,
+        groupers = gear,
+        sumcols = mpg,
+        FUNS = lst(mean, sd))
+```
+
+That approach should work for arbitrary arguments if I use the tilde notation, and even allows data variables. This is a bit messier in the function call than I'd like, and there's a bit less control over the names, but I think neither of those are major issues. Would be hard to be less verbose, really, and still have argument specification make any sense across multiple functions.
+
+Actually, can I control the names with `.names` after all?
+
+```{r}
+funmulti <- function(data, groupers, sumcols,
+                    FUNS, ...) {
+  
+# nameparser <- paste0('prefix_{.fn}_{.col}')
+  
+  gm <- data %>%
+    group_by(across({{groupers}})) %>%
+    summarise(across({{sumcols}}, FUNS, 
+                     .names = 'prefix_{.fn}_{.col}')) %>%
+    ungroup()
+  return(gm)
+}
+```
+
+*As of {dplyr} 1.1, this no longer works- it looks for `wt`* *as an object, not a data-variable. We'll need to find a new solution.*
+
+```{r}
+#| error: true
+funmulti(nacars, 
+         groupers = gear, 
+         sumcols = nampg,
+         FUNS = list(mean = ~mean(., na.rm = TRUE), 
+                     sd = ~sd(., na.rm = TRUE),
+                     wm = ~weighted.mean(., wt, na.rm = TRUE)))
+```
+
+Note that now the function args in the list work with data-variables and scalars, not with vectors passed in. This is not solely because of the grouping needing to be handled as we did above with the `sumfun` cutting to the correct indices, because even if we don't group, we get errors about promise evals. This is because the FUNS list is being evaluated *inside* the summarise, and so thinks everything is a data-variable. There is probably a way to sort that out by using `.env[['variablename']]` in the specification, but that'll just get more complex than just adding the column to the dataframe if we hit this situation. Especially since we'd have to pass the vector in so it's available inside the `funmulti` environment, not just the global environment.
+
+```{r}
+#| error: true
+
+outerweights <- 1:nrow(nacars)
+
+funmulti(nacars,
+         # groupers = gear,
+         sumcols = nampg,
+         FUNS = list(mean = ~mean(., na.rm = TRUE),
+                     sd = ~sd(., na.rm = TRUE),
+                     wm = ~weighted.mean(., w = outerweights, 
+                                         na.rm = TRUE)))
+```
+
+Could we do something fancy with a list of FUNS and lists of arglists, parallelling how we did things above? Probably. I think in most instances though, this approach will work. I'll develop that more complex situation only if needed.
+
+## Bringing it all together
+
+Now, let's choose a couple grouping columns, a selection of cols to summarise, and multiple summary functions, some with data arguments and some that are custom.
+
+*None of this works as of dplyr 1.1.* The issue is that with new behaviour in dplyr, it is looking for the additional arguments not in the column names but as objects. See section below.
+
+```{r}
+#| error: true
+complexSummary <- funmulti(nacars, 
+         groupers = c(gear, carb), 
+         sumcols = c(starts_with('d'), nampg),
+         FUNS = list(mean = ~mean(., na.rm = TRUE), 
+                     sd = ~sd(., na.rm = TRUE),
+                     wm = ~weighted.mean(., wt, na.rm = TRUE),
+                     custom = ~multidat(., w = wt, d = cyl, m = hp,
+                                        na.rm = FALSE)))
+complexSummary
+```
+
+This is complex enough it's probably useful to `pivot_longer`
+
+```{r}
+#| error: true
+longsums <- complexSummary %>% 
+  pivot_longer(cols = -c(gear, carb), 
+               names_to = c('variable', 'summary_statistic'),
+               names_sep = '_',
+               values_to = 'value') 
+longsums
+```
+
+But that actually puts a lot of values with different meaning in the same `value` column. What's probably better is to give different statistics their own columns, as sort of an intermediate long/wide.
+
+```{r}
+#| error: true
+longwide <- longsums %>% 
+  pivot_wider(names_from = summary_statistic, values_from = value) 
+longwide
+```
+
+Anyway, this sort of arrangement isn't the point of this document, so I'll stop there.
+
+## Adjusting to dplyr 1.1
+
+As of dplyr 1.1, new behaviour means that if we pass multi-argument functions, it looks for the additional arguments not as data-variables (column names), but as objects. E.g., we now get errors for all the `weighted.mean` calls above, since it cannot find a `wt` object when `wt` is a column name.
+
+This is discussed as a [dplyr github issue](https://github.com/tidyverse/dplyr/issues/6809~), where there is a workaround using `rlang::quo`, but I really don't like it for a couple reasons, primarily that it forces a user to wrap their code in `rlang::quo`, and it matters where in the call stack the function gets defined. I'm not sure I'll figure anything out that works better for me, since the tidyverse people came up with the workaround, but I need to try.
+
+### Re-demoing the issue
+
+That workaround uses `{{}}` around FUNS in the function. Building on `funmulti` above,
+
+```{r}
+funbrace <- function(data, groupers, sumcols,
+                    FUNS, ...) {
+  
+  gm <- data %>%
+    group_by(across({{groupers}})) %>%
+    summarise(across({{sumcols}}, {{FUNS}}, 
+                     .names = 'prefix_{.fn}_{.col}')) %>%
+    ungroup()
+  return(gm)
+}
+```
+
+That actually works when we define the function to call *inside the function argument*.
+
+```{r}
+bracecheck <- funbrace(nacars, 
+         groupers = c(gear, carb), 
+         sumcols = c(starts_with('d'), nampg),
+         FUNS = list(mean = ~mean(., na.rm = TRUE),
+                     wm = ~weighted.mean(., wt, na.rm = TRUE)))
+bracecheck
+```
+
+However, if we define the functions to call in an object, it fails
+
+```{r}
+#| error: true
+funstocall <- list(mean = ~mean(., na.rm = TRUE),
+                     wm = ~weighted.mean(., rlang::data_sym('wt'), na.rm = TRUE))
+
+bracecheck2 <- funbrace(nacars, 
+         groupers = c(gear, carb), 
+         sumcols = c(starts_with('d'), nampg),
+         FUNS = funstocall)
+bracecheck2
+```
+
+And the 'solution' is to use `rlang::quo` , followed by `!!` in the call
+
+```{r}
+funstocallq <- rlang::quo(list(mean = ~mean(., na.rm = TRUE),
+                     wm = ~weighted.mean(., wt, na.rm = TRUE)))
+
+bracecheckq <- funbrace(nacars, 
+         groupers = c(gear, carb), 
+         sumcols = c(starts_with('d'), nampg),
+         FUNS = !!funstocallq)
+bracecheckq
+```
+
+That works, but it sure requires a lot of fiddling by the user with quosures.
+
+We can bring the `!!` inside the function, which seems to work. I've run into issues before where this then *requires* quosures for everything, but it seems to be working here for `mean`, which doesn't need the quosure because it doesn't reference data-variables.
+
+The `!!` method is
+
+```{r}
+fundefuse <- function(data, groupers, sumcols,
+                    FUNS, ...) {
+  
+  gm <- data %>%
+    group_by(across({{groupers}})) %>%
+    summarise(across({{sumcols}}, !!FUNS, 
+                     .names = 'prefix_{.fn}_{.col}')) %>%
+    ungroup()
+  return(gm)
+}
+```
+
+And so now we don't have to defuse in the function call.
+
+```{r}
+funstocallq <- rlang::quo(c(mean = ~mean(., na.rm = TRUE),
+                     wm = ~weighted.mean(., wt, na.rm = TRUE)))
+
+defusecheckb <- fundefuse(nacars, 
+         groupers = c(gear, carb), 
+         sumcols = c(starts_with('d'), nampg),
+         FUNS = funstocallq)
+defusecheckb
+```
+
+and `mean` works as well, even when it's not wrapped in `rlang::quo` because it doesn't reference data-variables.
+
+```{r}
+funmean <- list(mean = ~mean(., na.rm = TRUE))
+
+defusecheckm <- fundefuse(nacars, 
+         groupers = c(gear, carb), 
+         sumcols = c(starts_with('d'), nampg),
+         FUNS = funmean)
+defusecheckm
+```
+
+### Searching for a solution
+
+I really don't want to require quosures. And I want to be able to pass character function names.
+
+#### Make reference internal to a custom function?
+
+Attempt 1: can I simply define a function with the data-var internally referenced so it only takes one argument? I doubt it, but that might be the easiest.
+
+```{r}
+weightcars <- function(x) {
+  weighted.mean(x, w = wt, na.rm = TRUE)
+}
+```
+
+That doesn't work with either the `!!` or `{{}}` method.
+
+```{r}
+#| error: true
+funscustom <- list(mean = ~mean(., na.rm = TRUE),
+                     wm = ~weightcars(.))
+
+defusecheckc <- fundefuse(nacars, 
+         groupers = c(gear, carb), 
+         sumcols = c(starts_with('d'), nampg),
+         FUNS = funscustom)
+defusecheckc
+```
+
+```{r}
+#| error: true
+bracecheckc <- funbrace(nacars, 
+         groupers = c(gear, carb), 
+         sumcols = c(starts_with('d'), nampg),
+         FUNS = funscustom)
+bracecheckc
+```
+
+And that doesn't even work with the `rlang::quo` wrapper (unsurprisingly, I suppose).
+
+```{r}
+#| error: true
+funscustom <- rlang::quo(list(mean = ~mean(., na.rm = TRUE),
+                     wm = ~weightcars(.)))
+
+defusecheckc <- fundefuse(nacars, 
+         groupers = c(gear, carb), 
+         sumcols = c(starts_with('d'), nampg),
+         FUNS = funscustom)
+defusecheckc
+```
+
+#### Modify the aggregation function somehow
+
+My basic thought here is whether I can auto-build the data referencing. I've tried using `rlang::data_sym` in the weighted mean function, and doing a bunch of other things, but I haven't come up with anything yet. Maybe `rlang::inject`?
+
+Even if I specify the FUNS as a list *inside* the function, I need the `rlang::quo`. Which is surprising, since I *don't* need it if they're specified as a function argument. I'm missing something about quoting, I think.
+
+```{r}
+funbrace <- function(data, groupers, sumcols,
+                    FUNS, ...) {
+  
+  gm <- data %>%
+    group_by(across({{groupers}})) %>%
+    summarise(across({{sumcols}}, {{FUNS}}, 
+                     .names = 'prefix_{.fn}_{.col}')) %>%
+    ungroup()
+  return(gm)
+}
+```
+
+#### Different formulat specification
+
+What if instead of using the formula version of anonymous functions, we use `\(x)`? I think this will behave like the custom `weightcars` above, but maybe we can have more control inside the aggregation function?
+
+First, does it work with the `quo`?
+
+```{r}
+anonq <- rlang::quo(list(mean = \(x) mean(x, na.rm = TRUE),
+                     wm = \(x) weighted.mean(x, wt, na.rm = TRUE)))
+
+```
+
+```{r}
+
+defusechecka <- fundefuse(nacars, 
+         groupers = c(gear, carb), 
+         sumcols = c(starts_with('d'), nampg),
+         FUNS = anonq)
+defusechecka
+```
+
+Works with the `!!` but not `{{}}`.
+
+```{r}
+bracechecka <- funbrace(nacars, 
+         groupers = c(gear, carb), 
+         sumcols = c(starts_with('d'), nampg),
+         FUNS = anonq)
+bracechecka
+```
+
+Now, can we get it to work without `quo`???
+
+```{r}
+anonbare <- list(mean = \(x) mean(x, na.rm = TRUE),
+                     wm = \(x) weighted.mean(x, wt, na.rm = TRUE))
+```
+
+anonbare \<- list(mean = \\(x) mean(x, na.rm = TRUE),
+
+Not immediately. but can we modify those functions?
+
+```{r}
+#| error: true
+defusecheckab <- fundefuse(nacars, 
+         groupers = c(gear, carb), 
+         sumcols = c(starts_with('d'), nampg),
+         FUNS = anonbare)
+defusecheckab
+
+bracecheckab <- funbrace(nacars, 
+         groupers = c(gear, carb), 
+         sumcols = c(starts_with('d'), nampg),
+         FUNS = anonbare)
+bracecheckab
+```
+
+#### Is the answer to drop dplyr?
+
+I thought about moving to `stats::aggregate`, but it seems like that is going to cause just as many problems, especially when we get to passing it arbitrary lists of functions. The syntax is just so clumsy (at least to me).
+
+#### Does it just work if I give it the vector?
+
+This won't solve the whole problem, and I think it still won't actually work with the groupings, but should test.
+
+```{r}
+anonbarevec <- list(mean = \(x) mean(x, na.rm = TRUE),
+                    wm = \(x) weighted.mean(x, nacars$wt, na.rm = TRUE))
+```
+
+As expected, that fails because the external vector doesn't get broken up by the groups.
+
+```{r}
+#| error: true 
+defusecheckab <- fundefuse(nacars,  
+                           groupers = c(gear, carb),
+                           sumcols = c(starts_with('d'), nampg),
+                           FUNS = anonbarevec) 
+defusecheckab  
+bracecheckab <- funbrace(nacars,  
+                         groupers = c(gear, carb), 
+                         sumcols = c(starts_with('d'), nampg),   
+                         FUNS = anonbarevec) 
+bracecheckab
+```
+
+#### Build and feed a character string
+
+We know we need the `rlang::quo` to get this to work, but we can *see* the expressions we need in the list inside the function while debugging. So can we build the list wrapped in rlang::quo inside the function? Not very directly, as far as I can tell. But `eval(parse(STRING))` seems to be a crude way forward.
+
+It works to feed it a character string
+
+```{r}
+charfuns <- "rlang::quo(list(mean = function(x) mean(x, na.rm = TRUE), wm = function(x) weighted.mean(x, wt, na.rm = TRUE)))"
+
+# seems to work. NOW, how can I do that, and do it safely?
+# Likely turn the list into characters, then put rlang::quo on it, and round and round we go. Going to need lots of testing.
+```
+
+And a function that parses that
+
+```{r}
+funchar <- function(data, groupers, sumcols,
+                     FUNS, ...) {
+  
+  FUNS <- eval(parse(text = FUNS))
+  
+  gm <- data %>%
+    group_by(across({{groupers}})) %>%
+    summarise(across({{sumcols}}, {{FUNS}}, 
+                     .names = 'prefix_{.fn}_{.col}')) %>%
+    ungroup()
+  return(gm)
+}
+```
+
+```{r}
+charcheck <- funchar(nacars,  
+                         groupers = c(gear, carb), 
+                         sumcols = c(starts_with('d'), nampg),   
+                         FUNS = charfuns) 
+charcheck
+```
+
+So, that works. This is getting very messy though. We certianly don't want to make a user send us that string- that's far worse than just wrapping in `rlang::quo`.
+
+BUT, does this allow us to programatically *build* that string inside the function? Should `try` without it first, and then if it fails, build the string. Make a function that does that.
+
+```{r}
+funbracechar <- function(data, groupers, sumcols,
+                     FUNS, ...) {
+  
+  gm <- try(data %>%
+    group_by(across({{groupers}})) %>%
+    summarise(across({{sumcols}}, {{FUNS}}, 
+                     .names = 'prefix_{.fn}_{.col}')) %>%
+    ungroup(), silent = TRUE)
+  
+  if (inherits(gm, 'try-error')) {
+    fchar <- paste0(c("rlang::quo(", deparse(FUNS), ")"), collapse = '')
+    # FUNS2 <- eval(parse(text = fchar)) # base R
+    FUNS3 <- rlang::eval_tidy(rlang::parse_expr(fchar)) # rlang claims to be faster?
+  }
+  
+  gm <- data %>%
+    group_by(across({{groupers}})) %>%
+    summarise(across({{sumcols}}, {{FUNS3}}, 
+                     .names = 'prefix_{.fn}_{.col}')) %>%
+    ungroup()
+  
+  return(gm)
+}
+
+```
+
+Will need to test this with \~ functions, bare names, and `\(x)` anonymous functions. I don't think I expect it to work with character names. But it *might* work with character specification of the whole function?
+
+```{r}
+anonbare <- list(mean = \(x) mean(x, na.rm = TRUE),
+                    wm = \(x) weighted.mean(x, wt, na.rm = TRUE))
+```
+
+it works with the `\(x)` style anonymous function
+
+```{r}
+charcheck <- funbracechar(nacars,  
+                         groupers = c(gear, carb), 
+                         sumcols = c(starts_with('d'), nampg),   
+                         FUNS = anonbare) 
+charcheck
+```
+
+works with tilde-style anonymous functions
+
+```{r}
+funstilde <- list(mean = ~mean(., na.rm = TRUE),
+                     wm = ~weighted.mean(., wt, na.rm = TRUE))
+
+chartilde <- funbracechar(nacars,  
+                         groupers = c(gear, carb), 
+                         sumcols = c(starts_with('d'), nampg),   
+                         FUNS = funstilde) 
+chartilde
+```
+
+and unsurprisingly with the long form anonymous
+
+```{r}
+funsfullanon <- list(mean = function(x) mean(x, na.rm = TRUE),
+                     wm = function(x) weighted.mean(x, wt, na.rm = TRUE))
+
+charfullanon <- funbracechar(nacars,  
+                         groupers = c(gear, carb), 
+                         sumcols = c(starts_with('d'), nampg),   
+                         FUNS = funsfullanon) 
+charfullanon
+```
+
+It works with custom functions with the argument inside. If we look at what the `deparse` does inside the debugger, we can see that it expands those functions out, and so the thing that gets quoted is actually exactly the same as the previous version in `funsfullanon`.
+
+```{r}
+weightcustom <- function(x) {
+  weighted.mean(x, w = wt, na.rm = TRUE)
+}
+
+meancustom <- function(x) {
+  mean(x, na.rm = TRUE)
+}
+
+funscustom <- list(mean = meancustom,
+                     wm = weightcustom)
+
+charweightcustom <- funbracechar(nacars,  
+                         groupers = c(gear, carb), 
+                         sumcols = c(starts_with('d'), nampg),   
+                         FUNS = funscustom) 
+charweightcustom
+```
+
+It works when there's a single function, not a list, too. If we look in the debugger, this does still fail with the simple `{{}}`, triggers the try loop, and gets deparsed.
+
+```{r}
+funsnolist <- weightcustom
+
+charweightcustom <- funbracechar(nacars,  
+                         groupers = c(gear, carb), 
+                         sumcols = c(starts_with('d'), nampg),   
+                         FUNS = funsnolist) 
+charweightcustom
+```
+
+I expect it *not* to work for a character vector, and it doesn't.
+
+```{r}
+#| error: true
+funsnolistchar <- 'weightcustom'
+
+charnolistchar <- funbracechar(nacars,  
+                         groupers = c(gear, carb), 
+                         sumcols = c(starts_with('d'), nampg),   
+                         FUNS = funsnolistchar) 
+charnolistchar
+```
+
+But, does it work if we add an `mget` line?
+
+```{r}
+funbracechar <- function(data, groupers, sumcols,
+                     FUNS, ...) {
+  if (is.character(FUNS)) {
+    FUNS <- mget(FUNS, inherits = TRUE)
+  }
+  gm <- try(data %>%
+    group_by(across({{groupers}})) %>%
+    summarise(across({{sumcols}}, {{FUNS}}, 
+                     .names = 'prefix_{.fn}_{.col}')) %>%
+    ungroup(), silent = TRUE)
+  
+  if (inherits(gm, 'try-error')) {
+    fchar <- paste0(c("rlang::quo(", deparse(FUNS), ")"), collapse = '')
+    # FUNS2 <- eval(parse(text = fchar)) # base R
+    FUNS3 <- rlang::eval_tidy(rlang::parse_expr(fchar)) # rlang claims to be faster?
+    gm <- data %>%
+    group_by(across({{groupers}})) %>%
+    summarise(across({{sumcols}}, {{FUNS3}}, 
+                     .names = 'prefix_{.fn}_{.col}')) %>%
+    ungroup()
+  }
+  
+  
+  
+  return(gm)
+}
+```
+
+It works for a single function
+
+```{r}
+funsnolistchar <- 'weightcustom'
+
+charnolistchar <- funbracechar(nacars,  
+                         groupers = c(gear, carb), 
+                         sumcols = c(starts_with('d'), nampg),   
+                         FUNS = funsnolistchar) 
+charnolistchar
+```
+
+And for multiple functions *if they are in a character vector*
+
+```{r}
+funsmultichar <- c('mean', 'weightcustom')
+
+charmultichar <- funbracechar(nacars,  
+                         groupers = c(gear, carb), 
+                         sumcols = c(starts_with('d'), nampg),   
+                         FUNS = funsmultichar) 
+charmultichar
+```
+
+But not for a list. This is not unexpected- the `mget` is in `if(is.character(FUNS))` , and so the list won't get mgot. I think that's good enough for now. It would be doable obviously to `purrr` over the list and `mget` the items that are characters, but that's not really the focus here. We have figured out an (ugly) workaround for the dplyr 1.1 issue, and that will have to do for now- applying it over all possible organisations of FUNS will have to be for another day.
+
+```{r}
+#| error: true
+funsmulticharl <- list(m = 'mean', wm = 'weightcustom')
+
+charmulticharl <- funbracechar(nacars,  
+                         groupers = c(gear, carb), 
+                         sumcols = c(starts_with('d'), nampg),   
+                         FUNS = funsmulticharl) 
+charmulticharl
+```
+
+#### eval_tidy
+
+I keep feeling like `eval_tidy` should work somehow, since it allows the `.data` pronoun, but I can't seem to get my head around how it would work here. I'd happily write something like `\(x) eval_tidy(weighted.mean(x, .data$wt, na.rm = TRUE)))`. Maybe I can get that to work with the right sort of enquoing? I tried for a while and couldn't figure it out, but maybe come back fresh later on.
