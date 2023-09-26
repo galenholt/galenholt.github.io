@@ -2,17 +2,252 @@
 title: "Beta-binomial model testing"
 author: "Galen Holt"
 editor: visual
+format:
+  html:
+    embed-resources: true
 ---
 
-```{r setup}
-
-knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
-
-```
-
 ```{r}
-library(tidyverse)
-library(lme4)
-library(lmerTest)
-library(spaMM)
+# I got as far as writing a short outline and loading some libraries about 6 months ago...
+# No sense actually loading these until there's any code.
+# library(tidyverse)
+# library(lme4)
+# library(lmerTest)
+# library(spaMM)
 ```
+
+# Sorting out beta-binomial and small random effects
+
+## Issues, Q, and approach
+
+What are the questions and how can we set this up to find answers for Sarah and leave the door open for more?
+
+**The issue**
+
+Fundamentally, we have a situation where we're using 'observation-level random effects', but not consistently. It's inconsistent because the number of observations within a random level depends on natural variation in number of egg masses on rocks, but is unrelated to the question (in Sarah's case), or it is in fact a feature of the experimental design (looking for DD). In the DD case, we have a situation where we enforce structure on the relationship between n within levels, and in the incidental case, there still might be structure either by chance or as a feature of the system (simply by chance- more low-n rocks end up in chamber 1, riffle 3 has more low-n rocks, despite the same overall riffle-scale N; feature of the system- Aps lays fewer egg masses per rock, and so will be more affected.
+
+**Basic Q:** What is the impact of low n within random levels, and how does that impact results, especially when the low n is structured in some way?
+
+**Basic approach:** Generate data with known relationships, and vary the way the random structure works to represent the different issues and understand how they affect the ability to recover the relationship- frequency of Type 1 & 2 errors, needed sample size, etc.
+
+**Basic technical approach:** Write a function to generate simulated data that allows varying some properties:
+
+-   The strength of the x-y relationship
+
+    -   Each random level will be given an x-value that may be independent of n or dependent on n
+
+        -   e.g. rocks are random levels within temp treatments, y \~ temp
+
+        -   e.g. rocks are random, and y \~ density
+
+-   Variance around the x-y relationship
+
+-   random variance- how variable are the deviations of the random effects?
+
+    -   i.e. how much does the mean y on each rock deviate from the x expected from that rock's temp or n or...
+
+-   Number of random levels (i.e. how many rocks, not nestedness yet- deal with that later)
+
+-   N within random levels
+
+    -   all the same
+
+    -   from a distribution
+
+    -   correlated or not with the x-y relationship (e.g. are we interested in DD)
+
+-   Type of error distributions and random error
+
+-   Nested random levels- let's deal with this once we do all the rest
+
+-   Multi-x (e.g. Sarah's situation of species and temp treatment). Like nested randoms, let's sort out the simple case first.
+
+Then for a given question, loop over some variable of interest and see how it changes the outcome.
+
+**Additional considerations**
+
+Does this work differently for binomial responses than gaussian?
+
+How do nested random variables modify the results, particularly if the low-n within levels is actually about low nested levels within outer levels (e.g. what if there's one cluster on a rock, but it has 100 egg masses? what if there are 100 egg masses, but all singletons).
+
+**Some questions we can ask**
+
+What is the needed sample size- n within levels? number of random levels with n of some low number? amount of nestedness? We can address these with measurements of Type 1 and Type 2 error, ROI curves, and similar.
+
+## Implications/papers
+
+Comparison of small-n random level issues with gaussian vs logistic (beta-binom)
+
+Issues of variable-n random levels (with gaussian and logistic), possibly including structure
+
+Using random effects models to estimate density-dependence: unavoidable confounding and how to deal with it. (for gaussian and logistic).
+
+It will I think also help us understand e.g. Georgia's paper, and allow analysis of the original experiment, which I've been sitting on until we deal with some of this because it's so blow-uppy. And do a better job with all future work.
+
+## Some references
+
+see caddis/Analyses/Testing/errorbarchecks.R for some poking I did on the experiments
+
+I know I did a bunch of checking different glm functions for Sarah's data and the t-z issue that might be relevant at some point, but I can't find it.
+
+The visualisations [here](https://m-clark.github.io/posts/2019-05-14-shrinkage-in-mixed-models/) are really good, and get at a fair amount of this in a way that will help us think through things more clearly, though we'll want to dig into it more. They also have a function that does some of what we need for data generation. Might as well start there or lightly re-write it. They largely do the first couple main questions, but I think we'll want to focus things a bit differently.
+
+see [this discussion at stack exchange](https://stats.stackexchange.com/questions/388937/minimum-sample-size-per-cluster-in-a-random-effect-model) and citations therein. Suggests obs-level random effects are fine, you just need reasonable sample size. But we a) don't have reasonable sample size, and b) our n per random level is variable and often unbalanced
+
+Ben Bolker does a bit with logistic [on stack exchange](https://stats.stackexchange.com/questions/142810/estimates-of-random-effects-in-binomial-model-lme4).
+
+The ideas [here](https://www.tjmahr.com/plotting-partial-pooling-in-mixed-effects-models/) show some useful sorts of diagnostics- we can plot the endmember situations of ignore random or treat random as fixed and then see how using mixed models changes things (e.g. shrinkage). And how that depends on the things we tweak.
+
+Harrison BB paper
+
+Harrison, Xavier A. "A Comparison of Observation-Level Random Effect and Beta-Binomial Models for Modelling Overdispersion in Binomial Data in Ecology & Evolution." *PeerJ* 3 (July 21, 2015): e1114. <https://doi.org/10.7717/peerj.1114>.
+
+Harrison Obs level random effects
+
+Harrison, Xavier A. "Using Observation-Level Random Effects to Model Overdispersion in Count Data in Ecology and Evolution." *PeerJ* 2 (2014): e616. <https://doi.org/10.7717/peerj.616>.
+
+The [spaMM repo](https://gitlab.mbb.univ-montp2.fr/francois/spamm-ref) has links to papers and in-depth user guides.
+
+# Specific questions
+
+Writing these in vague order, but likely will need to be rearranged.
+
+## General understanding of n within levels and n levels
+
+**Gaussian to start**
+
+\- everything will be easier to interpret
+
+Simulate data of set relationship between x and y with gaussian variance, and random levels with gaussian deviations. Say y is something like growth and the random levels are assigned to temps, for example. Should we use x as factors (e.g. a couple qualitative levels) or continuous (e.g. temperature or density)? Probably both- the math is the same but some of the tests will be more natural to set up or interpret one way or the other, so if we just do everything both ways we'll cover our bases.
+
+### n within random levels and n random levels
+
+Hold these constant within an experiment- i.e. each rock has the same number of egg masses in any given run, but we vary the egg masses per rock and n rocks between loops.
+
+Might as well do these two questions in one go, factorially.
+
+Hold all random levels to the same n within them, but loop over both that n and the number of levels. So, e.g. assume some number of 'rocks' 1:1000, and some number of egg masses per rock, 1:1000. Each rock has the same number of egg masses in any given run.
+
+Also will need to vary the usual probability dist parameters- fixed y \~ x relationship, variance, random variance.
+
+-   Changing random variance will be really important here and throughout- what happens when it is 0?
+
+We could consider nested randoms here too in a similar way (see Nested Randoms section), though I'm not sure whether it makes more sense to do that for each of these sections as we go, or to address all these sections with simple single randoms first and then go back.
+
+This is basically [this post](https://m-clark.github.io/posts/2019-05-14-shrinkage-in-mixed-models/), but without the slope-randoms. Though maybe we should consider slope randoms.
+
+### Unstructured but variable n's
+
+This is also in [this post](https://m-clark.github.io/posts/2019-05-14-shrinkage-in-mixed-models/).
+
+Same as above, but instead of the same n within levels, let it vary. Control that variation with something like a Poisson, where we can loop over the $\lambda$ and see how the mean and low-inflation changes the outcome. If we want more control over mean and variance, maybe negative binomial and loop over *r* and *p*.
+
+We will also still want to loop over number of random levels here- we expect the variableness of n within random level will matter less with more levels.
+
+This will get very close to what Sarah needs- she essentially has this situation, where the probability just happened to give structure WRT x (where 'x' is both species and temp treatment). We can ask specifically about that structure- see "Accidental" structure section below. And I think Sarah's in an interesting situation where the Species structure isn't 'accidental' at all, but the structure WRT temp is. Either way, if we can understand structure, whether accidental or intrinsic, we'll be a long way there.
+
+### Unbalanced designs in terms of number of random levels
+
+Vary the distribution of random levels along x. E.g. maybe rocks are clustered in such a way that more of them are at high temps than low, or they're clustered at the ends of the distribution, or the middle, or... Basically, capture something like unbalanced designs like 20 rocks in a high treatment and 15 in low, but the n on the rocks is not structured. **Likely start this with the same n on all rocks (and loop over that), and then proceed to variable but unstructured n on each rock**.
+
+### "Accidental" structure of n on within random levels
+
+Vary n on rocks systematically with x, looping over how strong that relationship is (e.g. something like vary poisson $\lambda$ with x, though we might want something more tunable in terms of variance like negative binomial).
+
+This is getting very close to what Sarah needs, I think. and getting close to the DD question too, even if Sarah's structure is accidental (though Species is arguably intrinsic).
+
+I think this will be where we can get at questions about how correlations between random structure and fixed effects can yield blowups/large errors.
+
+## Biases in the random variance
+
+I'm not sure if this goes here or earlier, but rather than loop over a range of random variances, with the variance fixed for a given experiment, allow the random variances to differ in a structured way
+
+-   Structure WRT n- maybe rock deviations are more variable at low n
+
+-   Structure WRT x- maybe rock deviations are higher at low or high temp?
+
+This structure could come about due to simple chance or some underlying unmodelled process, but either way we should try to understand it. See some older thoughts below in the 'older notes' section.
+
+## Stop here and do the above with beta-binomial
+
+Will need to be careful about the probability distributions we use to model the data and randoms. Likely will be easiest to model the data on logit, transform to probability, and then run the models. But we could also just specify binomial probs for each unit (egg mass) and betas for the randoms. That's clearer in a lot of ways, we'd just need to make sure we look across the range of 0-1, since things will behave differently between 0.98 and 0.999 than they do between 0.5 and 0.6. See Harrison's beta-binom paper for the math (since he sets his up with Bayesian ideas, he's actually really explicit about his prob dists).
+
+Are the answers different from Gaussian? How so? On the logit scale too?
+
+-   There might be cases where the beta variance is biased by binomial p that wouldn't happen with gaussian- see Harrison and my notes below.
+
+What are the implications for studies of events vs continuous outcomes?
+
+## Density-dependence
+
+This was the original impetus for this project:
+
+If we're measuring dd, we necessarily have structure in the n within randoms with respect to x (density).
+
+We now have explored how the n within randoms works when y is related to some other x that is unrelated to n within randoms. That serves as an excellent baseline.
+
+Now, we can do a very similar set of analyses, but define the relationship as being between n (in each random level) and y (this is *very* close to the 'accidental structure' case above) with some variance.
+
+**Again, start gaussian, then move to logistic**
+
+E.g. say growth \~ density.
+
+### Vary the number of random levels uniformly
+
+Loop over the number of random levels, but let there be the same number for each density (or, more accurately, since density is continuous, the same probability distribution of n levels- though we could think of this as a manipulative experiment with some number of density levels and put the same number of 'rocks' in each). *Likely do both approaches- it makes it more relevant for the different ways people will use this.*
+
+### Vary the range of densities considered
+
+e.g. does starting at 2 do considerably better than 1? Loop over the density range (or set of treatments). Likely focus on the low end: 1 to 2 to 3 to 5 to ..... and not just the lowest value, but the spacing- if we space closely low, e.g. have 1 and 2 and 3 treatments before going to 7, 10, 20, is that better/worse than 1, 5, 10, 20 with the 1 having more reps?
+
+### Unevenly vary the number of random levels
+
+Can we unbalance the random levels to efficiently gain power? e.g. if we have one rock with 100 at the high end, do we need 100 rocks with 1 to get the same power? Is it linear like that? Seems unlikely, but we can explore that surface.
+
+### Do the same with beta-binomial
+
+Are the results the same as with gaussian? How do they differ, and what are the implications for things like dd infection, predator attack, etc?
+
+# Nested randoms
+
+Nested random effects- do all the above (or some subset for Sarah) where we consider additional levels of randoms. This would proceed along parallel lines to above, but now we would consider varying three levels of n: n within inner random factor, n inner within outer, and n outer.
+
+There are interesting additional questions here: whether structure between inner and outer matters, whether n = 1 at some levels (or if at multiple levels) the randoms collapse and how that behaves, etc.
+
+We could certainly do this in parallel rather than at the end go back, but either way, we want to consider the simple case first.
+
+# Asides, other things we expect/hope to find out
+
+When do random effects collapse? What situations cause all the information to end up in randoms and blow up fixed effects? I expect situations with random n structured relative to the fixeds.
+
+# Some older notes that might be useful
+
+Looking at Harrison eq7-10, if pi is the "true" probability, the ai and bi are chosen as functions of that true pi and phi, do we end up with way more inflation of the variance in realized beta.pi at low n?
+
+and what is phi? a "constant overdispersion parameter", but what does that mean? and if it is constant over all the data, does it bias the beta.pi to more "noise" (variance between rocks) at lower pi? esp with fewer samples per rock?
+
+Does random variable mean there's a mean binomial p PBar for n = x, but each rock gets its actual binomial p from a beta with mean pbar and some variance? That seems backwards, but if true, easy to simulate to see if it blows it up. If the variance of the rocks around the mean changes with n, it'd destroy any effect too. 
+
+it seems to be what harrison 7-10 is saying. There's a true pi, but the pi for a rock is beta.pi, which is found from pi and phi. doing the math for a beta mean, it is pi.
+
+SO, need to sort out if something about our setup biases this somehow. maybe small numbers, maybe biases in the beta variance, maybe \...
+
+Simulate. Set a function describing the relationship of the binomial probability to number of eggs on a rock. Then simulate with and without between rock variation inthe beta.pi
+
+What to actually look for:
+
+what if the independent variable is something other than N? Then it's not bound up with the within-rock replicaton
+
+What if there's no simulated rock-rock variation (beta variance = 0)? Does it still blow up?
+
+What IS the rock-rock variation?
+
+Is the beta variance biased by binomial p in a way that you get more variance for some N than others? It IS a function of the binomial P, so might be.
+
+and/or is the beta variance just super high for some reason? (why)?
+
+Is the issue around not enough sample sizes of 1 egg? (or low numbers)? Could even out the number of eggs at eahc N level, and see
+
+Is the issue that at low N, especially 1, the sample is the rock, and so the rock eats all the info?
+
+What if the relationship were the same, but the N ranged from 100-1000 instead of 1-100 (for example)?
