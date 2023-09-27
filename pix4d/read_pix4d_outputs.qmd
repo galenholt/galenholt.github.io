@@ -12,6 +12,7 @@ library(sf)
 library(stars)
 library(ggplot2)
 library(dplyr)
+library(rayshader)
 ```
 
 ```{r}
@@ -490,8 +491,15 @@ make a package. Have funs for xyz and funs for tifs. But call those within speci
 
 Would be cool to do height with z and color with hexcol to actually map the stream in 3d with photo overlay. Pix4d does it, but would be nice to do here too.
 
+```{r}
+plot_gg(dsm_xyzstarsgg, ggobj_height = dsm_xyzstarsgg_z, scale = 50)
+render_snapshot()
+```
+
+Getting it to work directly isn't happening for some reason, but gg is.
+
 ## Why does the point cloud not include the water?
 
-Does that make our lives easier in some ways?
+It can't do the photo point matching on the moving surface. So the images are there but it can't get parallax and so no z.
 
 ## Where is this stuff in space? is it in the right place?
