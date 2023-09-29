@@ -227,7 +227,7 @@ vicdem[[1]] %>%
 render_snapshot()
 ```
 
-The streams layer itself isn't so bad when looked at alone. So somehow it's sort of disintegrating when used as an overlay, whether with gg method or not.
+The streams layer itself isn't so bad when looked at alone. So somehow it's sort of disintegrating when used as an overlay, whether with the gg method or not.
 
 ```{r}
 ggplot(streams_mville) + geom_sf()
