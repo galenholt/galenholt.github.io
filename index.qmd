@@ -2,6 +2,10 @@
 title: "Home"
 ---
 
-This is a placeholder. I am a community ecologist with a focus on aquatic ecology. My background is in theoretical community ecology, though I also do fieldwork in aquatic systems and develop management-focused models. I have a particular interest in scaling, probabalistic modeling, and climate impacts.
+I am a quantitative community ecologist with a focus on aquatic systems. I address questions of biodiversity maintenance and climate change responses using theoretical and empirical approaches, and also apply these skills to developing models for ecological and water management. I do quite a lot of coding in R and Matlab (and dabble in Python), including data cleaning, statistical analysis, and developing packages and software.
 
-Postdoctoral researcher in the [QAEL Lab](https://www.qael.org/) at Deakin University.
+I am a Research Fellow in the [QAEL Lab](https://www.qael.org/) at Deakin University, where I pursue these research directions and supervise Honours, Masters, and PhD students.
+
+::: {.column-screen}
+![Bear creek, California](_images/bear_creek.jpg)
+:::
