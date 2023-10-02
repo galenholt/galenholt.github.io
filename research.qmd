@@ -24,23 +24,14 @@ Issues facing management parallel those in my theoretical and empirical work- ho
 ![Uncertain metabolism](_images/fadedUncertainty.png)
 #### Recent projects
 
-::: {#fig-ewkr}
 
 [![EWKR](_images/ewkr.jpg)](https://www.dcceew.gov.au/water/cewo/monitoring/ewkr)
 
-:::
-
-::: {#fig-mer}
 
 [![Flow_MER](_images/mer.svg)](https://flow-mer.org.au/)
 
-:::
-
-::: {#fig-werp}
-
 [![MD-WERP](_images/werp.png)](https://getinvolved.mdba.gov.au/murray-darling-water-and-environment-research-program) 
 
-:::
 
 ## Analysis and methods development
 
