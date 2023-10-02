@@ -1,6 +1,5 @@
 ---
 title: "Research areas"
-page-layout: full
 ---
 
 ### Ecological theory
@@ -17,20 +16,21 @@ A key finding of the theoretical work is the importance of the sorts of striking
 ![Rubicon river](_images/rubicon.jpeg)
 
 
-### Models for management of aquatic systems
+### [Models for management of aquatic systems](management_modelling.qmd)
 
 Issues facing management parallel those in my theoretical and empirical work- how do species' responses to environmental conditions scale up to large-scale outcomes? Management then adds the question of how alterations of those conditions might alter the outcome. Addressing these questions requires good models of species' responses to environmental conditions and species interactions, and the ability to scale these up across heterogeneous conditions and compare different scenarios. Using similar approaches and knowledge from my empirical work, I develop these response models as well as the capacity to scale in space and time and compare different scenarios. My current work in this area is developing tools to assess responses to climate change and climate change adaptations in the Murray-Darling Basin in Australia. A major component of this work is developing robust, repeatable, and transparent modelling approaches, as well as data visualization and communication to make this work actionable by water managers and agencies.
 
 ![Uncertain metabolism](_images/fadedUncertainty.png)
+
 #### Recent projects
 
+::: {layout-ncol=3 layout-valign="bottom"}
+[![](_images/ewkr.jpg)](https://www.dcceew.gov.au/water/cewo/monitoring/ewkr)
 
-[![EWKR](_images/ewkr.jpg)](https://www.dcceew.gov.au/water/cewo/monitoring/ewkr)
+[![](_images/mer.svg)](https://flow-mer.org.au/)
 
-
-[![Flow_MER](_images/mer.svg)](https://flow-mer.org.au/)
-
-[![MD-WERP](_images/werp.png)](https://getinvolved.mdba.gov.au/murray-darling-water-and-environment-research-program) 
+[![](_images/werp.png)](https://getinvolved.mdba.gov.au/murray-darling-water-and-environment-research-program) 
+:::
 
 
 ## Analysis and methods development

@@ -1,0 +1,56 @@
+---
+title: "Ecological modelling projects"
+format: html
+editor: visual
+echo: false
+---
+
+The majority of my work on ecological modelling addresses water management in the Murray-Darling Basin, with a focus on ecological responses to water delivery. I develop tools and models that capture those responses at ecologically-relevant scales and scale up to the basin.
+
+```{r}
+#| message: false
+library(tmap)
+library(sf)
+basin <- sf::read_sf('data/mdb_boundary/mdb_boundary.shp')
+tmap_mode('view')
+```
+
+```{r}
+tmbasin <- tm_shape(basin) + tm_fill(col = 'DDIV_NAME', alpha = 0.75, title = '') 
+
+tmbasin
+```
+
+
+## [MD-WERP](https://getinvolved.mdba.gov.au/murray-darling-water-and-environment-research-program)
+
+[![](../_images/werp.png){width=200}](https://getinvolved.mdba.gov.au/murray-darling-water-and-environment-research-program)
+
+The Murray-Darling Water & Environment Research Program is an initiative of the Murray-Darling Basin Authority to improve knowledge and management of the Murray-Darling Basin across a range of outcomes.
+
+I am a member of the [Climate Adaptation Theme](https://getinvolved.mdba.gov.au/murray-darling-water-and-environment-research-program-climate), where I lead development of a toolkit to incorporate disparate models of response to environmental condition and synthesize their outcomes into usable information for decisionmaking. Most scenario modelling for water management stops at hydrology; this toolkit targets the subsequent responses to that hydrology across a range of values. The primary target of this toolkit is the assesment of climate scenarios and scenarios representing adaptation to those scenarios, but its capabilities extend to assessment of any hydrologic scenario.
+
+A beta version of a [website documenting the toolkit and its capabilities](https://mdbauth.github.io/WERP_toolkit_demo/) is now live, with updated documentation and publicly available R package to come shortly.
+
+![](../_images/werp_network.png)
+
+## [Flow-MER](https://flow-mer.org.au/)
+
+[![](../_images/mer.svg){width=200}](https://flow-mer.org.au/)
+
+The Flow-MER project is a large, multi-institution, collaborative project initiated by the Australian Commonwealth Environmental Water Holder designed to better understand how environmental water delivery in the Murray-Darling Basin affects ecological outcomes across the basin.
+
+I was a member of the [Modelling Cross-Cutting Theme](https://flow-mer.org.au/cross-cutting-theme-modelling/#1584511654624-af10a460-4cec), where we developed a framework for ecological modelling from local scales to the scale of the Murray-Darling Basin, designed to assess the impacts of environmental water. Key to this framework was the ability to use data available at the basin scale (often remotely-sensed), while modelling close to the scale at which ecological processes occur. The outcomes of these processes can then be scaled up in time and space. Our framework provides the capacity for this modelling in a consistent way across a range of ecological outcomes, and is designed to flexibly incorporate new models.
+
+![](../_images/mer_veg_clipped.svg)
+
+## [EWKR](https://www.dcceew.gov.au/water/cewo/monitoring/ewkr)
+
+[![](../_images/ewkr.jpg){width=200}](https://www.dcceew.gov.au/water/cewo/monitoring/ewkr)
+
+The EWKR project was a precursor to Flow-MER, designed to improve the science underpinning water management in the Murray-Darling Basin. 
+
+I was a member of the [foodwebs theme](https://www.dcceew.gov.au/water/cewo/publications/ewkr-food-webs-report), where I developed models of foodweb response to different watering scenarios. These models included producer production as a consequence of environmental watering actions, models of consumer diet sources derived from Bayesian mixing models, and assessment of uncertainty. 
+
+![](../_images/violins.png)
+
