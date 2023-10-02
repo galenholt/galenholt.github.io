@@ -19,6 +19,19 @@ website:
         text: Home
       - research.qmd
       - code_demos.qmd
+    right:
+      - icon: github
+        href: https://github.com/galenholt
+        aria-label: GitHub
+      - icon: mortarboard-fill
+        href: {{< iconify academicons:google-scholar-square>}}
+        aria-label: Google Scholar
+      - icon: linkedin
+        href: www.linkedin.com/in/galen-holt-265aa290
+        aria-label: LinkedIn
+      - icon: mastodon
+        href: @galen-holt@fediscience.org
+        aria-label: Mastodon
 
   sidebar:
     - title: "Research"

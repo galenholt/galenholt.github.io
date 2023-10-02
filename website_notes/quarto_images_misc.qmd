@@ -51,3 +51,17 @@ Surus
 Surus
 
 :::
+
+## Icons
+
+We can include `icon` items in the yaml to include icons from [bootstrap](https://icons.getbootstrap.com/), but what if we want to include others? The impetus for this is google scholar, but I could also foresee using something like [phylopic](https://www.phylopic.org/).
+
+The trick it looks like is to install (or write, but let's leave that for later) a Quarto extension. Academicons comes up early in google, but [Iconify](https://github.com/mcanouil/quarto-iconify) seems to contain that set and a bunch more.
+
+To install, use `quarto add mcanouil/quarto-iconify` at the terminal.
+
+To use, include `{{< iconify setname iconname>}}`. Note that when you find the icon, Iconify gives the name as `setname:iconname`.
+
+
+
+
