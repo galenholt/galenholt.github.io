@@ -2,60 +2,45 @@
 title: "Research areas"
 page-layout: full
 ---
-:::: {.columns}
 
-::: {.column width="60%"}
 ### Ecological theory
 
 My background is in theoretical community ecology, where I use analytical theory and probabilistic simulation models to better understand how environmental variation in space and time interact with life history to maintain diversity and community structure. Current work extends this approach to nonstationary environmental variation (e.g. climate change), with a particular focus on how movement and growth across a heterogeneous landscape determines population trajectories.
 
-:::
-
-::: {.column width="5%"}
-<!-- empty column to create gap -->
-:::
-
-::: {.column width="35%"}
 ![Branching](_images/branching.png)
-
-:::
-
-::: {.column width="60%"}
 
 ### Linking theory with empirical research
 
 A key finding of the theoretical work is the importance of the sorts of striking natural history that we notice in the field- the particular ways in which species respond to the environment and interact with each other. By linking theoretical work with empirical studies in the field and lab, we improve both our understanding of the theory and the processes maintaining diversity in specific communities. I contribute to a range of empirical studies, typically in freshwater communities and with an emphasis on characterizing species' responses to the physical environment, density-dependent interactions, and dispersal. Current work focuses on climate responses in a caddisfly community and an emergent disease. Previous work has investigated a range of communities from aquatic insects to desert annual plants to fish.
 
-:::
-
-::: {.column width="5%"}
-<!-- empty column to create gap -->
-:::
-
-::: {.column width="35%"}
 
 ![Rubicon river](_images/rubicon.jpeg)
 
-:::
-
-::: {.column width="60%"}
 
 ### Models for management of aquatic systems
 
 Issues facing management parallel those in my theoretical and empirical work- how do species' responses to environmental conditions scale up to large-scale outcomes? Management then adds the question of how alterations of those conditions might alter the outcome. Addressing these questions requires good models of species' responses to environmental conditions and species interactions, and the ability to scale these up across heterogeneous conditions and compare different scenarios. Using similar approaches and knowledge from my empirical work, I develop these response models as well as the capacity to scale in space and time and compare different scenarios. My current work in this area is developing tools to assess responses to climate change and climate change adaptations in the Murray-Darling Basin in Australia. A major component of this work is developing robust, repeatable, and transparent modelling approaches, as well as data visualization and communication to make this work actionable by water managers and agencies.
-:::
 
-::: {.column width="5%"}
-<!-- empty column to create gap -->
-:::
-
-::: {.column width="35%"}
 ![Uncertain metabolism](_images/fadedUncertainty.png)
+#### Recent projects
+
+::: {#fig-ewkr}
+
+[![EWKR](_images/ewkr.jpg)](https://www.dcceew.gov.au/water/cewo/monitoring/ewkr)
 
 :::
 
-::::
+::: {#fig-mer}
 
+[![Flow_MER](_images/mer.svg)](https://flow-mer.org.au/)
+
+:::
+
+::: {#fig-werp}
+
+[![MD-WERP](_images/werp.png)](https://getinvolved.mdba.gov.au/murray-darling-water-and-environment-research-program) 
+
+:::
 
 ## Analysis and methods development
 
