@@ -58,3 +58,17 @@ The trick it looks like is to install (or write, but let's leave that for later)
 To install, use `quarto add mcanouil/quarto-iconify` at the terminal.
 
 To use, include `"{{< iconify setname iconname>}}"`. Note that when you find the icon, Iconify gives the name as `setname:iconname`, and we need to quote it in the yaml.
+
+This seems to work here, e.g. the google scholar icon is
+
+```markdown
+
+{{< iconify academicons google-scholar-square >}}
+
+```
+
+{{< iconify academicons google-scholar-square >}}
+
+but I can't get it to work in the yaml, even with quotes.
+
+Simply downloading the image and giving a path in the yaml doesn't work either.

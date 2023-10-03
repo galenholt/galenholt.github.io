@@ -93,3 +93,15 @@ Ah. I see now that there's a warning about this in [the quarto docs](https://qua
 ### Weirdness
 
 If there is a folder called 'website' in the repo, quarto will throw an error on render 'unsupported project type ../website'. The solution seems to be to change the folder name.
+
+### Errors
+
+I get a *lot* of errors rendering this site. Often the solution is to trash the `_cache` and `_files`directories for the offending files, along with any generated `.html` or `.md` . What seems to work the best though, is to delete everything in `.Rproj.user`. And often restart Rstudio.
+
+Some common errors are
+
+`Error: path for html_dependency not found: C:/Users/username/AppData/Local/Temp/Rtmp...`
+
+An error about permissions being denied (os error 5) trying to move `site_libs`: `ERROR: PermissionDenied: Access is denied. (os error 5), rename 'path/to/repo/site_libs' -> 'path/to/repo/docs/site_libs'`
+
+Part of the issue seems to be Dropbox, even if the code is only in a backup directory and not a fully-synced directory. It sometimes works to quit dropbox, but sometimes we need to do that and restart.

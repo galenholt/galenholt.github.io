@@ -21,10 +21,9 @@ tmbasin <- tm_shape(basin) + tm_fill(col = 'DDIV_NAME', alpha = 0.75, title = ''
 tmbasin
 ```
 
-
 ## [MD-WERP](https://getinvolved.mdba.gov.au/murray-darling-water-and-environment-research-program)
 
-[![](../_images/werp.png){width=200}](https://getinvolved.mdba.gov.au/murray-darling-water-and-environment-research-program)
+[![](../_images/werp.png){width="200"}](https://getinvolved.mdba.gov.au/murray-darling-water-and-environment-research-program)
 
 The Murray-Darling Water & Environment Research Program is an initiative of the Murray-Darling Basin Authority to improve knowledge and management of the Murray-Darling Basin across a range of outcomes.
 
@@ -36,7 +35,7 @@ A beta version of a [website documenting the toolkit and its capabilities](https
 
 ## [Flow-MER](https://flow-mer.org.au/)
 
-[![](../_images/mer.svg){width=200}](https://flow-mer.org.au/)
+[![](../_images/mer.svg){width="200"}](https://flow-mer.org.au/)
 
 The Flow-MER project is a large, multi-institution, collaborative project initiated by the Australian Commonwealth Environmental Water Holder designed to better understand how environmental water delivery in the Murray-Darling Basin affects ecological outcomes across the basin.
 
@@ -46,11 +45,10 @@ I was a member of the [Modelling Cross-Cutting Theme](https://flow-mer.org.au/cr
 
 ## [EWKR](https://www.dcceew.gov.au/water/cewo/monitoring/ewkr)
 
-[![](../_images/ewkr.jpg){width=200}](https://www.dcceew.gov.au/water/cewo/monitoring/ewkr)
+[![](../_images/ewkr.jpg){width="200"}](https://www.dcceew.gov.au/water/cewo/monitoring/ewkr)
 
-The EWKR project was a precursor to Flow-MER, designed to improve the science underpinning water management in the Murray-Darling Basin. 
+The EWKR project was a precursor to Flow-MER, designed to improve the science underpinning water management in the Murray-Darling Basin.
 
-I was a member of the [foodwebs theme](https://www.dcceew.gov.au/water/cewo/publications/ewkr-food-webs-report), where I developed models of foodweb response to different watering scenarios. These models included producer production as a consequence of environmental watering actions, models of consumer diet sources derived from Bayesian mixing models, and assessment of uncertainty. 
+I was a member of the [foodwebs theme](https://www.dcceew.gov.au/water/cewo/publications/ewkr-food-webs-report), where I developed models of foodweb response to different watering scenarios. These models included producer production as a consequence of environmental watering actions, models of consumer diet sources derived from Bayesian mixing models, and assessment of uncertainty.
 
 ![](../_images/violins.png)
-

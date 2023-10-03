@@ -8,8 +8,25 @@ project:
     - "!*beta_binomial.qmd"
 website:
   title: "Galen Holt"
+  repo-url: https://github.com/galenholt/galenholt.github.io
   page-footer:
-    left: ""
+    left: "Website created by Galen Holt"
+    center:
+      - text: "Contact"
+        href: mailto:g.holt@deakin.edu.au
+    right:
+      - icon: github
+        href: https://github.com/galenholt
+        aria-label: GitHub
+      - icon: mortarboard-fill
+        href: https://scholar.google.com.au/citations?user=f94WBOoAAAAJ&hl=en
+        aria-label: Google Scholar
+      - icon: linkedin
+        href: https://www.linkedin.com/in/galen-holt-265aa290
+        aria-label: LinkedIn
+      - icon: mastodon
+        href: https://fediscience.org/@galen_holt
+        aria-label: Mastodon
     background: secondary
   open-graph: true
   navbar:
@@ -24,14 +41,14 @@ website:
       - icon: github
         href: https://github.com/galenholt
         aria-label: GitHub
-      - icon: "{{< iconify academicons google-scholar-square >}}"
+      - icon: mortarboard-fill
         href: https://scholar.google.com.au/citations?user=f94WBOoAAAAJ&hl=en
         aria-label: Google Scholar
       - icon: linkedin
-        href: www.linkedin.com/in/galen-holt-265aa290
+        href: https://www.linkedin.com/in/galen-holt-265aa290
         aria-label: LinkedIn
       - icon: mastodon
-        href: fediscience.org/@galen-holt
+        href: https://fediscience.org/@galen_holt
         aria-label: Mastodon
 
   sidebar:
@@ -39,11 +56,13 @@ website:
       style: 'floating'
       background: light
       contents:
-        - research.qmd
+        - href: research.qmd
+          text: "Overview"
 
-        - section: "Management modelling"
+        - section: "Topics"
           contents:
-            - research/management_modelling.qmd
+            - href: research/management_modelling.qmd
+              text: "Management modelling"
 
     - title: "Code Demos"
       contents:

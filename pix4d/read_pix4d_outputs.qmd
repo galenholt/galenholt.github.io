@@ -484,9 +484,7 @@ But, the DTM is some sort of smoothed thing, and is set in the Additional Output
 
 Again, I don't really see the point of this turning the dsm_xyz into an image (raster) is already done in the raster dsm + ortho. We can merge if we want. Just not sure exactly how we'd want to present that.
 
-# To do
-
-make a package. Have funs for xyz and funs for tifs. But call those within specific funs for each output (e.g. dsm_xyz and point cloud should have their own funs, and the dsm_xyz should allow returning a raster in addition to points, but pc shouldn't). Similar for a standard set of plot returns
+# Miscellaneous
 
 ## Can I get rayshader to work?
 
@@ -503,5 +501,6 @@ Getting it to work directly isn't happening for some reason, but gg is.
 
 It can't do the photo point matching on the moving surface. So the images are there but it can't get parallax and so no z.
 
-## Where is this stuff in space? is it in the right place?
+## To do: make a package. 
 
+Have funs for xyz and funs for tifs. But call those within specific funs for each output (e.g. dsm_xyz and point cloud should have their own funs, and the dsm_xyz should allow returning a raster in addition to points, but pc shouldn't). Similar for a standard set of plot returns

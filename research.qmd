@@ -1,5 +1,5 @@
 ---
-title: "Research areas"
+title: "Research"
 ---
 
 ### Ecological theory
@@ -12,9 +12,7 @@ My background is in theoretical community ecology, where I use analytical theory
 
 A key finding of the theoretical work is the importance of the sorts of striking natural history that we notice in the field- the particular ways in which species respond to the environment and interact with each other. By linking theoretical work with empirical studies in the field and lab, we improve both our understanding of the theory and the processes maintaining diversity in specific communities. I contribute to a range of empirical studies, typically in freshwater communities and with an emphasis on characterizing species' responses to the physical environment, density-dependent interactions, and dispersal. Current work focuses on climate responses in a caddisfly community and an emergent disease. Previous work has investigated a range of communities from aquatic insects to desert annual plants to fish.
 
-
 ![Rubicon river](_images/rubicon.jpeg)
-
 
 ### [Models for management of aquatic systems](management_modelling.qmd)
 
@@ -24,14 +22,13 @@ Issues facing management parallel those in my theoretical and empirical work- ho
 
 #### Recent projects
 
-::: {layout-ncol=3 layout-valign="bottom"}
+::: {layout-ncol="3" layout-valign="bottom"}
 [![](_images/ewkr.jpg)](https://www.dcceew.gov.au/water/cewo/monitoring/ewkr)
 
 [![](_images/mer.svg)](https://flow-mer.org.au/)
 
-[![](_images/werp.png)](https://getinvolved.mdba.gov.au/murray-darling-water-and-environment-research-program) 
+[![](_images/werp.png)](https://getinvolved.mdba.gov.au/murray-darling-water-and-environment-research-program)
 :::
-
 
 ## Analysis and methods development
 
