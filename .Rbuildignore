@@ -1,0 +1,4 @@
+^renv$
+^renv\.lock$
+^galen_website\.Rproj$
+^\.Rproj\.user$

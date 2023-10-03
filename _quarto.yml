@@ -1,3 +1,212 @@
 project:
+  type: website
   output-dir: docs
   execute-dir: project
+  render:
+    - "*.qmd"
+    - "!CV"
+website:
+  title: "Galen Holt"
+  page-footer:
+    left: ""
+    background: secondary
+  open-graph: true
+  navbar:
+    backgroud: primary
+    search: true
+    left:
+      - href: index.qmd
+        text: Home
+      - research.qmd
+      - code_demos.qmd
+    right:
+      - icon: github
+        href: https://github.com/galenholt
+        aria-label: GitHub
+      - icon: mortarboard-fill
+        href: {{< iconify academicons:google-scholar-square>}}
+        aria-label: Google Scholar
+      - icon: linkedin
+        href: www.linkedin.com/in/galen-holt-265aa290
+        aria-label: LinkedIn
+      - icon: mastodon
+        href: @galen-holt@fediscience.org
+        aria-label: Mastodon
+
+  sidebar:
+    - title: "Research"
+      style: 'floating'
+      background: light
+      contents:
+        - research.qmd
+    
+    - title: "Code Demos"
+      contents:
+        - code_demos.qmd
+        
+        - section: "Small how-tos"
+          contents:
+            - href: small_helpers/smallpieces.qmd
+              text: "Bits and pieces"
+            - href: small_helpers/quarto_notes.qmd
+              text: "Quarto notes"
+            - href: setup/rstudio_themes.qmd
+              text: "Editing Rstudio themes"
+            - href: small_helpers/zip_downloading.qmd
+              text: "Download and unpack zips"
+            - href: small_helpers/json_api_construction.qmd
+              text: "Building JSON syntax from R for API calls"
+            - href: small_helpers/list_names.qmd
+              text: "Naming rules for lists"
+            - href: publishing/private_github_figshare.qmd
+              text: "Creating Figshare from private github"
+            - href: small_helpers/error_handling.qmd
+              text: "Intro to error handling"
+            - href: small_helpers/lifecycle_warnings.qmd
+              text: "Intermittent lifecycle warnings"
+              
+              
+        - section: "Plotting"
+          contents:
+            - href: plotting/ggplot_themes.qmd
+              text: "ggplot themes"
+            - href: plotting/setting_colors_for_groups.qmd
+              text: "Consistent colors"
+            - href: plotting/tweaks_tricks.qmd
+              text: "Saving and themeing plots"
+            - href: plotting/hcl_exploration.qmd
+              text: "Exploring HCL colorspace"
+            - href: plotting/rgb_to_hex.qmd
+              text: "Converting RGB to hex colors"
+            - plotting/fonts.qmd
+            - href: plotting/faded_colors.qmd
+              text: "Faded 2d colour ramps"
+            - href: plotting/math_in_ggplot.qmd
+              text: "Latex in ggplot with latex2exp"
+              
+        - section: "Website"
+          contents:
+            - href: website_notes/quarto_website_github.qmd
+              text: "Getting started"
+            - href: website_notes/updating_website.qmd
+              text: "Updating and maintaining website"
+              
+        - section: "Theory, simulation, statistics, probability"
+          contents:
+            - href: simmodelling/twoDautocorr.qmd
+              text: "Generate 2d autocorrelation"
+            - href: stats_probability/expected_shannon.qmd
+              text: "Bootstrapping the expected shannon diversity"
+            - href: stats_probability/fitting_lognormals.qmd
+              text: "Intro to fitting lognormals"
+            - href: stats_probability/shifting_normals.qmd
+              text: "Basic shifts of normal moments"
+            - href: stats_probability/fitting_truncated.qmd
+              text: "Shifting and fitting truncated lognormals"
+              
+        - section: "Drones"
+          contents:
+            - href: drones/overlaps_reactive.qmd
+              text: "Calculations for flight planning"
+            - href: drones/overlaps.qmd
+              text: 'Figuring out flight plan calcs'
+            - href: pix4d/read_pix4d_outputs.qmd
+              text: "Reading and plotting pix4d outputs"
+              
+        - section: "Observable"
+          contents:
+            - href: observable/trying_observable.qmd
+              text: "Figuring out how to use ojs chunks"
+              
+        - section: "R and python"
+          contents:
+            - href: RpyEnvs/python_setup.qmd
+              text: "Python environments with pyenv and poetry"
+            - href: RpyEnvs/py_in_rpkg.qmd
+              text: "Wrapping python in R package"              
+            - href: RpyEnvs/RandPython.qmd
+              text: "Using R and python together"
+            - href: RpyEnvs/R_py_shared_projects.qmd
+              text: "Shared R-py project structure"
+            - href: RpyEnvs/py_r_dates.qmd
+              text: "Passing complex objects py-R"
+            - href: RpyEnvs/R_py_type_passing.qmd
+              text: "Passing types between R and python"
+            - href: RpyEnvs/py_r_project_overview.qmd
+              text: "Overview of building R-py package"
+            - href: RpyEnvs/python_nameerror.qmd
+              text: "Intermittent NameError py-R"
+            - href: RpyEnvs/python_updated_functions.qmd
+              text: "Small python bits"              
+              
+        - section: "Setting up projects"
+          contents:
+            - href: RpyEnvs/rig.qmd
+              text: "Managing old R versions with rig"
+            - href: RpyEnvs/managingprivate.qmd
+              text: "Private data for website repo"
+            - href: setup/R_in_VS.qmd
+              text: "Using R in VScode"
+            - href: RpyEnvs/end_run_renv.qmd
+              text: "Dealing with renv failures"
+              
+        - section: "Building packages"
+          contents:
+            - href: package/package_creation.qmd
+              text: 'First pass at building a package'
+            - href: vicwater/vicwater_testing.qmd
+            
+        - section: "Data"
+          contents:
+            - href: data_acquisition/bom_gauges.qmd
+              text: "BOM gauge locations with httr2"
+            - href: vicwater/vicwater_api_howtocall.qmd
+              text: 'Experimenting with API calls for {vicwater}'
+            - href: data_acquisition/gauge_data_pre_gauge.qmd
+              text: "Data from pre-gauged periods"
+            - href: data_acquisition/ALA_data_pull.qmd
+              text: "Pulling data from Atlas of Living Australia"
+              
+        - section: "R parallel processing (general)"
+          contents:
+            - href: parallelism/interrogating_parallel.qmd
+              text: "Interrogating parallel resources"
+            - href: parallelism/nested_parallel.qmd
+              text: "Testing nested parallelism"
+            - href: parallelism/parallel_speed.qmd
+              text: "Speed-testing parallel"
+            - href: parallelism/globals_speed.qmd
+              text: "Global objects and parallel speed"
+            - href: parallelism/nested_dependent_iterations.qmd
+              text: "Dependencies of inner parallelism on outer"
+              
+        - section: "R parallel processing on HPC"
+          contents:
+            - href: parallelism/hpc_ephemera.qmd
+              text: "HPC notes"
+            - href: parallelism/plans_and_hpc.qmd
+              text: "Using single-machine plans on HPC"
+            - href: parallelism/initial_future_batchtools.qmd
+              text: "Figuring out future.batchtools"
+            - href: parallelism/changing_batchtools_template.qmd
+              text: "Switching templates, matching to resources"
+            - href: parallelism/template_modification.qmd
+              text: "Modifying templates"
+            - href: parallelism/master_persistence.qmd
+              text: "Consequences of master timing out"
+            - href: parallelism/nested_parallel_hpc.qmd
+              text: "Nested parallel on HPC nodes and cores"
+            - href: parallelism/conditional_plans.qmd
+              text: "Conditional plans for local and HPC"
+              
+      
+      
+
+
+theme:
+  light: flatly
+  dark: flatly
+  # css: styles.css
+toc: true
+
+editor: visual

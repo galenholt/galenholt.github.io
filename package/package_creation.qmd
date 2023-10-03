@@ -191,3 +191,15 @@ devtools::build_readme()
 To put the badges in.
 
 Getting the coverage to work was *really* unclear to me. After cobbling it together, what seems to work is go to the [codecov](app.codecov.io) website and sign up for an account. Link it to your github, and then choose the repo you want and click 'setup'. That tells you to put in a "repository secret". Do that. It also says to 'add codecov to your github actions', which I didn't do and it seems to work, I think because the `use_github_action` has already set that bit up (though it doesn't have the particular text they say to add). That action seems to only run on `master` or `main`, so if nothing happens on a branch, try pushing there.
+
+### Making a package from an existing project
+
+I have a lot of projects that I want to make into packages, largely to be able to have cleaner testing structure and be able to use `devtools::load_all()` to access functions instead of `source` in the head of everything. Pretty simple, just call
+
+`{r}} usethis::create_package(getwd(), check_name = FALSE)`
+
+after you double check the working directory is right (should be, if you're already in a project), and the `check_name = FALSE` because we likely don't care if it's a name that makes CRAN happy (if we do, obviously set that to `TRUE`).
+
+This *did* cause a series of cascading issues that should have been expected. First, since {renv} puts the library in a different place for packages vs projects, it wanted to reinstall all packages. That took a while because I hadn't been keeping up. Then it took a few restarts of Rstudio to get it to register the structure and make things like shortcuts to `devtools::load_all()` available.
+
+It sure is nice to be able to load functions in though.
