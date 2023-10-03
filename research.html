@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.269">
+<meta name="generator" content="quarto-1.3.433">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -17,7 +17,7 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
 </style>
@@ -57,14 +57,18 @@ ul.task-list li input[type="checkbox"] {
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 
 
 <meta property="og:title" content="Galen Holt - Research">
-<meta property="og:description" content="Placeholder, research goes here in sections, needs pics and short blurbs">
+<meta property="og:description" content="">
+<meta property="og:image" content="https://galenholt.github.io/_images/branching.png">
 <meta property="og:site-name" content="Galen Holt">
+<meta property="og:image:height" content="709">
+<meta property="og:image:width" content="1531">
 </head>
 
 <body class="nav-sidebar floating nav-fixed">
@@ -78,67 +82,107 @@ ul.task-list li input[type="checkbox"] {
     <span class="navbar-title">Galen Holt</span>
     </a>
   </div>
+            <div id="quarto-search" class="" title="Search"></div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./index.html">
+    <a class="nav-link" href="./index.html" rel="" target="">
  <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./research.html" aria-current="page">
+    <a class="nav-link active" href="./research.html" rel="" target="" aria-current="page">
  <span class="menu-text">Research</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./code_demos.html">
+    <a class="nav-link" href="./code_demos.html" rel="" target="">
  <span class="menu-text">Code Demos</span></a>
   </li>  
 </ul>
-              <div class="quarto-toggle-container">
-                  <a href="" class="quarto-color-scheme-toggle nav-link" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
-              </div>
-              <div id="quarto-search" class="" title="Search"></div>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/galenholt" rel="" target=""><i class="bi bi-github" role="img" aria-label="GitHub">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://scholar.google.com.au/citations?user=f94WBOoAAAAJ&amp;hl=en" rel="" target=""><i class="bi bi-mortarboard-fill" role="img" aria-label="Google Scholar">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/galen-holt-265aa290" rel="" target=""><i class="bi bi-linkedin" role="img" aria-label="LinkedIn">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://fediscience.org/@galen_holt" rel="" target=""><i class="bi bi-mastodon" role="img" aria-label="Mastodon">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
           </div> <!-- /navcollapse -->
       </div> <!-- /container-fluid -->
     </nav>
-  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-    <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">Research</h1>
-      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
-        <i class="bi bi-chevron-right"></i>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./research.html">Overview</a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
     </div>
   </nav>
 </header>
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./research.html" class="sidebar-item-text sidebar-link active">Research</a>
+  <a href="./research.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Overview</span></a>
   </div>
 </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Topics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./research/management_modelling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Management modelling</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#community-theory" id="toc-community-theory" class="nav-link active" data-scroll-target="#community-theory">Community theory</a></li>
-  <li><a href="#climate-change" id="toc-climate-change" class="nav-link" data-scroll-target="#climate-change">Climate change</a></li>
-  <li><a href="#ecological-models-for-management" id="toc-ecological-models-for-management" class="nav-link" data-scroll-target="#ecological-models-for-management">Ecological models for management</a></li>
-  <li><a href="#theory-field-ecology" id="toc-theory-field-ecology" class="nav-link" data-scroll-target="#theory-field-ecology">Theory + field ecology</a>
-  <ul class="collapse">
-  <li><a href="#cv-google-scholar-etc" id="toc-cv-google-scholar-etc" class="nav-link" data-scroll-target="#cv-google-scholar-etc">CV, google scholar, etc</a></li>
-  </ul></li>
+  <li><a href="#ecological-theory" id="toc-ecological-theory" class="nav-link active" data-scroll-target="#ecological-theory">Ecological theory</a></li>
+  <li><a href="#linking-theory-with-empirical-research" id="toc-linking-theory-with-empirical-research" class="nav-link" data-scroll-target="#linking-theory-with-empirical-research">Linking theory with empirical research</a></li>
+  <li><a href="#models-for-management-of-aquatic-systems" id="toc-models-for-management-of-aquatic-systems" class="nav-link" data-scroll-target="#models-for-management-of-aquatic-systems">Models for management of aquatic systems</a></li>
+  <li><a href="#analysis-and-methods-development" id="toc-analysis-and-methods-development" class="nav-link" data-scroll-target="#analysis-and-methods-development">Analysis and methods development</a></li>
   </ul>
 </nav>
     </div>
@@ -147,7 +191,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">Research</h1>
+<h1 class="title">Research</h1>
 </div>
 
 
@@ -162,23 +206,64 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>Placeholder, research goes here in sections, needs pics and short blurbs</p>
-<section id="community-theory" class="level1">
-<h1>Community theory</h1>
+<section id="ecological-theory" class="level3">
+<h3 class="anchored" data-anchor-id="ecological-theory">Ecological theory</h3>
+<p>My background is in theoretical community ecology, where I use analytical theory and probabilistic simulation models to better understand how environmental variation in space and time interact with life history to maintain diversity and community structure. Current work extends this approach to nonstationary environmental variation (e.g.&nbsp;climate change), with a particular focus on how movement and growth across a heterogeneous landscape determines population trajectories.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="_images/branching.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Branching</figcaption>
+</figure>
+</div>
 </section>
-<section id="climate-change" class="level1">
-<h1>Climate change</h1>
+<section id="linking-theory-with-empirical-research" class="level3">
+<h3 class="anchored" data-anchor-id="linking-theory-with-empirical-research">Linking theory with empirical research</h3>
+<p>A key finding of the theoretical work is the importance of the sorts of striking natural history that we notice in the field- the particular ways in which species respond to the environment and interact with each other. By linking theoretical work with empirical studies in the field and lab, we improve both our understanding of the theory and the processes maintaining diversity in specific communities. I contribute to a range of empirical studies, typically in freshwater communities and with an emphasis on characterizing species’ responses to the physical environment, density-dependent interactions, and dispersal. Current work focuses on climate responses in a caddisfly community and an emergent disease. Previous work has investigated a range of communities from aquatic insects to desert annual plants to fish.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="_images/rubicon.jpeg" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Rubicon river</figcaption>
+</figure>
+</div>
 </section>
-<section id="ecological-models-for-management" class="level1">
-<h1>Ecological models for management</h1>
+<section id="models-for-management-of-aquatic-systems" class="level3">
+<h3 class="anchored" data-anchor-id="models-for-management-of-aquatic-systems"><a href="management_modelling.qmd">Models for management of aquatic systems</a></h3>
+<p>Issues facing management parallel those in my theoretical and empirical work- how do species’ responses to environmental conditions scale up to large-scale outcomes? Management then adds the question of how alterations of those conditions might alter the outcome. Addressing these questions requires good models of species’ responses to environmental conditions and species interactions, and the ability to scale these up across heterogeneous conditions and compare different scenarios. Using similar approaches and knowledge from my empirical work, I develop these response models as well as the capacity to scale in space and time and compare different scenarios. My current work in this area is developing tools to assess responses to climate change and climate change adaptations in the Murray-Darling Basin in Australia. A major component of this work is developing robust, repeatable, and transparent modelling approaches, as well as data visualization and communication to make this work actionable by water managers and agencies.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="_images/fadedUncertainty.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Uncertain metabolism</figcaption>
+</figure>
+</div>
+<section id="recent-projects" class="level4">
+<h4 class="anchored" data-anchor-id="recent-projects">Recent projects</h4>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-bottom">
+<div class="quarto-figure quarto-figure-center" style="flex-basis: 33.3%;justify-content: center;">
+<figure class="figure">
+<p><a href="https://www.dcceew.gov.au/water/cewo/monitoring/ewkr"><img src="_images/ewkr.jpg" class="img-fluid figure-img"></a></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center" style="flex-basis: 33.3%;justify-content: center;">
+<figure class="figure">
+<p><a href="https://flow-mer.org.au/"><img src="_images/mer.svg" class="img-fluid figure-img"></a></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center" style="flex-basis: 33.3%;justify-content: center;">
+<figure class="figure">
+<p><a href="https://getinvolved.mdba.gov.au/murray-darling-water-and-environment-research-program"><img src="_images/werp.png" class="img-fluid figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
-<section id="theory-field-ecology" class="level1">
-<h1>Theory + field ecology</h1>
-<section id="cv-google-scholar-etc" class="level2">
-<h2 class="anchored" data-anchor-id="cv-google-scholar-etc">CV, google scholar, etc</h2>
+</section>
+<section id="analysis-and-methods-development" class="level2">
+<h2 class="anchored" data-anchor-id="analysis-and-methods-development">Analysis and methods development</h2>
+<p>Capturing the data needed for linking theory to empirical work or building large-scale management models often requires developing new methods and analytical techniques or applying them in new ways. I enjoy the creativity inherent in this process, whether it is to adapt beta-binomial logistic regression for testing density-dependence in infection rates or modifying cameras to take underwater night vision movies of insect egg-laying.</p>
+<p>In the course of my work I develop R packages and analysis workflows (some of which are <a href="github.com/galenholt">available publicly</a> and some not (yet)). These typically are the core output of my theoretical and modelling work, as well as the analysis of empirical data. Others simply arise as side projects or infrastructure to allow other projects to proceed. As is likely typical of most people writing code, the final, working, code is the end product of quite a lot of experimentation and figuring out new approaches. I have begun <a href="./code_demos.html">documenting this process</a> both for my future self and others.</p>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -324,9 +409,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -391,6 +490,92 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
   const findCites = (el) => {
     const parentEl = el.parentElement;
     if (parentEl) {
@@ -431,6 +616,46 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">Website created by Galen Holt</div>   
+    <div class="nav-footer-center">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="mailto:g.holt@deakin.edu.au">Contact</a>
+  </li>  
+</ul>
+    </div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/galenholt">
+      <i class="bi bi-github" role="img" aria-label="GitHub">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://scholar.google.com.au/citations?user=f94WBOoAAAAJ&amp;hl=en">
+      <i class="bi bi-mortarboard-fill" role="img" aria-label="Google Scholar">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/galen-holt-265aa290">
+      <i class="bi bi-linkedin" role="img" aria-label="LinkedIn">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://fediscience.org/@galen_holt">
+      <i class="bi bi-mastodon" role="img" aria-label="Mastodon">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
 
 
 

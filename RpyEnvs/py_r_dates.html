@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.269">
+<meta name="generator" content="quarto-1.3.433">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -18,9 +18,10 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -47,43 +48,13 @@ pre.numberSource code > span > a:first-child::before
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
     padding: 0 4px; width: 4em;
-    color: #aaaaaa;
   }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
 div.sourceCode
   {   }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { color: #008000; } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { color: #008000; font-weight: bold; } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
@@ -121,13 +92,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 
 
 <meta property="og:title" content="Galen Holt - Complex passing py-R">
-<meta property="og:description" content="Old way of giving path to venv, new way is to set it in .Rprofile">
+<meta property="og:description" content="">
 <meta property="og:site-name" content="Galen Holt">
 </head>
 
@@ -142,462 +114,594 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <span class="navbar-title">Galen Holt</span>
     </a>
   </div>
+            <div id="quarto-search" class="" title="Search"></div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../index.html">
+    <a class="nav-link" href="../index.html" rel="" target="">
  <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../research.html">
+    <a class="nav-link" href="../research.html" rel="" target="">
  <span class="menu-text">Research</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="../code_demos.html" aria-current="page">
+    <a class="nav-link active" href="../code_demos.html" rel="" target="" aria-current="page">
  <span class="menu-text">Code Demos</span></a>
   </li>  
 </ul>
-              <div class="quarto-toggle-container">
-                  <a href="" class="quarto-color-scheme-toggle nav-link" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
-              </div>
-              <div id="quarto-search" class="" title="Search"></div>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/galenholt" rel="" target=""><i class="bi bi-github" role="img" aria-label="GitHub">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://scholar.google.com.au/citations?user=f94WBOoAAAAJ&amp;hl=en" rel="" target=""><i class="bi bi-mortarboard-fill" role="img" aria-label="Google Scholar">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/galen-holt-265aa290" rel="" target=""><i class="bi bi-linkedin" role="img" aria-label="LinkedIn">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://fediscience.org/@galen_holt" rel="" target=""><i class="bi bi-mastodon" role="img" aria-label="Mastodon">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
           </div> <!-- /navcollapse -->
       </div> <!-- /container-fluid -->
     </nav>
-  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-    <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">Complex passing py-R</h1>
-      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
-        <i class="bi bi-chevron-right"></i>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../RpyEnvs/python_setup.html">R and python</a></li><li class="breadcrumb-item"><a href="../RpyEnvs/py_r_dates.html">Passing complex objects py-R</a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
     </div>
   </nav>
 </header>
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../code_demos.html" class="sidebar-item-text sidebar-link">Code Demos</a>
+  <a href="../code_demos.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Code Demos</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Small how-tos</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Small how-tos</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../small_helpers/smallpieces.html" class="sidebar-item-text sidebar-link">Bits and pieces</a>
+  <a href="../small_helpers/smallpieces.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bits and pieces</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../small_helpers/quarto_notes.html" class="sidebar-item-text sidebar-link">Quarto notes</a>
+  <a href="../small_helpers/quarto_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Quarto notes</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../setup/rstudio_themes.html" class="sidebar-item-text sidebar-link">Editing Rstudio themes</a>
+  <a href="../setup/rstudio_themes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Editing Rstudio themes</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../small_helpers/zip_downloading.html" class="sidebar-item-text sidebar-link">Download and unpack zips</a>
+  <a href="../small_helpers/zip_downloading.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Download and unpack zips</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../small_helpers/json_api_construction.html" class="sidebar-item-text sidebar-link">Building JSON syntax from R for API calls</a>
+  <a href="../small_helpers/json_api_construction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Building JSON syntax from R for API calls</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../small_helpers/list_names.html" class="sidebar-item-text sidebar-link">Naming rules for lists</a>
+  <a href="../small_helpers/list_names.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Naming rules for lists</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../publishing/private_github_figshare.html" class="sidebar-item-text sidebar-link">Creating Figshare from private github</a>
+  <a href="../publishing/private_github_figshare.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Creating Figshare from private github</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../small_helpers/error_handling.html" class="sidebar-item-text sidebar-link">Intro to error handling</a>
+  <a href="../small_helpers/error_handling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Intro to error handling</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/lifecycle_warnings.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Intermittent lifecycle warnings</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/private_github_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dealing with private github</span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Plotting</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">Plotting</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../plotting/ggplot_themes.html" class="sidebar-item-text sidebar-link">ggplot themes</a>
+  <a href="../plotting/ggplot_themes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">ggplot themes</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../plotting/setting_colors_for_groups.html" class="sidebar-item-text sidebar-link">Consistent colors</a>
+  <a href="../plotting/setting_colors_for_groups.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Consistent colors</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../plotting/tweaks_tricks.html" class="sidebar-item-text sidebar-link">Saving and themeing plots</a>
+  <a href="../plotting/tweaks_tricks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Saving and themeing plots</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../plotting/hcl_exploration.html" class="sidebar-item-text sidebar-link">Exploring HCL colorspace</a>
+  <a href="../plotting/hcl_exploration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Exploring HCL colorspace</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../plotting/rgb_to_hex.html" class="sidebar-item-text sidebar-link">Converting RGB to hex colors</a>
+  <a href="../plotting/rgb_to_hex.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Converting RGB to hex colors</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../plotting/fonts.html" class="sidebar-item-text sidebar-link">Fonts</a>
+  <a href="../plotting/fonts.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Fonts</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../plotting/faded_colors.html" class="sidebar-item-text sidebar-link">Faded 2d colour ramps</a>
+  <a href="../plotting/faded_colors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Faded 2d colour ramps</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../plotting/math_in_ggplot.html" class="sidebar-item-text sidebar-link">Latex in ggplot with latex2exp</a>
+  <a href="../plotting/math_in_ggplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Latex in ggplot with latex2exp</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/rayshader.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3d plotting with rayshader</span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">Website</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">Website</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../website_notes/quarto_website_github.html" class="sidebar-item-text sidebar-link">Getting started</a>
+  <a href="../website_notes/quarto_website_github.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Getting started</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../website_notes/updating_website.html" class="sidebar-item-text sidebar-link">Updating and maintaining website</a>
+  <a href="../website_notes/updating_website.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Updating and maintaining website</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../website_notes/quarto_change_yml.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Avoiding rendering whole site for testing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../website_notes/quarto_images_misc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Figures in quarto</span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">Theory, simulation, statistics, probability</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">Theory, simulation, statistics, probability</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../simmodelling/twoDautocorr.html" class="sidebar-item-text sidebar-link">Generate 2d autocorrelation</a>
+  <a href="../simmodelling/twoDautocorr.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Generate 2d autocorrelation</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../stats_probability/expected_shannon.html" class="sidebar-item-text sidebar-link">Bootstrapping the expected shannon diversity</a>
+  <a href="../stats_probability/expected_shannon.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bootstrapping the expected shannon diversity</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../stats_probability/fitting_lognormals.html" class="sidebar-item-text sidebar-link">Intro to fitting lognormals</a>
+  <a href="../stats_probability/fitting_lognormals.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Intro to fitting lognormals</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../stats_probability/shifting_normals.html" class="sidebar-item-text sidebar-link">Basic shifts of normal moments</a>
+  <a href="../stats_probability/shifting_normals.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Basic shifts of normal moments</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../stats_probability/fitting_truncated.html" class="sidebar-item-text sidebar-link">Shifting and fitting truncated lognormals</a>
+  <a href="../stats_probability/fitting_truncated.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Shifting and fitting truncated lognormals</span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">Drones</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text">Drones</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../drones/overlaps_reactive.html" class="sidebar-item-text sidebar-link">Calculations for flight planning</a>
+  <a href="../drones/overlaps_reactive.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Calculations for flight planning</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../drones/overlaps.html" class="sidebar-item-text sidebar-link">Figuring out flight plan calcs</a>
+  <a href="../drones/overlaps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Figuring out flight plan calcs</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pix4d/read_pix4d_outputs.html" class="sidebar-item-text sidebar-link">Reading and plotting pix4d outputs</a>
+  <a href="../pix4d/read_pix4d_outputs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Reading and plotting pix4d outputs</span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">Observable</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+ <span class="menu-text">Observable</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../observable/trying_observable.html" class="sidebar-item-text sidebar-link">Figuring out how to use ojs chunks</a>
+  <a href="../observable/trying_observable.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Figuring out how to use ojs chunks</span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">R and python</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+ <span class="menu-text">R and python</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../RpyEnvs/python_setup.html" class="sidebar-item-text sidebar-link">Python environments with pyenv and poetry</a>
+  <a href="../RpyEnvs/python_setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Python environments with pyenv and poetry</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../RpyEnvs/py_in_rpkg.html" class="sidebar-item-text sidebar-link">Wrapping python in R package</a>
+  <a href="../RpyEnvs/py_in_rpkg.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Wrapping python in R package</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../RpyEnvs/RandPython.html" class="sidebar-item-text sidebar-link">Using R and python together</a>
+  <a href="../RpyEnvs/RandPython.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using R and python together</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../RpyEnvs/R_py_shared_projects.html" class="sidebar-item-text sidebar-link">Shared R-py project structure</a>
+  <a href="../RpyEnvs/R_py_shared_projects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Shared R-py project structure</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../RpyEnvs/py_r_dates.html" class="sidebar-item-text sidebar-link active">Passing complex objects py-R</a>
+  <a href="../RpyEnvs/py_r_dates.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Passing complex objects py-R</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../RpyEnvs/R_py_type_passing.html" class="sidebar-item-text sidebar-link">Passing types between R and python</a>
+  <a href="../RpyEnvs/R_py_type_passing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Passing types between R and python</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../RpyEnvs/py_r_project_overview.html" class="sidebar-item-text sidebar-link">Overview of building R-py package</a>
+  <a href="../RpyEnvs/py_r_project_overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview of building R-py package</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../RpyEnvs/python_nameerror.html" class="sidebar-item-text sidebar-link">Intermittent NameError py-R</a>
+  <a href="../RpyEnvs/python_nameerror.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Intermittent NameError py-R</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../RpyEnvs/python_updated_functions.html" class="sidebar-item-text sidebar-link">Small python bits</a>
+  <a href="../RpyEnvs/python_updated_functions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Small python bits</span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">Setting up projects</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">
+ <span class="menu-text">Setting up projects</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../RpyEnvs/rig.html" class="sidebar-item-text sidebar-link">Managing old R versions with rig</a>
+  <a href="../RpyEnvs/rig.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Managing old R versions with rig</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../RpyEnvs/managingprivate.html" class="sidebar-item-text sidebar-link">Private data for website repo</a>
+  <a href="../RpyEnvs/managingprivate.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Private data for website repo</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../setup/R_in_VS.html" class="sidebar-item-text sidebar-link">Using R in VScode</a>
+  <a href="../setup/R_in_VS.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using R in VScode</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../RpyEnvs/end_run_renv.html" class="sidebar-item-text sidebar-link">Dealing with renv failures</a>
+  <a href="../RpyEnvs/end_run_renv.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dealing with renv failures</span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true">Building packages</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true">
+ <span class="menu-text">Building packages</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../package/package_creation.html" class="sidebar-item-text sidebar-link">First pass at building a package</a>
+  <a href="../package/package_creation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">First pass at building a package</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../vicwater/vicwater_testing.html" class="sidebar-item-text sidebar-link">Testing VicWater API</a>
+  <a href="../tidyprogramming/tidy_programs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Programming with dplyr and rlang</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../vicwater/vicwater_testing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Testing VicWater API</span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="true">Data</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="true">
+ <span class="menu-text">Data</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../data_acquisition/bom_gauges.html" class="sidebar-item-text sidebar-link">BOM gauge locations with httr2</a>
+  <a href="../data_acquisition/bom_gauges.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">BOM gauge locations with httr2</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../vicwater/vicwater_api_howtocall.html" class="sidebar-item-text sidebar-link">Experimenting with API calls for {vicwater}</a>
+  <a href="../vicwater/vicwater_api_howtocall.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Experimenting with API calls for {vicwater}</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../data_acquisition/gauge_data_pre_gauge.html" class="sidebar-item-text sidebar-link">Data from pre-gauged periods</a>
+  <a href="../data_acquisition/gauge_data_pre_gauge.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data from pre-gauged periods</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../data_acquisition/ALA_data_pull.html" class="sidebar-item-text sidebar-link">Pulling data from Atlas of Living Australia</a>
+  <a href="../data_acquisition/ALA_data_pull.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Pulling data from Atlas of Living Australia</span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" aria-expanded="true">R parallel processing (general)</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" aria-expanded="true">
+ <span class="menu-text">R parallel processing (general)</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../parallelism/interrogating_parallel.html" class="sidebar-item-text sidebar-link">Interrogating parallel resources</a>
+  <a href="../parallelism/interrogating_parallel.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Interrogating parallel resources</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../parallelism/nested_parallel.html" class="sidebar-item-text sidebar-link">Testing nested parallelism</a>
+  <a href="../parallelism/nested_parallel.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Testing nested parallelism</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../parallelism/parallel_speed.html" class="sidebar-item-text sidebar-link">Speed-testing parallel</a>
+  <a href="../parallelism/parallel_speed.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Speed-testing parallel</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../parallelism/globals_speed.html" class="sidebar-item-text sidebar-link">Global objects and parallel speed</a>
+  <a href="../parallelism/globals_speed.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Global objects and parallel speed</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../parallelism/nested_dependent_iterations.html" class="sidebar-item-text sidebar-link">Dependencies of inner parallelism on outer</a>
+  <a href="../parallelism/nested_dependent_iterations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dependencies of inner parallelism on outer</span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" aria-expanded="true">R parallel processing on HPC</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" aria-expanded="true">
+ <span class="menu-text">R parallel processing on HPC</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../parallelism/hpc_ephemera.html" class="sidebar-item-text sidebar-link">HPC notes</a>
+  <a href="../parallelism/hpc_ephemera.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">HPC notes</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../parallelism/plans_and_hpc.html" class="sidebar-item-text sidebar-link">Using single-machine plans on HPC</a>
+  <a href="../parallelism/plans_and_hpc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using single-machine plans on HPC</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../parallelism/initial_future_batchtools.html" class="sidebar-item-text sidebar-link">Figuring out future.batchtools</a>
+  <a href="../parallelism/initial_future_batchtools.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Figuring out future.batchtools</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../parallelism/changing_batchtools_template.html" class="sidebar-item-text sidebar-link">Switching templates, matching to resources</a>
+  <a href="../parallelism/changing_batchtools_template.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Switching templates, matching to resources</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../parallelism/template_modification.html" class="sidebar-item-text sidebar-link">Modifying templates</a>
+  <a href="../parallelism/template_modification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Modifying templates</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../parallelism/master_persistence.html" class="sidebar-item-text sidebar-link">Consequences of master timing out</a>
+  <a href="../parallelism/master_persistence.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Consequences of master timing out</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../parallelism/nested_parallel_hpc.html" class="sidebar-item-text sidebar-link">Nested parallel on HPC nodes and cores</a>
+  <a href="../parallelism/nested_parallel_hpc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Nested parallel on HPC nodes and cores</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../parallelism/conditional_plans.html" class="sidebar-item-text sidebar-link">Conditional plans for local and HPC</a>
+  <a href="../parallelism/conditional_plans.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Conditional plans for local and HPC</span></a>
   </div>
 </li>
       </ul>
@@ -605,6 +709,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     </ul>
     </div>
 </nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
@@ -626,7 +731,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">Complex passing py-R</h1>
+<h1 class="title">Complex passing py-R</h1>
 </div>
 
 
@@ -696,17 +801,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     rand_nums rand_chars
-0    -1.435625          U
-1     0.350753          e
-2     1.459661          w
-3    -0.880471          u
-4    -0.760653          p
+0    -0.701866          c
+1     0.459327          y
+2    -0.261080          i
+3    -0.801544          o
+4    -1.080855          S
 ..         ...        ...
-995   0.485717          E
-996  -0.237177          p
-997   1.019685          U
-998   1.094408          C
-999  -1.525452          M
+995  -0.213803          J
+996   0.808282          X
+997  -0.645825          E
+998  -0.956105          I
+999  -0.208278          Q
 
 [1000 rows x 2 columns]</code></pre>
 </div>
@@ -719,1006 +824,1006 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>         rand_nums rand_chars
-1    -1.4356250829          U
-2     0.3507532402          e
-3     1.4596605257          w
-4    -0.8804708136          u
-5    -0.7606531555          p
-6    -1.2408422400          a
-7     0.8086022926          w
-8     0.1553681838          I
-9     0.1499931469          N
-10   -1.6905648266          U
-11    0.2735097750          J
-12    0.7656201820          t
-13   -0.1118194501          M
-14    0.0195489805          Z
-15    1.0395564063          d
-16   -0.1745102607          V
-17   -0.0554451868          l
-18    2.5258639534          u
-19   -0.1096351552          G
-20    0.2815596223          I
-21   -0.2717254117          p
-22   -0.6813295226          S
-23   -1.1741510134          x
-24    0.6772420918          Q
-25    1.5003135109          m
-26    0.1937154814          f
-27   -0.3254001300          h
-28    2.1922539812          g
-29    1.1573719445          J
-30   -0.0007215734          v
-31   -0.4449339143          V
-32   -0.6919343708          X
-33    0.3405342337          q
-34    1.7239006058          W
-35   -0.0064842740          m
-36   -0.4052370276          p
-37    0.2411737758          G
-38    0.4890874441          c
-39   -0.0497768017          c
-40    0.3144387082          n
-41   -0.5720470392          m
-42    1.3898167198          W
-43    0.1206725257          J
-44    0.8840267607          Q
-45   -1.5968558247          T
-46   -0.2623930356          c
-47   -0.3184930484          U
-48    0.5905771314          W
-49   -1.1009629286          P
-50    0.2663333987          z
-51    1.6098848034          Q
-52    0.1156195038          v
-53   -0.1574073941          v
-54   -0.0220035782          a
-55    0.4692603842          v
-56   -2.1948482826          L
-57    0.7017765392          d
-58    0.3143708586          D
-59    0.5112804985          Z
-60   -1.1066206206          m
-61   -1.9502416341          w
-62   -0.0130923968          T
-63    0.3933354221          M
-64   -1.6776265650          A
-65    0.7595630454          n
-66   -0.4379569391          W
-67    0.4705634414          p
-68    0.6172425521          e
-69   -0.7822788402          D
-70   -0.0734679537          B
-71    0.2588013336          K
-72   -1.8202384489          l
-73   -0.0657629065          C
-74   -2.5026896570          q
-75    1.9706540706          y
-76    0.0761237398          a
-77   -0.5691208781          Q
-78    0.5843364893          S
-79   -0.5815034410          J
-80    1.8895772379          f
-81   -0.2758890229          Y
-82   -0.2267390165          J
-83    0.9147952331          u
-84    0.2913826871          O
-85    0.9273477394          J
-86   -1.1968127602          c
-87    0.5527709545          Q
-88   -0.2768357343          L
-89   -0.7163124052          b
-90   -0.1545520263          G
-91   -0.9328695604          b
-92   -1.1274812211          z
-93   -1.3402513131          P
-94    1.0497130347          u
-95   -0.8909050504          V
-96    0.6315742888          a
-97   -0.1505737723          Q
-98    1.0482120825          O
-99   -0.2441229867          f
-100  -0.7436569070          Y
-101   0.8585831633          Y
-102   0.2174317439          J
-103  -2.1324529452          E
-104  -0.6294762732          D
-105  -1.5313542737          Y
-106   0.8950773893          J
-107  -0.9150658817          A
-108   1.7269690792          n
-109   1.2138556701          I
-110  -0.2263987893          d
-111   0.3058133383          X
-112  -1.9207386398          w
-113   0.4476041786          m
-114   0.5174985196          y
-115  -1.6798013843          a
-116  -0.6543114023          l
-117  -0.3858112352          y
-118   0.1964507535          t
-119   0.9569313976          z
-120   0.5350902274          q
-121   0.6451306060          T
-122  -0.4024269994          C
-123   0.9285307222          q
-124  -0.4165565632          l
-125  -0.9688939726          T
-126   0.2783331164          h
-127   1.8851084142          U
-128   0.5594758648          M
-129  -1.7098245945          c
-130  -0.4873313623          o
-131   0.1763417295          Y
-132   0.2993006790          w
-133  -2.1734429180          o
-134  -0.6241570945          l
-135  -0.1514943669          E
-136   1.1687435451          E
-137   0.2579055153          H
-138   1.2060193818          w
-139   1.0556381249          E
-140  -0.5344922474          k
-141   1.5665250820          K
-142  -0.7679826974          W
-143  -1.5371772325          r
-144  -0.9831036374          G
-145   0.5888212113          p
-146   0.7912402080          d
-147  -1.3955327843          N
-148  -0.5898197310          I
-149   0.4744448312          W
-150   0.9603159543          G
-151   2.6400880715          Z
-152  -0.9741516568          j
-153  -1.4112700642          J
-154  -0.7592268061          h
-155  -0.5696867131          Z
-156   0.1077654988          N
-157   0.2584803264          J
-158  -0.5042422113          K
-159   0.9500776329          I
-160  -0.1630936146          S
-161  -0.5806396607          A
-162  -1.0818705328          H
-163  -0.4924106609          j
-164  -2.0783763152          T
-165  -0.2960155852          v
-166   1.4480343617          n
-167   0.0124443684          z
-168  -1.3783466819          O
-169   0.9854687706          P
-170   0.0743033311          y
-171   0.8935141623          j
-172   0.9373337643          b
-173   0.8400493292          W
-174   1.1587772141          o
-175   0.4541633273          u
-176  -0.9076626722          o
-177  -0.0492898176          Z
-178  -0.6963647511          A
-179  -1.2348769677          i
-180   0.9441149440          R
-181  -1.3722730385          A
-182   1.0466268517          p
-183   0.9331375194          T
-184  -0.9846034420          A
-185  -0.5257966923          z
-186   1.0656305613          i
-187  -1.8448519003          o
-188   0.3906398956          b
-189  -0.7187897316          H
-190   1.7997578131          y
-191  -0.3585941310          i
-192  -1.6334092433          u
-193   0.5164272434          c
-194   0.1100665212          r
-195   1.0007529214          R
-196   0.9594131524          Z
-197  -0.6135962902          w
-198   1.5363903478          m
-199  -0.8191980108          z
-200   0.1921218219          s
-201  -0.6613979592          M
-202  -0.3993682663          z
-203  -0.8706114641          e
-204  -0.9649416441          T
-205   0.1691579534          j
-206   0.7859223252          B
-207   0.5452355720          m
-208   1.1415107984          a
-209  -0.0341986138          m
-210  -0.2736673388          s
-211   1.9545059960          o
-212   0.5166064879          p
-213  -1.2943858809          m
-214  -0.0860733171          c
-215   1.1033975021          V
-216  -0.3235088778          P
-217  -0.4308106016          S
-218   0.5587407714          W
-219   1.3721918439          g
-220   0.5293768430          Q
-221   0.0922332647          b
-222  -0.4510724456          S
-223   0.1751050964          v
-224  -1.5745327122          P
-225  -0.4686987790          k
-226  -0.0314020510          a
-227   0.1175743374          W
-228   0.4499665765          u
-229  -0.5197055690          h
-230  -1.1473497325          g
-231   0.0814614482          l
-232  -0.4677117340          L
-233  -1.0519902963          x
-234   1.6068351716          C
-235  -0.8488315795          d
-236   0.3508745290          j
-237  -1.6927363301          A
-238   0.9013266352          B
-239  -0.6471005275          w
-240   1.3371939534          O
-241   0.1646968304          E
-242   1.5944426768          f
-243  -0.1227216065          n
-244  -0.3611438571          x
-245   1.4321273859          g
-246   0.7598238254          a
-247   2.0796874924          j
-248   0.9923193860          J
-249   0.2693997486          X
-250   1.4039850626          V
-251  -0.9389568383          z
-252   0.4740103282          z
-253  -1.3101674090          x
-254  -0.1034074744          E
-255   0.4483205899          Y
-256  -0.6589250104          T
-257  -0.8429945222          J
-258  -1.1663515480          z
-259   1.9660000937          p
-260  -0.3433573563          s
-261   0.1148442635          q
-262  -0.5249875766          Z
-263   0.1676782899          n
-264  -1.0136286479          J
-265  -0.7333549673          j
-266   0.8995466753          P
-267   0.9695350837          Y
-268   0.9218253542          K
-269  -0.4414647146          Z
-270   0.6155998382          Y
-271  -1.7022643915          B
-272   1.4796970719          a
-273  -0.3965082786          X
-274   0.3768646438          e
-275   0.2447098868          B
-276   0.4360737055          A
-277  -0.9974945815          F
-278  -0.1484822796          d
-279  -1.4219579349          v
-280   0.1011745791          e
-281   0.8820198202          p
-282   1.2388310771          X
-283   0.7298684372          f
-284  -0.1346159341          l
-285   0.5706964135          u
-286   0.6212584662          Q
-287   0.3538824295          z
-288  -0.8331870919          H
-289  -0.1833103747          c
-290  -0.3476566622          S
-291   0.1821118186          C
-292  -1.5433383481          B
-293  -1.1503580712          Z
-294  -0.8614605342          i
-295   0.1128122810          t
-296  -0.0985476579          s
-297   0.4965837881          L
-298   2.1192126466          B
-299  -0.5390286611          i
-300   0.4939689152          x
-301  -0.9398666483          p
-302   1.2112709605          b
-303  -0.9908630925          U
-304   1.0170897273          r
-305  -0.5123478466          j
-306  -0.3169409330          Q
-307  -0.0496000290          U
-308   1.5109416952          t
-309   1.1367608816          N
-310   0.1629503225          e
-311   0.7811006908          z
-312  -1.1362155603          L
-313  -1.4870577788          q
-314  -1.8360952594          T
-315  -2.1588950838          K
-316  -0.4326770520          t
-317   0.7413403754          S
-318  -0.4247797000          X
-319   0.3798902630          m
-320   0.2838859199          K
-321  -1.4545669610          c
-322  -1.0195341893          S
-323  -1.6534753902          p
-324   0.0749989437          H
-325  -0.9867258338          t
-326  -0.4742745878          D
-327   1.2229742048          M
-328  -2.5855681339          t
-329  -1.6556717684          S
-330  -1.1646784061          v
-331   0.5203800497          D
-332   0.5579600179          T
-333   0.3906490013          f
-334  -1.0328063769          x
-335   1.0510518969          h
-336   0.9208684701          W
-337   0.4724651764          g
-338   1.0679444841          d
-339  -0.7056842927          t
-340  -0.1534711408          K
-341   0.3107689054          V
-342   0.7546560251          W
-343  -1.5540519197          N
-344   2.4087434653          z
-345   0.7456152114          Z
-346   1.3882134808          p
-347   0.3063834615          l
-348  -0.2253811679          d
-349   0.6709227969          f
-350   0.6163450537          E
-351   1.0458290120          q
-352  -0.6950405211          Q
-353   0.8089349122          G
-354   1.5097777051          N
-355   0.2409425751          z
-356   0.2326360981          D
-357   0.0179152979          p
-358  -0.3539070323          T
-359   0.1628877731          S
-360  -0.3378879952          X
-361  -1.0754435743          c
-362  -1.0773125573          j
-363  -0.6769689006          Q
-364  -0.6280201939          H
-365   0.8391456664          W
-366   0.4610277130          u
-367  -1.0067995950          d
-368  -0.0689080065          U
-369   1.2135150596          W
-370   0.0094342522          h
-371  -0.8918038513          y
-372  -0.9509841561          L
-373  -0.3823363638          L
-374   0.9561179356          I
-375   0.4782514730          L
-376  -0.8988786030          K
-377  -1.0871152944          z
-378   0.9368828239          A
-379  -2.0280363617          T
-380   0.6950611166          t
-381  -0.0778011249          o
-382   0.4850504467          x
-383  -0.1302079696          K
-384  -0.6757692734          h
-385  -1.0987856964          n
-386   0.0631926768          q
-387   0.7862546296          j
-388  -1.1601220549          p
-389  -1.6780539594          E
-390  -0.0420252980          O
-391  -0.8648674438          X
-392  -0.6161887965          v
-393  -1.2515025173          o
-394   0.2614429133          u
-395  -0.3355556764          L
-396  -0.4623944123          a
-397   0.1756127177          P
-398  -0.5110623986          W
-399  -2.4653633726          k
-400   1.8300360514          X
-401   1.2671240937          z
-402  -2.2638218529          T
-403  -0.4130177377          D
-404  -1.5986772412          F
-405  -0.9050381725          o
-406  -0.2207035830          l
-407   0.6872274530          z
-408   0.1474403991          o
-409   0.6622302218          c
-410  -0.3503004232          l
-411   0.4563815819          L
-412   0.5701071199          C
-413   0.0906618075          W
-414   1.1819219448          E
-415   0.4643936424          d
-416  -0.4826000752          j
-417   0.6778095083          W
-418   0.3964221019          H
-419  -0.6242097970          l
-420  -1.8358501504          c
-421  -0.2029451445          B
-422  -1.4362061020          q
-423   1.1718644480          k
-424  -0.9584450813          a
-425   0.1429398426          o
-426  -0.1582334564          A
-427   0.1017999980          U
-428   0.2995843707          n
-429  -0.8841513168          b
-430  -0.3601259299          O
-431  -1.0549965952          U
-432   0.3215733096          O
-433  -0.0753970105          y
-434   1.7370206652          h
-435   0.2147937492          S
-436  -0.3126901358          Z
-437   0.2484921691          p
-438  -0.2256731246          Z
-439  -0.1607114628          E
-440  -1.1739196544          k
-441   0.4915594650          l
-442  -0.3356931812          K
-443  -0.2034798788          p
-444  -1.0406683943          m
-445   0.7687679265          P
-446   0.1908507424          o
-447  -0.3661570524          b
-448   0.0431516062          U
-449  -0.5057734164          d
-450  -0.5616106457          K
-451  -0.3748887233          l
-452   1.3901152999          Q
-453  -0.3955657705          x
-454  -0.1297649382          j
-455   0.3468275607          H
-456  -1.0361510068          u
-457  -0.2491759501          P
-458  -1.1182386653          x
-459   0.0838799558          v
-460   0.3027978827          t
-461  -0.7197029213          j
-462   0.1816761240          r
-463  -0.1718854601          h
-464   0.7719029424          j
-465  -0.9477488874          p
-466   0.7173881083          D
-467  -1.7842144866          U
-468  -0.8781683693          u
-469  -0.1864393658          o
-470  -1.8302325975          w
-471  -0.2130204962          Z
-472  -0.1042004829          o
-473   0.3361470549          X
-474  -0.3565092879          Q
-475  -0.3805926689          N
-476   0.2535289877          S
-477   0.0670465047          A
-478  -0.2399207624          R
-479   0.1202291279          N
-480  -1.3423960921          m
-481  -1.9833013984          w
-482  -0.0452814876          f
-483   0.3224375385          d
-484   0.4351273110          k
-485  -1.0831513852          m
-486  -0.7251690123          K
-487   0.9957466415          Z
-488   0.2255315070          N
-489   0.2131987886          B
-490  -0.3769222145          m
-491   1.1495878927          P
-492   0.0497512253          U
-493  -0.4726971962          p
-494  -0.4938457998          f
-495  -1.1348367422          R
-496   0.2258044721          V
-497  -0.2224941741          m
-498  -0.7362201810          Z
-499   0.7199027875          T
-500   2.4773327897          Y
-501  -0.0347875918          w
-502   1.6032305068          k
-503   0.8043905486          I
-504  -1.2078634918          r
-505   0.1682168493          Q
-506  -0.3653803913          V
-507   1.6328767060          M
-508  -0.2464734566          a
-509   0.5052421295          E
-510  -1.9298476370          W
-511   1.0811950547          a
-512  -0.8551932728          l
-513  -1.2044521477          X
-514  -0.0659345853          B
-515  -1.9768769662          n
-516  -0.1430651396          O
-517  -0.5339352321          o
-518   0.7579213368          x
-519   0.5025175301          S
-520   1.2866448311          t
-521  -0.4127577384          K
-522   0.5947399825          O
-523  -0.0675055148          d
-524   2.1361242061          d
-525   0.6240153408          R
-526  -0.1176965132          v
-527  -0.2366361715          g
-528   0.3510820282          U
-529   0.4011780678          Z
-530   0.9993635667          n
-531  -0.6983236597          t
-532  -0.9957448381          L
-533   1.1252645724          Z
-534   0.6181532731          i
-535  -1.1917226797          w
-536  -0.9919948974          Y
-537  -0.2939287824          F
-538  -0.6528311633          s
-539   2.1459081731          e
-540   2.2434053423          C
-541   0.4085845431          b
-542   0.2609584344          O
-543  -0.7441409126          I
-544  -2.4852425042          X
-545   0.2907412532          J
-546  -1.5814775669          f
-547   0.8511448089          f
-548   0.0112779500          O
-549   0.9491043611          N
-550  -0.1126119305          V
-551  -0.7018560318          p
-552   1.2813835016          H
-553  -0.6879069731          h
-554  -0.5398284709          D
-555   0.6377341696          c
-556   1.5764889807          G
-557  -0.0363569839          I
-558  -0.0343756704          a
-559   1.0499723926          r
-560  -0.6640957865          L
-561  -1.2544309373          U
-562  -0.8508860329          o
-563  -1.1284958312          H
-564   1.2427636510          D
-565  -1.5351781274          V
-566   1.6405571142          N
-567  -0.0461611056          Y
-568   1.8776265491          V
-569   1.1385854881          Y
-570   0.9208311341          m
-571   0.8681816436          n
-572  -0.1472896631          L
-573   0.4536482734          r
-574  -0.3272810523          x
-575   0.3064916544          j
-576   0.2614519362          r
-577  -0.8630663069          Z
-578  -1.0655756794          N
-579   1.4327592285          F
-580  -0.3160375981          k
-581  -0.8802892399          f
-582   1.9316729877          G
-583  -0.1763009717          P
-584   1.0921020778          v
-585  -2.1345867632          v
-586   0.5431402746          T
-587  -0.8041737472          C
-588  -1.0574402043          z
-589   0.3675547284          W
-590   0.8715992940          E
-591   1.5273779412          M
-592  -0.9326235932          r
-593   0.4706451519          o
-594   0.1338730339          l
-595  -0.1177191566          B
-596  -1.6273225103          l
-597  -0.7543744425          s
-598  -0.5449306407          T
-599   0.7479379378          Y
-600   1.8482179900          g
-601  -1.1928893492          S
-602  -1.5691268049          y
-603  -0.3418812491          D
-604   1.0241253681          c
-605   0.2425019010          t
-606   2.1736949337          Y
-607   0.0431818921          y
-608  -1.0681295830          c
-609   0.5478019800          f
-610   0.4336793012          B
-611   0.9955053439          B
-612  -0.8192227453          u
-613   1.5524170984          Y
-614   1.5550608816          X
-615  -0.6538236589          U
-616   1.0270757733          v
-617  -1.4964887235          O
-618   0.6572280476          n
-619   1.5704374588          E
-620  -0.8529470310          w
-621   0.2923396089          m
-622  -1.3231860831          d
-623  -0.2959259351          z
-624   0.5128084589          L
-625   1.9487665318          b
-626   1.3832244461          s
-627   0.7132032233          Z
-628   0.7645145552          o
-629   1.4480694368          l
-630  -0.3508976214          Y
-631   0.4424745736          D
-632   0.0203015891          t
-633  -0.0553896461          a
-634   1.0007560633          y
-635  -1.7453024865          k
-636   0.6697785697          n
-637  -0.5467022986          m
-638   0.0032872397          R
-639   0.2466541497          C
-640  -1.5805592606          o
-641  -0.1628804257          t
-642   0.3694406318          t
-643  -0.7741426332          Q
-644   0.8306277427          n
-645   1.4438993600          A
-646  -0.9006198323          u
-647   0.0551616211          X
-648  -0.5802660414          A
-649   1.3339850366          H
-650  -1.1218159915          l
-651   1.3874433646          Z
-652   1.7740418043          w
-653  -0.3582909380          X
-654   0.4326761979          N
-655   1.8599260911          g
-656  -0.0515589281          g
-657  -0.1511704069          K
-658   0.3654940739          I
-659   0.0557857387          z
-660  -0.0502144173          Z
-661   0.0842921238          s
-662   0.4217485205          I
-663   0.5147079796          m
-664  -0.6725174764          z
-665   0.5500913935          A
-666   1.1357859013          E
-667  -0.7984130899          l
-668  -0.7343596558          W
-669  -1.3233067165          g
-670  -1.2316997547          m
-671   0.3999450357          R
-672   0.8553828521          M
-673  -1.6335708704          i
-674   1.9483301680          y
-675  -0.2870438394          K
-676  -0.2566898911          y
-677  -0.1474485335          U
-678   1.3271215612          S
-679  -0.8775754623          u
-680  -1.2155830393          U
-681  -0.3742011371          x
-682  -2.6046994551          G
-683  -0.0899833919          T
-684   1.2835171321          V
-685  -0.3292862529          G
-686   1.1517375302          k
-687  -1.3594397705          c
-688  -0.1602953491          f
-689   1.8073505470          p
-690  -1.4322742841          b
-691  -1.6973213261          a
-692  -0.6134905020          j
-693  -0.0363189681          f
-694   0.6621925827          y
-695   0.3289825598          F
-696  -0.8761095232          O
-697  -0.9252975332          Q
-698  -0.5176435351          J
-699  -1.0810739797          e
-700  -0.5888644456          U
-701   0.8421566796          w
-702   1.4033958540          f
-703   0.2411266087          Y
-704   1.5716191408          s
-705  -0.7147494606          m
-706  -0.5004655310          B
-707   0.8180332524          n
-708   0.4936324665          w
-709  -0.3363503058          h
-710   0.8956559281          D
-711   1.3828609744          z
-712  -1.0550426109          F
-713  -0.5347013594          L
-714  -2.0748510390          B
-715   0.7746284322          o
-716  -1.3735907689          R
-717  -0.0433717851          B
-718   0.6912673950          J
-719   1.9875243231          J
-720   2.8204671588          q
-721   0.3989149781          C
-722   0.4718595017          n
-723  -2.2086231807          W
-724   0.7256647729          p
-725  -0.6583667501          J
-726  -0.9675114467          c
-727  -0.6556954460          W
-728  -1.7068210667          V
-729  -0.8773345211          z
-730  -0.8186130547          T
-731   0.4052639884          l
-732  -0.1938228269          t
-733  -0.2826271572          O
-734   0.5910284230          P
-735  -0.7635431664          h
-736  -0.3030584913          X
-737   0.1754024233          Y
-738   0.0978343197          w
-739   0.4100248534          M
-740  -0.4225321916          D
-741   1.3220268905          f
-742   0.3976846405          c
-743   2.1278484651          r
-744  -0.4867650066          V
-745   0.0722010189          R
-746   1.9933897199          t
-747   1.3187658050          S
-748  -0.3802935934          F
-749  -0.4976430128          L
-750   2.1900243405          i
-751   0.6629678409          X
-752  -0.1803383095          o
-753   0.0204933652          z
-754  -2.1891889427          m
-755   1.9048633909          u
-756   0.2938377722          d
-757   0.1994997837          K
-758   0.2222239450          E
-759  -1.6525599612          w
-760   0.4384764245          H
-761  -1.0286405211          K
-762  -0.0296379505          h
-763   0.4701457916          N
-764  -0.1823601942          K
-765   1.6154218555          H
-766  -0.5450943771          g
-767   0.3097726597          z
-768  -0.0867932970          V
-769  -0.6806204747          x
-770  -0.3355014464          r
-771  -1.1927102668          Q
-772   1.1238276485          A
-773  -0.9660698463          q
-774   0.6473753255          G
-775  -0.6053154715          O
-776   0.0045197549          l
-777  -0.3501868355          j
-778   1.6011580826          H
-779  -0.8178530753          z
-780  -0.3879562040          K
-781   0.4709296364          E
-782   1.0002000181          G
-783  -0.3817134311          o
-784  -2.1674858772          a
-785  -1.3112834406          R
-786  -0.7580238175          z
-787   0.6833386923          X
-788   0.1322410330          X
-789  -0.9621452009          W
-790  -0.5595904750          k
-791   3.0578217912          k
-792  -0.6154739539          g
-793   1.6556115369          R
-794   2.2258373143          P
-795   0.2277487813          y
-796  -0.8286467582          x
-797   0.7158227141          m
-798  -0.9130298867          Z
-799   0.9293039234          s
-800  -0.2277858542          v
-801   1.5296430623          f
-802   0.6914462416          s
-803  -0.2046371192          M
-804   0.2332155662          z
-805   1.1283378241          j
-806  -0.3242708910          i
-807  -1.0138268307          l
-808  -0.5306936141          Q
-809  -0.5655371410          o
-810  -0.6043960277          F
-811  -1.4745518785          Y
-812   1.4755494220          v
-813   0.3559831243          H
-814   1.2143564027          v
-815   0.2595468206          x
-816   0.1048913752          l
-817  -2.2896758228          j
-818  -0.2395335866          f
-819  -0.7680140155          g
-820  -0.1350853924          q
-821   1.6345477170          i
-822  -2.2050813285          s
-823   0.2422273456          d
-824  -0.0430926724          k
-825   1.0375124386          M
-826   0.7836401506          N
-827  -0.9371478937          n
-828   1.6934176466          d
-829  -0.3028726917          i
-830   0.7263125001          f
-831   1.9958764851          b
-832  -0.7165897118          w
-833   0.0290052389          M
-834  -0.4649404607          J
-835   0.0194393456          v
-836  -0.4933723973          M
-837   2.6708817212          J
-838   0.2259238232          V
-839   0.9048908525          c
-840  -0.2022703883          J
-841   0.0625252408          G
-842   1.2306453822          l
-843  -0.2789331401          k
-844  -0.5231596137          v
-845  -1.0790768050          P
-846  -0.2360754836          l
-847  -1.4590440646          m
-848  -1.8257195965          U
-849   0.1257243001          G
-850  -0.2377404895          Z
-851   1.5569695911          I
-852  -2.1104718809          y
-853   1.0167074861          P
-854  -0.0312058985          V
-855   0.6917138377          z
-856   1.3053289112          w
-857  -0.5567598211          O
-858  -0.8863754897          G
-859  -2.0390878771          a
-860  -0.5575362616          M
-861  -1.3020316258          m
-862   0.7165802028          K
-863   0.3394295153          r
-864  -0.2002441120          h
-865  -0.5948763088          T
-866   0.3490135895          k
-867  -1.3994828976          n
-868  -0.4499683720          W
-869  -0.5712692443          c
-870  -1.0725852952          S
-871   0.1027209914          m
-872   0.6762481615          B
-873   1.7224167978          R
-874   1.5573622091          x
-875   1.0600675122          R
-876  -0.1386146968          v
-877  -0.9823891185          q
-878   0.5442199737          i
-879   0.7451978018          q
-880  -1.7618681436          P
-881   0.1218761799          e
-882  -0.3191614840          V
-883   2.5570525775          u
-884   0.4453312361          r
-885   0.4596987497          B
-886  -1.6793739145          s
-887   0.6694351160          t
-888  -1.6186995845          g
-889  -0.6517881144          C
-890   1.2151781540          P
-891   0.8251184813          I
-892  -1.1935697693          B
-893   0.4672807201          x
-894  -0.5007378477          W
-895   0.4095609602          j
-896   0.7323162222          M
-897  -1.0174594458          t
-898  -0.1296055638          b
-899   1.2862551180          D
-900  -0.1908550020          A
-901   0.9376658293          L
-902  -1.5571643408          U
-903   0.4181011101          m
-904   0.3284572498          x
-905  -0.5959016193          H
-906   0.1422047525          u
-907   0.1115222790          y
-908  -1.0054665629          i
-909  -1.5386254214          N
-910  -1.0294034984          t
-911  -0.5703681321          o
-912   0.1264461308          m
-913   0.3595942219          h
-914  -0.0460875825          w
-915  -0.6413127889          j
-916  -0.0692236714          h
-917  -0.2700500300          I
-918  -1.4601067883          A
-919  -0.4568255813          r
-920   0.6550714209          S
-921  -0.1869571432          t
-922  -0.0807894839          z
-923  -1.4176962902          x
-924  -0.3173178517          y
-925   0.1575146217          e
-926  -2.1369432019          E
-927   0.6528115331          v
-928  -2.0608392945          V
-929  -0.0869133045          I
-930   0.6653643633          I
-931   0.2230423898          R
-932  -0.2204405248          n
-933   1.6365320502          Z
-934   1.3114448457          q
-935   0.8474996999          O
-936   0.3226254339          m
-937   1.0237374383          D
-938  -2.1620718248          E
-939   0.1243898434          m
-940  -2.2005427786          W
-941   0.8433656779          g
-942   0.7158068384          O
-943   1.0535220331          k
-944  -0.8527234159          T
-945   0.7870504848          m
-946   0.0934380270          q
-947  -0.3628072450          B
-948  -0.3309138033          H
-949   1.1371379319          g
-950   0.2866303292          L
-951  -0.3149581319          S
-952  -0.2192921616          j
-953   0.8448657678          r
-954   0.0280955747          r
-955  -0.0878613950          X
-956   0.0587217855          P
-957   0.3899827194          e
-958   0.9712651483          t
-959  -0.0349161389          M
-960   0.2044860319          F
-961  -0.1828614216          i
-962   0.8386614472          G
-963  -0.9562269589          g
-964   0.5364526538          r
-965   2.8003546980          g
-966   2.7849531652          e
-967  -1.0016161232          C
-968  -2.2279832640          a
-969  -0.6641445078          R
-970   2.8482495152          p
-971  -0.4452859008          h
-972   0.8324226326          h
-973   1.8693815386          N
-974   0.6081408181          J
-975  -0.1499750710          P
-976   0.4443449714          U
-977   0.0082651354          G
-978   0.7993040354          H
-979  -1.4548646703          c
-980  -1.3535649026          I
-981   2.2544517991          V
-982   0.0999063445          a
-983   1.0053994577          s
-984  -0.8113950478          o
-985   0.0914670016          z
-986  -0.8424450842          o
-987  -0.3490376723          C
-988  -0.5986849840          K
-989  -0.5653782157          v
-990   0.4517825416          v
-991   1.3376457275          V
-992   0.4849415228          M
-993  -1.0763858087          n
-994  -0.4583067943          a
-995   0.3608778480          A
-996   0.4857165248          E
-997  -0.2371774650          p
-998   1.0196845951          U
-999   1.0944084292          C
-1000 -1.5254522908          M</code></pre>
+1    -0.7018658992          c
+2     0.4593274131          y
+3    -0.2610798051          i
+4    -0.8015437130          o
+5    -1.0808549780          S
+6    -1.6438483004          D
+7    -0.3334575577          y
+8     0.4935451879          D
+9    -0.1560796095          b
+10    0.3323185565          R
+11   -2.1908387891          Y
+12   -0.2950657487          M
+13   -0.9115783643          j
+14    0.3962070865          O
+15    2.3519102656          X
+16    0.4391649467          d
+17    0.7300874167          Z
+18    0.7413467021          F
+19   -0.3111477835          e
+20    0.9823226372          Z
+21    0.3950978754          x
+22    1.1499516641          w
+23    1.2511164152          d
+24   -2.2146034662          D
+25   -0.1336232404          C
+26   -1.8382912488          v
+27    0.7784467509          B
+28   -0.1280738737          q
+29   -0.8124590539          o
+30    0.2711110996          Q
+31   -0.7441588686          y
+32    0.1285400079          t
+33   -0.6396603485          X
+34   -0.2807885652          O
+35    1.1521418770          q
+36   -1.4038714453          u
+37    2.0806655871          l
+38    0.2761555629          T
+39   -0.1991139600          L
+40   -1.3505007980          A
+41    1.1538226352          W
+42   -1.4467217299          O
+43    0.2481680067          A
+44   -1.4942114905          Q
+45   -1.2843187303          T
+46    0.2574032552          i
+47   -0.9797651017          x
+48   -0.4170744879          V
+49    0.7153474943          i
+50    0.7533982301          o
+51   -1.3336047335          G
+52   -0.9240890286          p
+53   -1.2656653882          V
+54   -1.9762137075          A
+55   -0.3760371579          Q
+56   -0.2588065075          M
+57   -2.1176771667          S
+58   -0.7189876499          I
+59   -0.5577799281          w
+60    0.9043242108          x
+61    1.0504640126          q
+62    0.1181189650          v
+63   -0.9850789312          Y
+64    0.2231129871          a
+65    0.2864486847          C
+66    1.0981813055          L
+67   -1.2706626483          N
+68   -0.7419632459          o
+69    1.4600143060          G
+70    0.5525795882          z
+71   -0.7677861242          h
+72    0.0560519001          Q
+73   -1.3960906754          O
+74    0.6167615877          o
+75    0.4096709127          I
+76   -1.2672040841          R
+77   -0.0843148257          C
+78   -2.2520123342          y
+79    0.0549257414          U
+80   -0.4799570788          C
+81   -0.2872730118          L
+82   -0.5502245618          k
+83    1.0700368331          x
+84    0.9384796491          p
+85   -0.5022452286          f
+86    0.1083143396          P
+87    0.0573921669          K
+88   -1.8781921416          C
+89    0.0126693796          M
+90    0.4316892544          p
+91   -2.1621499857          d
+92   -1.1505331351          z
+93    0.8401515501          Q
+94   -1.0210129385          w
+95   -0.0046774511          v
+96   -0.8025082850          S
+97   -0.0402267228          U
+98    0.3381054287          Y
+99    0.7180860224          o
+100  -0.3488052118          j
+101  -1.1044635022          P
+102  -1.2168672228          V
+103  -1.4036701430          P
+104   1.0592318529          X
+105   0.5640597923          X
+106   0.1379419397          y
+107   0.1984329343          a
+108  -0.7127988170          Z
+109   0.0397090526          b
+110  -0.5361383788          Y
+111  -0.5415966538          k
+112   0.0665710922          v
+113   0.6091413451          L
+114  -0.2167627362          U
+115  -0.1413768540          K
+116  -0.2783724734          l
+117  -0.1077502242          u
+118   0.3452272609          j
+119  -0.2587823903          J
+120   0.3238092422          U
+121  -1.5146103008          e
+122   0.9270940868          i
+123   0.8081201779          G
+124   0.1739384315          O
+125   0.7349655378          T
+126   2.1613856495          i
+127   1.6893585918          g
+128  -2.4704034652          d
+129  -0.0076850908          U
+130  -1.6544088363          o
+131   1.2057116016          w
+132   0.2470774154          J
+133   0.7114776251          R
+134  -0.2780996500          W
+135   0.4467569873          x
+136  -0.6754559457          d
+137  -0.9194636989          c
+138  -0.9952852360          B
+139  -0.6729531603          x
+140  -0.5007421996          j
+141  -0.5690312844          P
+142   1.0576341934          S
+143  -0.7886859079          v
+144   0.3027513158          n
+145   1.2837863601          p
+146  -1.8530146127          K
+147  -0.8919650257          u
+148   0.0077003617          u
+149   0.5816436901          y
+150   0.8569916057          E
+151  -0.0293560235          a
+152   0.3357785277          y
+153   0.0212049402          w
+154  -1.2427557518          j
+155  -0.8331603605          h
+156   1.0701914881          n
+157  -0.3933929335          n
+158  -1.8650372275          d
+159  -0.3738399269          s
+160  -1.0910719281          R
+161  -0.3232570646          B
+162  -0.0929475239          m
+163  -0.3224133134          D
+164   1.1740269486          N
+165  -0.2324599108          I
+166  -0.3045914893          u
+167  -0.4120925975          t
+168   0.2621403939          j
+169   1.7822502922          t
+170  -0.3695158113          Y
+171   1.1083349934          R
+172   0.1726439420          y
+173   2.0872526525          U
+174  -1.1796077941          T
+175  -0.4893328620          l
+176   0.3025706297          h
+177   1.1878539582          i
+178  -0.3624111552          t
+179  -0.8275963489          F
+180  -0.9210124697          G
+181  -0.2413278292          o
+182   0.1934532986          d
+183  -0.2834687745          P
+184  -1.0510165068          T
+185   0.1193487874          t
+186   0.4634951980          M
+187  -1.4310181095          M
+188   0.9795518900          K
+189  -1.5793763703          V
+190  -0.5355509895          Z
+191   0.6777743214          Y
+192  -0.9401279161          B
+193  -0.3131691286          z
+194   1.0136157751          t
+195   2.4648592649          c
+196  -0.1123349550          u
+197  -0.7634269258          y
+198  -0.1956354007          i
+199   1.6716278233          p
+200   1.3007570727          X
+201   0.4510890219          n
+202  -1.2211868160          P
+203  -0.6623963011          q
+204   0.8491075734          i
+205  -1.0316316676          t
+206  -0.4700021285          y
+207  -1.4587971310          L
+208   1.2062958906          J
+209  -1.0015108378          s
+210  -0.8828380102          H
+211  -2.4487313918          o
+212  -0.3666984680          j
+213   0.1485483294          J
+214   1.2845450427          c
+215   0.0753673755          h
+216   0.8150718076          D
+217   1.2827426854          f
+218  -0.7907764907          Z
+219  -1.8545961636          d
+220  -0.7862898331          F
+221  -0.0136131797          o
+222  -0.3806067867          V
+223   0.0059519492          B
+224   0.6045473687          s
+225   0.8885653996          Q
+226  -0.5637310411          Z
+227  -1.2974545634          K
+228   2.0696693706          j
+229   1.7089497885          g
+230  -0.5749308926          n
+231  -0.8642215550          b
+232  -1.8486022254          F
+233   0.8348355511          A
+234   0.7227545181          A
+235   0.0712407444          P
+236  -1.6883801128          s
+237  -1.3281808014          B
+238   1.3003977211          N
+239  -0.0694278847          W
+240  -0.0533318120          e
+241   0.1166895763          Q
+242   0.9160985673          n
+243   0.8403536086          U
+244   0.9100906330          f
+245   1.5016474279          c
+246   0.1074100201          C
+247  -0.9043478058          M
+248  -0.4144098200          t
+249   1.3671461975          G
+250   0.5032642282          W
+251   0.2373176981          p
+252  -1.4901168890          m
+253  -0.2410164254          R
+254   0.2226577175          J
+255   0.7616861254          b
+256   0.5102059635          s
+257  -0.5518024425          O
+258  -0.4543078980          h
+259   0.8457439613          L
+260   1.3797927721          i
+261   0.9500353404          o
+262  -1.7429733279          r
+263   1.2737253980          N
+264  -1.7093882939          C
+265  -0.0001419687          S
+266  -1.1801914111          X
+267  -0.0863132536          d
+268  -0.9672521665          C
+269   0.1448770752          H
+270  -1.6900156374          Q
+271   0.3754274577          k
+272  -0.2244144551          B
+273   0.0372876959          B
+274   1.1215990228          N
+275  -0.9304425554          I
+276  -0.6977437815          l
+277  -1.0132417840          P
+278   0.6091060315          i
+279  -0.6247144324          k
+280  -0.3418057459          D
+281  -1.3511219191          o
+282   1.1384850041          Y
+283   0.3679698073          y
+284  -1.9193555205          I
+285  -1.0827150750          b
+286  -1.0273936215          h
+287  -2.5034002378          e
+288   0.8599332090          I
+289   0.3135843293          Y
+290   0.9317228415          W
+291   1.4799162416          q
+292   0.6007748585          X
+293   0.5440643388          J
+294  -0.0411721958          X
+295  -1.7219187279          g
+296   1.1712814126          O
+297  -2.1606195632          d
+298  -0.7123967888          j
+299   0.5941765102          O
+300   0.1989054738          K
+301  -0.3293622723          p
+302  -0.8206038871          y
+303  -0.3759277960          f
+304   1.3418036345          Z
+305  -1.1895773771          r
+306  -1.6668392401          h
+307  -0.4206255195          Z
+308  -0.6176810747          e
+309   1.9349770647          F
+310   0.3855568577          K
+311  -1.1791245291          T
+312  -0.0982526941          u
+313   2.2934638826          U
+314  -0.8891313380          V
+315   1.1280570062          D
+316  -1.0639492795          J
+317  -2.4931671907          J
+318   0.0959922720          g
+319  -1.0717750282          j
+320   0.5838197279          L
+321   0.8307962898          F
+322   0.4777511111          E
+323   0.4086220498          Y
+324  -0.9186934273          Z
+325  -1.0053313253          n
+326  -0.0355969149          T
+327   0.8468154989          P
+328  -0.0342874758          k
+329   0.0996263113          a
+330   1.6751971802          u
+331   0.7043031852          K
+332  -0.7585540801          k
+333  -0.3481285096          k
+334   0.2785079868          C
+335  -0.4529136317          m
+336  -0.1858910863          j
+337  -0.2450604225          q
+338  -0.3862497247          z
+339   0.1633145299          d
+340   1.6181009784          X
+341  -0.6936999137          f
+342  -0.7368535810          t
+343   1.3829288990          G
+344   0.5797685050          I
+345  -0.3467568034          W
+346   0.7880514740          C
+347  -1.4244107843          O
+348  -0.1759525941          K
+349   0.4468652696          H
+350   1.6543187684          P
+351  -0.8825293884          K
+352   0.7700923414          A
+353   0.0523330014          y
+354   2.4227396801          L
+355  -1.2798017420          v
+356  -0.0759638223          b
+357   0.9406846383          U
+358   1.1676627172          k
+359   0.2290247072          O
+360   0.6271988953          H
+361   1.2348048225          N
+362  -0.6089331921          k
+363  -3.0367039349          u
+364  -0.9215758573          b
+365  -0.3954085762          S
+366   0.2089812392          Q
+367   1.1441932628          m
+368   0.8347874659          Y
+369   0.6546463383          n
+370  -1.7801259700          L
+371   0.1652961277          D
+372  -1.1429959338          t
+373  -0.4582644260          d
+374  -2.7222010332          P
+375   0.2762536393          q
+376  -0.2940206749          T
+377   1.9677946055          c
+378  -1.1910594613          N
+379  -1.9949688051          Q
+380  -0.2435462391          W
+381   1.6901677658          I
+382  -0.5524715813          i
+383  -0.5935018750          J
+384   0.2718732142          h
+385   0.0840018241          F
+386   1.6520550890          I
+387   2.6950840670          T
+388  -1.3906127303          e
+389  -0.5202015995          y
+390  -0.7345347763          H
+391   0.6720119786          y
+392   0.8881815896          g
+393   1.0087944240          t
+394  -1.1083758414          I
+395  -0.7971139199          C
+396  -1.1708554183          r
+397   1.6933236869          h
+398   0.6417952947          k
+399   1.2799928452          C
+400   1.1264493892          c
+401  -0.0673396153          z
+402  -0.3778595494          i
+403  -0.1444795174          C
+404   0.1200237331          E
+405  -0.2424233042          c
+406  -0.9496102702          q
+407   0.0289361040          K
+408   0.3733227270          d
+409   1.9825327169          E
+410  -1.2380831928          C
+411   1.5706059682          x
+412   0.9341718913          F
+413   1.4288302804          X
+414  -1.0542930755          B
+415  -0.5544814964          S
+416  -0.8488481371          x
+417  -0.5414563321          S
+418   0.2735410490          k
+419   1.2333797302          F
+420  -0.7076198507          V
+421   0.3962208288          Y
+422   0.7624549396          B
+423   0.7251655574          I
+424  -0.2232489899          D
+425  -0.2041434550          j
+426  -0.0956456730          S
+427  -1.2188845683          l
+428  -1.2805469475          z
+429  -1.7733196969          t
+430   2.2136059576          h
+431   0.9154488313          D
+432   1.5545204720          P
+433  -0.0233323438          Q
+434   1.4685774838          c
+435   0.1718864434          e
+436  -0.2033664451          g
+437  -1.1185697790          a
+438  -0.9345521937          F
+439  -1.6290603792          b
+440  -0.3392908425          V
+441   0.1156334067          E
+442  -0.5322578855          A
+443  -0.2875645476          X
+444   1.1559894318          q
+445  -1.6330953661          u
+446  -0.2766105267          M
+447   0.2359445926          r
+448   2.2651616552          Q
+449  -0.0498513023          z
+450  -1.0770353853          I
+451  -0.1382972676          W
+452   0.6835743663          m
+453   1.3255346990          H
+454  -1.5266829027          N
+455  -1.1605859112          p
+456  -0.0607873609          y
+457   1.4030861610          S
+458   1.3858522692          v
+459   1.1045598901          Z
+460   1.3956986715          k
+461   0.5685687068          o
+462  -2.0811546851          S
+463  -1.9517469353          X
+464   0.8418801329          X
+465   0.2390282572          q
+466   0.3996511978          q
+467   0.3662531029          j
+468   0.0976006310          e
+469  -1.7391317948          f
+470   0.1896379830          D
+471   0.6355798725          u
+472  -0.7408925358          z
+473  -0.1458139215          w
+474  -2.0875166203          a
+475   1.3290519171          F
+476   1.1224443221          x
+477  -0.1575470986          h
+478   0.7853175970          T
+479  -0.8146137505          q
+480   0.8747225844          h
+481   1.5696707878          S
+482  -1.4033403956          N
+483   0.0471532142          B
+484   0.8531992973          r
+485  -0.3352512041          Q
+486   0.2252765840          A
+487   0.4261285304          e
+488   0.2323299958          q
+489   0.1665928049          U
+490   1.0777124141          w
+491   1.0727034939          F
+492  -0.8460144976          h
+493   0.5115132926          O
+494   0.0614492065          r
+495  -0.2888240999          o
+496   0.9928980180          d
+497  -0.6765177184          k
+498   0.7350610405          C
+499  -0.1546650354          Q
+500  -1.2230531777          L
+501  -1.4974415025          t
+502   1.4347168335          M
+503  -1.4589643611          L
+504   0.8924854925          b
+505   0.1067199132          n
+506   1.0987670446          X
+507  -1.5938476932          v
+508   0.5719518650          G
+509  -0.9206472408          r
+510   1.5703154229          k
+511  -2.1534953659          t
+512   0.5062054404          e
+513  -0.8580279187          a
+514  -1.8217132150          t
+515   0.8754096284          d
+516   0.2074617933          d
+517  -1.4133275042          y
+518   1.4947165256          H
+519  -0.8015709033          U
+520   0.6536488919          R
+521  -0.9400254026          z
+522   0.8104738111          l
+523  -0.0749049234          m
+524   0.8323710646          T
+525   1.4605080246          m
+526  -1.3072713850          S
+527   0.0930232667          B
+528  -0.2227758909          D
+529   1.5235731951          R
+530  -0.4245859065          D
+531   0.6812616563          R
+532   1.1799619344          y
+533  -1.0596486272          J
+534  -1.2288719540          g
+535   0.7434582961          M
+536   1.3839611789          Y
+537   0.4801570419          H
+538  -0.8788999124          n
+539  -0.0286253656          k
+540  -0.4918207514          A
+541  -1.3343168666          E
+542  -1.0406224528          f
+543  -1.1658091029          V
+544  -0.3217346097          F
+545  -0.9510090738          S
+546  -1.2817430380          t
+547  -1.5413609497          A
+548   2.6847789526          r
+549   1.3436223615          k
+550   1.5127903929          I
+551   0.1593625244          e
+552  -0.6421099688          U
+553   0.7025693728          w
+554  -0.9941014226          r
+555  -0.8788695072          f
+556  -0.6623419813          d
+557  -0.9663591419          q
+558  -0.2747265994          y
+559   0.7240087879          w
+560   0.3194627475          h
+561  -0.2675948399          W
+562  -1.9079363447          w
+563   0.5302893728          N
+564  -0.0196478069          N
+565  -0.3027043046          u
+566   1.0934307199          s
+567  -1.0718835773          p
+568  -0.0312958618          S
+569   0.3433876974          K
+570   0.6747192680          x
+571  -0.6961926337          k
+572   0.5609310183          R
+573  -1.3006719543          h
+574   0.4106339751          N
+575   0.2105707136          s
+576  -1.1250587460          E
+577   0.6019832477          y
+578  -0.2626193156          r
+579  -0.6642793635          V
+580  -0.5546566479          X
+581  -1.0280260421          H
+582  -0.5039325967          B
+583  -0.4245075849          y
+584   0.2377904660          n
+585  -0.2335782276          e
+586  -0.1719600006          j
+587  -1.5571980967          w
+588  -0.0888406731          U
+589   0.0106486191          u
+590  -0.8723614601          S
+591  -0.0827994400          V
+592   1.3708043176          D
+593  -1.1643272771          P
+594  -0.1614700837          E
+595   0.0034743217          q
+596  -0.7204152049          n
+597   0.2694211407          y
+598   0.8899269304          E
+599   1.0433818002          T
+600   0.0537060130          R
+601  -0.5243799262          O
+602  -1.8279869799          k
+603   1.4682366623          k
+604  -0.8729703132          A
+605  -1.7422231224          N
+606   0.7733753172          K
+607  -0.4864075013          C
+608   1.0594171876          k
+609   0.7523782990          Q
+610  -1.6487707174          M
+611   0.6590369503          F
+612   0.6010557322          g
+613   0.4912401358          x
+614  -3.3612952510          i
+615  -1.3744131188          V
+616  -0.7528395018          c
+617  -0.3131836740          R
+618   1.3043994999          u
+619  -1.4248934439          a
+620  -3.4685356113          D
+621  -0.4962190397          t
+622  -0.3811621593          d
+623  -0.5060443432          F
+624  -1.2826920102          P
+625   0.6311408243          e
+626  -0.1044574746          K
+627  -0.6224602686          g
+628  -1.0000106459          b
+629  -1.4334978438          l
+630  -0.2980016920          P
+631  -0.4646188367          Q
+632   1.0898369859          F
+633  -0.2866437491          R
+634  -0.0391344521          D
+635   1.1029231676          q
+636  -0.1469066065          G
+637   1.2461424805          F
+638  -0.9918571946          B
+639  -1.5347455014          d
+640   0.9591686846          g
+641   0.8987168250          O
+642   0.3439651238          a
+643  -1.2807237464          T
+644  -0.6731718766          L
+645  -1.3836012693          B
+646   1.1228109178          v
+647  -0.5365134433          A
+648  -1.0815990341          R
+649   0.4190913052          X
+650  -0.3464250098          u
+651   1.0465781124          T
+652   0.5806992801          L
+653   0.7224270673          K
+654  -0.7600792479          p
+655   0.8825651986          f
+656  -0.8683437095          k
+657  -0.9877358359          g
+658   0.8998314948          P
+659  -1.7113022556          m
+660   0.8183336930          O
+661   0.2227827033          t
+662  -1.2197091790          M
+663  -0.2610821601          t
+664  -0.2270152995          n
+665  -0.4731897478          w
+666  -1.0551649541          M
+667  -0.9833289154          C
+668  -0.8468576421          H
+669   1.1103823729          P
+670   1.1265630160          b
+671  -0.5068817706          m
+672  -2.0808467683          L
+673   1.1194835345          v
+674   0.1341476513          G
+675   0.0983495105          D
+676  -1.0832674528          y
+677   1.5699042347          N
+678  -0.7432527090          A
+679   0.2170218643          h
+680  -2.4033770723          R
+681  -0.2498179661          u
+682   0.5608832671          d
+683   0.1782033293          w
+684  -1.7192471702          G
+685  -0.5416863775          E
+686   0.6025539680          q
+687   0.1165847154          D
+688   0.5815740845          X
+689   0.7964988515          V
+690   1.0191261823          o
+691   0.5916985712          D
+692   0.6363366225          Y
+693   0.9583644052          T
+694   0.8523915679          P
+695  -1.4502693064          p
+696  -0.2647455684          f
+697  -0.0388619754          g
+698   0.6133232429          z
+699  -0.0816385071          K
+700   1.4645606830          m
+701  -1.0004884176          R
+702  -1.1198961861          W
+703   0.3543930928          H
+704   1.6633528990          g
+705  -1.0637170180          i
+706  -0.1547361502          b
+707   1.4914445121          w
+708  -0.3974313514          K
+709   0.4103273805          D
+710  -0.1814189191          w
+711   0.3722626912          T
+712  -0.1055983585          r
+713   0.3693084068          u
+714   1.2924514710          G
+715  -0.3628344869          W
+716   0.5858424312          Z
+717  -1.1271212190          o
+718   0.2615717470          C
+719   1.1952118473          T
+720  -1.4941487123          f
+721  -0.2983214457          K
+722  -0.2535398418          E
+723   0.2031698641          m
+724  -0.3173048617          y
+725   0.7137190676          d
+726  -0.4619705391          J
+727  -0.1581049836          N
+728  -0.4448835817          F
+729  -1.2628796409          A
+730  -0.3828276769          Q
+731  -1.5621390360          B
+732   0.4054029088          J
+733  -0.0809525224          C
+734   1.1684991660          m
+735   0.3217081760          h
+736  -1.2268098900          S
+737  -0.7782858484          j
+738   1.9129822201          g
+739   1.6941103226          j
+740  -0.2749184443          S
+741   0.0971587854          L
+742   0.9573208882          n
+743   1.1378289214          j
+744   1.4297365662          P
+745   1.6402318176          T
+746  -1.5871685514          w
+747   1.4938047510          X
+748   0.3450879099          g
+749   1.2360095826          M
+750  -0.0444084679          e
+751   0.4216740394          z
+752  -0.7514039625          F
+753   1.6067325483          k
+754   1.2682869203          D
+755   0.8053719930          N
+756  -1.2336591645          L
+757   0.6339825718          N
+758  -1.2150854646          D
+759  -0.1642736670          R
+760  -0.2044802348          x
+761  -0.2696861749          D
+762   1.0515375502          C
+763   1.2208865940          K
+764   0.3315830028          C
+765  -1.3155499050          i
+766   1.0166994873          E
+767   2.5786050568          V
+768   1.4694780697          y
+769  -0.5683592467          u
+770   0.5535191756          v
+771  -0.9865936496          H
+772  -0.0397361431          m
+773  -0.8460886925          X
+774   1.1250793124          P
+775  -0.1991943347          I
+776  -0.2166001951          G
+777   0.6546357158          b
+778  -2.2093417075          o
+779   0.7878591827          i
+780   0.4917220485          M
+781   0.6210564013          v
+782  -0.2705989640          O
+783  -0.1990900076          H
+784  -1.0743543476          w
+785   0.5738445583          y
+786  -0.2557058818          F
+787   0.5946206412          b
+788   0.1729229875          l
+789   0.2204214791          H
+790   1.0493174323          T
+791  -0.3829648736          o
+792  -0.6486192239          K
+793   0.1886997312          g
+794   0.7484398952          q
+795   0.8611137091          O
+796   0.3683990620          N
+797  -1.4656359423          i
+798  -0.5843651976          e
+799   1.7059168135          s
+800   1.7033448762          v
+801   0.1941263856          v
+802  -1.0452567684          b
+803  -2.0799767651          M
+804  -0.0427886617          Y
+805   0.3286797419          z
+806   1.1213775980          w
+807  -1.6953249256          K
+808  -1.5467083399          q
+809  -0.1252895603          u
+810   0.0747370613          s
+811  -0.0064225986          E
+812  -1.4374492341          y
+813   0.5366007066          c
+814   1.6877123084          J
+815   0.8360104619          c
+816  -0.1307210086          L
+817  -0.7952735505          Z
+818   0.1739603507          U
+819   0.0547709321          T
+820   0.0382255044          y
+821  -0.7602221046          e
+822  -0.2141963671          u
+823  -0.4790809004          T
+824   0.8267706405          s
+825  -0.9291264555          p
+826   0.3806941415          B
+827  -0.5598543290          Q
+828  -1.2020293644          O
+829   0.4682327149          J
+830  -0.8210079538          l
+831   0.5494417608          B
+832   0.6086025988          j
+833   0.9517034647          M
+834  -0.3306437378          N
+835  -0.5919299997          d
+836  -1.1186468104          l
+837   0.7411656358          E
+838  -1.2584403023          L
+839   2.0120689290          M
+840   1.8756363433          y
+841   0.2184800596          w
+842  -0.4191981165          O
+843   0.3104913660          e
+844  -1.7531862285          r
+845   1.2255984350          X
+846   1.4400116479          j
+847   0.2137335697          Y
+848   1.1615000404          K
+849  -0.1075967121          J
+850  -1.5015404490          q
+851   0.3677284954          N
+852   0.8380301197          U
+853  -0.3162600932          p
+854  -0.2929429381          M
+855  -0.0234277343          H
+856   1.7969596465          o
+857   0.6964874930          z
+858  -2.1220711464          V
+859  -1.5421497886          D
+860   0.0327497236          B
+861   0.0589483661          Q
+862  -3.0078973567          r
+863  -0.8645719857          c
+864  -0.8995614767          Q
+865  -1.6409444302          o
+866   0.3251294576          N
+867  -0.7675346879          L
+868   2.2138928033          y
+869   2.7538728136          E
+870  -0.7135443489          V
+871   0.7838591176          o
+872  -0.8817111767          P
+873  -0.2245301424          c
+874   1.2647555586          Y
+875  -0.2457782272          d
+876  -0.6833531832          K
+877   0.3745479624          P
+878  -0.3248263823          u
+879  -0.8113981148          v
+880  -1.4217164966          o
+881   0.6953886215          t
+882  -0.2826541968          I
+883   0.6637339455          i
+884   1.7555702502          q
+885   0.5174354694          B
+886  -1.0020984623          p
+887  -0.0109159362          K
+888   0.2800029561          i
+889  -0.0854868183          g
+890   0.3685413684          o
+891  -1.1314595430          Z
+892  -0.2443620150          U
+893  -0.3858008365          c
+894  -1.0031454930          M
+895  -0.8535702052          x
+896   1.0769760376          X
+897   2.8705743252          Y
+898   0.3474132811          u
+899   0.6051647330          O
+900   0.3720343803          u
+901  -0.6387019753          H
+902  -0.8697792609          v
+903  -1.6533981557          A
+904   1.8048471424          s
+905   0.6234795334          W
+906   0.7771509812          e
+907   0.1163388187          G
+908   0.5814445470          N
+909   2.4434042316          H
+910   1.4113015797          B
+911   0.7339381782          j
+912   0.9456636011          W
+913   0.2005407918          s
+914   0.7121760328          T
+915  -0.8704760327          Q
+916  -0.1428665609          U
+917  -1.8805375999          e
+918   0.0540751707          k
+919  -0.5749482769          r
+920   0.4891165044          b
+921  -1.0838281894          m
+922   0.1113334137          z
+923  -1.6354372114          O
+924   0.6855392145          E
+925  -1.0737324305          Q
+926   0.0910344596          r
+927   2.5729762621          j
+928  -0.8130978791          n
+929   1.4078225644          h
+930  -0.9859281596          X
+931  -0.5867002409          k
+932   0.4157363444          C
+933   0.9920435295          y
+934   1.6798511468          L
+935   1.3106900699          y
+936   0.1975719063          G
+937  -0.5284100557          x
+938   0.5456398175          E
+939  -1.3059284470          c
+940  -0.5208386436          z
+941   0.4039497648          d
+942  -0.7542280668          n
+943   0.4078971313          d
+944   0.4872615518          M
+945  -0.2506064114          r
+946   1.9820904167          O
+947  -0.7919638631          X
+948   1.1550503916          x
+949   1.3490034869          Q
+950  -1.7343725661          Q
+951  -0.4129654441          U
+952   0.2517848760          L
+953  -0.4016405270          u
+954   1.4980043516          V
+955   0.5342719829          f
+956  -1.3625039724          w
+957  -0.6288541697          m
+958  -1.3880879828          A
+959  -0.6485266061          O
+960   0.9683390958          T
+961  -0.9152801398          A
+962  -2.1148102388          Z
+963   0.9348777206          l
+964  -0.2903792900          X
+965  -0.1549520480          z
+966  -1.0475499510          Z
+967  -0.5548963782          z
+968  -1.3817398867          T
+969   1.7781597664          L
+970   1.3849574081          S
+971   0.9122741692          F
+972  -1.0201814603          F
+973   0.4994904709          J
+974  -0.1564284306          Q
+975  -0.0182764230          h
+976  -1.8358616109          h
+977   0.6114241147          S
+978   1.5990849187          u
+979   0.0614672614          T
+980  -0.0992237223          y
+981   0.4002245399          M
+982   0.4445965781          s
+983   0.6457828217          v
+984  -0.1461903497          f
+985   0.8467565782          V
+986   0.2129414254          d
+987   0.9877007208          j
+988   1.4879031533          d
+989  -1.6791758368          J
+990   0.8906924990          p
+991   1.3154467076          u
+992   0.5150408190          O
+993   0.9562421576          l
+994   0.7088498278          n
+995   0.5124412475          c
+996  -0.2138030363          J
+997   0.8082824729          X
+998  -0.6458249916          E
+999  -0.9561045757          I
+1000 -0.2082780147          Q</code></pre>
 </div>
 </div>
 <p>Quick and easy. I <em>think</em> <code>py_to_r</code> is supposed to do some of this, but I can never get it to work. I think maybe it would make more sense in a script where we’re moving back and forth than here where we have separate code chunks?</p>
@@ -1798,8 +1903,8 @@ memory usage: 39.2+ KB</code></pre>
 <span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>'data.frame':   1000 obs. of  5 variables:
- $ rand_nums : num  -1.436 0.351 1.46 -0.88 -0.761 ...
- $ rand_chars: chr  "U" "e" "w" "u" ...
+ $ rand_nums : num  -0.702 0.459 -0.261 -0.802 -1.081 ...
+ $ rand_chars: chr  "c" "y" "i" "o" ...
  $ date2     : POSIXct, format: "2000-01-01 11:00:00" "2000-01-02 11:00:00" ...
  $ date_str  : chr  "2000-01-01" "2000-01-02" "2000-01-03" "2000-01-04" ...
  $ date      : Date, format: "2000-01-01" "2000-01-02" ...
@@ -1954,9 +2059,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -2021,6 +2140,92 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
   const findCites = (el) => {
     const parentEl = el.parentElement;
     if (parentEl) {
@@ -2061,6 +2266,46 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">Website created by Galen Holt</div>   
+    <div class="nav-footer-center">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="mailto:g.holt@deakin.edu.au">Contact</a>
+  </li>  
+</ul>
+    </div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/galenholt">
+      <i class="bi bi-github" role="img" aria-label="GitHub">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://scholar.google.com.au/citations?user=f94WBOoAAAAJ&amp;hl=en">
+      <i class="bi bi-mortarboard-fill" role="img" aria-label="Google Scholar">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/galen-holt-265aa290">
+      <i class="bi bi-linkedin" role="img" aria-label="LinkedIn">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://fediscience.org/@galen_holt">
+      <i class="bi bi-mastodon" role="img" aria-label="Mastodon">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
 
 
 
