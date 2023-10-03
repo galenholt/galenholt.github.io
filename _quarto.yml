@@ -5,6 +5,7 @@ project:
   render:
     - "*.qmd"
     - "!CV"
+    - "!*beta_binomial.qmd"
 website:
   title: "Galen Holt"
   page-footer:
@@ -23,14 +24,14 @@ website:
       - icon: github
         href: https://github.com/galenholt
         aria-label: GitHub
-      - icon: mortarboard-fill
-        href: {{< iconify academicons:google-scholar-square>}}
+      - icon: "{{< iconify academicons google-scholar-square >}}"
+        href: https://scholar.google.com.au/citations?user=f94WBOoAAAAJ&hl=en
         aria-label: Google Scholar
       - icon: linkedin
         href: www.linkedin.com/in/galen-holt-265aa290
         aria-label: LinkedIn
       - icon: mastodon
-        href: @galen-holt@fediscience.org
+        href: fediscience.org/@galen-holt
         aria-label: Mastodon
 
   sidebar:
@@ -39,11 +40,15 @@ website:
       background: light
       contents:
         - research.qmd
-    
+
+        - section: "Management modelling"
+          contents:
+            - research/management_modelling.qmd
+
     - title: "Code Demos"
       contents:
         - code_demos.qmd
-        
+
         - section: "Small how-tos"
           contents:
             - href: small_helpers/smallpieces.qmd
@@ -64,8 +69,10 @@ website:
               text: "Intro to error handling"
             - href: small_helpers/lifecycle_warnings.qmd
               text: "Intermittent lifecycle warnings"
-              
-              
+            - href: small_helpers/private_github_notes.qmd
+              text: "Dealing with private github"
+
+
         - section: "Plotting"
           contents:
             - href: plotting/ggplot_themes.qmd
@@ -83,14 +90,20 @@ website:
               text: "Faded 2d colour ramps"
             - href: plotting/math_in_ggplot.qmd
               text: "Latex in ggplot with latex2exp"
-              
+            - href: plotting/rayshader.qmd
+              text: "3d plotting with rayshader"
+
         - section: "Website"
           contents:
             - href: website_notes/quarto_website_github.qmd
               text: "Getting started"
             - href: website_notes/updating_website.qmd
               text: "Updating and maintaining website"
-              
+            - href: website_notes/quarto_change_yml.qmd
+              text: "Avoiding rendering whole site for testing"
+            - href: website_notes/quarto_images_misc.qmd
+              text: "Figures in quarto"
+
         - section: "Theory, simulation, statistics, probability"
           contents:
             - href: simmodelling/twoDautocorr.qmd
@@ -103,7 +116,7 @@ website:
               text: "Basic shifts of normal moments"
             - href: stats_probability/fitting_truncated.qmd
               text: "Shifting and fitting truncated lognormals"
-              
+
         - section: "Drones"
           contents:
             - href: drones/overlaps_reactive.qmd
@@ -112,18 +125,18 @@ website:
               text: 'Figuring out flight plan calcs'
             - href: pix4d/read_pix4d_outputs.qmd
               text: "Reading and plotting pix4d outputs"
-              
+
         - section: "Observable"
           contents:
             - href: observable/trying_observable.qmd
               text: "Figuring out how to use ojs chunks"
-              
+
         - section: "R and python"
           contents:
             - href: RpyEnvs/python_setup.qmd
               text: "Python environments with pyenv and poetry"
             - href: RpyEnvs/py_in_rpkg.qmd
-              text: "Wrapping python in R package"              
+              text: "Wrapping python in R package"
             - href: RpyEnvs/RandPython.qmd
               text: "Using R and python together"
             - href: RpyEnvs/R_py_shared_projects.qmd
@@ -137,8 +150,8 @@ website:
             - href: RpyEnvs/python_nameerror.qmd
               text: "Intermittent NameError py-R"
             - href: RpyEnvs/python_updated_functions.qmd
-              text: "Small python bits"              
-              
+              text: "Small python bits"
+
         - section: "Setting up projects"
           contents:
             - href: RpyEnvs/rig.qmd
@@ -149,13 +162,16 @@ website:
               text: "Using R in VScode"
             - href: RpyEnvs/end_run_renv.qmd
               text: "Dealing with renv failures"
-              
+
         - section: "Building packages"
           contents:
             - href: package/package_creation.qmd
               text: 'First pass at building a package'
+            - href: tidyprogramming/tidy_programs.qmd
+              text: "Programming with dplyr and rlang"
             - href: vicwater/vicwater_testing.qmd
-            
+
+
         - section: "Data"
           contents:
             - href: data_acquisition/bom_gauges.qmd
@@ -166,7 +182,7 @@ website:
               text: "Data from pre-gauged periods"
             - href: data_acquisition/ALA_data_pull.qmd
               text: "Pulling data from Atlas of Living Australia"
-              
+
         - section: "R parallel processing (general)"
           contents:
             - href: parallelism/interrogating_parallel.qmd
@@ -179,7 +195,7 @@ website:
               text: "Global objects and parallel speed"
             - href: parallelism/nested_dependent_iterations.qmd
               text: "Dependencies of inner parallelism on outer"
-              
+
         - section: "R parallel processing on HPC"
           contents:
             - href: parallelism/hpc_ephemera.qmd
@@ -198,9 +214,9 @@ website:
               text: "Nested parallel on HPC nodes and cores"
             - href: parallelism/conditional_plans.qmd
               text: "Conditional plans for local and HPC"
-              
-      
-      
+
+
+
 
 
 theme:
