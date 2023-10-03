@@ -128,12 +128,8 @@ filein <- readr::read_csv(file.path(newdir, 'colspectest.csv'), col_types = cols
 Yes, we *should* be building as a library in this case, but it's often easier at least initially to not deal with the overhead. If, for example, all functions are in the 'functions' directory,
 
 ```{r}
-# Location-setting header
-# source everything in the functions folder. This really is turning into a package
-funfiles <- list.files('functions')
-for (s in 1:length(funfiles)) {
-  source(file.path('functions', funfiles[s])) 
-}
+# Load local functions
+devtools::load_all()
 ```
 
 ### Render big dfs in html

@@ -19,8 +19,11 @@ Mostly I just want to play around with both making heatmaps and maps.
 Let's first see about using it to make 3d plots. The [2-d autocorr](../simmodelling/twoDautocorr.qmd) should be a good example. From that notebook, let's generate some data.
 
 ```{r}
-source('functions/ac2d.R')
+# Load local functions
+devtools::load_all()
+```
 
+```{r}
 acmatrix_7_9 <- ac2d(n_x = 1000, n_y = 500,
         rho_x = 0.7, rho_y = 0.9,
         normVar = 1, printStats = TRUE)

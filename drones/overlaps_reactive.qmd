@@ -13,7 +13,8 @@ Overlap is fixed at 80% for the moment.
 #| echo: false
 #| message: false
 library(dplyr)
-source(file.path('functions', 'drone_overlaps.R'))
+# Load local functions
+devtools::load_all()
 ```
 
 ```{r}

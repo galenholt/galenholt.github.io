@@ -12,7 +12,9 @@ library(ggplot2)
 For example, we might have a theme that's good for publication, as in [Saving and theming plots](tweaks_tricks.qmd), where we specify size, backgrounds, and text. We load new fonts first.
 
 ```{r}
-source(file.path('functions', 'loadfonts.R'))
+# Load local functions
+devtools::load_all()
+
 showtext::showtext_auto()
 pubfont <- 'Cambria'
 loadfonts(fontvec = pubfont)

@@ -36,8 +36,9 @@ We could load fonts by hand Using functions from `showtext` and `sysfonts`, and 
 First, load the function I wrote that simplifies finding the files and their names to load them. And tell R to use `showtext` to render fonts.
 
 ```{r}
-print(file.path('functions', 'loadfonts.R'))
-source(file.path('functions', 'loadfonts.R'))
+# Load local functions
+devtools::load_all()
+
 showtext::showtext_auto()
 ```
 

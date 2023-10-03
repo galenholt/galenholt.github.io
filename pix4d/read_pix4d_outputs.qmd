@@ -16,7 +16,8 @@ library(rayshader)
 ```
 
 ```{r}
-source(file.path('functions', 'rgb2hex.R'))
+# Load local functions
+devtools::load_all()
 ```
 
 Typically the projdir would have a better name (likely similar/same as the project name)
@@ -503,3 +504,4 @@ Getting it to work directly isn't happening for some reason, but gg is.
 It can't do the photo point matching on the moving surface. So the images are there but it can't get parallax and so no z.
 
 ## Where is this stuff in space? is it in the right place?
+

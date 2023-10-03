@@ -12,9 +12,10 @@ To include an image with a link, use the usual image insertion code, e.g. this i
 ``` markdown
 ![Surus](../_images/surus.png)
 ```
+
 ![Surus](../_images/surus.png)
 
-but modified with square brackets and parentheses similarly to text links makes it clickable. 
+but modified with square brackets and parentheses similarly to text links makes it clickable.
 
 ``` markdown
 [![Surus](../_images/surus.png)](https://github.com/quarto-dev/quarto-web/tree/main/docs/authoring/_figure-examples)
@@ -28,8 +29,7 @@ If we want to adjust the size, it needs to go in the square brackets, and *not h
 [![Surus](../_images/surus.png){width=200}](https://github.com/quarto-dev/quarto-web/tree/main/docs/authoring/_figure-examples)
 ```
 
-[![Surus](../_images/surus.png){width=200}](https://github.com/quarto-dev/quarto-web/tree/main/docs/authoring/_figure-examples)
-
+[![Surus](../_images/surus.png){width="200"}](https://github.com/quarto-dev/quarto-web/tree/main/docs/authoring/_figure-examples)
 
 We can also use a figure div to make it cross-referenceable.
 
@@ -41,15 +41,12 @@ We can also use a figure div to make it cross-referenceable.
 Surus
 
 :::
-
 ```
 
 ::: {#fig-elephant}
-
 [![Surus](../_images/surus.png)](https://github.com/quarto-dev/quarto-web/tree/main/docs/authoring/_figure-examples)
 
 Surus
-
 :::
 
 ## Icons
@@ -60,8 +57,4 @@ The trick it looks like is to install (or write, but let's leave that for later)
 
 To install, use `quarto add mcanouil/quarto-iconify` at the terminal.
 
-To use, include `{{< iconify setname iconname>}}`. Note that when you find the icon, Iconify gives the name as `setname:iconname`.
-
-
-
-
+To use, include `"{{< iconify setname iconname>}}"`. Note that when you find the icon, Iconify gives the name as `setname:iconname`, and we need to quote it in the yaml.
