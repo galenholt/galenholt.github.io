@@ -171,6 +171,21 @@ poetry add packagename==2.0.5
 
 There are a number of other ways to specify version ranges, installing from git, etc.
 
+To install from git, dpending on https or ssh or different branches
+
+``` bash
+# For the main branch
+poetry add git+https://github.com/sdispater/pendulum.git
+poetry add git+ssh://git@github.com/sdispater/pendulum.git
+
+# For other branches
+poetry add git+https://github.com/sdispater/pendulum.git#develop
+poetry add git+https://github.com/sdispater/pendulum.git#2.0.5
+
+poetry add git+ssh://github.com/sdispater/pendulum.git#develop
+poetry add git+ssh://github.com/sdispater/pendulum.git#2.0.5
+```
+
 ### VS code note
 
 Sometimes VS seems to find the poetry venv and use it, and other times (I think if it's not at the head dir of the workspace?) it needs to be pointed at the python.exe. To do that, open the command palette, (ctrl-shift-p), select python interpreter, then `.venv\scripts\python.exe` wherever that venv is.
