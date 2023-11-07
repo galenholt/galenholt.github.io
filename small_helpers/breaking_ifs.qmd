@@ -1,0 +1,72 @@
+---
+title: "'Break'-ing ifs in debug"
+author: "Galen"
+format: html
+---
+
+I'm getting unexpected behaviour with `break` in a `while` loop. Basically, it isn't breaking out of the `while`, or even out of that iteration, but returning control to an earlier point in the same iteration. I think it might have to do with nested `if` statements?
+
+**Outcome**: `break` itself works fine. The issue is that it does not work the same while debugging. For some reason `break` in a debug doesn't break out of the loop, but just reiterates. So the behaviour was weird and unexpected while stepping in debug, but worked fine when the code just ran.
+
+## Testing- this all works
+
+This behaves as expected
+
+```{r}
+count <- 1
+while(count < 100) {
+  print(glue::glue("Count is {count}"))
+  if (count == 10) {
+    break()
+  }
+  
+  count <- count + 1
+}
+```
+
+This is the situation I have that's failing, but it seems to work here.
+
+```{r}
+count <- 1
+while(count < 100) {
+  print(glue::glue("Count is {count}"))
+  if ((count %% 2) == 0) {
+    print(glue::glue("{count} is an even number"))
+    if (count == 10) {
+      break()
+    }
+  }
+  
+  
+  count <- count + 1
+}
+```
+
+Just making the while more complicated doesn't change it. Still works as expected.
+
+```{r}
+count <- 1
+while(count < 100) {
+  print(glue::glue("Count is {count}"))
+  if ((count %% 2) == 0) {
+    print(glue::glue("{count} is an even number"))
+    
+    if (count == 10) {
+      print('10')
+    }
+    
+    if (count == 10) {
+      print('breaking')
+      break()
+    }
+    
+    
+  }
+  
+  if ((count %% 2) == 1) {
+    print(glue::glue("{count} is an odd number"))
+  }
+  
+  count <- count + 1
+}
+```
