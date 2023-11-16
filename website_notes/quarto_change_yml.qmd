@@ -4,7 +4,15 @@ author: "Galen Holt"
 format: html
 ---
 
-Quarto projects with lots of pieces (e.g. this website) are great, but once they get big, rendering single documents can be a pain. By default, both the Rstudio 'Render' button and `quarto render document_name.qmd` at the command line render the whole project as defined in `_quarto.yml`. If we're working on a single document and want to test its rendering, that can be very annoying. For example, if I want to render this document to check it, I don't want to render the entire website. I'm surprised quarto itself doesn't have a way to switch behaviour (and maybe they do, but I haven't found it). The workaround I've come up with is to do a file rename/swap with `_quarto.yml`- have one simple version and one complex version, and trade them out.
+## End result:
+
+They're not perfect, but Quarto [profiles](https://quarto.org/docs/projects/profiles.html) work better than what's below. I've mostly been able to [get them to work](quarto_profiles.qmd), and the issues they have are less annoying that the issues with the solution here. So, use that. I'm leaving this here because it's a bit more flexible.
+
+## Old attempts
+
+Quarto projects with lots of pieces (e.g. this website) are great, but once they get big, rendering single documents can be a pain. By default, both the Rstudio 'Render' button and `quarto render document_name.qmd` at the command line render the whole project as defined in `_quarto.yml`. They supposedly use pre-renders for other pages, but always seem to end up re-rendering a bunch of things. If we're working on a single document and want to test its rendering, that can be very annoying. For example, if I want to render this document to check it, I don't want to render the entire website. I'm surprised quarto itself doesn't have a way to switch behaviour. (I think [profiles](https://quarto.org/docs/projects/profiles.html) are that way.See [the testing doc](quarto_profiles.qmd).
+
+The workaround developed below does a file rename/swap with `_quarto.yml`- have one simple version and one complex version, and trade them out.
 
 We want to have a directory `_yml` to store various `.yaml` files, and then have a simple call to choose between them. To get there, we need to
 

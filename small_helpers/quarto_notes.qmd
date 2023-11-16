@@ -65,7 +65,9 @@ I *think* what's happening is that Rstudio's visual editor is adding some hidden
 
 If we use {reticulate}, R wants to know where the python lives, and gets grumpy if it can't find it. Sometimes it silently points somewhere we don't want, and other times we see errors like
 
-    Error creating conda environment 'C:/Users/galen/Documents/Website/galen_website/renv/python/r-reticulate' [exit code 1]
+```         
+Error creating conda environment 'C:/Users/galen/Documents/Website/galen_website/renv/python/r-reticulate' [exit code 1]
+```
 
 ### Rprofile
 
@@ -87,9 +89,11 @@ When we run Quarto inside Rstudio in parallel with an R project, everything work
 
 The solution is to set up a `_environment` file in the Quarto project directory to set those variables according to [the docs](https://quarto.org/docs/projects/environment.html#overview) (and maybe `PY_PYTHON` too, just to be safe- I can't find the docs to know how these differ). For my case, my `_environment` file looks like
 
-    RETICULATE_PYTHON='../werptoolkitpy/.venv/Scripts/python.exe'
-    QUARTO_PYTHON='werptoolkitpy/.venv/Scripts/python.exe'
-    PY_PYTHON='werptoolkitpy/.venv/Scripts/python.exe'
+```         
+RETICULATE_PYTHON='../werptoolkitpy/.venv/Scripts/python.exe'
+QUARTO_PYTHON='werptoolkitpy/.venv/Scripts/python.exe'
+PY_PYTHON='werptoolkitpy/.venv/Scripts/python.exe'
+```
 
 Here, again, I have Rproject nested in Quarto proj, *but they access this file differently* so the paths differ even though they point to the same place. `RETICULATE_PYTHON` needs to get up and out of the R subdir and over to the py side of things, while the Quarto project is the outer dir and so `QUARTO_PYTHON` can go straight in to the py subdir.
 
@@ -160,3 +164,13 @@ ggplot(iris, aes(x = Petal.Length * param_val, y = Petal.Width * param_val, colo
 ## Website
 
 [Starting](../website/quarto_website_github.qmd) and [updating](../website/updating_website.qmd) quarto websites has a few tricks, written up in more detail at those links.
+
+## Rendering 
+
+The error
+
+```         
+Error: The process cannot access the file because it is being used by another process. (os error 32),
+```
+
+Seems to be due to dropbox or onedrive *even when they are not connected to the folder with the code*. Quit them, and it usually goes away. A restart is sometimes required.

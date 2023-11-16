@@ -12,11 +12,13 @@ The majority of my work on ecological modelling addresses water management in th
 library(tmap)
 library(sf)
 basin <- sf::read_sf('data/mdb_boundary/mdb_boundary.shp')
-tmap_mode('view')
+
 ```
 
 ```{r}
-tmbasin <- tm_shape(basin) + tm_fill(col = 'DDIV_NAME', alpha = 0.75, title = '') 
+#| message: false
+tmap_mode('view')
+tmbasin <- tm_shape(basin) + tm_fill(col = 'DDIV_NAME', alpha = 0.75, title = '')
 
 tmbasin
 ```

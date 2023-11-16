@@ -1,0 +1,39 @@
+---
+title: "Commenting quarto"
+format:
+  html:
+    comments:
+      hypothesis: true
+---
+
+## Adding commenting ability
+
+I'd like to be able to comment quarto documents (or at least the html output). The [commenting section](https://quarto.org/docs/output-formats/html-basics.html#commenting) of the quarto docs suggests we can use Hypothes.is, Utterances, and Giscus. It's unclear which is better, but all their other demos use [Hypothes.is](https://web.hypothes.is/) so I think I'll start there.
+
+Based on a bit of testing, it looks like putting
+
+``` yaml
+comments:
+  hypothesis: true
+```
+
+in the main yml file is all it takes to turn it on across a project. It also works in the yaml headers for single files. I've added it to the yaml header in this file, enabling commenting here.
+
+``` yaml
+format:
+  html:
+    comments:
+      hypothesis: true
+```
+
+What's nice is that turning on hypothes.is works on local renders, private repos, and public. I'm not entirely sure *how* it works on local renders, but it does. However it's working, it persists across renders- if I render this file, comment on it, delete it, and re-render, the comments are still there. They go away if all the commented text is deleted, but come back if it's re-added. Comments can always be deleted though.
+
+## Issues
+
+You do need to [sign up](https://hypothes.is/signup) for Hypothes.is. There are free and education accounts, but it's unclear what the differences are. Free seems to be working for me so far, but it hasn't been very long.
+
+The public/private annotations are confusing and pointless, and 'Post to only me' in Public doesn't seem to work. It does seem to work to make a Private Group and just annotate there. In the dropdown in the annotation area, choose 'New private group' and then post in that (e.g. in the below, I'd select the JustMe group).
+
+![Hypothes.is dropdown](/_images/hypothesis.png)
+
+[Giscus](https://giscus.app/) looks like it's more about leaving comments at the bottom of blog posts, not annotating documents. And it says it requires a public repo. I wonder if that's actually true, or if commenting is just limited to people with repo access? Either way, it might be good at what it does, but I'm looking for highlights, comments on manuscripts, and so Hypothes.is looks like the only game in town.

@@ -1,0 +1,32 @@
+---
+title: "Quarto render pdfs"
+format:
+  html:
+    toc: true
+  pdf:
+    toc: true
+    toc-depth: 2
+    prefer-html: true
+    # setting these to the html defaults so they don't get jumbled between format
+    fig-width: 7
+    fig-height: 5
+    colorlinks: true
+---
+
+Just like the [word version](render_word.qmd), sometimes we want to render something other than just html. This is working through specific issues with pdf.
+
+``` yaml
+format:
+  pdf: default
+```
+
+It was just working for me to use `elsevier-pdf: default` in my header, but now it's not working to just use simple `pdf`. I get the error
+
+```         
+compilation failed- no matching packages
+LaTeX Error: File `scrartcl.cls' not found.
+```
+
+Consensus seems to be to reinstall tinytex. `quarto install tinytex` says it's installed but will update.
+
+That did get it to work. I think somehow I had tinytex, but not the KOMA Script documentclasses [Quarto uses by default](https://quarto.org/docs/output-formats/pdf-basics.html#overview).

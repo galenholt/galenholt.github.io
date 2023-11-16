@@ -1,5 +1,5 @@
 ---
-title: "'Break'-ing ifs in debug"
+title: "'Break'-ing 'while' loops in debug"
 author: "Galen"
 format: html
 ---
@@ -70,3 +70,5 @@ while(count < 100) {
   count <- count + 1
 }
 ```
+
+*But* if I put those in a function, and step in with a debug, it doesn't break, it keeps iterating. Just a quirk, I guess that I need to be aware of.

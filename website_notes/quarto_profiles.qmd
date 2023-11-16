@@ -1,0 +1,140 @@
+---
+title: "Quarto profiles"
+author: "Galen Holt"
+format: html
+---
+
+Quarto projects with lots of pieces (e.g. websites or books) are great, but once they get big, rendering single documents can be a pain. By default, both the Rstudio 'Render' button and `quarto render document_name.qmd` at the command line render the whole project as defined in `_quarto.yml`. They use pre-renders for other pages, but always seem to end up re-rendering a lot of other pages. If some of those pages break (e.g. works in progress), the whole process falls down. If we're working on a single document and want to test its rendering, that can be very annoying. For example, if I want to render this document to check it, I don't want to render an entire website, including other pages that are still in development.
+
+Quarto [profiles](https://quarto.org/docs/projects/profiles.html) are a partial solution, but need a bit of tweaking to set up.
+
+The basic idea of profiles is to keep the common bits in `_quarto.yml`, and then have changes in `_quarto-profilename.yml`. The [examples](https://quarto.org/docs/projects/profiles.html) are all about rendering different versions of complex projects, with defined sets of pages to be rendered in the different profiles. Here, we have some specific requirements that aren't obvious from the examples:
+
+1.  There should be at least one profile that renders a large number of pages in a defined way, a la a website
+2.  There should be a simple profile that renders only the currently active page. This has additional requirements/complications:
+    1.  The page to render cannot be written in the yaml, since it will be dynamic
+
+    2.  We want this to be the default, so when we press the Render button in Rstudio it just renders the one page
+
+## Implementation
+
+We set up a general `_quarto.yml` file that contains the website headers and overall formatting code. We then have a `_quarto-fullsite.yml` with the full website build (structure of the pages). Finally, we have a `_quarto-singlefile.yml` without the structure of the website.
+
+In the main `_quarto.yml`, I set
+
+``` yaml
+profile:
+  group:
+    - [singlefile, fullsite]
+```
+
+so that pressing the render button or using `quarto render` at the terminal defaults to the singlefile.
+
+Then, to render the whole thing, use `quarto render --profile fullsite`. And `quarto publish gh-pages --profile fullsite` works for the github pages publish.
+
+The division of what goes in the main `_quarto.yml` and `_quarto-fullsite.yml` will be project-dependent. The main issue here is how to specify `_quarto-singlefile.yml`.
+
+### Singlefile - simple
+
+One option is for `_quarto-singlefile.yml` to consist only of
+
+``` yaml
+project:
+  render:
+    - "!*.qmd"
+```
+
+which is a bit surprising- it has all rendering turned off. This takes advantage of quarto rendering the active page even when it is not supposed to be part of a project.
+
+The catch is that this approach works by just bypassing the rest of the yaml options. And so the rest of the website structure (color schemes, headers, etc) aren't there, and more critically, if the `execute_dir` has been set to `project` (as I typically do), that gets lost and the working directory reverts to the file directory. Note that it doesn't work to put `execute-dir: project` in the `_quarto-singlefile.yml` , because the workaround here bypasses all the render arguments.
+
+To check the working directory as we try different things,
+
+```{r}
+getwd()
+```
+
+### Singlefile- extra step
+
+These issues go away if we explicitly put the filename in the `render:` slot of the yaml instead of `"!*.qmd`. However, the point is to render the active document, and so hardcoding this isn't an option.
+
+A temporary workaround is to write the yaml from R and then render. Make a simple yaml. This can't be *in* the notebook as here, because it won't exist until during the render process, and it's needed to control that process. So, this would need to be run at the console pre-render. I have this simple version commented out, because the later one is better.
+
+```{{r}}
+make_simpleyml <- function(renderfile) {
+    simple_yaml <- list()
+    simple_yaml$project <- list()
+    simple_yaml$project$render <- list(renderfile)
+  yaml::write_yaml(simple_yaml, '_quarto-singlefile.yml')
+}
+```
+
+Then, calling this creates the singlefile we want.
+
+```{{r}}
+make_simpleyml('website_notes/quarto_profiles.qmd')
+
+```
+
+And if we use rstudio, we can use it to auto-generate, but only interactively (rstudio is not running when quarto renders). In that case, this works if we run it ad-hoc or if we pre `run all` before rendering.
+
+```{r}
+make_simpleyml <- function(renderfile = 'auto') {
+
+  if (renderfile == 'auto') {
+    if (rstudioapi::isAvailable()) {
+      projpath <- rstudioapi::getActiveProject()
+      docpath <- rstudioapi::documentPath()
+      projdir <- sub(".*/([^/]+)$", "\\1", projpath)
+      reldocpath <- sub(paste0(".*", projdir, "/"), "", docpath)
+      renderfile <- reldocpath
+    } else {
+      rlang::inform("Rstudio not running, do not want new profiles created while rendering, skipping")
+      return(invisible())
+    }
+
+
+  }
+
+
+  simple_yaml <- list()
+  simple_yaml$project <- list()
+  simple_yaml$project$render <- list(renderfile)
+  yaml::write_yaml(simple_yaml, '_quarto-singlefile.yml')
+}
+```
+
+And now it works to just call that function with a document open. It can be done in a chunk, as here, but that only works while interactively working with the notebook. Rendering fails because it needs Rstudio to be running to use the `renderfile = 'auto'`. However, it can also be done from the console and still grabs the active file, which is probably fine because this needs to happen pre-render anyway.
+
+```{r}
+make_simpleyml()
+```
+
+Note that using full vs relative paths for `renderfile` matters. If we use full paths (e.g. C://...) It overrides what `_quarto.yml` has in `execute_dir`, and sets it back to the file.
+
+```{r}
+# Works
+# make_simpleyml(reldocpath)
+
+# Sets the working directory to the file
+# make_simpleyml(fulldocpath)
+```
+
+## Other approaches that don't work (yet)
+
+Can we use lua? It will print to markdown, but will it work in an R chunk? First, install `lua-env` with `quarto add mcanouil/quarto-lua-env`, then put
+
+``` yaml
+# filters: 
+#   - lua-env
+```
+
+in the header. Then
+
+```{r}
+# {{< lua-env quarto.doc.input_file >}}
+```
+
+gives the input_file. But I can't get it to work in an R chunk and it's REALLY buggy even in markdown so I've had to put it in an R block and comment it out to even run this file without errors. Ideally, we want to auto-detect the active script, and generate the needed yml when the Render button is pressed.
+
+Pre-render scripts look like they have some useful environment variables, but in trying them I can't seem to access those variables, and they seem to run after the yaml setup and before the render, so also don't work for yaml modification.

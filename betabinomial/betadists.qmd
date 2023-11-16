@@ -1,0 +1,70 @@
+---
+title: "Beta distributions"
+format: html
+bibliography: references.bib
+---
+
+This is fairly sketchy, just trying to see how the $\phi$ from @harrison2015 affect beta probability distributions.
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+p <- seq(from = 0, to = 1, by = 0.01)
+phi <- seq(from = 0.1, to = 1, by = 0.1)
+```
+
+```{r}
+
+
+# ai <- p[1]/phi[1]
+# bi <- (1-p[1])/phi[1]
+# 
+# db <- dbeta(p, ai, bi)
+
+probdists <- tibble(p = NA, db = NA, betap = NA, phi = NA, .rows = 0)
+
+for (j in 1:length(phi)) {
+  for (i in 1:length(p)) {
+  ai <- p[i]/phi[j]
+  bi <- (1-p[i])/phi[j]
+  
+  db <- dbeta(p, ai, bi)
+  
+  dbt <- tibble(p, db, betap = p[i], phi = phi[j])
+  probdists <- rbind(probdists, dbt)
+}
+}
+
+
+```
+
+```{r}
+ggplot(probdists |> filter(betap %in% c(0.1, 0.25, 0.5, 0.75, 0.9)), 
+       aes(x = p, y = db, color = factor(betap))) + geom_line() +
+  facet_wrap("phi")
+```
+
+```{r}
+testx <- seq(from = 0, to = 1, by = 0.01)
+testbetaprob <- dbeta(testx, ai, bi)
+probdist <- tibble(testx, testbetaprob)
+
+ggplot(probdist, aes(x = testx, y = testbetaprob)) + geom_line()
+```
+
+Random draws
+
+```{r}
+intercept <- -2
+beta <- 0.5
+all_x <- seq(0, 10, 0.1)
+all_logit_p <- intercept + beta*all_x
+
+all_p <- 1/(1+exp(-all_logit_p))
+```
+
+```{r}
+plot(all_x, all_p, type = 'l')
+```

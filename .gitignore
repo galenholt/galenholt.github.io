@@ -5,6 +5,7 @@
 /.quarto/
 _site
 _book
+_extensions/
 data
 
 output/

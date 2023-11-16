@@ -1,0 +1,65 @@
+---
+title: "Quarto word render"
+format:
+  html:
+    toc: true
+  docx:
+    toc: true
+    toc-depth: 2
+    prefer-html: true
+    # setting these to the html defaults so they don't get jumbled between format
+    fig-width: 7
+    fig-height: 5
+---
+
+Rendering to word is never as straightfoward as I'd like. In theory, it should be as easy as adding
+
+``` yaml
+format: docx
+```
+
+or
+
+``` yaml
+format:
+  docx: default
+```
+
+Sometimes that does work. If you have html output in any figures, e.g. mermaid or graphviz diagrams, it will fail. The solution is to put
+
+``` yaml
+format:
+  docx: 
+    prefer-html: true
+```
+
+in the `_quarto.yml`. In theory it could go in the file header yaml, but it seems to not work there. The catch is, this will just skip those items when render, so if you want them, you'll need to export somehow and read back in. In practice I find this really annoying, because it means we need extra code to make the same plot in different formats, which has to be maintained and never ends up looking the same.
+
+If you want figure sizes to match html versions of the document, use
+
+``` yaml
+format:
+  docx: 
+    prefer-html: true
+    fig-width: 7
+    fig-height: 5
+```
+
+If you want to use a word template, (since pandoc's default is old), put a new file somewhere and link it.
+
+``` yaml
+ format:
+  docx: 
+    prefer-html: true
+    fig-width: 7
+    fig-height: 5
+    reference-doc: default_word_template.docx
+```
+
+The font and similar are included in the template if it's blank. But things like heading styles and tables of contents actually have to occur in the doc. So put in some headers, table of contents, figs, and tables if you want those formatting structures to work. Adding figs and tables doesn't actually seem to adjust the way the captioning works, because they're in boxes. I think this works better in Quarto 1.4, but that's still in beta and breaks other things for me.
+
+This template file can also do useful things like set line numbering, spacing, and page numbers.
+
+## Multiple formats
+
+One thing that's very handy is having [multiple render targets](multiple_render_formats.qmd). I'm not doing that here to keep this doc clean for word--specific issues.
