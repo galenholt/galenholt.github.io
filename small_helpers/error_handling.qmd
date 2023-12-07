@@ -79,42 +79,8 @@ for (i in 1:10) {
 recorder2
 ```
 
-## Aside/specific case
+## Asides/specific cases
 
-The function `purrr::safely` is useful when using `purrr::map` and similar, as it returns a list with a `result` and `error` item. This means that purrring over things where some may fail doesn't kill everything, but we need to unpack it a bit.
+For `purrr::map` and similar functions, [we can use](error_safely.qmd) `purrr::safely` and `purrr::possibly` to pass errors without failing a whole run. The output then needs to be unpacked and cleaned up.
 
-```{r}
-errpurr <- purrr::map(1:10, purrr::safely(err_even_warn5))
-errpurr
-```
-
-Note that `safely` only deals with errors, the 'warning' at index 5 just passes through and is included in the `result`. We could use `quietly` instead if we want to capture all possibilities *except errors*, which still cause `quietly` to fail. We can do things like look for the values with or without errors
-
-```{r}
-whicherrors <- purrr::map(errpurr, \(x) !is.null(x$error)) |> 
-  unlist() |> 
-  which()
-
-whicherrors
-
-```
-
-Those without errors (or with a non-null `result` can be used to extract the clean outputs. Note that this includes the warning.
-
-```{r}
-
-noterrors <- purrr::map(errpurr,
-           \(x) purrr::pluck(x, 'result')) |>  
-    unlist()
-
-noterrors
-```
-
-The above is really handy if we want to read the errors. If not, and we just want to save the non-errors, `possibly` with a default is likely better.
-
-```{r}
-errpurrP <- purrr::map(1:10, purrr::possibly(err_even_warn5, NA)) |> unlist()
-errpurrP
-```
-
-Note that in use we'd likely still want to have a cleanup step/function to chuck out the warnings before concatenating the rest.
+For `foreach::foreach`, we can use the `.errorhandling` argument to pass errors through without failing the whole run.

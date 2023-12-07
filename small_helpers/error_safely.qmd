@@ -1,0 +1,521 @@
+---
+title: "Errors with map"
+format: html
+---
+
+Sometimes when we use `purrr::map` or similar functions, one of the iterations hits an error. When this happens, we lose the whole set of runs, even if the others would run or have already run. That can be a waste of time, make it hard to find the issue, and prevent re-running just the failed bits if the error is intermittent (e.g. many HTTP errors).
+
+Using a test function from [error handling](error_handling.qmd) that errors on even numbers, warns if the number is 5, and otherwise returns the input.
+
+```{r}
+err_even_warn5 <- function(x) {
+  if ((x %% 2) == 0) {
+    stop('Even numbers are error')
+  } else if (x == 5) {
+    warning('5 throws a warning')
+  } else {x}
+}
+```
+
+The issue here is that if we try to run that, not only does it error for 5, we don't get any of the results
+
+```{r}
+#| error: true
+purrr::map(1:10, err_even_warn5)
+```
+
+But what if we want to get all the other results, and possibly identify the failures and correct them or retry?
+
+One option is to use `purrr::safely`, as it returns a list with a `result` and `error` item. This means that purrring over things where some may fail doesn't kill everything, but we need to unpack it a bit.
+
+The syntax is typical `map`, but with the function to apply wrapped in the 'adverb' `safely`.
+
+```{r}
+errpurr <- purrr::map(1:10, 
+                      purrr::safely(err_even_warn5))
+
+errpurr
+```
+
+Note that `safely` only deals with errors, the 'warning' at index 5 just passes through and is included in the `result`. We could use `quietly` instead if we want to capture all possibilities *except errors*, which still cause `quietly` to fail. We can do things like look for the values with or without errors
+
+```{r}
+whicherrors <- purrr::map(errpurr, 
+                          \(x) !is.null(x$error)) |> 
+  unlist() |> 
+  which()
+
+whicherrors 
+```
+
+Those without errors (or with a non-null `result` )can be used to extract the clean outputs. Note that this includes the warning.
+
+```{r}
+noterrors <- purrr::map(errpurr,
+                        \(x) purrr::pluck(x, 'result'))
+
+noterrors
+```
+
+Another option is to use `list_transpose` and then get the result and error lists. Two plucks is likely better, especially if we usually only need one.
+
+```{r}
+terr <- purrr::list_transpose(errpurr)
+
+terr$result
+terr$error
+```
+
+The use of `safely` above is really handy if we want to read the errors. If not, and we just want to save the non-errors, `possibly` with a default is likely better (cleaner).
+
+```{r}
+errpurrP <- purrr::map(1:10, 
+                       purrr::possibly(err_even_warn5,
+                                       NA))
+
+errpurrP
+```
+
+Note that in use we'd likely still want to have a cleanup step/function to chuck out the warnings before concatenating the rest.
+
+There's also a question of what happens if an iteration has a warning and a result. For example
+
+```{r}
+err_even_warn510 <- function(x) {
+  if ((x %% 2) == 0) {
+    stop('Even numbers are error')
+  } else if (x == 5) {
+    warning('5 doubles')
+    x <- 10
+  } else {x}
+  return(x)
+}
+```
+
+For both `safely` and `possibly`, a real result plus warning ends up with the real result in the output and the warning bubbling up. So that's good- warnings don't change the structure of the data if there is data.
+
+```{r}
+ep5 <- purrr::map(1:10, 
+                      purrr::safely(err_even_warn510))
+
+ep5
+```
+
+```{r}
+epP <- purrr::map(1:10, 
+                       purrr::possibly(err_even_warn510,
+                                       NA))
+
+epP
+```
+
+## Programmatic use
+
+I have several cases where I want to run `map` in packages or large analyses, and assess what's happening to the fails and possibly re-run. That needs a few wrappers or standard sequences of steps around what I have above. The standard steps might be better, then we don't have to deal with function passing, which is a hassle.
+
+Let's set up a function that will fail about half the time, but re-runs might work.
+
+```{r}
+failhalf <- function(x) {
+  if (runif(1) <= 0.5) {
+    x <- x+5
+  } else {
+    stop("random above 0.5")
+  }
+  return(x)
+}
+```
+
+I'll work with `safely`- I think that's more general than `possibly`, and gives a developer the ability to go in and look at the errors in debug, even if they're not returned. Let's assume we have a variable to feed it, as we usually would in a function.
+
+```{r}
+
+larg <- 1:10
+
+# first run
+x5 <- purrr::map(larg, purrr::safely(failhalf))
+# get the results
+r5 <- purrr::map(x5, purrr::pluck('result'))
+
+# Get the errors- we might have this somewhere a dev could get it, but not always use it.
+e5 <- purrr::map(x5, purrr::pluck('error'))
+
+```
+
+If we don't want to retry, that's as far as we need to go. We could easily return a list *just like what would be returned normally* and another list of the errors. That's as simple as
+
+```{r}
+safepurr <- function(input, fun) {
+  # first run
+x5 <- purrr::map(input, purrr::safely(fun))
+# get the results
+r5 <- purrr::map(x5, purrr::pluck('result'))
+
+# Get the errors- we might have this somewhere a dev could get it, but not always use it.
+e5 <- purrr::map(x5, purrr::pluck('error'))
+
+return(list(r5, e5))
+}
+```
+
+Though I'm not sure what the point is. By the time we unpack that we might as well have just done it inline with pluck().
+
+## Retries
+
+If we do want to retry, we need to re-run the failures. This actually makes sense to do in a single `while`, rather than with the above first. We can put a `retries` argument in easily enough.
+
+```{r}
+# if we have e5, we could use it, but it's not any harder to get error indices directly
+larg <- 1:10
+whicherrors <- 1:length(larg)
+lout <- vector(mode = 'list', length = 0)
+while(length(whicherrors) > 0) {
+  larg <- larg[whicherrors]
+  # first run
+x5 <- purrr::map(larg, purrr::safely(failhalf))
+# get the results, dropping the NULLs
+r5 <- purrr::map(x5, purrr::pluck('result'))
+
+# where are the errors
+whicherrors <- purrr::map(x5, 
+                          \(x) rlang::is_error(
+                            x$error)
+                          ) |> 
+  unlist() |> 
+  which()
+
+# append
+lout <- c(lout, r5[-whicherrors])
+
+
+}
+
+```
+
+That works fine if we don't care about order, but if we do, we'll need to make sure we know *which* list items are erroring and replace them. That will almost always be what we want to do, and isn't any more complicated.
+
+```{r}
+larg <- 1:10
+whicherrors <- 1:length(larg)
+lout <- vector(mode = 'list', length = length(larg))
+# the indices, to track which are being filled/left
+indlist <- 1:10
+while(length(whicherrors) > 0) {
+  larg <- larg[whicherrors]
+  # first run
+x5 <- purrr::map(larg, purrr::safely(failhalf))
+# get the results, dropping the NULLs
+r5 <- purrr::map(x5, purrr::pluck('result'))
+
+# replace the indices that were errors with new data. Some might still be errors, they will fill subsequently
+lout[indlist] <- r5
+
+# where are the errors
+whicherrors <- purrr::map(x5, 
+                          \(x) rlang::is_error(
+                            x$error)
+                          ) |> 
+  unlist() |> 
+  which()
+# which ORIGINAL indices are we left with?
+indlist <- indlist[whicherrors]
+
+
+}
+```
+
+Rather than a `while`, can we recurse? Yes, and it's a bit cleaner. But, it's not tail-recursive and there's no obvious way to set a retries.
+
+```{r}
+getsafe <- function(larg) {
+  x5 <- purrr::map(larg, purrr::safely(failhalf))
+  # get the results, dropping the NULLs
+  r5 <- purrr::map(x5, purrr::pluck('result'))
+  
+  whicherrors <- purrr::map(x5, 
+                          \(x) rlang::is_error(
+                            x$error)
+                          ) |> 
+  unlist() |> 
+  which()
+  
+  if (length(whicherrors > 0)) {
+    eout <- getsafe(larg[whicherrors])
+    r5[whicherrors] <- eout
+  }
+  
+  return(r5)
+}
+```
+
+```{r}
+getsafe(1:10)
+```
+
+How bad is it to make a function that takes the input and the function and does the while loop?
+
+```{r}
+safe_clean_retries <- function(input, fun, retries) {
+  whicherrors <- 1:length(input)
+  lout <- vector(mode = 'list', length = length(input))
+  # the indices, to track which are being filled/left
+  indlist <- 1:length(input)
+  counter = 0
+  
+  while (length(whicherrors) > 0 & counter <= retries) {
+    # run the purrr
+    x5 <- purrr::map(input, purrr::safely(fun))
+    # get the results, dropping the NULLs
+    r5 <- purrr::map(x5, purrr::pluck('result'))
+    
+    # if we want the errors, we could put in a debug here
+    e5 <- purrr::map(x5, purrr::pluck('result'))
+    
+    # replace the indices that were errors with new data. Some might still be errors, they will fill subsequently
+    lout[indlist] <- r5
+    
+    # where are the errors
+    whicherrors <- purrr::map(x5,
+                              \(x) rlang::is_error(x$error)) |>
+      unlist() |>
+      which()
+    
+    # Cut the data to the fails
+    input <- input[whicherrors]
+
+    # which ORIGINAL indices are we left with?
+    indlist <- indlist[whicherrors]
+    
+    counter <- counter + 1
+    
+  }
+  
+  return(lout)
+}
+```
+
+And that lets us use it
+
+```{r}
+safe_clean_retries(1:10, failhalf, retries = 5) |> 
+  unlist()
+```
+
+It should work to pass it anonymous functions or otherwise custom?
+
+```{r}
+safe_clean_retries(1:10,
+                   \(x) ifelse(sample(c(1,2), 1) == 1,
+                               stop(), x), 
+                   retries = 10) |> 
+  unlist()
+```
+
+It works for `furrr` too, though in this case it's slower (not surprising, for this test case the overhead will be much bigger than the computation).
+
+```{r}
+safe_clean_retries_f <- function(input, fun, retries) {
+  whicherrors <- 1:length(input)
+  lout <- vector(mode = 'list', length = length(input))
+  # the indices, to track which are being filled/left
+  indlist <- 1:length(input)
+  counter = 0
+  
+  while (length(whicherrors) > 0 & counter <= retries) {
+    # run the purrr
+    # Only parallel this one. The others are just indexing
+    x5 <- furrr::future_map(input, purrr::safely(fun), .options = furrr_options(seed = TRUE))
+    # get the results, dropping the NULLs
+    r5 <- purrr::map(x5, purrr::pluck('result'))
+    
+    # if we want the errors, we could put in a debug here
+    e5 <- purrr::map(x5, purrr::pluck('result'))
+    
+    # replace the indices that were errors with new data. Some might still be errors, they will fill subsequently
+    lout[indlist] <- r5
+    
+    # where are the errors
+    whicherrors <- purrr::map(x5,
+                              \(x) rlang::is_error(x$error)) |>
+      unlist() |>
+      which()
+    
+    # Cut the data to the fails
+    input <- input[whicherrors]
+
+    # which ORIGINAL indices are we left with?
+    indlist <- indlist[whicherrors]
+    
+    counter <- counter + 1
+    
+  }
+  
+  return(lout)
+}
+```
+
+```{r}
+library(furrr)
+plan(multisession)
+
+safe_clean_retries_f(1:10,
+                   \(x) ifelse(sample(c(1,2), 1) == 1,
+                               stop(), x), 
+                   retries = 10) |> 
+  unlist()
+```
+
+And finally, we can clean that up to use the same arg names as `purrr` and do both parallel or not
+
+```{r}
+safe_map <- function(.x, .f, ..., retries = 10, parallel = FALSE) {
+  whicherrors <- 1:length(.x)
+  result_list <- vector(mode = 'list', length = length(.x))
+  # the indices, to track which are being filled/left
+  orig_indices <- 1:length(.x)
+  counter = 0
+  
+  while (length(whicherrors) > 0 & counter <= retries) {
+    # run the purrr
+    # Only parallel this one. The others are just indexing
+    if (parallel) {
+          full_out <- furrr::future_map(.x, purrr::safely(.f),
+                                        .options = furrr_options(seed = TRUE))
+    } else {
+      full_out <- purrr::map(.x, purrr::safely(.))
+    }
+    # get the results, dropping the NULLs
+    intermed_result <- purrr::map(full_out, purrr::pluck('result'))
+    
+    # if we want the errors, we could put in a debug here
+    err_list <- purrr::map(full_out, purrr::pluck('result'))
+    
+    # replace the indices that were errors with new data. Some might still be errors, they will fill subsequently
+    result_list[orig_indices] <- intermed_result
+    
+    # where are the errors
+    whicherrors <- purrr::map(full_out,
+                              \(x) rlang::is_error(x$error)) |>
+      unlist() |>
+      which()
+    
+    # Cut the data to the fails
+    .x <- .x[whicherrors]
+
+    # which ORIGINAL indices are we left with?
+    orig_indices <- orig_indices[whicherrors]
+    
+    counter <- counter + 1
+    
+  }
+  
+  return(result_list)
+}
+```
+
+## Benchmarking
+
+The speed question is interesting- how much does it slow things down to run in this wrapper? Should I put *everything* in it, or is the speed hit only worth it where there's a high likelihood of failure and each iteration is big?
+
+Let's set something a bit bigger up and test. Just purrrr, assume furrr will scale similarly. I'm not going to have any errors- the point here is to ask how much this hurts when there *aren't* errors. And if that tradeoff is worth the ability to fix others.
+
+```{r}
+inlist <- list(iris, mtcars, iris, mtcars, iris, mtcars)
+
+testfun <- function(x) {
+ x <- x |> 
+   dplyr::mutate(across(where(is.numeric), mean)) |> 
+   dplyr::summarise(across(where(is.numeric), sum))
+ 
+ return(x)
+}
+```
+
+The hit there isn't too bad. Seems like it's probably usually worth it, especially for big computations. For big jobs, the consequences of errors will be worse in terms of lost time/results, and the additional overhead will be a smaller proportion of the time compared to the main `purrr` call.
+
+```{r}
+microbenchmark::microbenchmark(
+  barepurrr = purrr::map(inlist, testfun),
+  safepurrr = safe_clean_retries(inlist, testfun, retries = 10),
+  times = 100
+)
+```
+
+## Function construction
+
+The functions above all just use a function with a single unspecified argument. But things get trickier with anonymous functions or multiple arguments. The locations for the arguments aren't always intuitive- they go after the `possibly(function())`. The reason is because `possibly` and `safely` both *create new functions*.
+
+For example, if we have a simple function, still just with one argument
+
+```{r}
+add5 <- function(x) {
+  x+5
+}
+```
+
+Then the simple version works
+
+```{r}
+purrr::map(1:5, safely(add5))
+```
+
+If we want to be more specific and make it anonymous, though, where does the x go? What is the safe equivalent of this?
+
+```{r}
+purrr::map(1:5, \(x) add5(x))
+```
+
+This works. The anonymous function is *wholly inside* safely, and so the whole anonymous function gets transformed into a safe version.
+
+```{r}
+purrr::map(1:5, purrr::safely(\(x) add5(x)))
+```
+
+This does not. The safely can't be inside the anonymous function
+
+```{r}
+purrr::map(1:5, \(x) purrr::safely(add5(x)))
+```
+
+But this does- `safely(fun)` is a function, and so we can give it the argument.
+
+```{r}
+purrr::map(1:5, \(x) purrr::safely(add5)(x))
+```
+
+This can be useful with multiple arguments, e.g.
+
+```{r}
+adder <- function(x,y) {
+  x + y
+}
+```
+
+Again, as anonymous, wholly inside works
+
+```{r}
+
+purrr::map(1:5, purrr::safely(\(x) adder(x, 10)))
+```
+
+It does not work if it's not anonymous, ie just giving it the second argument. While this syntax works normally,
+
+```{r}
+purrr::map(1:5, adder, 10)
+```
+
+Similar does not work with safely.
+
+```{r}
+#| error: true
+
+purrr::map(1:5, purrr::safely(adder, 10))
+purrr::map(1:5, purrr::safely(adder(10)))
+```
+
+To get this to work with safely, we have to anonymize, but being careful to feed the arguments after the final `safely` parenthesis.
+
+```{r}
+purrr::map(1:5, \(x) purrr::safely(adder)(x, y=10))
+
+```
