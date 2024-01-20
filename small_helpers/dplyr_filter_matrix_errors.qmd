@@ -1,0 +1,34 @@
+---
+title: "Dplyr filter matrices"
+format: html
+---
+
+As of dplyr 1.1.0, we get warnings about using 1-d matrices instead of logical vectors.
+
+```         
+Warning: Using one column matrices in `filter()` was deprecated in dplyr 1.1.0.
+ℹ Please use one dimensional logical vectors instead.
+```
+
+This is hard to find and debug, because the warning is lifecycle-limited, but [setting the lifecycle warning options](lifecycle_warnings.qmd) makes it possible.
+
+```{r}
+rlang::local_options(lifecycle_verbosity = "warning")
+```
+
+In most cases, it seems to happen with the column name to filter on as a character. It *is* a strange pattern, but comes up a fair amount programming.
+
+```{r}
+
+filtercol <- 'Species'
+
+iris |> 
+  dplyr::filter(dplyr::across(tidyselect::any_of(filtercol)) == 'virginica')
+```
+
+The solution is to use `.data`
+
+```{r}
+iris |> 
+  dplyr::filter(.data[[filtercol]] == 'virginica')
+```

@@ -1,0 +1,39 @@
+---
+title: "Indexing package versions"
+format: html
+---
+
+I've started automatically indexing package dev versions (e.g. major.minor.patch.dev, with dev starting at 9000) with every commit, as it makes tracking easier and makes installing the current (or any specific) version much easier with `remotes` or `renv` (and I assume `install.packages` or `pak`). I do this with a pre-commit hook, developed largely from [this stackoverflow](https://stackoverflow.com/questions/24209336/automating-version-increase-of-r-packages).
+
+This approach depends on tags, and the trick is the tags *already have to exist* and there needs to be at least one commit past them (cannot start the hook at the same time as you start the first tag).
+
+So, I started a tag `v0.0.1`, made a commit. Then added the last answer there in the `.git/hooks/pre-commit` file:
+
+``` bash
+#!/bin/sh
+#
+# Pre-commit hooks. Simple dev version incrementation, assuming R and usethis are installed
+
+# From https://stackoverflow.com/questions/24209336/automating-version-increase-of-r-packages
+sed -i -- "s/^Date: .*/Date: $(date '+%Y-%m-%d')/" DESCRIPTION
+# get latest tags
+git pull --tags --quiet
+current_tag=`git describe --tags --abbrev=0 | sed 's/v//'`
+current_commit=`git describe --tags | sed 's/.*-\(.*\)-.*/\1/'`
+# combine tag (e.g. 0.1.0) and commit number (like 40) increased by 9000 to indicate beta version
+new_version="$current_tag.$((current_commit + 9000))" # results in 0.1.0.9040
+sed -i -- "s/^Version: .*/Version: ${new_version}/" DESCRIPTION
+echo "First 3 lines of DESCRIPTION:"
+head -3 DESCRIPTION
+echo
+```
+
+And then when I commit, it updates DESCRIPTION.
+
+There is a bit of funny behaviour here because these changes *are not part of the commit*. So, it essentially is pre-updating the version- immediately after committing, there is a changed DESCRIPTION file with the new number, which should be committed with the *next* commit. This is just the nature of doing it with commit hooks; post-commit would do the same thing.
+
+A couple notes:
+
+If you don't commit the changed description file, it will still iterate the dev version with each commit, since it is counting commits since the tag.
+
+I tried to use `Rscript -e "usethis::use_version('dev')"`, but it requires user input with no obvious way to bypass. And was a bit tricky to get Rscript in a place bash could find it on windows, see <https://github.com/r-lib/rig/issues/189>.

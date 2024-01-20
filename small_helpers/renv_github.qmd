@@ -1,0 +1,27 @@
+---
+title: "Renv and github"
+format: html
+---
+
+Sometimes we need to use `renv` to install from github. in the simple form it works just as usual, e.g.
+
+`renv::install(galenholt/vicwater)` . But there are complications, and the syntax is really poorly documented. It uses `remotes` under the hood but does not always use the same syntax.
+
+To use ssh (with authentication), the inbuilt `git2r` is failing, so we need `git = 'external'`.
+
+`renv::install('git@github.com:ACCOUNT/repo_name.git', git = 'external')`
+
+If we're scripting, we likely want to add `prompt = FALSE`, and we can control upgrading other packages with `upgrade = 'always'` (this is documented).
+
+It is *really* hard to force it to build from source if the version number hasn't changed. `rebuild = TRUE` usually works, but I also try to index version numbers with every commit now in packages I own.
+
+To get to a branch or ref, use `@ref`, *not* a ref argument as in remotes.
+
+```{r}
+#| eval: false
+renv::install('git@github.com:ACCOUNT/repo_name.git@branch_name', 
+              rebuild = TRUE, 
+              upgrade = 'always', 
+              git = 'external', 
+              prompt = FALSE)
+```
