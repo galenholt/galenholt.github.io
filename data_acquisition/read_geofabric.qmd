@@ -1,0 +1,57 @@
+---
+title: "Read australia geofabric"
+format: html
+---
+
+```{r}
+library(sf)
+library(dplyr)
+library(ggplot2)
+```
+
+We downloaded and saved the [geofabric](get_geofabric.qmd). Now we want to open and plot some of it.
+
+The folder structure is too complex inside the zip, so have to extract. I'm most interested right now in the river lines.
+
+```{r}
+gdbpath <- file.path('data', 'geofabric', 'SH_Network_GDB', 'SH_Network.gdb')
+if (!file.exists(gdbpath))
+  
+unzip(file.path('data', 'geofabric', 'SH_Network_GDB_V3_3.zip'),
+      exdir = file.path('data', 'geofabric'))
+```
+
+There are a lot of layers, so can't just `st_read`
+
+```{r}
+st_layers(gdbpath)
+```
+
+The stream lines are big, but just reading doesn't take *too* long.
+
+```{r}
+rivers <- st_read(gdbpath, layer = 'AHGFNetworkStream')
+```
+
+Let's subset to the major rivers to not crash?
+
+```{r}
+major_rivers <- rivers |> 
+  dplyr::filter(Hierarchy == 'Major')
+```
+
+Still `r nrow(major_rivers)`, but we can try to plot it?
+
+```{r}
+plot(major_rivers[,'Name'])
+```
+
+```{r}
+riverlen_plot <- ggplot(major_rivers, aes(color = log(UpstrGeoLn))) +
+  geom_sf() +
+  theme_void()
+```
+
+```{r}
+riverlen_plot + theme(legend.position = 'none')
+```

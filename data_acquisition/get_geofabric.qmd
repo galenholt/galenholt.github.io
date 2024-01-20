@@ -1,0 +1,42 @@
+---
+title: "Get australia geofabric"
+format: html
+---
+
+To get the australia river geofabric gdb. The links are [here](http://www.bom.gov.au/water/geofabric/download.shtml), the mapservice links are all annoyingly interactive, though I imagine there's a way to `httr2` them.
+
+```{r}
+url <- "ftp://ftp.bom.gov.au/anon/home/geofabric/"
+```
+
+See what's there
+
+```{r}
+files <- RCurl::getURL(url) |> 
+  strsplit("\r*\n") |> 
+  unlist()
+```
+
+```{r}
+filenames <- stringr::str_extract(files, '\\s([^ ]+)$') |> 
+  stringr::str_remove_all(' ')
+filenames
+```
+
+we don't want 'version2', but otherwise, let's download all of that.
+
+It's a lot of data, so it'll take a while.
+
+```{r}
+if (!dir.exists('data/geofabric')) {
+  dir.create('data/geofabric')
+}
+
+filestodl <- filenames[filenames != 'version2']
+
+system.time(
+  purrr::map(filestodl, 
+             \(x) curl::curl_download(paste0(url, x), 
+                                      destfile = paste0('data/geofabric/', x)))
+)
+```
