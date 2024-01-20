@@ -1,0 +1,439 @@
+---
+title: "Waterdata from BOM"
+format: html
+---
+
+I wrote [{vicwater}](https://github.com/galenholt/vicwater) to get information about water gauges in Victoria, and then discovered it also works in NSW and Queensland. It does not seem to work in South Australia though.
+
+Can we just use [bomWater](https://github.com/buzacott/bomWater/tree/master)? Or use it to figure out how to call BOM myself?
+
+First question is whether it works. I've heard rumors BOM has gotten harder to call, but mdba-gauge-getter still manages.
+
+```{r}
+#| eval: false
+renv::install('buzacott/bomWater')
+```
+
+```{r}
+library(bomWater)
+```
+
+It doesn't obviously have a lot of the query tools from vicwater, but let's see if it works with the example
+
+```{r}
+cotter_river <- get_daily(parameter_type = 'Water Course Discharge',
+                          station_number = '410730',
+                          start_date     = '2020-01-01',
+                          end_date       = '2020-01-31')
+```
+
+Seems to. Let's try a couple I know I need
+
+```{r}
+mr97 <- get_daily(parameter_type = 'Water Course Discharge',
+                  station_number = 'A4260505',
+                  start_date = '2000-01-01',
+                  end_date = '2000-05-30')
+```
+
+That basically looks like it works. It's missing some functionality I want, but much better than nothing.
+
+```{r}
+get_station_list(station_number = 'A4260505')
+```
+
+```{r}
+get_parameter_list(station_number = 'A4260505')
+```
+
+It looks like there is a getDataAvailabiltiy option in the API, but bomWater doesn't query it. The requests in bomWater don't obviously map to the docs, so this would take some tweaking.
+
+In searching for how the 'request' in bomWater turns into the `getSomethingSomething` in the API (unsuccessfully), I found another package to try. It's canadian, but seems to hit Kisters WISKI generally.
+
+```{r}
+library('kiwisR')
+```
+
+Check it works.
+
+```{r}
+ki_timeseries_list(hub = 'https://www.swmc.mnr.gov.on.ca/KiWIS/KiWIS?', station_id = '144659')
+
+```
+
+Does it work for BOM? No, the url is almost certainly wrong. This expects a KiWIS API, which it looks like BoM doesnt use (at least just shoving Kiwis on the end doesn't work.
+
+```{r}
+#| error: true
+ki_timeseries_list(hub = "http://www.bom.gov.au/waterdata/services", station_id = 'A4260505')
+
+ki_timeseries_list(hub = "http://www.bom.gov.au/waterdata/services/KiWIS/KiWIS?", station_id = 'A4260505')
+```
+
+Interesting. If I go to <http://www.bom.gov.au/waterdata/services>, I get the message "KISTERS KiWIS QueryServices - add parameter 'request' to execute a query." So it *is* a KiWIS, but maybe doesn't take request in the same way as kiwisR expects? bomWater *does* use `request`, so maybe this will help figure out how to specify new ones. Looking at code, kiwisR and bomWater look like they're constructing the requests the same, so it's a bit odd the kiwis doesn't work with the bomWater url.
+
+Am I just calling something incorrectly? Can kiwisR hit that URL for other things? I can get a list of all stations. So that implies the URL *does* work.
+
+```{r}
+ki_station_list(hub = "http://www.bom.gov.au/waterdata/services")
+
+```
+
+It *doesn't* seem to work to search for stations by id though.
+
+```{r}
+ki_station_list(hub = "http://www.bom.gov.au/waterdata/services", search_term = "A4260505")
+
+```
+
+Ah! It hits the `station_name`, not the gauge number in `station_no`
+
+```{r}
+ki_station_list(hub = "http://www.bom.gov.au/waterdata/services", search_term = "A*")
+
+```
+
+So, can I get it with
+
+```{r}
+
+ki_station_list(hub = "http://www.bom.gov.au/waterdata/services",
+                search_term = "River Murray at Lock 9 Downstream*")
+
+
+```
+
+The `ki_timeseries_list` uses `station_id`. But I've been feeding it gauge numbers, which are `station_no`. It works with the ID.
+
+```{r}
+tl <- ki_timeseries_list(hub = "http://www.bom.gov.au/waterdata/services", station_id = '1617110')
+
+tl
+```
+
+Then, I should be able to use `ki_timeseries_values` if I know the ts_id I want.There's lots of cryptic ts_name in there, but daily is "DMQaQc.Merged.DailyMean.24HR". There are two versions here, for different date ranges.
+
+```{r}
+tl[tl$ts_name == "DMQaQc.Merged.DailyMean.24HR", ]
+```
+
+Is that why `ki_timeseries_values` doesn't have a station argument? are the ts_ids unique across gauges? Look at two gauges. COtter river (from way above) is id 13360.
+
+No idea why Cotter has so many ts_ids with identical ranges, but they are unique.
+
+```{r}
+tl2 <- ki_timeseries_list(hub = "http://www.bom.gov.au/waterdata/services", 
+                         station_id = c('1617110', '13360'))
+tl2 |> 
+  dplyr::filter(ts_name == "DMQaQc.Merged.DailyMean.24HR")
+
+```
+
+bomWater must be dealing with duplication somehow, because
+
+```{r}
+any(duplicated(cotter_river$Timestamp))
+```
+
+ah. bomwater just uses `ts_id[1]`. That's likely not the best move. What's better? not sure. Would be good to assess them somehow. Could give options of 'longest', 'all', 'first' (with longest possibly still needing a 'first' or 'all' if there are multiple.)
+
+So, all that boils down to that I should be able to choose one of those ts_ids and pull data. Choosing one from the Murray and one from Cotter
+
+```{r}
+test_timeseries <- ki_timeseries_values(hub = "http://www.bom.gov.au/waterdata/services",
+                                        ts_id = c("208669010", "380185010"), 
+                                        start_date = '2010-01-01', end_date = '2010-02-28')
+```
+
+```{r}
+library(ggplot2)
+ggplot(test_timeseries, aes(x = Timestamp, y = Value, color = station_name)) +
+  geom_line()
+```
+
+## Fitting into a workflow
+
+I typically have a gauge number, want to get the period of record, and then pull data. I can do that here, but it's a bit roundabout because the filters keep changing what they filter. And I'd like to not have to depend on both bomWater and kiwisR.
+
+Above, I had to go from all stations, find the name and id that matched the no, and then could get the other things. But there's got to be a way to just search with any of those, rather than different ones for different functions, right? bomWater seems to do it.
+
+Is there a way to search for the gauge? Not obviously, weirdly.
+
+So, as it stands, a kiwisR based workflow looks something like this:
+
+Get the cross-referencing info for the gauges
+
+```{r}
+gauge_numbers <- c('410730', 'A4260505')
+
+all_stations <- ki_station_list(hub = "http://www.bom.gov.au/waterdata/services")
+
+intended_stations <- all_stations |> 
+  dplyr::filter(station_no %in% gauge_numbers)
+
+```
+
+If we want to see what info is available (including date ranges)
+
+```{r}
+available_info <- ki_timeseries_list(hub = "http://www.bom.gov.au/waterdata/services",
+                                     station_id = intended_stations$station_id)
+```
+
+If we want to get the info, choose a var, but then we also need a ts_id.
+
+```{r}
+var_to_get <- "DMQaQc.Merged.DailyMean.24HR"
+start_time <- "2010-01-01"
+end_time <- "2010-02-28"
+choose_ids <- 'first'
+
+all_var_to_get <- available_info |> 
+  dplyr::filter(ts_name == var_to_get)
+
+if (choose_ids == 'first') {
+  ids_to_get <- all_var_to_get |> 
+    dplyr::group_by(station_id) |> 
+    dplyr::summarise(ts_id = dplyr::first(ts_id),
+                     from = dplyr::first(from), 
+                     to = dplyr::first(to)) # not sure worth returning
+}
+
+ids <- ids_to_get$ts_id
+
+
+pulled_ts <- ki_timeseries_values(hub = "http://www.bom.gov.au/waterdata/services",
+                                        ts_id = ids, 
+                                        start_date = start_time, end_date = end_time)
+
+```
+
+That works. And then we'd likely want to conver to ML/d instead of cm\^3s-1
+
+```{r}
+ggplot(pulled_ts, aes(x = Timestamp, y = Value, color = station_name)) +
+  geom_line()
+```
+
+So, that is roundabout, but works. I guess I'll do that until it gets too slow to pull the whole thing and then fork and add code.
+
+## Some checking of the available sites
+
+What are the groups?
+
+```{r}
+ki_group_list(hub = "http://www.bom.gov.au/waterdata/services")
+```
+
+Why are those all prefaced by MDB? Shouldn't this be australia-wide?
+
+```{r}
+all_watercourse_stations <- ki_station_list(hub = "http://www.bom.gov.au/waterdata/services",
+                                            group_id = '20017550')
+```
+
+```{r}
+library(sf)
+all_ws <- all_watercourse_stations |> 
+  st_as_sf(coords = c('station_longitude', 'station_latitude'))
+```
+
+That is quite obviously just the Murray-Darling Basin. Where are the rest of the BOM sites?
+
+```{r}
+ggplot(all_ws) + geom_sf()
+```
+
+```{r}
+all_stations <- ki_station_list(hub = "http://www.bom.gov.au/waterdata/services")
+
+```
+
+There's a lot of NA in there, so delete them and make sf
+
+```{r}
+all_s <- all_stations |> 
+  dplyr::filter(!is.na(station_longitude) & !is.na(station_latitude)) |> 
+  st_as_sf(coords = c('station_longitude', 'station_latitude'))
+```
+
+Clearly nationwide. Plus some that are clearly wrong. Some I'm sure are boreholes and such, but there must be flow gauges that just don't end up in any group_id.
+
+```{r}
+ggplot(all_s) + geom_sf()
+
+```
+
+To confirm, look for a river definitely not in the MDB- the Gordon (at least some of these around -42 latitude) are in Tassie.
+
+```{r}
+ki_station_list(hub = "http://www.bom.gov.au/waterdata/services",
+                search_term = "Gordon*")
+```
+
+## Add to vicwate?
+
+Can I get this to work?
+
+I'm having issues with the requests, seemingly because I'm using httr2 instead of httr
+
+For example, if i handbuild the call to the API for `getStationList` from kiwisR,
+
+```{r}
+
+api_url <- "http://www.bom.gov.au/waterdata/services"
+
+return_fields <- "station_name,station_no,station_id,station_latitude,station_longitude"
+
+search_term <- "River Murray at Lock*"
+
+# Query
+  api_query <- list(
+    service = "kisters",
+    datasource = 0,
+    type = "queryServices",
+    request = "getStationList",
+    format = "json",
+    kvp = "true",
+    returnfields = paste(
+      return_fields,
+      collapse = ","
+    )
+  )
+  
+  api_query[["station_name"]] <- search_term
+
+```
+
+Run with httr::GET, as they do
+
+```{r}
+raw <- httr::GET(
+        url = api_url,
+        query = api_query,
+        httr::timeout(15)
+      )
+
+raw
+```
+
+Parse
+
+```{r}
+raw_content <- httr::content(raw, "text")
+
+  # Parse text
+  json_content <- jsonlite::fromJSON(raw_content)
+  
+    # Convert to tibble
+  content_dat <- tibble::as_tibble(
+    x = json_content,
+    .name_repair = "minimal"
+  )[-1, ]
+```
+
+But if I use httr2, it doesn't return anything in the body
+
+```{r}
+#| error: true
+  response_body <- httr2::request(api_url) |>
+    httr2::req_body_json(api_query) |>
+    httr2::req_perform()
+
+# Cannot retrieve empty body
+ response_body <- response_body |>
+    httr2::resp_body_json(check_type = FALSE)
+```
+
+I think the issue is that the request format actually shouldn't be json-- this doesn't look like what HTTR says its request looks like
+
+```{r}
+  httr2::request(api_url) |>
+    httr2::req_body_json(api_query) |>
+    httr2::req_dry_run()
+```
+
+Is it that i need to just use headers? instead of a json body?
+
+```{r}
+  httr2::request(api_url) |>
+    httr2::req_headers(!!!api_query) |>
+    httr2::req_dry_run()
+```
+
+```{r}
+test_resp <-   httr2::request(api_url) |>
+    httr2::req_headers(!!!api_query) |>
+    httr2::req_perform()
+```
+
+Looks like that didn't work...
+
+```{r}
+resp_body_string(test_resp)
+```
+
+How about `req_url_query`? That looks right
+
+```{r}
+  httr2::request(api_url) |>
+    httr2::req_url_query(!!!api_query) |>
+    httr2::req_dry_run()
+```
+
+```{r}
+test_out <-  httr2::request(api_url) |>
+    httr2::req_url_query(!!!api_query) |>
+    httr2::req_perform()
+```
+
+```{r}
+jsonout <- resp_body_json(test_out)
+
+# after some flipping and checking;
+tibnames <- unlist(jsonout[1])
+
+tibout <- jsonout[-1] |> 
+  tibble::tibble() |> 
+  tidyr::unnest_wider(col = 1, names_sep = '_') |> 
+  setNames(tibnames)
+  
+```
+
+That seems to work. So, do I want to integrate this with vicwater? Can I use the same basic code? Not really, since the states need json bodies, and this needs a list-query. BUT, can I do some background parsing? If it works to send NULL in for the query and the body, can write the request to do both, but only actually do one or the other.
+
+Does it work to do this?
+
+```{r}
+test_out_bom <-  httr2::request(api_url) |>
+    httr2::req_url_query(!!!api_query) |>
+  httr2::req_body_json(NULL) |> 
+    httr2::req_perform()
+
+paramlist <- list("function" = 'get_variable_list',
+                     "version" = "1",
+                     "params" = list("site_list" = '233217',
+                                     "datasource" = "A"))
+# The query requires somethign named.
+test_out_state <- httr2::request("https://data.water.vic.gov.au/cgi/webservice.exe?") |>
+    httr2::req_url_query(fake = NULL) |>
+  httr2::req_body_json(paramlist) |> 
+    httr2::req_perform()
+
+# it can be a list of null
+nullist <- list(fake = NULL)
+test_out_state <- httr2::request("https://data.water.vic.gov.au/cgi/webservice.exe?") |>
+    httr2::req_url_query(!!!nullist) |>
+  httr2::req_body_json(paramlist) |> 
+    httr2::req_perform()
+```
+
+That leaves aside the question of do we *want* to do that. It would be nice to unify the experience, I think, if that's all we have to change in the main getResponse function. And then I can write separate bom and state versions of the functions accessible separately or through common wrappers that standardize syntax and outputs. Potentially just get_ts_traces_2.
+
+# Temp and other weather
+
+Can I just swap in the climate data URL and get temps etc?
+
+```{r}
+weather_data <- ki_timeseries_list(hub = "https://reg.bom.gov.au/climate/data")
+```
