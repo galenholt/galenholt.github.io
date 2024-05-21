@@ -94,14 +94,26 @@ find_d <- function(area, radii, radius1, radius2) {
   #   bestmin[i] <- bestd$minimum
   # }
 
+  mind <- abs(diff(radii))
+  maxd <- sum(radii)
+
+  # catch the case where the min and max are the same; then d = 0 (and usually,
+  # this is because one radius is 0, and so it's degenerate anyway and doesn't
+  # matter)
+
+  if (any(is.na(c(mind, maxd, area)))) {
+    bestmin <- NA
+  } else if (mind == maxd) {
+    bestmin <- 0
+  } else {
     bestd <- optimize(opt_d,
-                      lower = abs(diff(radii)),
-                      upper =  sum(radii),
+                      lower = mind,
+                      upper =  maxd,
                       area = area,
                       radii = radii)
 
     bestmin <- bestd$minimum
-
+  }
 
   return(bestmin)
 }
