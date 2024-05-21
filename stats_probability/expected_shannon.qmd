@@ -52,9 +52,47 @@ plot(Es)
 Larger N makes that take much larger, so we might want to do something like
 
 ```{r}
-Eslong <- expected_shannon(c(1:50, 100, 250, 500), regional_probs = pooled_probs)
+Eslong <- expected_shannon(c(1:50, 100, 250, 500), 
+                           regional_probs = pooled_probs)
 ```
 
 ```{r}
 plot(Eslong, type = 'lines')
 ```
+
+## Simple- max and min
+
+For reference, the max and min diversity occur at even p's and only one p, respectively.
+
+```{r}
+maxmin_shannon <- function(sp_range) {
+  
+  sp <- 1:sp_range
+  
+  maxshan <- rep(0, sp_range)
+  minshan <- maxshan
+  for (i in 1:sp_range) {
+    minsp <- rep(0, i)
+    minsp[1] <- 1
+    maxsp <- rep(1/i, i)
+    
+    maxshan[i] <- -sum(maxsp*log(maxsp))
+    minshan[i] <- -sum(minsp*log(minsp))
+  }
+  
+  return(tibble::lst(minshan, maxshan))
+  
+}
+```
+
+The min is always 0, but the max depends nonlinearly on n species.
+
+```{r}
+mms <- maxmin_shannon(100)
+```
+
+```{r}
+plot(mms$maxshan)
+```
+
+Analytically, for $N$ species, the maximum shannon diversity is $$-N(1/N\ln{1/N})$$, which collapses to $\ln(N)$.
