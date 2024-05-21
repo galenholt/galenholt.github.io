@@ -4,10 +4,9 @@ author: "Galen Holt"
 format: html
 ---
 
-This is very sketchy as I figure out some python testing and debug. Mostly notes for myself.
-In theory, I should be able to test the package by just calling `pytest` at a terminal, but it frequently fails. I get an error 
+This is very sketchy as I figure out some python testing and debug. Mostly notes for myself. In theory, I should be able to test the package by just calling `pytest` at a terminal, but it frequently fails. I get an error
 
-```
+```         
 ModuleNotFoundError: No module named 'module_trying_to_test'
 ```
 
@@ -19,8 +18,8 @@ python -m pytest tests/test_script.py
 
 From the project root directory.
 
-It also seems to often work to just run 
+It also seems to often work to just run
 
-```
+```         
 python -m pytest
 ```

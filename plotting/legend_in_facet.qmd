@@ -32,6 +32,10 @@ Other options that can give more flexibility, particularly across plots, are to 
 `ggpubr` can use the grob directly
 
 ```{r}
+irislegend <- ggpubr::get_legend(irisplot)
+```
+
+```{r}
 ggpubr::ggarrange(irisplot + theme(legend.position = 'none'), irislegend)
 ```
 

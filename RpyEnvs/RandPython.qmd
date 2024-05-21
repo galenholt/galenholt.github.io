@@ -41,15 +41,19 @@ This all worked, but then stopped- python chunks separated by R chunks couldn't 
 
 Point reticulate at the venv. See [stackoverflow](https://stackoverflow.com/questions/59715101/how-to-get-reticulate-to-access-virtual-environment). This *seems* to not be necessary if the `.venv` is in the outer project directory. Or if we've set the `RETICULATE_PYTHON` environment variable elsewhere (like `.Rprofile`).
 
+````         
 ``` {{r}}
 reticulate::use_virtualenv(file.path('RpyEnvs', 'pytesting', 'Scripts', '.venv'), required = TRUE)
 ```
+````
 
 If this is more than a one-off and you're using an R project, it's usually better to set the `RETICULATE_PYTHON` environment variable in `.Rprofile`. Here, that means adding this line in `.Rprofile` . This has the added bonus of stopping Rstudio/R throwing warnings about conda at startup when it detects {reticulate} being used in the project.
 
+````         
 ``` {{r}}
 Sys.setenv(RETICULATE_PYTHON = file.path('RpyEnvs', 'pytesting', '.venv'))
 ```
+````
 
 See [Quarto notes](../small_helpers/quarto_notes.qmd) for some similar issues for different python-related env variables.
 

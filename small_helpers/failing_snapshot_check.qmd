@@ -1,0 +1,16 @@
+---
+title: "Snapshot failures on check"
+format: html
+---
+
+Sometimes I have all tests pass with `devtools::test()`, but then encounter failures with `devtools::check()`. When these are for golden tests (snapshots, whether from `testthat` itself or `vdiffr`, the output says
+
+```         
+* Run `testthat::snapshot_review('name_of_file')` to interactively review the change.
+```
+
+But nothing happens, because the `filename.new.md` or `filename.new.svg` aren't available in the main package directory.
+
+To get it to work, go find the `packagename.Rcheck` directory, then go to `/tests/testthat/snaps` and copy the offending `.new` files into the main working project `tests/testthat/snaps` . Then you can run `testthat::snapshot_review('name_of_file')` .
+
+I tend to find the `packagename.Rcheck` directory one level up from the package project directory, though I'm not sure if that's consistent.

@@ -5,7 +5,7 @@ format: html
 
 I've started automatically indexing package dev versions (e.g. major.minor.patch.dev, with dev starting at 9000) with every commit, as it makes tracking easier and makes installing the current (or any specific) version much easier with `remotes` or `renv` (and I assume `install.packages` or `pak`). I do this with a pre-commit hook, developed largely from [this stackoverflow](https://stackoverflow.com/questions/24209336/automating-version-increase-of-r-packages).
 
-This approach depends on tags, and the trick is the tags *already have to exist* and there needs to be at least one commit past them (cannot start the hook at the same time as you start the first tag).
+This approach depends on tags, and the trick is the tags *already have to exist* and there needs to be at least one commit past them (cannot start the hook at the same time as you start the first tag). This is an issue not just for the first commit. So, for example, you can't add a tag at the current commit and then push (get an error about syntax error invalid arithmetic operator). Basically, it sees the tag as the commit number and tries to do math with it. Instead, tag *the previous commit* and it should work.
 
 So, I started a tag `v0.0.1`, made a commit. Then added the last answer there in the `.git/hooks/pre-commit` file:
 
