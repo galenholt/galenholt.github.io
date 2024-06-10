@@ -196,3 +196,25 @@ A couple things to note: If bare in a script, just need the code that makes and 
 If fed a list of plots, `pdf` will produce a multipage pdf with one plot per page.
 
 There can be other code between opening and closing the device, which can be useful for final tweaks for printing, especially if we want to carry the base plot around to do other things to.
+
+### Saving multiple formats
+
+One thing that I don't like about either approach above is the difficulty of saving the same plot to multiple formats. I often need a png or similar to paste into word, but a vector to actually look good. And that requires always copy-pasting the code as above.
+
+So, I wrote a function (in /R) that vectorises ggsave, taking all ggsave arguments but with filename_noext as a filename with no extension and a `devices` vector.
+
+```{r}
+#| eval: false
+ggsave_multi <- function(filename_noext, plot = last_plot(), devices, ...) {
+  
+  extnames <- lapply(devices, \(x) paste0(filename_noext, '.', x))
+  lapply(extnames, \(x) ggsave(
+    filename = x, plot = plot,
+    ...
+  ))
+  # similar to the ggsave return
+  return(invisible(unlist(extnames)))
+}
+```
+
+That allows ggsave syntax for everything but `filename_noext` and `devices`.

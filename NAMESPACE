@@ -2,6 +2,7 @@
 
 export(calc_a)
 export(find_d)
+export(ggsave_multi)
 export(make_simpleyml)
 export(opt_d)
 export(rgb2hex)
