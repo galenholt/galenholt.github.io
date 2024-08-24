@@ -5,7 +5,7 @@ author: "Galen Holt"
 
 Sometimes it makes sense to just send all parallel jobs to single cpus each. But there are other situations, like when we have some high-level parallelization over parameters, followed by additional parallelization over something else, where we can take advantage of the structure of HPC clusters to send biggish jobs to a node, and then further parallelize within it onto CPUS. Which is faster is going to be highly context-dependent, I think, but let's figure out *how* and then set up some scripts that can be modified for speed testing.
 
-I'll use the parallel inner and outer functions developed in [testing nested paralellism](nested_parallel.qmd), but modified as in most of the [slurm_r\_tests repo](https://github.com/galenholt/slurm_r_tests) to just return PIDs and other diagnostics so we can see what resources get used.
+I'll use the parallel inner and outer functions developed in [testing nested paralellism](nested_parallel.qmd), but modified as in most of the [slurm_r_tests repo](https://github.com/galenholt/slurm_r_tests) to just return PIDs and other diagnostics so we can see what resources get used.
 
 The approach here is learning a lot from [this github issue](https://github.com/HenrikBengtsson/future.batchtools/issues/72).
 
@@ -88,39 +88,41 @@ outer_par <- function(outer_size, inner_size) {
 
 And it WORKS!\--
 
-I did this in `nested_plan.R` in the [slurm_r\_tests repo](https://github.com/galenholt/slurm_r_tests), and running it for 25 loops in each of the nested functions shows that we're getting *and using* 12 inner PIDS per outer PID
+I did this in `nested_plan.R` in the [slurm_r_tests repo](https://github.com/galenholt/slurm_r_tests), and running it for 25 loops in each of the nested functions shows that we're getting *and using* 12 inner PIDS per outer PID
 
-    ## Nodes and pids simple
-    # A tibble: 25 × 2
-       outer_pid n_inner
-           <int>   <int>
-     1    549832      12
-     2    549960      12
-     3    550097      12
-     4    550238      12
-     5   1507878      12
-     6   1508006      12
-     7   1508130      12
-     8   1508254      12
-     9   1508380      12
-    10   1508502      12
-    11   1508624      12
-    12   3494670      12
-    13   3494799      12
-    14   3494921      12
-    15   3495044      12
-    16   3495168      12
-    17   3495292      12
-    18   3495415      12
-    19   4189058      12
-    20   4189200      12
-    21   4189329      12
-    22   4189455      12
-    23   4189580      12
-    24   4189702      12
-    25   4189829      12
+```         
+## Nodes and pids simple
+# A tibble: 25 × 2
+   outer_pid n_inner
+       <int>   <int>
+ 1    549832      12
+ 2    549960      12
+ 3    550097      12
+ 4    550238      12
+ 5   1507878      12
+ 6   1508006      12
+ 7   1508130      12
+ 8   1508254      12
+ 9   1508380      12
+10   1508502      12
+11   1508624      12
+12   3494670      12
+13   3494799      12
+14   3494921      12
+15   3495044      12
+16   3495168      12
+17   3495292      12
+18   3495415      12
+19   4189058      12
+20   4189200      12
+21   4189329      12
+22   4189455      12
+23   4189580      12
+24   4189702      12
+25   4189829      12
+```
 
-For more detail, run the code in the slurm_r\_tests repo. But it shows that we get 25 nodes and 12 cores each (because of `ntasks.per.node = 12` in `resources`), each of which gets used 2-3 times, which makes sense for a 25 outer x 25 inner looping.
+For more detail, run the code in the slurm_r_tests repo. But it shows that we get 25 nodes and 12 cores each (because of `ntasks.per.node = 12` in `resources`), each of which gets used 2-3 times, which makes sense for a 25 outer x 25 inner looping.
 
 ## Controlling chunks and workers
 
@@ -144,12 +146,14 @@ plan(list(tweak(batchtools_slurm,
 
 And that does what it's supposed to- keep everything on 5 nodes
 
-    ## Nodes and pids simple
-    # A tibble: 5 × 2
-      outer_pid n_inner
-          <int>   <int>
-    1    552072      60
-    2   1510060      60
-    3   3496848      60
-    4   4191978      60
-    5   4192353      60
+```         
+## Nodes and pids simple
+# A tibble: 5 × 2
+  outer_pid n_inner
+      <int>   <int>
+1    552072      60
+2   1510060      60
+3   3496848      60
+4   4191978      60
+5   4192353      60
+```

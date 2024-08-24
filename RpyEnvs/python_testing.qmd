@@ -23,3 +23,5 @@ It also seems to often work to just run
 ```         
 python -m pytest
 ```
+
+*Note* if you have a file with 'test' in the name, `pytest` will try to run it. So don't have e.g. `figuring_stuff_out_test.py` in there.
