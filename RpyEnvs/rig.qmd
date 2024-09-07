@@ -6,7 +6,7 @@ editor: visual
 
 ## Issue
 
-I've update to R 4.2, but have projects that were built with 4.0 and even 3.x. Most new versions of packages for R 4.x don't work in 3.x, and 4.2 seems to have broken quite a bit compared to 4.0. So I can't just `renv::restore()`, and would need to update packages one at a time, but I know doing that will break things, and I don't have time to do a full update of the project.
+I've updated to R 4.2, but have projects that were built with 4.0 and even 3.x. Most new versions of packages for R 4.x don't work in 3.x, and 4.2 seems to have broken quite a bit compared to 4.0. So I can't just `renv::restore()`, and would need to update packages one at a time, but I know doing that will break things, and I don't have time to do a full update of the project.
 
 I use `renv` to manage the packages, but not currently anything to switch/manage R versions itself. In python, there's `pyenv` to manage python versions. I've run across `rig` (<https://github.com/r-lib/rig>).
 
@@ -39,3 +39,7 @@ We need rtools to install packages with compiled components. R 4.2 has updated t
 ### The solution
 
 To install Rtools40, needed for R 4.0- 4.1, run `rig add rtools40`. Seems to be all it took, now I can compile. I assume there's a similar command for even older Rtools if need to downgrade to R 3.x, but haven't tried.
+
+### Maybe not the solution
+
+As of R4.4, using `rig system update-rtools40` seems to work for installs with `install.packages`, `renv`, and `remotes`, but when I install with `pak` I get `pkgbuild` errors. And yet, when I try the suggested `pkgbuild::check_build_tools()` it says 'Your system is ready to build packages!'. Installing rtools directly from the website (not rig) seems to fix it.

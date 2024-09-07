@@ -1,0 +1,52 @@
+---
+title: "R in databricks setup"
+format: html
+---
+
+I'm working on setting up to run some R in databricks. It's not exactly traditional 'big data' analyses, so I'm curious if we can achieve the payoffs we want with Spark. Will be some interesting testing.
+
+The project code is all in an R project, living in a private github repo, and that's the first issue. We can't just set ssh keys that I can figure out, as I usually would. Try to create a git folder, it tries to login, then add access to *the owner of the repo*, not necessarily your own account, if the repo is owned by e.g. an organisation. In theory I need a GitHub PAT classic, but it's unclear where that gets used. Looks like I just add databricks to my account (or the org account).
+
+Then, we have to get it to run. Each Notebook seems to be essentially its own instance, and so needs to full install all dependencies in the environment. That means we need to do a lot of installation management, which is further complicated because one of the dependencies is an R package that also lives in a private github repo.
+
+## Installing from github
+
+I can't get any of the usual ways of installing from private github repos to work.
+
+`renv::install()` (and by extension, `remotes::install_github()` can't authenticate, even when passing in the PAT directly to `auth_token`, and accessing the PAT with the [gitcreds load-in trick](renv_github.qmd) doesn't work because `gitcreds::gitcreds_set()` only runs in an interactive session, and for some reason the Databricks notebooks aren't (i.e. `interactive()` returns TRUE).
+
+Trying `pak::pkg_install('org/repo')` also fails, because it should be auto-hitting that gitcred and it doesn't exist.
+
+So, until I sort that out, I've been cloning the package repo into my Workspace, and installing from there with `renv::install('path/to/repo')`. For some reason, `pak::local_install()` hangs.
+
+## Installing R packages
+
+### Environment management
+
+I typically use `renv` for environment management, and there are instructions from [databricks](https://docs.databricks.com/en/sparkr/renv.html#id3) providing some instructions. The catch is, they're primarily focused on persisting the lockfile, not the cache. And since we have to reinstall packages for every notebook (and packages take an *extrodinarily* long time to install on databricks), cache persistence is super important. I've figured out a few things, but no perfect solution.
+
+For a single notebook, the cache seems to persist for a day (or maybe the duration of the cluster?). So re-runs re-install quickly from cache.
+
+I've tried to set the `RENV_PATHS_CACHE` environment variable to somewhere on `dbfs` to persist it with `Sys.setenv('dbfs/path/to/renv/cache')`, and that looks right when I say `renv::paths$cache()`. But once I do that, when I do `renv::install()`, it just works for hours and installs nothing.
+
+It *seems* to be working to set `RENV_PATHS_CACHE` to inside my working directory. Since I always try to work out of git repos, this might work. It's not really a *global* cache though, but maybe I'm OK persisting a project-level cache. Maybe I could put it in my User dir in the Workspace? I know persistent data should be in dbfs, but it the Workspace location works, it might just be the way to go.
+
+I've also explored just giving up on `renv` for this. I can't get `pak` to work at all (it just builds a metadata database and hangs for hours). r2u might be the way to go, but has issues for this particular workflow due to dependence on a package not on CRAN.
+
+### C system dependencies
+
+We run into the same C system dependency issues here as anywhere else on Ubuntu/Linux. Unfortunately, the easy fix (using `pak::sysreqs_*`) to find and fix them doesn't work here. It always says there aren't any issues (even if I feed it the OS explicitly). There's clearly some weird layer here that's blocking its ability to query. So we have to manually build a shell script that installs all the system libraries.
+
+The other option is to use r2u. That actually seems to work following the instructions at the r2u github (except I couldn't get `bspm` to install). In theory, r2u might be the best option, since fast, system-infomed installs might obviate the need for cache persistence above. But for this particular workflow, it will be a hassle. The main package is on github, so won't be on r2u. I could probably use r2u for all *its* dependencies, but that would involve enumerating them in a shell script e.g. `sudo apt install r-cran-dep1 r-cran-dep2` etc. Which is annoying and fragile.
+
+What if I build binaries for the github package and provide it on dbfs? Worth a shot?
+
+## Other issues
+
+The interface is just really buggy. Constant loss of runtime and having to start back over from the beginning. Which makes it really slow to prototype or debug or run long jobs.
+
+Dplyr seems to work differently. I assume it's an issue of being a wrapper for spark, and something isn't working right. Writing specifically for spark I guess might work in a limited workflow, but when it's happening deep in an R package that needs to be cross-compatible, that doesn't work. And debugging hits the earlier issue- it's very hard to trace, especially when the notebook loses state and has to be restarted constantly.
+
+## Parallelism
+
+I'll likely get into this in another notebook once I'm able to really dig into it, but I'm curious how spark actually works for the sorts of workflows I tend to have. They're usually *not* about having a gajillion lines of data, but instead having to do the same set of computations on a lot of different data. In the most extreme, there might not be *any* input data, if the project is simulation population modeling for massively factorial parameter values. In other cases, we might have something like smallish input datasets for 1,000 scenarios, and want to do a set of fairly complex operations on each of them. In both of those cases, it's relatively easy to see how it works on something like an HPC, where we can assign each of those scenarios or parameter combinations to a process and massively parallelise. But my understanding is that spark is all about datasets too big for memory and chunking them up. Hopefully there's a way to 'trick' it to take those chunks in some other way?

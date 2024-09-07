@@ -5,15 +5,35 @@ format: html
 
 Sometimes we need to use `renv` to install from github. in the simple form it works just as usual, e.g.
 
-`renv::install(galenholt/vicwater)` . But there are complications, and the syntax is really poorly documented. It uses `remotes` under the hood but does not always use the same syntax.
+`renv::install(galenholt/hydrogauge)` . But there are complications, and the syntax is really poorly documented. It uses `remotes` under the hood but does not always use the same syntax.
+
+## Authentication
+
+Authentication to private repos is not well documented. There are two options, SSH and HTTPS. Both are possible, but each have tricks that are not clear from the renv docs.
+
+### HTTPS
+
+This is what is usually the default, but to get it to work with renv, there are some tricks. In all cases for private repos, you'll need to set up a github PAT (I found the [usethis instructions](https://usethis.r-lib.org/articles/git-credentials.html) easier to follow than those at github).
+
+For the longest time I wasn't able to authenticate to private repos. Until I was reading the [usethis docs](https://usethis.r-lib.org/articles/git-credentials.html), which note that `remotes` (which `renv` uses for github) doesn't hit `gitcreds` to obtain the GitHub PAT. So, the solution is to install `gitcreds` (or `devtools` or `usethis`, really; we almost always need at least one of them), run `gitcreds::gitcreds_get()` in the session to activate the PAT, and then we can install `renv::install('private/repo')`.
+
+The other solution is to use `pak` , which seems to be where the tidyverse crew is moving. pak uses gitcreds, so just works if we use `pak::pkg_install('private/repo')` . To set that up with `renv` put `options(renv.config.pak.enabled = TRUE)` in .Rprofile and restart. *The catch here, at least as far as I can tell, is that pak doesn't hit the renv cache, so if you have multiple projects, it redownloads packages each time instead of linking to cached versions.* I'd *really* like to figure out how to get `pak` to avoid unneeded downloads a la renv. I.e. why doesn't `options(renv.pak.enabled = TRUE)` just use pak for all the downloading and building but still use the versioning and caching? It seems to lose at least the caching.
+
+### SSH
 
 To use ssh (with authentication), the inbuilt `git2r` is failing, so we need `git = 'external'`.
+
+Then we can use the ssh link. This assumes you've [set up ssh](../small_helpers/private_github_notes.qmd).
 
 `renv::install('git@github.com:ACCOUNT/repo_name.git', git = 'external')`
 
 If we're scripting, we likely want to add `prompt = FALSE`, and we can control upgrading other packages with `upgrade = 'always'` (this is documented).
 
-It is *really* hard to force it to build from source if the version number hasn't changed. `rebuild = TRUE` usually works, but I also try to index version numbers with every commit now in packages I own.
+## Rebuilding
+
+It is *really* hard to force it to build from source if the version number hasn't changed. `rebuild = TRUE` usually works, but I also try to [index version numbers](../package/indexing_version.qmd) with every commit now in packages I own.
+
+## Using branches
 
 To get to a branch or ref, use `@ref`, *not* a ref argument as in remotes.
 
