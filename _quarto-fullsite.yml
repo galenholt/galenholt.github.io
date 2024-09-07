@@ -3,6 +3,8 @@ project:
     - "*.qmd"
     - "!CV"
     - "!*beta_binomial.qmd"
+    - "!*negbin_autocorr"
+    - "!*docker_containers.qmd"
 
 website:
 
@@ -41,10 +43,15 @@ website:
               text: "Creating Figshare from private github"
             - href: small_helpers/error_handling.qmd
               text: "Intro to error handling"
+            - href: small_helpers/error_safely.qmd
+              text: "`Safe` error passing in loops"
             - href: small_helpers/lifecycle_warnings.qmd
               text: "Intermittent lifecycle warnings"
+            - small_helpers/dplyr_filter_matrix_errors.qmd
             - href: small_helpers/private_github_notes.qmd
               text: "Dealing with private github"
+            - href: small_helpers/renv_github.qmd
+              text: "Installing from github with renv"
             - href: small_helpers/breaking_whiles.qmd
               text: "While loops, break, and debugging"
 
@@ -68,6 +75,10 @@ website:
               text: "Latex in ggplot with latex2exp"
             - href: plotting/rayshader.qmd
               text: "3d plotting with rayshader"
+            - href: plotting/legend_in_facet.qmd
+              text: "Legends in empty facets"
+            - href: plotting/venn_diagrams.qmd
+              text: "Venn diagrams in ggplot2"
 
         - section: "Quarto"
           contents:
@@ -94,6 +105,8 @@ website:
           contents:
             - href: simmodelling/twoDautocorr.qmd
               text: "Generate 2d autocorrelation"
+            - href: stats_probability/spatial_ac.qmd
+              text: "Regressions with spatial autocorrelation"
             - href: stats_probability/expected_shannon.qmd
               text: "Bootstrapping the expected shannon diversity"
             - href: stats_probability/fitting_lognormals.qmd
@@ -139,6 +152,8 @@ website:
               text: "Intermittent NameError py-R"
             - href: RpyEnvs/python_updated_functions.qmd
               text: "Small python bits"
+            - href: RpyEnvs/python_testing.qmd
+              text: "Testing python"
 
         - section: "Setting up projects"
           contents:
@@ -155,21 +170,33 @@ website:
           contents:
             - href: package/package_creation.qmd
               text: 'First pass at building a package'
+            - href: package/indexing_version.qmd
+              text: "Automatically indexing package versions with git"
             - href: tidyprogramming/tidy_programs.qmd
               text: "Programming with dplyr and rlang"
-            - href: vicwater/vicwater_testing.qmd
+            - href: hydrogauge/hydrogauge_testing.qmd
+            - small_helpers/failing_snapshot_check.qmd
+            - href: small_helpers/vdiffr_networks.qmd
+              text: "Testing network plots with vdiffr"
+
 
 
         - section: "Data"
           contents:
             - href: data_acquisition/bom_gauges.qmd
               text: "BOM gauge locations with httr2"
-            - href: vicwater/vicwater_api_howtocall.qmd
-              text: 'Experimenting with API calls for {vicwater}'
+            - href: hydrogauge/hydrogauge_api_howtocall.qmd
+              text: 'Experimenting with API calls for {hydrogauge}'
+            - href: data_acquisition/bom_water.qmd
+              text: "Experimenting with API calls from BOM"
             - href: data_acquisition/gauge_data_pre_gauge.qmd
               text: "Data from pre-gauged periods"
             - href: data_acquisition/ALA_data_pull.qmd
               text: "Pulling data from Atlas of Living Australia"
+            - href: data_acquisition/get_geofabric.qmd
+              text: "Downloading Australian rivers geofabric"
+            - href: data_acquisition/read_geofabric.qmd
+              text: "Using Australian rivers geofabric"
 
         - section: "R parallel processing (general)"
           contents:

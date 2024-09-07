@@ -42,6 +42,8 @@ format:
 
 A nice thing about this approach is that it lets a single page on a website have downloadable word/pdf files, whereas I couldn't get the manuscript to work as a subset of a website (though I didn't try very hard). Manuscripts do look like they'll be nicer for author info and formatting, but I kept breaking the development version, so I'll try that again later.
 
+If working in Rstudio, this also lets us click the arrow next to the `render` button to choose which format to use for a manual render.
+
 I've also turned on Hypothes.is comments for this page, dealt with in more detail [elsewhere](commenting_quarto.qmd). The short story is you can make annotations and highlights on this page, which can be public or private, depending on your settings.
 
 Just to make that fancier across outputs, I'll throw a figure on and maybe some math

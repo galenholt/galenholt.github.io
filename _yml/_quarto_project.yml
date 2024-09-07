@@ -154,14 +154,14 @@ website:
           contents:
             - href: package/package_creation.qmd
               text: 'First pass at building a package'
-            - href: vicwater/vicwater_testing.qmd
+            - href: hydrogauge/hydrogauge_testing.qmd
             
         - section: "Data"
           contents:
             - href: data_acquisition/bom_gauges.qmd
               text: "BOM gauge locations with httr2"
-            - href: vicwater/vicwater_api_howtocall.qmd
-              text: 'Experimenting with API calls for {vicwater}'
+            - href: hydrogauge/hydrogauge_api_howtocall.qmd
+              text: 'Experimenting with API calls for {hydrogauge}'
             - href: data_acquisition/gauge_data_pre_gauge.qmd
               text: "Data from pre-gauged periods"
             - href: data_acquisition/ALA_data_pull.qmd

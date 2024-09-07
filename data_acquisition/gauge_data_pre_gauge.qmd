@@ -6,7 +6,7 @@ author: "Galen Holt"
 ```{r}
 library(foreach)
 library(dplyr)
-library(vicwater)
+library(hydrogauge)
 library(reticulate)
 ```
 
@@ -14,11 +14,11 @@ library(reticulate)
 import mdba_gauge_getter as gg
 ```
 
-We often end up needing to pull gauge data for lots of projects. If we just want flow data, and especially if we're working in python, there's the [mdba_gauge_getter](https://github.com/MDBAuth/MDBA_Gauge_Getter), and I've written [{vicwater}](https://github.com/galenholt/vicwater) for R and expanded it to cover Victoria, NSW, and Qld. A primary advantage of {vicwater} is that it can access more of the API calls and return any desired variables.
+We often end up needing to pull gauge data for lots of projects. If we just want flow data, and especially if we're working in python, there's the [mdba_gauge_getter](https://github.com/MDBAuth/MDBA_Gauge_Getter), and I've written [{hydrogauge}](https://github.com/galenholt/hydrogauge) for R and expanded it to cover Victoria, NSW, and Qld. A primary advantage of {hydrogauge} is that it can access more of the API calls and return any desired variables.
 
 One issue we often end up having is wanting to grab gauge data for a range of dates that may or may not go earlier than a gauge was put in place. There's actually an issue with the Kisters API for that, where it silently returns values of 0 for those dates, which is not good. Because it comes from the API itself, it affects both packages.
 
-For example, we can go to the website and find the period of record for NSW gauge 410007 (`gauges_to_pull[138]`) is 10/01/1979 - present. We'll show first what happens for three situations with both `mdba_gauge_getter` and `vicwater`
+For example, we can go to the website and find the period of record for NSW gauge 410007 (`gauges_to_pull[138]`) is 10/01/1979 - present. We'll show first what happens for three situations with both `mdba_gauge_getter` and `hydrogauge`
 
 1.  all dates pre-gauge
 
@@ -26,7 +26,7 @@ For example, we can go to the website and find the period of record for NSW gaug
 
 3.  dates before and after
 
-and then we'll show how to handle it in {vicwater}.
+and then we'll show how to handle it in {hydrogauge}.
 
 ### Set some variables
 
@@ -44,11 +44,11 @@ daybefore <- lubridate::ymd(19790109)
 
 ## All dates pre-gauge
 
-If we ask for the period before the gauge is operational {vicwater} passes the API error through.
+If we ask for the period before the gauge is operational {hydrogauge} passes the API error through.
 
 ```{r}
 #| error: true
-get_ts_traces(state = 'NSW', 
+get_ts_traces(portal = 'NSW', 
                 site_list = gaugenum, 
                 var_list = '141',
                 start_time = weekbefore,
@@ -69,10 +69,10 @@ So, that's slightly different behavior, but neither is returning misleading data
 
 ## All dates with gauge
 
-Now {vicwater} gives a dataframe.
+Now {hydrogauge} gives a dataframe.
 
 ```{r}
-get_ts_traces(state = 'NSW', 
+get_ts_traces(portal = 'NSW', 
                 site_list = gaugenum, 
                 var_list = '141',
                 start_time = gaugestart,
@@ -93,10 +93,10 @@ That again returns what it should. All the dates have data.
 
 ## Dates spanning gauge start
 
-Now {vicwater} gives a dataframe, but that initial period has `value = 0`, which is wrong. It should be NA, but the API returns 0 silently.
+Now {hydrogauge} gives a dataframe, but that initial period has `value = 0`, which is wrong. It should be NA, but the API returns 0 silently.
 
 ```{r}
-get_ts_traces(state = 'NSW', 
+get_ts_traces(portal = 'NSW', 
                 site_list = gaugenum, 
                 var_list = '141',
                 start_time = weekbefore,
@@ -119,12 +119,12 @@ So, that's not good. Especially the silent part
 
 I can't figure out how to use `mdba_gauge_getter` to automatically query the period of record. So for that, you have to make sure to check for every request.
 
-On the other hand, {vicwater} can hit other API calls (`get_variable_list`) that return the period of record, and then use them to call `get_ts_traces`. We can do this manually, which is a bit of a hassle, because `get_variable_list` returns all the variables, and we have to remember to filter for '100' if we want '100' or '140', or '141' (see [testing vicwater](../vicwater/vicwater_testing.qmd)).
+On the other hand, {hydrogauge} can hit other API calls (`get_variable_list`) that return the period of record, and then use them to call `get_ts_traces`. We can do this manually, which is a bit of a hassle, because `get_variable_list` returns all the variables, and we have to remember to filter for '100' if we want '100' or '140', or '141' (see [testing hydrogauge](../hydrogauge/hydrogauge_testing.qmd)).
 
 With multiple sites, we always will have to loop, since the `start_time`s (and maybe `end_time`) will differ.
 
 ```{r}
-varl <- get_variable_list(state = 'NSW', 
+varl <- get_variable_list(portal = 'NSW', 
                           site_list = c('422028', '410007'),
                           datasource = 'A')
 
@@ -132,7 +132,7 @@ varl100 <- varl %>% dplyr::filter(variable == "100.00")
 
 # If we have multiple sites, we have to loop over them.
 siteout_m <- foreach(i = 1:nrow(varl100)) %do% {
-  get_ts_traces(state = 'NSW', 
+  get_ts_traces(portal = 'NSW', 
                 site_list = varl100$site[i], 
                 var_list = '141',
                 start_time = varl100$period_start[i],
@@ -149,10 +149,11 @@ head(siteout_m[[1]] |> select(time, value, site_name, everything() ))
 head(siteout_m[[2]] |> select(time, value, site_name, everything() ))
 ```
 
-The cleaner way is to use `get_ts_traces2`, which does the hunting for dates automatically when given `start_time = 'all'` and `end_time = 'all'`.
+The cleaner way used to be to use `get_ts_traces2`, which does the hunting for dates automatically when given `start_time = 'all'` and `end_time = 'all'`. This function is now deprecated while a more general solution is found.
 
 ```{r}
-siteout_a <- get_ts_traces2(state = 'NSW', 
+#| eval: false
+siteout_a <- get_ts_traces2(portal = 'NSW', 
                             site_list = c('422028', '410007'), 
                             var_list = "141",
                             start_time = 'all',
@@ -165,6 +166,7 @@ siteout_a <- get_ts_traces2(state = 'NSW',
 That's really just a wrapper over the manual method above, and also does not contain leading zeros. It can return a long dataframe if `returnformat = 'df'`, but for comparison I've used `returnformat = 'sitelist'`.
 
 ```{r}
+#| eval: false
 head(siteout_a[[1]] |> select(time, value, site_name, everything() ))
 head(siteout_a[[2]] |> select(time, value, site_name, everything() ))
 ```

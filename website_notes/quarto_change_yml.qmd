@@ -6,7 +6,7 @@ format: html
 
 ## End result:
 
-They're not perfect, but Quarto [profiles](https://quarto.org/docs/projects/profiles.html) work better than what's below. I've mostly been able to [get them to work](quarto_profiles.qmd), and the issues they have are less annoying that the issues with the solution here. So, use that. I'm leaving this here because it's a bit more flexible.
+They're not perfect, but Quarto [profiles](https://quarto.org/docs/projects/profiles.html) work better than what's below. I've mostly been able to [get them to work](quarto_profiles.qmd), and the issues they have are less annoying that the issues with the solution here. So, use that (and the function `make_simpleyml()`. I'm leaving this here because it's a bit more flexible.
 
 ## Old attempts
 
@@ -94,11 +94,6 @@ use_quarto_yaml <- function(yamfile = 'project', yamdir = '_yml') {
 }
 ```
 
-That uses partial matching, so we can run `use_quarto_yaml('simple')` to switch to that version prior to rendering. This will work whether or not we use the earlier functions to set up the directory- as long as we have unique names for the various yaml options, calling `use_quarto_yaml` switches which is active, e.g. 
-```{{r}}
-use_quarto_yaml('simple')
-```
+That uses partial matching, so we can run `use_quarto_yaml('simple')` to switch to that version prior to rendering. This will work whether or not we use the earlier functions to set up the directory- as long as we have unique names for the various yaml options, calling `use_quarto_yaml` switches which is active, e.g. 31b8e172-b470-440e-83d8-e6b185028602:dAB5AHAAZQA6AE8AUQBCAGoAQQBHAEkAQQBOAHcAQQA1AEEARwBVAEEATgBnAEIAagBBAEMAMABBAE8AQQBBADQAQQBEAGcAQQBaAEEAQQB0AEEARABRAEEAWQBRAEEAdwBBAEcAVQBBAEwAUQBBADUAQQBHAE0AQQBPAFEAQgBpAEEAQwAwAEEAWgBnAEIAbQBBAEQAWQBBAE4AdwBCAGoAQQBHAFEAQQBOAEEAQQB3AEEARABRAEEAWgBRAEEAMgBBAEQAQQBBAAoAcABvAHMAaQB0AGkAbwBuADoATgBBAEEANABBAEQAYwBBAE4AdwBBAD0ACgBwAHIAZQBmAGkAeAA6AAoAcwBvAHUAcgBjAGUAOgBZAEEAQgBnAEEARwBBAEEAZQB3AEIANwBBAEgASQBBAGYAUQBCADkAQQBBAG8AQQBkAFEAQgB6AEEARwBVAEEAWAB3AEIAeABBAEgAVQBBAFkAUQBCAHkAQQBIAFEAQQBiAHcAQgBmAEEASABrAEEAWQBRAEIAdABBAEcAdwBBAEsAQQBBAG4AQQBIAE0AQQBhAFEAQgB0AEEASABBAEEAYgBBAEIAbABBAEMAYwBBAEsAUQBBAEsAQQBHAEEAQQBZAEEAQgBnAEEAQQA9AD0ACgBzAHUAZgBmAGkAeAA6AA==:31b8e172-b470-440e-83d8-e6b185028602
 
-This is not run here, because it would reset the yaml on the fly during render, which would be bad.
-It should be run interactively, just prior to rendering.
-
+This is not run here, because it would reset the yaml on the fly during render, which would be bad. It should be run interactively, just prior to rendering.

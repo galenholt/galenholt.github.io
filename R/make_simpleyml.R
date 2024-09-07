@@ -1,4 +1,4 @@
-#' Quick helper to create a quarto profile to only render the active file
+#' Quick helper to create a quarto profile to only render the active file. Use this in most instances, not the similar [make_simple_yaml()]
 #'
 #' @param renderfile file to render, default 'auto' uses the active file in Rstudio
 #'

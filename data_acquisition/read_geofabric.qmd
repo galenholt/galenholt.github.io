@@ -30,6 +30,7 @@ st_layers(gdbpath)
 The stream lines are big, but just reading doesn't take *too* long.
 
 ```{r}
+#| cache-lazy: false
 rivers <- st_read(gdbpath, layer = 'AHGFNetworkStream')
 ```
 

@@ -6,6 +6,6 @@ I am a quantitative community ecologist with a focus on aquatic systems. I addre
 
 I am a Research Fellow in the [QAEL Lab](https://www.qael.org/) at Deakin University, where I pursue these research directions and supervise Honours, Masters, and PhD students.
 
-::: {.column-screen}
+::: column-screen
 ![Bear creek, California](_images/bear_creek.jpg)
 :::

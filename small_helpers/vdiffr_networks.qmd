@@ -3,6 +3,14 @@ title: "SVG vdiffr testing"
 format: html
 ---
 
+```{r}
+#| include: false
+
+# Need this here fo renv to pick up the packages
+library(DiagrammeR)
+library(vdiffr)
+```
+
 For some situations, I need to use golden tests for figures that *aren't* made by ggplot or base or otherwise have a `print()` method as required by `vdiffr::write_svg()`. Specifically, I encounter this issue with networks created by `DiagrammeR`, which are html. The solution is to write a custom `writer` function. Note that for this to work, we also need to install `DiagrammeRsvg` and `rsvg`; they are only suggests for `DiagrammeR` and so are not automatically installed.
 
 ```{r}

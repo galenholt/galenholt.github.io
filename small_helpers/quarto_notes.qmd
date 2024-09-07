@@ -165,7 +165,7 @@ ggplot(iris, aes(x = Petal.Length * param_val, y = Petal.Width * param_val, colo
 
 [Starting](../website/quarto_website_github.qmd) and [updating](../website/updating_website.qmd) quarto websites has a few tricks, written up in more detail at those links.
 
-## Rendering 
+## Rendering 1
 
 The error
 
@@ -174,3 +174,13 @@ Error: The process cannot access the file because it is being used by another pr
 ```
 
 Seems to be due to dropbox or onedrive *even when they are not connected to the folder with the code*. Quit them, and it usually goes away. A restart is sometimes required.
+
+## Rendering 2
+
+The error
+
+```         
+Error in `lazyLoadDBinsertVariable()`: ! long vectors not supported yet: connections.c:6201
+```
+
+is caused by trying to read-in an object too big for a lazy cache. It often only occurs when rendering, not previewing or running the qmd. The solution is to put `cache-lazy: false` in the chunk header of the offending chunk. Make it go slower, but it goes.

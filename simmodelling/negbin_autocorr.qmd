@@ -15,6 +15,7 @@ knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 #| message: false
 library(tidyverse)
 library(fitdistrplus)
+devtools::load_all()
 ```
 
 I have data that is almost certainly autocorrelated and negative binomial distributed. I'm analysing it elsewhere, but bringing over two simplified datasets here. Here, x is a spatial location, and n is a count at that location.
@@ -25,122 +26,26 @@ The questions are:
 
 2.  Can we simulate distributions with the same properties?
 
-    1.  This will require figuring out an expression for a negative binomial AR process and calculating the relevant parameters for each term.
-
-I'm guessing that last bit is harder than the typical Gaussian AR sequence defined by $$X_{t+1} = \rho X_{t} + \epsilon_t$$
+That last bit is harder than the typical Gaussian AR sequence defined by $$X_{t+1} = \rho X_{t} + \epsilon_t$$
 
 where if we have rho and the $\mu$ and $\sigma$ for the $X$ distribution, we can calculate the appropriate $\mu_\epsilon$ and $\sigma_\epsilon$ using standard, well-known equations.
 
-```{r}
-nb_a <- readRDS('data/negbin_testing/nb_testA.rds')
-nb_s <- readRDS('data/negbin_testing/nb_testS.rds')
-```
+## Clean simulation given $\mu$ or $p$, $n$ ($\delta$), and $\rho$
 
-## The distributions
+So, we want to be able to fit an autocorrelated negative binomial distribution given the complete distribution and the AR(1) $\rho$.
 
-First, let's look at the distributions we have, including their negative binomial fits and AC.
+I mostly follow @gouriéroux2019, with [modifications](negbin_autocorr_testing.qmd) that make it possible to set both $\rho$ and $\mu$ separately. In short, They have $\rho = \beta c$, but set $c=1$ because they say there's no way to independently estimate both. The catch is, that links $\rho$ and the $\mu$ of the negative binomial, and we can't set both. But, I've altered the estimation (and more importantly, setting) to get the beta from mu from the overall negbin and then adjust $c$ to give the correct $\rho$, i.e. $c = \frac{\rho}{\beta}$.
 
-I could do this with dplyr and grouping, but trying to get to first principles here for the building and fitting.
+I'll try to use R's nbinom parameter names, which use `size` and either `prob` or `mu`. I will refer to `size` as $\delta$ because we are using it here as the dispersion parameter (shape parameter of the gamma mixing distribution). Like R, I'll allow either `prob` or `mu`, though in practice I expect `mu` will be more common, since it is what's returned by `fitdistrplus::fitdist()`, and so will be easier to use when we have empirical distributions and for checking.
 
-### Negative binomial fits
+## Set up the functions
 
-```{r}
-a_fit <- fitdist(nb_a$count, 'nbinom')
-s_fit <- fitdist(nb_s$count, 'nbinom')
-```
+These will all be done in `/R` and exported as well.
+
+First, we define some helpers to move between $\beta$, $p$, and $\mu$.
 
 ```{r}
-freq_a <- nb_a |> 
-  summarise(freq = n()/nrow(nb_a), .by = count) |> 
-  arrange(count)
-
-freq_s <- nb_s |> 
-  summarise(freq = n()/nrow(nb_s), .by = count) |> 
-  arrange(count)
-
-a_dist <- tibble(count = 0:max(freq_a$count),
-                 pdf = dnbinom(count, 
-                               size = a_fit$estimate[1],
-                               mu = a_fit$estimate[2]))
-
-s_dist <- tibble(count = 0:max(freq_s$count),
-                 pdf = dnbinom(count, 
-                               size = s_fit$estimate[1],
-                               mu = s_fit$estimate[2]))
-```
-
-```{r}
-ggplot(freq_a, aes(x = count, y = freq)) +
-  geom_line() +
-  geom_point() +
-  geom_line(data = a_dist, aes(y = pdf), color = 'dodgerblue')
-```
-
-Note that while it looks like a big discrepancy in the tail here, there's only a single data point past about 110.
-
-```{r}
-ggplot(freq_s, aes(x = count, y = freq)) +
-  geom_line() +
-  geom_point() +
-  geom_line(data = s_dist, aes(y = pdf), color = 'dodgerblue')
-```
-
-### Autocorrelation
-
-```{r}
-ac_a <- acf(nb_a$count)
-```
-
-```{r}
-ac_s <- acf(nb_s$count)
-```
-
-## Generating data
-
-Now, we want to generate more data with those properties, e.g. for the 'a' data, negative binomial `size` `r a_fit$estimate[1]`, $\mu$ `r a_fit$estimate[2]`, and $\rho$ `r ac_a$acf[2]`.
-
-How do we do that?
-
-There are a few papers on it, e.g. [here](https://www.researchgate.net/publication/243049593_First_order_autoregressive_time_series_with_negative_binomial_and_geometric_marginals) and [here](https://ssa.cf.ac.uk/zhigljavsky/pdfs/stats/ISUP_NBDPROCESSES.pdf) and [here](https://onlinelibrary-wiley-com.ezproxy-f.deakin.edu.au/doi/abs/10.1111/jtsa.12441). I'll try to cobble something together from them. The paper by @gouriéroux2019 looks the best so far, so let's try that. It's not simple though, so let's figure out what we have and what we need to estimate and how. And then how to generate new realisations.
-
-We have some process $X_t$ that is negative binomial and autoregressive.
-
-To get to $X_{t+1}$ they go through an 'intensity process' $Y_{t+1}$, which is a first-order AR gamma.
-
-The define distributions
-
-Poisson: $P(\lambda)$
-
-Gamma: $\gamma(\delta,\beta,c)$ where $\delta$ is degree of freedom, $\beta$ is non-centrality, and $c$ is scale
-
-Negative binomial: $NB(\delta,\beta)$ where $\delta$ is the df of the gamma and $\beta$ is the scale of the intensity.
-
-The appendix has details of those distributions, as well as some simulations, though I'll need to sort through how they got those.
-
-In various places (eq 2.1, 2.2, and appendix), they say $\rho = \beta c$ and there is not a way to determine both, so set $c = 1$. Thus, if I'm reading that correctly, $\beta = \rho$ .
-
-They do say that they use a parameterisation with $\beta$ to get directly at the Poisson-Gamma mixture, and $p = \frac{\beta}{\beta + 1}$ . The definiton of the negbin in R is given in help, but we are here using the $\mu$ version because that's what `fitdistrplus` returns. The `size` parameter in R ($n$) is defined as the "dispersion parameter (the shape parameter of the gamma mixing distribution)", and so seems to equal . The $\mu$ parameter has $p = \frac{n}{n+\mu}$. The easiest thing to do probably is to translate back and forth through $p$, where $\beta= -\frac{p}{p-1}$ and $\mu = \frac{n(1-p)}{p}$ .
-
-So, that lets us move back and forth for the parameterisation notation, but leaves two important questions:
-
-1.  How do we actually simulate?
-2.  How does $\beta$ simultanously define the $p$ of the negative binomial and the autocorrelation $\rho$?
-
-### Simulation
-
-Deal with 1 first.- before we try to match a distribution, try to simulate *anything*.
-
-To simulate, they say "simulation of such trajectories is rather straightforward and it suffices to draw alternatively from Poisson and gamma, or Poisson, gamma and Wishart distributions".
-
-They use $c = 1$, $\beta = 0.69$ and $\delta = 1.3$. Try that.
-
-If I'm reading definition 1 correctly, we: start with an $X_t$, then $Y_{t+1}$ is $\gamma(\delta+X_t, 0, c)$, and then $X_{t+1}$ is $Pois(\beta Y_{t+1})$.
-
-Let's try it.
-
-First, some translation functions
-
-```{r}
+#| eval: false
 p_from_beta <- function(beta) {
   beta/(beta + 1)
 }
@@ -168,260 +73,10 @@ mu_from_beta <- function(beta, n) {
 }
 ```
 
-```{r}
-
-
-
-
-delta <- 1.3
-beta <- 0.69
-c_param <- 1
-# just initialise the whole vector
-X <- rnbinom(1000, size = 1.3, prob = p_from_beta(0.69))
-Y <- X*NA
-
-for (i in 2:length(X)) {
-  Y[i] <- rgamma(1, shape = delta+X[i-1], scale = c_param)
-  X[i] <- rpois(1, lambda = beta*Y[i])
-}
-
-```
-
-Check
+Then, we can write the main function to generate the AR(1) sequence
 
 ```{r}
-sim_fit <- fitdist(X, 'nbinom')
-sim_fit
-```
-
-convert to beta to check. The n is right on, but the beta is way off.
-
-```{r}
-beta_from_mu(mu = sim_fit$estimate[2], n = sim_fit$estimate[1]) |> 
-  setNames('beta')
-```
-
-Similarly, if we ask what the mu we expect is, it's way off the mu we estimate.
-
-```{r}
-mu_from_beta(0.69, 1.3)
-```
-
-What's the ac? That's about right.
-
-```{r}
-sim_ac <- acf(X)
-sim_ac$acf[2]
-```
-
-Is the issue that I'm using a gamma, but I'm supposed to be using a centered gamma? Well, a non-centered gamma with centering term = 0? Is the issue that c \\neq 1?
-
-Wait, property A.1 in appendix says unconditional dist of X is $NB(\delta, \frac{\beta c}{1-\beta c})$.
-
-```{r}
-transbeta <- beta/(1-beta)
-transbeta
-mu_from_beta(transbeta, 1.3)
-```
-
-Transbeta is kind of close, but still pretty far off? But did they just change the parameterisation mid-paper?
-
-Do I need to try to use their fitting algorithm?
-
-```{r}
-pmf_to_fit <- function(beta, delta, xt, xtm1) {
-  (beta^xt * gamma(delta + xt + xtm1)) /
-    (gamma(delta + xtm1) * (beta + 1)^(delta+xt+xtm1) * factorial(xt))
-}
-
-eachlog <- X * NA
-eachlog[1] <- 0
-
-for (i in 2:length(X)) {
-  eachlog[i] <- log(pmf_to_fit(beta, delta, X[i], X[i-1]))
-}
-
-logl <- sum(eachlog)
-
-```
-
-I don't think I can use optimize, since it's single-parameter. Maybe nlm or optim. OR, can I estimate one some other way?
-
-```{r}
-make_ll <- function(betadelta, series) {
-  eachlog <- series * NA
-  eachlog[1] <- 0
-  
-  beta <- betadelta[1]
-  delta <- betadelta[2]
-
-for (i in 2:length(series)) {
-  eachlog[i] <- log(pmf_to_fit(beta, delta, series[i], series[i-1]))
-}
-
-  # optim likes to minimize, so use negative
-logl <- -sum(eachlog)
-
-return(logl)
-}
-```
-
-So that basically recovers the parameterisation. But is the issue still that we're too bound up between rho and beta?
-
-```{r}
-fit_sims <- optim(c(0.69, 1.3), make_ll, series = X)
-fit_sims
-```
-
-Can I plot those and see what I'm dealing with?
-
-```{r}
-freq_x <- tibble(count = X) |> 
-  summarise(freq = n()/length(X), .by = count) |> 
-  arrange(count)
-
-x_dist <- tibble(count = 0:max(freq_x$count),
-                 pdf = dnbinom(count, 
-                               size = sim_fit$estimate[1],
-                               mu = sim_fit$estimate[2]),
-                 pdf_beta = dnbinom(count, 
-                                    size = delta, 
-                                    prob = p_from_beta(beta)),
-                 pdf_beta_mu = dnbinom(count, 
-                                    size = delta, 
-                                    mu = mu_from_beta(beta, delta)),
-                 pdf_beta_fit = dnbinom(count, 
-                                    size =  fit_sims$par[2], 
-                                    prob = p_from_beta(fit_sims$par[1])),
-                 pdf_beta_mu_fit = dnbinom(count, 
-                                    size = fit_sims$par[2], 
-                                    mu = mu_from_beta(fit_sims$par[1],
-                                                      fit_sims$par[2]))) |> 
-  left_join(freq_x)
-```
-
-Well, the pdf is the only one that fits. Which makes sense, the others are pulling the mean too low, as we saw above. Clearly that's not an artifact.
-
-```{r}
-
-x_dist |> 
-  pivot_longer(-count) |> 
-  ggplot(aes(x = count, y = value, color = name)) +
-  geom_line()
-```
-
-Does the optim fit work? Even if the fits are wrong, are we recovering the right distribution? They're close, but not exact, though that's expected. And the mu vs p parameterisations are dead on.
-
-```{r}
-x_dist |> 
-  pivot_longer(-count) |> 
-  filter(grepl("_", name)) |> 
-  ggplot(aes(x = count, y = value, color = name, linetype = name)) +
-  geom_line(linewidth = 2)
-```
-
-So, where to from here? If we play with C, does that help? Ie if $\rho = \beta c$, but the negbin only has beta and the gamma only has c, can we get there?
-
-ie can we do something roundabout like saying we know rho, we can get the beta from mu from the overall negbin, then c has to be obtainable from that?, i.e. $c = \frac{\rho}{\beta}$.
-
-```{r}
-rho = 0.69
-mu = 2.8
-delta = 1.3
-
-beta = beta_from_mu(mu, delta)
-
-c_param = rho/beta
-```
-
-```{r}
-# just initialise the whole vector
-X <- rnbinom(1000, size = delta, mu = mu)
-Y <- X*NA
-
-for (i in 2:length(X)) {
-  Y[i] <- rgamma(1, shape = delta+X[i-1], scale = c_param)
-  X[i] <- rpois(1, lambda = beta*Y[i])
-}
-```
-
-```{r}
-sim_fit <- fitdist(X, 'nbinom')
-sim_fit
-```
-
-```{r}
-sim_ac <- acf(X)
-sim_ac$acf[2]
-```
-
-HOLY COW DID THAT JUST WORK???
-
-I should also recover rho and delta with the optim. Pretty decent.
-
-```{r}
-fit_sims <- optim(c(0.69, 1.3), make_ll, series = X)
-fit_sims
-```
-
-Plot again
-
-```{r}
-freq_x <- tibble(count = X) |> 
-  summarise(freq = n()/length(X), .by = count) |> 
-  arrange(count)
-
-x_dist <- tibble(count = 0:max(freq_x$count),
-                 pdf = dnbinom(count, 
-                               size = sim_fit$estimate[1],
-                               mu = sim_fit$estimate[2]),
-                 pdf_mu = dnbinom(count, size = delta, mu = mu),
-                 pdf_beta = dnbinom(count, 
-                                    size = delta, 
-                                    prob = p_from_beta(beta)),
-                 pdf_beta_mu = dnbinom(count, 
-                                    size = delta, 
-                                    mu = mu_from_beta(beta, delta)),
-                 pdf_beta_fit = dnbinom(count, 
-                                    size =  fit_sims$par[2], 
-                                    prob = p_from_beta(fit_sims$par[1])),
-                 pdf_beta_mu_fit = dnbinom(count, 
-                                    size = fit_sims$par[2], 
-                                    mu = mu_from_beta(fit_sims$par[1],
-                                                      fit_sims$par[2]))) |> 
-  left_join(freq_x)
-```
-
-Plot, but too much overplotting, so leave the data on there and wrap the estimates. They all work except pdf_beta_fit and pdf_beta_mu_fit, which are the ones that use fit_sims (i.e. the likelihood fit from the paper).
-
-```{r}
-x_dist |> 
-  pivot_longer(-count) |> 
-  filter(name != 'freq') |> 
-  ggplot(aes(x = count, y = value, color = name)) +
-  geom_line() +
-  geom_line(data = x_dist, aes(y = freq), color = 'black') + 
-  facet_wrap('name')
-```
-
-So, now to develop a clean method and test with data.
-
-## Clean simulation given $\mu$ or $p$, $n$ ($\delta$), and $\rho$ 
-
-So, we want to be able to fit an autocorrelated negative binomial distribution given the distribution of the overall distribution and the AR(1) $\rho$.
-
-We'll use R's nbinom parameterisations, which use `size` and either `prob` or `mu`. I will refer to `size` as $\delta$ because we are using it here as the dispersion parameter (shape parameter of the gamma mixing distribution). Like R, I'll allow either `prob` or `mu`, though in practice I expect `mu` will be more common, since it is what's returned by `fitdistrplus::fitdist()`, and so will be easier to use when we have empirical distributions and for checking.
-
-With a set of those parameters,
-
-```{r}
-rho <- 0.75
-delta <- 1.5
-mu <- 5
-```
-
-Then we define a function to generate the AR(1) sequence
-```{r}
+#| eval: false
 rnbinomAR <- function(n, size, prob, mu, rho, return_Y = FALSE) {
   
   if (!missing(prob) & !missing(mu)) {
@@ -431,7 +86,7 @@ rnbinomAR <- function(n, size, prob, mu, rho, return_Y = FALSE) {
   if (!missing(prob)) {
     beta <- beta_from_p(prob)
   }
-  if (!missing(prob)) {
+  if (missing(prob)) {
     beta <- beta_from_mu(mu, size)
   }
   
@@ -455,7 +110,7 @@ rnbinomAR <- function(n, size, prob, mu, rho, return_Y = FALSE) {
     X[i] <- rpois(1, lambda = beta*Y[i])
   }
   
-  if (returnY) {
+  if (return_Y) {
     return(list(X = X, Y = Y))
   } else {
     return(X)
@@ -463,12 +118,13 @@ rnbinomAR <- function(n, size, prob, mu, rho, return_Y = FALSE) {
 }
 ```
 
-A standard set of checks are then to fit that and return the mu, size, and rho. Could do the acf plot too, but that's just using `acf`.
+A standard set of checks are then to fit that and return the mu, size, and rho. Could do the acf plot too, but that's just using `acf`. These can then be compared to the set values.
 
 ```{r}
+#| eval: false
 fit_nbinomAR <- function(X) {
   # check the size and mu
-  musize <- fitdistr::fitdist(X, 'nbinom')
+  musize <- fitdistrplus::fitdist(X, 'nbinom')
   # check the AR
   ac_x1 <- acf(X)$acf[2]
   
@@ -482,15 +138,14 @@ fit_nbinomAR <- function(X) {
 }
 ```
 
-Standard checks using the frequencies and then a chi square or a plot. 
-These just check the distribution, not the AR. We'll have to take the rho estimation from acf's word on that.
+We can also check statistical correspondence of the complete distribution using a chi-square test and visualisations. These just check the distribution, however, not the AR. We'll have to take the rho estimation from acf's word on that.
 
 ```{r}
-
-nbin_emp_pdf <- function(X, size, prob, mu) {
+#| eval: false
+nbin_emp_pmf <- function(X, size, prob, mu) {
   
   freq_x <- tibble::tibble(count = X) |> 
-  dplyr::summarise(freq = dplyr::n()/length(X),
+  dplyr::summarise(empirical = dplyr::n()/length(X),
                    .by = count) |> 
   dplyr::arrange(count)
 
@@ -504,7 +159,7 @@ nbin_emp_pdf <- function(X, size, prob, mu) {
                                        size = size,
                                        prob = prob))
   }
-  if (!missing(prob)) {
+  if (missing(prob)) {
     x_dist <- tibble::tibble(count = 0:max(freq_x$count),
                          pmf = dnbinom(count,
                                        size = size,
@@ -516,10 +171,190 @@ nbin_emp_pdf <- function(X, size, prob, mu) {
 
 # Join into one dataframe
 x_dist <- x_dist |> 
-  dplyr::left_join(freq_x) |> 
-  tidyr::pivot_longer(-count)
+  dplyr::left_join(freq_x)
 
 return(x_dist)
 }
 
 ```
+
+The plot and chi
+
+```{r}
+#| eval: false
+nbin_gg <- function(distdf) {
+  
+  nbin_gg_check <- distdf |> 
+  pivot_longer(-count) |> 
+  ggplot(aes(x = count, y = value, color = name)) +
+  geom_line() +
+    labs(y = 'P(X=x)', color = '')
+  
+  return(nbin_gg_check)
+}
+```
+
+```{r}
+#| eval: false
+nbin_chi <- function(distdf, grouper) {
+  distdf |> 
+  summarise(chi_p = chisq.test(empirical, pmf)$p.value,
+            .by = {{grouper}})
+}
+```
+
+## Simulation and checking
+
+I'll demonstrate with a set of test parameters:
+
+```{r}
+rho <- 0.75 
+delta <- 1.5 
+mu <- 5
+```
+
+Generate a length-1000 sequence
+
+```{r}
+test_seq <- rnbinomAR(1000, size = delta, mu = mu, rho = rho)
+```
+
+Make a quick plot
+
+```{r}
+plot(test_seq, type = 'l')
+
+```
+
+And check it worked
+
+```{r}
+fit_nbinomAR(test_seq)
+```
+
+Those are reasonably close.
+
+To do the chi square and plot checks of the overall distribution, we need to get the frequencies with `nbin_emp_pmf`
+
+```{r}
+test_freq <- nbin_emp_pmf(test_seq, size = delta, mu = mu)
+```
+
+The chi is \> 0.05 so empirical and theoretical are not distinguishable.
+
+```{r}
+nbc <- nbin_chi(test_freq)
+nbc
+```
+
+And the plot of the empirical and theoretical pmfs
+
+```{r}
+nbin_gg(test_freq)
+```
+
+## Estimation and simulation
+
+Above, we just chose some parameter values. In many cases, we'll want to estimate them from empirical data, and then simulate new data with the same distribution. I've saved two sets of empirical data here that I'll demonstrate with. *This is where what looked good above falls apart*.
+
+```{r}
+nb_a <- readRDS('data/negbin_testing/nb_testA.rds')
+nb_s <- readRDS('data/negbin_testing/nb_testS.rds')
+```
+
+We use `fit_nbinomAR` to get the estimates of $\delta$, $\mu$ and $\rho$ (which calls `fitdistrplus::fitdist` and `acf`).
+
+```{r}
+  afit <- fit_nbinomAR(nb_a$count)
+  sfit <- fit_nbinomAR(nb_s$count)
+```
+
+Those seem to fit the nbinom pretty well
+
+```{r}
+test_freqa <- nbin_emp_pmf(nb_a$count, size = afit$estimate[afit$term == 'size'], mu = afit$estimate[afit$term == 'mu'])
+nbin_gg(test_freqa)
+```
+
+```{r}
+test_freqs <- nbin_emp_pmf(nb_s$count, size = sfit$estimate[sfit$term == 'size'], mu = sfit$estimate[sfit$term == 'mu'])
+nbin_gg(test_freqs)
+```
+
+Now we use those fits to generate new data. Though given how far off those PMFs are, not much hope that this will work.
+
+```{r}
+sim_a <- rnbinomAR(1000,
+                   size = afit$estimate[afit$term == 'size'],
+                   mu = afit$estimate[afit$term == 'mu'],
+                   rho = afit$estimate[afit$term == 'rho'])
+
+sim_s <- rnbinomAR(1000,
+                   size = sfit$estimate[sfit$term == 'size'],
+                   mu = sfit$estimate[sfit$term == 'mu'],
+                   rho = sfit$estimate[sfit$term == 'rho'])
+```
+
+Now let's check those.
+
+```{r}
+simfita <- fit_nbinomAR(sim_a)
+simfitb <- fit_nbinomAR(sim_s)
+```
+
+Despite working well above, this has now completely fallen apart- the mu in particular are MUCH smaller.
+
+To directly compare the original fits and the simulated data, we can join them. The size parameter isn't terrible, rho is pretty good, but mu is horrible.
+
+```{r}
+afitsim <- afit |> 
+  rename(data_estimate = estimate, data_se = std_error) |> 
+  bind_cols(simfita |> 
+              dplyr::select(-term) |> 
+              rename(sim_estimate = estimate, sim_se = std_error))
+afitsim
+
+```
+
+```{r}
+sfitsim <- sfit |> 
+  rename(data_estimate = estimate, data_se = std_error) |> 
+  bind_cols(simfitb |> 
+              dplyr::select(-term) |> 
+              rename(sim_estimate = estimate, sim_se = std_error))
+sfitsim
+```
+
+How do those look plotted?
+
+```{r}
+plot(nb_a$count, col = 'black', type = 'l')
+lines(sim_a, col = 'firebrick')
+```
+
+```{r}
+plot(nb_s$count, col = 'black', type = 'l')
+lines(sim_s, col = 'firebrick')
+```
+
+So, this is clearly not really working. Some things to investigate further
+
+-   If I ignore AR, does `fitdistrplus::fitdist(X, 'nbinom')` return the right $\mu$?
+
+-   Similarly, if I simulate data with `rnbinom` (instead of `rnbinomAR`), do I get an nbinom with the right $\mu$?
+
+    -   This is probably the thing to check first.
+
+It does look like `rnbinom` works fine, that blue line has similar mean to the black.
+
+```{r}
+simanr <- rnbinom(1000,
+                  size = afit$estimate[afit$term == 'size'],
+                   mu = afit$estimate[afit$term == 'mu'])
+
+plot(nb_a$count, col = 'black', type = 'l')
+lines(sim_a, col = 'firebrick')
+lines(simanr, col = 'dodgerblue')
+```
+
+So, the issue is in `rnbinomAR`, likely in a decay of the c_param in the gamma in Y. Will need to look more deeply into what's happening there, and if it's fixable. Likely start with setting `returnY = TRUE` and seeing if that gamma holds its mean or decays. Maybe there's a nonlinearity in there that lets it decay (well, makes the decay noticeable) at high mu.

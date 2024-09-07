@@ -25,9 +25,10 @@ filenames
 
 we don't want 'version2', but otherwise, let's download all of that.
 
-It's a lot of data, so it'll take a while.
+It's a lot of data, so it'll take a while. Turn the eval off unless we actually want to run this.
 
 ```{r}
+#| eval: false
 if (!dir.exists('data/geofabric')) {
   dir.create('data/geofabric')
 }

@@ -6,7 +6,7 @@ editor: visual
 
 # The issue
 
-I'm working on an API that uses JSON in the body, but getting it to come out right with square brackets, curly brackets, commas, etc where they're supposed to be has been trial and error. I'm going to put what I've figured out here. I'm using examples from the {vicwater} package, but the main point is to show how to get different sorts of output.
+I'm working on an API that uses JSON in the body, but getting it to come out right with square brackets, curly brackets, commas, etc where they're supposed to be has been trial and error. I'm going to put what I've figured out here. I'm using examples from the {hydrogauge} package, but the main point is to show how to get different sorts of output.
 
 Using the `httr2` examples with `req_dry_run` to see what the request looks like and check the formats.
 

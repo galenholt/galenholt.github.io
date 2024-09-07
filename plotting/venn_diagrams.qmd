@@ -8,6 +8,7 @@ I need to create something like a Venn diagram, but scaled. None of the venn pac
 ```{r}
 library(ggforce)
 library(tidyverse)
+devtools::load_all()
 ```
 
 First, let's say we have two sets of different size, with some overlap
@@ -38,14 +39,15 @@ Now, though, I want an area of overlap of 25. So really, I need to find an offse
 
 [Wolfram](https://mathworld.wolfram.com/Circle-CircleIntersection.html) has a complicated formula (14) to get A (the area of the 'lens'- the overlap) given the distance d between centers and the radii. Here, we have the area and radii, and want to solve for d. So can we do that?
 
-```
+```         
 A = r^2*acos((d^2 + r^2 - R^2) / (2*d*r)) + 
   R^2*acos((d^2 - r^2 + R^2) / (2*d*r)) -
   0.5*sqrt((d+r-R) * (d-r+R) * (-d+r+r) * (d+r+R))
 ```
 
-According to [Sage](https://sagecell.sagemath.org/) 
-```
+According to [Sage](https://sagecell.sagemath.org/)
+
+```         
 pi - acos(-1/2*(R^2 - d^2 - r^2)/(d*r)) == 1/2*(2*(pi - acos(-1/2*(R^2 + d^2 - r^2)/(d*r)))*R^2 + 2*pi*r^2 - 2*A - sqrt(R^3*d + R^2*d^2 - R*d^3 - d^4 + (2*R - d)*r^3 - 2*r^4 + (2*R^2 + 3*R*d + 3*d^2)*r^2 - (2*R^3 + 3*R^2*d - d^3)*r))/r^2
 ```
 
@@ -87,7 +89,6 @@ I should be able to just do this numerically with `optim` or `optimize`, I think
 # }
 ```
 
-
 ```{r}
 # need to get this into the mutate somehow
 d <- find_d(area = length(intersect(set1, set2)), radii = cirtib$set_r)
@@ -115,7 +116,6 @@ cirtib <- cirtib |>
   mutate(centers = setd_tidy*c(-0.5, 0.5))
 ```
 
-
 ```{r}
 ggplot(cirtib) + 
   geom_circle(mapping = aes(x0 = centers, y0 = 0, 
@@ -124,7 +124,8 @@ ggplot(cirtib) +
               alpha = 0.4) +
   coord_fixed()
 ```
-That really is fairly contrived to have the separate circles long. But when it comes time to plot, it's WAY nicer. 
+
+That really is fairly contrived to have the separate circles long. But when it comes time to plot, it's WAY nicer.
 
 Let's say we have a dataset where we have already calculated the sizes and overlaps of a bunch of sets. Just make it long, since that's how the data we want to use will be, and it makes the plotting easier.
 
@@ -136,8 +137,8 @@ manysets <- tibble(set_pair = rep(1:11, each = 2),
   mutate(overlap = overlapfrac*min(area), .by = set_pair)
 ```
 
-Now, to make the circles, we need to calculate radii and distance between centers.
-This is now equally as annoyign to be wide
+Now, to make the circles, we need to calculate radii and distance between centers. This is now equally as annoyign to be wide
+
 ```{r}
 manysets <- manysets |> 
   mutate(radius = sqrt(area/pi)) |> 
@@ -150,7 +151,8 @@ manysets <- manysets |>
   mutate(area_error = abs(overlap - area_calc)) |> 
   mutate(centers = d*c(-0.5, 0.5))
 ```
-Now to plot 
+
+Now to plot
 
 ```{r}
 ggplot(manysets) + 
@@ -160,7 +162,9 @@ ggplot(manysets) +
               alpha = 0.4) +
   coord_fixed()
 ```
+
 And the area_error is always very low
+
 ```{r}
 manysets
 ```
@@ -176,6 +180,7 @@ evensets <- tibble(set_pair = rep(1:11, each = 2),
 ```
 
 Now get r, d, and centers
+
 ```{r}
 evensets <- evensets |> 
   mutate(radius = sqrt(area/pi)) |> 
@@ -188,7 +193,8 @@ evensets <- evensets |>
   mutate(area_calc = calc_a(unique(d), radii = radius), .by = set_pair) |> 
   mutate(area_error = abs(overlap - area_calc))
 ```
-Now to plot 
+
+Now to plot
 
 ```{r}
 ggplot(evensets) + 
@@ -198,9 +204,11 @@ ggplot(evensets) +
               alpha = 0.4) +
   coord_fixed()
 ```
+
 One thing I'm going to want to do when I use this is scale them (e.g. I'll have massive numbers, but need to scale them down). I think the easiest way to do that is to just operate on scaled areas and overlaps.
 
 So, recapitulating the above but with larger numers and then scaled
+
 ```{r}
 scaledsets <- tibble(set_pair = rep(1:11, each = 2),
                    set_num = rep(1:2, 11),
@@ -211,6 +219,7 @@ scaledsets <- tibble(set_pair = rep(1:11, each = 2),
 ```
 
 Now get r, d, and centers
+
 ```{r}
 scaledsets <- scaledsets |> 
   mutate(radius = sqrt(area/pi),
@@ -222,8 +231,8 @@ scaledsets <- scaledsets |>
          centers_scaled = d_scaled*c(-0.5, 0.5))
 ```
 
-Now to plot 
-First the raw
+Now to plot First the raw
+
 ```{r}
 ggplot(scaledsets) + 
   geom_circle(mapping = aes(x0 = centers, y0 = (set_pair-1)*12, 
@@ -232,7 +241,9 @@ ggplot(scaledsets) +
               alpha = 0.4) +
   coord_fixed()
 ```
+
 Then the scaled, looks like before.
+
 ```{r}
 ggplot(scaledsets) + 
   geom_circle(mapping = aes(x0 = centers_scaled, y0 = (set_pair-1)*12, 
@@ -241,7 +252,9 @@ ggplot(scaledsets) +
               alpha = 0.4) +
   coord_fixed()
 ```
+
 ## Extensions
+
 Now, if the goal is just to plot, can I (should I) write a little function that just returns radii and centers? It would require a very specific data format, so not sure it's worth it. Obviously it *could* be generalised to long, wide, and as here, partially-long (areas in col, but overlap in another). I think I might see how useful it would be when I actually try to do this for my data and then decide
 
-We could also use d to go in any direction, with any offset. E.g. from a base 0,0, we could shift only one circle right or left or up or down or given an angle and pythagoras off at an arbitrary angle. 
+We could also use d to go in any direction, with any offset. E.g. from a base 0,0, we could shift only one circle right or left or up or down or given an angle and pythagoras off at an arbitrary angle.

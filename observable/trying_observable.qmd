@@ -5,7 +5,7 @@ author: "Galen Holt"
 
 Quarto has the option of using Observable JS for code chunks. This gives the ability to add interactivity in-browser, without needing to do server-side calcs, as we do with Shiny. The catch is with Shiny, I can serve R objects (e.g. ggplots) that I'm familiar with. Using observable means I need to figure out how that system works. I'm also a bit unclear how much processing can happen. My understanding is that any actual processing that happens needs to happen in the ojs, not R chunks, so we can't interactively change a setting in the observable chunk and have that kick off some R. Though I might be wrong.
 
-I have quite a few use cases in mind if I can get this to work- serving maps, as an interface to {vicwater}, some drone settings, playing with population models, etc.
+I have quite a few use cases in mind if I can get this to work- serving maps, as an interface to {hydrogauge}, some drone settings, playing with population models, etc.
 
 ## ISSUES
 

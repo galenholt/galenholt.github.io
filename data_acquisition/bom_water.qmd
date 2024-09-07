@@ -3,7 +3,7 @@ title: "Waterdata from BOM"
 format: html
 ---
 
-I wrote [{vicwater}](https://github.com/galenholt/vicwater) to get information about water gauges in Victoria, and then discovered it also works in NSW and Queensland. It does not seem to work in South Australia though.
+I wrote [{hydrogauge}](https://github.com/galenholt/hydrogauge) to get information about water gauges in Victoria, and then discovered it also works in NSW and Queensland. It does not seem to work in South Australia though.
 
 Can we just use [bomWater](https://github.com/buzacott/bomWater/tree/master)? Or use it to figure out how to call BOM myself?
 
@@ -18,7 +18,7 @@ renv::install('buzacott/bomWater')
 library(bomWater)
 ```
 
-It doesn't obviously have a lot of the query tools from vicwater, but let's see if it works with the example
+It doesn't obviously have a lot of the query tools from hydrogauge, but let's see if it works with the example
 
 ```{r}
 cotter_river <- get_daily(parameter_type = 'Water Course Discharge',
@@ -370,7 +370,7 @@ test_resp <-   httr2::request(api_url) |>
 Looks like that didn't work...
 
 ```{r}
-resp_body_string(test_resp)
+httr2::resp_body_string(test_resp)
 ```
 
 How about `req_url_query`? That looks right
@@ -388,7 +388,7 @@ test_out <-  httr2::request(api_url) |>
 ```
 
 ```{r}
-jsonout <- resp_body_json(test_out)
+jsonout <- httr2::resp_body_json(test_out)
 
 # after some flipping and checking;
 tibnames <- unlist(jsonout[1])
@@ -400,7 +400,7 @@ tibout <- jsonout[-1] |>
   
 ```
 
-That seems to work. So, do I want to integrate this with vicwater? Can I use the same basic code? Not really, since the states need json bodies, and this needs a list-query. BUT, can I do some background parsing? If it works to send NULL in for the query and the body, can write the request to do both, but only actually do one or the other.
+That seems to work. So, do I want to integrate this with hydrogauge? Can I use the same basic code? Not really, since the states need json bodies, and this needs a list-query. BUT, can I do some background parsing? If it works to send NULL in for the query and the body, can write the request to do both, but only actually do one or the other.
 
 Does it work to do this?
 
@@ -429,11 +429,3 @@ test_out_state <- httr2::request("https://data.water.vic.gov.au/cgi/webservice.e
 ```
 
 That leaves aside the question of do we *want* to do that. It would be nice to unify the experience, I think, if that's all we have to change in the main getResponse function. And then I can write separate bom and state versions of the functions accessible separately or through common wrappers that standardize syntax and outputs. Potentially just get_ts_traces_2.
-
-# Temp and other weather
-
-Can I just swap in the climate data URL and get temps etc?
-
-```{r}
-weather_data <- ki_timeseries_list(hub = "https://reg.bom.gov.au/climate/data")
-```

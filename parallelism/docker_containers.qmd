@@ -1,0 +1,195 @@
+---
+title: "Docker/Singularity"
+format: html
+---
+
+Managing environments across HPCs without root is horrible, especially when using spatial packages and similar that require C libraries on Linux. Theoretically, Singularity containers (or docker or whatever) are the answer, but I don't full understand them. So I'll try to spin some up and see how they work.
+
+Beyond the obvious 'how do I make one?' question, I have a couple others:
+
+1.  How long do they take to build?
+2.  Can I get them fully built with all R packages I need? Python too?
+3.  If I want to change R *code*, do I update the container? or is it like a remote machine and I can git pull in changes?
+4.  How do they actually work on an HPC? Do they get built on each job?
+5.  What about other situations (Azure, AWS, different local machines?)
+
+I'm assuming I'll want the rocker r2u images to start with,
+
+but first, [install docker](https://docs.docker.com/guides/getting-started/get-docker-desktop/).
+
+It restarts
+
+Then, when I paste in the
+
+``` bash
+docker run -d -p 8080:80 docker/welcome-to-docker
+```
+
+it throws an error. But then seems to trigger more of the install, where i then log in and the desktop app starts. And *then* I can run the line above.
+
+\*Note- even after this, running `docker run` at the command line doesn't work unless the docker app is running.\*
+
+So, that's one dummy container. On to getting R working and figuring out what the best workflow is. There's a bunch of options to use it with Rstudio, but I'm not sure what the point is. Maybe I'm too stuck in a terminal-based HPC approach?
+
+What I'm eventually going to want to do is have one with the packages I want installed, but for now, let's get the two examples from [rocker](https://rocker-project.org/) going to see how it works- r-base and rocker/rstudio
+
+Could I just use a prebuild geospatial one? Maybe? Or an r2u and then apt-get what I need super fast?
+
+And then how do I make a singularity and get that on the hpc and run it?
+
+## r-base
+
+Installs, and immediately puts me in an R terminal. If I quit though, I quit to the main computer, not bash in the container.
+
+The first install takes a while to download and build, after that, it's instant.
+
+I can't figure out how to start it from the docker desktop app, but also don't really care- my understanding is this is a terminal-forward version anyway. Though it would still be nice to have access to bash for things like navigation and directories etc.
+
+If I install a package, close down, and reopen, does it persist? I think not. But will check.
+
+It does not persist. Could I force it by pointing at a shared data drive and setting .libPaths? Maybe, but probably better to actually build with the packages I want.
+
+I'm going to need to figure out how to either think differently or get this to work more like a 'project'. And sort out data connections.
+
+I expect I'll want to custom-build eventually.
+
+## rocker/rstudio
+
+Takes a while to get going at first.
+
+Seems to be stuck at
+
+```         
+TTY detected. Printing informational message about logging configuration. Logging configuration loaded from '/etc/rstudio/logging.conf'. Logging to 'syslog'.
+```
+
+Ah, that's what the *terminal* is doing. If we open it in a browser and sign in, we get rstudio in the browser.
+
+How do I actually use it?
+
+If I use a terminal to git clone a project, then I can go file- open project to switch to it.
+
+I still have to install all the project-required packages etc- so that's what I'd want to pre-load somehow.
+
+As I expected, this container will not install sf.
+
+Tried to install the necessary C libraries, but I don't seem to have sudo
+
+If I kill the terminal, it kills the whole thing.
+
+Did a quick check, installed `futures`, and it can see all of my cores.
+
+### Linking files
+
+Can it see data on local machine? (Assume this will be different on a shared system, but at least check here). Not obviously, though I might be able to modify the container to do so?
+
+AH- I can if I link it on startup
+
+``` bash
+docker run --rm -ti -v /c/Users/galen/Documents/code:/home/rstudio/codedir -e PASSWORD=yourpassword -p 8787:8787 rocker/rstudio
+```
+
+Note that I've put the linked folder in /home/rstudio, since that's where rstudio opens.
+
+### Root permissions
+
+If I add the `-e ROOT=true`, I can use sudo
+
+```         
+docker run --rm -ti -e ROOT=true -e PASSWORD=yourpassword -p 8787:8787 rocker/rstudio
+```
+
+So now this works
+
+```         
+sudo apt-get update
+sudo apt-get install libudunits2-dev
+```
+
+And theoretically I could install all the C dependencies for e.g. `sf`. But I'd rather just build the container to have them in the first place.
+
+## rocker/geospatial
+
+Now, what if I want geospatial to actually work?
+
+```         
+docker run --rm -ti -v /c/Users/galen/Documents/code:/home/rstudio/codedir -e PASSWORD=yourpassword -p 8787:8787 -e ROOT=true rocker/geospatial
+```
+
+That works. And I can use the terminal.
+
+## Adding packages
+
+Now, let's say I want to also install packages. I can just do it there, but would need to every time.
+
+One approach would be to modify the docker itself (e.g. create a custom docker with exactly what I need). Another would be to use renv to do it. In that case, we'd want to be able to see the renv cache so we don't have to do it each time (and can share packages across containers/projects).
+
+I think the first would be good as things stabilise (and to not carry around a ton of packages for the container build). The second would be good in an approach that largely uses docker as a wrapper for Rprojects. E.g. we spin up rocker/geospatial for each project, pass the project as the mount, and go.
+
+Both strategies are discussed by \[renv\](https://rstudio.github.io/renv/articles/docker.html) - and for the first, it uses renv itself in the dockerfile to get package versions, which would be good for pinning.
+
+Am I going to run into issues developing on a windows machine?
+
+Just try the example they give.
+
+It likely works if in unix. It pretends to work if in git bash on windows, but doesn't actually.
+
+```         
+# the location of the renv cache on the host machine
+# RENV_PATHS_CACHE_HOST=/opt/local/renv/cache
+RENV_PATHS_CACHE_HOST=/c/Users/galen/Documents/docker/cache
+
+# where the cache should be mounted in the container
+RENV_PATHS_CACHE_CONTAINER=/renv/cache
+```
+
+```         
+docker run --rm -ti  \
+    -e "RENV_PATHS_CACHE=${RENV_PATHS_CACHE_CONTAINER}" \
+    -v "${RENV_PATHS_CACHE_HOST}:${RENV_PATHS_CACHE_CONTAINER}" \
+    -v /c/Users/galen/Documents/code/SRA:/home/rstudio/SRA \
+    -e PASSWORD=yourpassword -p 8787:8787 -e ROOT=true rocker/geospatial
+```
+
+If we give up on the variables and just pass the values with powershell, we have
+
+```         
+docker run --rm -ti  `
+    -e RENV_PATHS_CACHE=/renv/cache `
+    -v /c/Users/galen/Documents/docker/cache:/renv/cache `
+    -v /c/Users/galen/Documents/code/SRA:/home/rstudio/SRA `
+    -e PASSWORD=yourpassword -p 8787:8787 -e ROOT=true rocker/geospatial
+```
+
+That gets closer to opening in a specified project, though it's not quite there.
+
+renv doesn't seem to know about *any* of the already-installed packages. So if I went this way, it'd probably make sense to either start with a smaller image or do the .libPaths in Rprofile trick. It *is* useful to know that I can install things like sf with C libraries, since those packages and dependencies are already in rocker/geospatial. So while I shouldn't reinstall them, I can (or can update, etc).
+
+The question now though, is whether I can install things with renv and have them persist.
+
+Installed yaml, sf, and galah (the latter of which almost certainly isn't part of the image).
+
+I can `library()` them in, and if I `renv::install()` them again, it's instant.
+
+And if I add this to .Rprofile, it can see the preinstalled packages too.
+
+``` R
+renvpaths <- .libPaths()
+.libPaths(new = c(renvpaths, "/usr/local/lib/R/site-library", "/usr/local/lib/R/library"))
+```
+
+So, that approach would seem to work pretty well in a situation where I want an interface (Rstudio, probably shiny, etc.
+
+There is a question of whether I'd want to mount a project I'm also using locally, or do the git pull internally (or mount from a separate location).
+
+How can I use both R and bash (and have root permissions)?
+
+One option is to always use an rstudio build, and use the built-in terminal. But I don't really want to have to do that, and it won't work well on an HPC anyway.
+
+What it doesn't do is what I'd likely need to use this on an HPC (or Databricks, for different reasons)- have R installed and packages available, but interact with it primarily through bash (i.e. not open into Rstudio or R and kill when close them).
+
+And then there's the singularity question.
+
+And how to set up ssh keys?
+
+And what about r2u? That's likely the fastest way to get R packages. Is it better?

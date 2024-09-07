@@ -38,7 +38,9 @@ devtools::update_packages('devtools')
 Check the name I used works.
 
 ```{r}
-available::available('vicwater')
+
+# browse = FALSE to avoid loading browsers rendering this website
+available::available('hydrogauge', browse = FALSE)
 ```
 
 Looks good.
@@ -51,7 +53,7 @@ So, let's create the package.
 
 ```{r}
 #| eval: false
-usethis::create_package('~Galen/Documents/vicwater')
+usethis::create_package('~Galen/Documents/hydrogauge')
 ```
 
 And that worked with an existing directory. Was kind of worried about that. And it auto-opens a new Rstudio session.
@@ -62,7 +64,7 @@ Let's start building.
 
 ## Building
 
-I've been testing and poking at the API in some qmds [here](../vicwater/vicwater_testing.qmd). I expect a lot of that ends up as vignettes in the package, and some is ready to become functions. I'll likely maintain that flow- test in the qmd, make into functions there, repeat.
+I've been testing and poking at the API in some qmds [here](../hydrogauge/hydrogauge_testing.qmd). I expect a lot of that ends up as vignettes in the package, and some is ready to become functions. I'll likely maintain that flow- test in the qmd, make into functions there, repeat.
 
 I'm going to go write a function, and then figure out how to use it.
 
@@ -134,7 +136,7 @@ Once it's pushed to github, it's fairly straightforward to install- just
 
 ```{r}
 #| eval: false
-devtools::install_github("galenholt/vicwater")
+devtools::install_github("galenholt/hydrogauge")
 ```
 
 ## Checking, building, etc

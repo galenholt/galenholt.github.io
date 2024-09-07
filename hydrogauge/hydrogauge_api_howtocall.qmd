@@ -1,5 +1,5 @@
 ---
-title: "Vicwater api crude testing"
+title: "hydrogauge api crude testing"
 author: "Galen Holt"
 format: html
 editor: visual
@@ -15,7 +15,7 @@ knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 
 # This file
 
-This is VERY early-stage crude working through how to call the vicwater API. Lots of the code chunks fail because it's testing.
+This is VERY early-stage crude working through how to call the hydrogauge API. Lots of the code chunks fail because it's testing.
 
 But, it has some potentially useful successes and checks.
 

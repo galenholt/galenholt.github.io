@@ -108,7 +108,7 @@ Which we wouldn't call sig- see the ac plot above- it doesn't go sig until 0.2, 
 1/(-1/log(0.2))
 ```
 
-Obviously sample size will change that. Not sure if larger sample size will help spamm, it's slow when things get big.
+Obviously sample size will change that. Not sure if larger sample size will help spaMM, it's slow when things get big.
 
 ## Testing covariates
 

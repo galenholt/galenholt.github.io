@@ -49,7 +49,9 @@ def adder(x, y):
 
 in a file `inst/python/adder.py` , we can
 
-`{r} reticulate::source_python('inst/python/adder.py')`
+``` r
+reticulate::source_python('inst/python/adder.py')
+```
 
 and access the `adder` function. (probably without the 'inst' when we build the package).
 
@@ -57,7 +59,9 @@ But that puts a bunch of python objects in our environment.
 
 If we also put an empty `__init__.py` file in `inst/python`, {reticulate} will see it as a module and we can use `import_from_path`
 
-`{r} reticulate::import_from_path('adder', path = 'inst/python/adder.py', delay_load = TRUE)`
+``` r
+reticulate::import_from_path('adder', path = 'inst/python/adder.py', delay_load = TRUE)
+```
 
 That yields much less junk in the environment, just `adder` as a python module. And we can use it with \$ notation to get the function within the module.
 
