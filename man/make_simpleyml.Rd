@@ -2,7 +2,7 @@
 % Please edit documentation in R/make_simpleyml.R
 \name{make_simpleyml}
 \alias{make_simpleyml}
-\title{Quick helper to create a quarto profile to only render the active file}
+\title{Quick helper to create a quarto profile to only render the active file. Use this in most instances, not the similar \code{\link[=make_simple_yaml]{make_simple_yaml()}}}
 \usage{
 make_simpleyml(renderfile = "auto")
 }
@@ -10,5 +10,5 @@ make_simpleyml(renderfile = "auto")
 \item{renderfile}{file to render, default 'auto' uses the active file in Rstudio}
 }
 \description{
-Quick helper to create a quarto profile to only render the active file
+Quick helper to create a quarto profile to only render the active file. Use this in most instances, not the similar \code{\link[=make_simple_yaml]{make_simple_yaml()}}
 }

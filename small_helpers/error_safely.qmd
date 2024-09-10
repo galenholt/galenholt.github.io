@@ -456,7 +456,7 @@ add5 <- function(x) {
 Then the simple version works
 
 ```{r}
-purrr::map(1:5, safely(add5))
+purrr::map(1:5, purrr::safely(add5))
 ```
 
 If we want to be more specific and make it anonymous, though, where does the x go? What is the safe equivalent of this?

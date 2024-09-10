@@ -72,9 +72,10 @@ ki_timeseries_list(hub = "http://www.bom.gov.au/waterdata/services/KiWIS/KiWIS?"
 
 Interesting. If I go to <http://www.bom.gov.au/waterdata/services>, I get the message "KISTERS KiWIS QueryServices - add parameter 'request' to execute a query." So it *is* a KiWIS, but maybe doesn't take request in the same way as kiwisR expects? bomWater *does* use `request`, so maybe this will help figure out how to specify new ones. Looking at code, kiwisR and bomWater look like they're constructing the requests the same, so it's a bit odd the kiwis doesn't work with the bomWater url.
 
-Am I just calling something incorrectly? Can kiwisR hit that URL for other things? I can get a list of all stations. So that implies the URL *does* work.
+Am I just calling something incorrectly? Can kiwisR hit that URL for other things? I can get a list of all stations. So that implies the URL *does* work. This is just very long, so I'm not rendering it.
 
 ```{r}
+#| eval: false
 ki_station_list(hub = "http://www.bom.gov.au/waterdata/services")
 
 ```

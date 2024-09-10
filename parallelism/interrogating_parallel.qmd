@@ -369,7 +369,10 @@ plan("list")
 
 Let's check an outer loop with 1, and inner with 10, and vice versa
 
+This worked previously but now is failing, parallelly won't let me set up \> 3 localhost 'workers' on only one core. I *thought* that since `parallelly::availableCores()` returned 20, it would give the outer to 1, and then the inners to a *different* set of 10. But it seems to be trying to give the inner to 10 on the outer (*note that this works just fine on a cluster, so it's sort of esoteric here anyway*).
+
 ```{r}
+#| eval: false
 test1_10_double <- outer_par(outer_size = 1, 
                              innerfun = inner_par, inner_size = 10)
 test10_1_double <- outer_par(outer_size = 10, 
@@ -377,6 +380,7 @@ test10_1_double <- outer_par(outer_size = 10,
 ```
 
 ```{r}
+#| eval: false
 plot1_10_double <- ggplot(test1_10_double, aes(x = outer_iteration, 
                    y = as.factor(pid), 
                    color = inner_iteration)) + 
@@ -390,7 +394,7 @@ plot10_1_double <- ggplot(test10_1_double, aes(x = outer_iteration,
 plot1_10_double + plot10_1_double
 ```
 
-That worked! So, if we *explicitly* give each plan workers, we can manage nestedness.
+That worked (But not anymore)! So, if we *explicitly* give each plan workers, we can manage nestedness. (If we can figure out how to do it with the new parallelly).
 
 Turn the plan back to multisession
 

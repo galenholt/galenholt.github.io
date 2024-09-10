@@ -1,0 +1,123 @@
+---
+title: "Less ugly tables"
+echo: true
+format:
+  html:
+    toc: true
+    comments:
+      hypothesis: true
+  docx:
+    toc: true
+    toc-depth: 2
+    prefer-html: true
+    # setting these to the html defaults so they don't get jumbled between format
+    fig-width: 7
+    fig-height: 5
+---
+
+These all look fine in html, most things do. But the word doc is where things seem to fall down. Especially if they have lots of text.
+
+```{r}
+#| label: tbl-kable
+#| tbl-cap: This is a table with kable
+head(iris) |> 
+  knitr::kable()
+```
+
+```{r}
+#| eval: false
+#| label: tbl-extra
+#| tbl-cap: "This is a table with kableExtra. It does not render to word. It used to with `prefer-html: true`, but that workarounds seems not to work anymore."
+
+# head(iris) |> 
+#   knitr::kable() |> 
+#   kableExtra::kable_styling()
+```
+
+```{r}
+#| label: tbl-hux
+#| tbl-cap: This is a table with huxtable
+
+head(iris) |> 
+  huxtable::huxtable() |> 
+  huxtable::theme_article()
+```
+
+```{r}
+#| label: tbl-gt
+#| tbl-cap: This is a table with gt
+
+head(iris) |> 
+ gt::gt()
+```
+
+### Long text
+
+This table is giving me fits elsewhere, let's try it here. It has a common issue of
+
+```{r}
+#| label: tbl-raw
+#| tbl-cap: This is just printed
+#| message: false
+texttab <- readr::read_csv('data/component_table.csv', show_col_types = FALSE)
+
+texttab
+```
+
+```{r}
+#| label: tbl-kable2
+#| tbl-cap: This is a table with kable
+texttab |> 
+  knitr::kable()
+```
+
+```{r}
+#| label: tbl-hux2
+#| tbl-cap: This is a table with huxtable
+
+texttab |> 
+  huxtable::huxtable() |> 
+  huxtable::theme_article()
+```
+
+```{r}
+#| label: tbl-gt2
+#| tbl-cap: This is a table with gt
+
+texttab |> 
+ gt::gt()
+```
+
+gt seems to really have a lot of issues here. What if I use divs?
+
+::: {#tbl-gt3}
+
+```{r}
+texttab |> 
+ gt::gt()
+```
+
+This is a table with gt in a div.
+:::
+
+## Column widths. 
+
+None of those handle column widths with long text. kable smashes the first col, huxtable and gt smash them all.
+
+Based on some [github](https://github.com/quarto-dev/quarto-cli/issues/7321) [issues](https://github.com/quarto-dev/quarto-cli/issues/7151), does it work if I just don't use a label at all?
+
+Gt no label
+
+```{r}
+texttab |> 
+ gt::gt()
+```
+
+Huxtable no label
+
+```{r}
+texttab |> 
+  huxtable::huxtable() |> 
+  huxtable::theme_article()
+```
+
