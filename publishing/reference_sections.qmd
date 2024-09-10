@@ -1,0 +1,115 @@
+---
+title: "Reference sections"
+format: html
+number-sections: true
+crossref:
+  custom:
+    - kind: float
+      key: suppfig
+      latex-env: suppfig
+      reference-prefix: Figure S
+      space-before-numbering: false
+    - kind: float
+      key: supptbl
+      latex-env: supptbl
+      reference-prefix: Table S
+      space-before-numbering: false
+      caption-location: top
+bibliography: references.bib
+---
+
+```{r}
+#| message: false
+library(ggplot2)
+```
+
+## References (bibliography)
+
+To put the bibliography wherever you want, include a div `::: {#refs}` wherever you want it to be. If we cite @holt2018, we can put the bib right here.
+
+::: {#refs}
+:::
+
+## Figures and tables with sections
+
+I want to have figs and tables in different sections; e.g. in main text and supplement or different chapters. It seems to work different for figs generated from code and images loaded in.
+
+In the main text, we just use `tbl` and `fig`, referenced with `@tbl-iris` (@tbl-iris) for tables, `@fig-branching` (@fig-branching) for read-in images, and `@fig-iris` (@fig-iris) for code-generated figures:
+
+```{r}
+#| echo: fenced
+#| label: tbl-iris
+#| tbl-cap: Head of iris dataframe
+head(iris) |> knitr::kable()
+```
+
+`![An image of branching](../_images/branching.png){#fig-branching}` gives
+
+![An image of branching](../_images/branching.png){#fig-branching}
+
+```{r}
+#| echo: fenced
+#| label: fig-iris
+#| fig-cap: A figure of the iris dataframe
+
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) +
+  geom_point()
+```
+
+## New section
+
+Now, according to the [Quarto docs](https://quarto.org/docs/authoring/cross-references-custom.html), we can add a new kind of crossref. So I've put the following from that site in the yaml header:
+
+``` yaml
+crossref:
+  custom:
+    - kind: float
+      key: suppfig
+      latex-env: suppfig
+      reference-prefix: Figure S
+      space-before-numbering: false
+    - kind: float
+      key: supptbl
+      latex-env: supptbl
+      reference-prefix: Table S
+      space-before-numbering: false
+      caption-location: top
+```
+
+See [docs](https://quarto.org/docs/reference/metadata/crossref.html#custom) for options.
+
+Now, the trick, which I missed, is that it only works for fenced divs (see [github issues](https://github.com/quarto-dev/quarto-cli/issues/8956)). See [quarto docs](https://quarto.org/docs/authoring/cross-references-divs.html).
+
+Now, it *should* work to use `suppfig` to reference loaded figures such as `@suppfig-elephant` (@suppfig-elephant) for read-in images, and `@suppfig-iris` (@suppfig-iris) for code-generated figures and tables `@supptbl-iris` (@supptbl-iris) *Only if we use divs*:
+
+`![An image of Surus](../_images/surus.png){#suppfig-elephant}` gives
+
+![An image of Surus](../_images/surus.png){#suppfig-elephant}
+
+Wapping this in `::: {#suppfig-iris}` and putting the caption inside:
+
+::: {#suppfig-iris}
+```{r}
+#| echo: fenced
+
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = Petal.Width)) +
+  geom_point()
+```
+
+Another iris plot
+:::
+
+Now tables. It captions at the bottom though unles we set `caption-location: top` in the yml.
+
+::: {#supptbl-iris}
+```{r}
+#| echo: fenced
+tail(iris) |> knitr::kable()
+```
+
+Tail of the iris df.
+:::
+
+## Unnumbered sections {.unnumbered}
+
+If we have `number-sections: true` in the yaml, we can turn it off for some by putting `{.unnumbered}` next to their names (as I have for this section).
