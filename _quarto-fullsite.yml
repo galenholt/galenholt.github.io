@@ -100,6 +100,10 @@ website:
               text: "Adding comments to html"
             - href: website_notes/quarto_profiles.qmd
               text: "Quarto profiles for incremental render"
+            - href: publishing/reference_sections.qmd
+              text: "Sections and numbering"
+            - href: publishing/tables_in_word.qmd
+              text: "Testing word table formatting"
 
         - section: "Theory, simulation, statistics, probability"
           contents:
@@ -210,6 +214,7 @@ website:
               text: "Global objects and parallel speed"
             - href: parallelism/nested_dependent_iterations.qmd
               text: "Dependencies of inner parallelism on outer"
+            - href: setup/R_in_databricks.qmd
 
         - section: "R parallel processing on HPC"
           contents:

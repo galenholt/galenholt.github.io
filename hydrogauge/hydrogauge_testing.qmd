@@ -39,7 +39,7 @@ library(ggplot2)
 The base url that everything gets attached to is: and we use `httr2::request` to start building the request.
 
 ```{r}
-vicurl <- "https://data.water.vic.gov.au/cgi/webservice.exe?"
+vicurl <- "https://data.water.vic.gov.au/WMIS/cgi/webservice.exe?"
 reqvic <- request(vicurl)
 ```
 
@@ -164,7 +164,7 @@ I'm using `devtools::load_all()` to load the package repo in here for interactiv
 Obviously, hard paths are a bad idea, but I'm going to do it here since I typically do relative within repos, and these are across repos. Still, temporary and hacky.
 
 ```{r}
-devtools::load_all('C:/Users/Galen/Documents/hydrogauge')
+devtools::load_all('C:/Users/Galen/Documents/code/hydrogauge')
 ```
 
 ```{r}
@@ -258,8 +258,8 @@ yikes.
 ### Test package version
 
 ```{r}
-devtools::load_all('C:/Users/Galen/Documents/hydrogauge')
-sxd <- get_sites_by_datasource(datasources = c('A', 'TELEM'))
+devtools::load_all('C:/Users/Galen/Documents/code/hydrogauge')
+sxd <- get_sites_by_datasource(portal = 'vic', datasources = c('A', 'TELEM'))
 ```
 
 ```{r}
@@ -322,8 +322,8 @@ s
 ### Test package version
 
 ```{r}
-devtools::load_all('C:/Users/Galen/Documents/hydrogauge')
-vl <- get_variable_list(site_list = allsites, datasource = 'A')
+devtools::load_all('C:/Users/Galen/Documents/code/hydrogauge')
+vl <- get_variable_list(portal = 'vic', site_list = allsites, datasource = 'A')
 ```
 
 ```{r}
@@ -333,7 +333,7 @@ vl
 Try with two datasources
 
 ```{r}
-v2 <- get_variable_list(site_list = allsites, datasource = c('A', 'TELEM'))
+v2 <- get_variable_list(portal = 'vic', site_list = allsites, datasource = c('A', 'TELEM'))
 ```
 
 ```{r}
@@ -705,44 +705,44 @@ svlist <- split(s, interaction(s$site, s$variable))
 ### Test package version
 
 ```{r}
-devtools::load_all('C:/Users/Galen/Documents/hydrogauge')
+devtools::load_all('C:/Users/Galen/Documents/code/hydrogauge')
 ```
 
 One site, one variable
 
 ```{r}
-bs <- get_ts_traces(site_list = barwon, datasource = 'A', var_list = '100', start_time = '20200101', end_time = '20200105', interval = 'day', data_type = 'mean', multiplier = 1, returnformat = 'df')
+bs <- get_ts_traces(portal = 'vic', site_list = barwon, datasource = 'A', var_list = '100', start_time = '20200101', end_time = '20200105', interval = 'day', data_type = 'mean', multiplier = 1, returnformat = 'df')
 ```
 
 Can I pass decimals? it's how they come out of get_variable_list
 
 ```{r}
 
-bsdec <- get_ts_traces(site_list = barwon, datasource = 'A', var_list = '100.00', start_time = '20200101', end_time = '20200105', interval = 'day', data_type = 'mean', multiplier = 1, returnformat = 'df')
+bsdec <- get_ts_traces(portal = 'vic', site_list = barwon, datasource = 'A', var_list = '100.00', start_time = '20200101', end_time = '20200105', interval = 'day', data_type = 'mean', multiplier = 1, returnformat = 'df')
 ```
 
 One site, derived variables
 
 ```{r}
-bsd <- get_ts_traces(site_list = barwon, datasource = 'A', var_list = c('100', '140'), start_time = '20200101', end_time = '20200105', interval = 'day', data_type = 'mean', multiplier = 1, returnformat = 'df')
+bsd <- get_ts_traces(portal = 'vic', site_list = barwon, datasource = 'A', var_list = c('100', '140'), start_time = '20200101', end_time = '20200105', interval = 'day', data_type = 'mean', multiplier = 1, returnformat = 'df')
 ```
 
 Only derived
 
 ```{r}
-bsod <- get_ts_traces(site_list = barwon, datasource = 'A', var_list = '140', start_time = '20200101', end_time = '20200105', interval = 'day', data_type = 'mean', multiplier = 1, returnformat = 'df')
+bsod <- get_ts_traces(portal = 'vic', site_list = barwon, datasource = 'A', var_list = '140', start_time = '20200101', end_time = '20200105', interval = 'day', data_type = 'mean', multiplier = 1, returnformat = 'df')
 ```
 
 Some more variables, derived and not
 
 ```{r}
-bsdv <- get_ts_traces(site_list = barwon, datasource = 'A', var_list = c('100', '140', '210', '450'), start_time = '20200101', end_time = '20200105', interval = 'day', data_type = 'mean', multiplier = 1, returnformat = 'df')
+bsdv <- get_ts_traces(portal = 'vic', site_list = barwon, datasource = 'A', var_list = c('100', '140', '210', '450'), start_time = '20200101', end_time = '20200105', interval = 'day', data_type = 'mean', multiplier = 1, returnformat = 'df')
 ```
 
 And multi-sites too- does it correctly collapse the vector?
 
 ```{r}
-bsdvs <- get_ts_traces(site_list = c(barwon, steavenson), 
+bsdvs <- get_ts_traces(portal = 'vic', site_list = c(barwon, steavenson), 
                        datasource = 'A', 
                        var_list = c('100', '140', '210', '450'), 
                        start_time = '20200101', end_time = '20200105', 
@@ -757,7 +757,7 @@ Mean/Max/Min/Start/End/First/Last/Tot/MaxMin/Point/Cum
 **Definitely need two calls if need two different values** at least for now- total temp is nonsense.
 
 ```{r}
-bsdvs <- get_ts_traces(site_list = allsites, 
+bsdvs <- get_ts_traces(portal = 'vic', site_list = allsites, 
                        datasource = 'A', 
                        var_list = c('10', '100', '140', '210', '450'), 
                        start_time = '20200101', end_time = '20200105', 
@@ -768,7 +768,7 @@ bsdvs <- get_ts_traces(site_list = allsites,
 and return a list
 
 ```{r}
-bsdvsl <- get_ts_traces(site_list = allsites, 
+bsdvsl <- get_ts_traces(portal = 'vic', site_list = allsites, 
                        datasource = 'A', 
                        var_list = c('10', '100', '140', '210', '450'), 
                        start_time = '20200101', end_time = '20200105', 
@@ -779,7 +779,7 @@ bsdvsl <- get_ts_traces(site_list = allsites,
 ## A variable and time-aware version
 
 ```{r}
-possibles <- get_variable_list(site_list = allsites, datasource = 'A') %>% 
+possibles <- get_variable_list(portal = 'vic', site_list = allsites, datasource = 'A') %>% 
   dplyr::select(site, datasource, variable, period_start, period_end)
 ```
 
@@ -798,43 +798,48 @@ possibles <- bind_rows(possibles, poss140, poss141)
 ### Test package version
 
 ```{r}
-devtools::load_all('C:/Users/Galen/Documents/hydrogauge')
+devtools::load_all('C:/Users/Galen/Documents/code/hydrogauge')
 ```
 
-One site, one variable
+We no longer support a working version of get_ts_traces2; a general version is in development.
 
 ```{r}
-bs <- get_ts_traces2(site_list = barwon, datasource = 'A', var_list = '100', start_time = '20200101', end_time = '20200105', interval = 'day', data_type = 'mean', multiplier = 1, returnformat = 'df')
+#| eval: false
+bs <- get_ts_traces2(portal = 'vic', site_list = barwon, datasource = 'A', var_list = '100', start_time = '20200101', end_time = '20200105', interval = 'day', data_type = 'mean', multiplier = 1, returnformat = 'df')
 ```
 
 Can I pass decimals? it's how they come out of get_variable_list
 
 ```{r}
-
+#| eval: false
 bsdec <- get_ts_traces2(site_list = barwon, datasource = 'A', var_list = '100.00', start_time = '20200101', end_time = '20200105', interval = 'day', data_type = 'mean', multiplier = 1, returnformat = 'df')
 ```
 
 One site, derived variables
 
 ```{r}
+#| eval: false
 bsd <- get_ts_traces2(site_list = barwon, datasource = 'A', var_list = c('100', '140', '141'), start_time = '20200101', end_time = '20200105', interval = 'day', data_type = 'mean', multiplier = 1, returnformat = 'df')
 ```
 
 Only derived
 
 ```{r}
+#| eval: false
 bsod <- get_ts_traces2(site_list = barwon, datasource = 'A', var_list = '140', start_time = '20200101', end_time = '20200105', interval = 'day', data_type = 'mean', multiplier = 1, returnformat = 'df')
 ```
 
 Some more variables, derived and not
 
 ```{r}
+#| eval: false
 bsdv <- get_ts_traces2(site_list = barwon, datasource = 'A', var_list = c('100', '140', '210', '450'), start_time = '20200101', end_time = '20200105', interval = 'day', data_type = 'mean', multiplier = 1, returnformat = 'df')
 ```
 
 And multi-sites too- does it correctly collapse the vector?
 
 ```{r}
+#| eval: false
 bsdvs <- get_ts_traces2(site_list = c(barwon, steavenson), 
                        datasource = 'A', 
                        var_list = c('100', '140', '210', '450'), 
@@ -846,6 +851,7 @@ bsdvs <- get_ts_traces2(site_list = c(barwon, steavenson),
 Do the 'all' settings work? Let's bump to year so I don't have so much data
 
 ```{r}
+#| eval: false
 bsdvs <- get_ts_traces2(site_list = c(barwon, steavenson), 
                        datasource = 'A', 
                        var_list = "all", 
@@ -882,7 +888,8 @@ This likely varies a lot depending on what I'm asking for. Should be done more s
 They should be roughly the same for a single?
 
 ```{r}
-system.time(b1 <- get_ts_traces(site_list = barwon, 
+#| eval: false
+system.time(b1 <- get_ts_traces(portal = 'vic', site_list = barwon, 
                        datasource = 'A', 
                        var_list = '100', 
                        start_time = '20200101', end_time = '20200105', 
@@ -900,7 +907,7 @@ system.time(b2 <- get_ts_traces2(site_list = barwon,
 interesting. so the second is faster locally, but higher network, I think.
 
 ```{r}
-
+#| eval: false
 system.time(bsdvs1 <- get_ts_traces(site_list = c(barwon, steavenson), 
                        datasource = 'A', 
                        var_list = c('100', '140', '210', '450'), 
@@ -923,6 +930,7 @@ Oof. That's pretty bad. Can I speed it up? probably.
 How about parallel?
 
 ```{r}
+#| eval: false
 library(doFuture)
 registerDoFuture()
 plan(multisession)
