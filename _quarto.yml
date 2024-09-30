@@ -11,6 +11,10 @@ website:
     center:
       - text: "Contact"
         href: mailto:g.holt@deakin.edu.au
+      - text: "ORCID"
+        href: https://orcid.org/0000-0002-7455-9275
+      - text: "Profile"
+        href: https://experts.deakin.edu.au/43512-galen-holt/about
     right:
       - icon: github
         href: https://github.com/galenholt

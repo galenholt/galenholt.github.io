@@ -1,0 +1,52 @@
+---
+title: "Change git remote and edit emails"
+format: html
+---
+
+I've recently had a bunch of git repos lose their remotes. It's unclear why, but rather than look the solution up every time on stackexchange, do this to see what the remote is
+
+``` bash
+git remote -v
+```
+
+Then
+
+``` bash
+git remote set-url origin path/to/remote.git
+```
+
+then
+
+``` bash
+git remote -v
+```
+
+to check it worked.
+
+I've also moved some repos from other remotes to github lately, and keep getting errors about publishing private emails. One option would be to make emails public, but the better option is to make sure the user email is the github one, e.g.
+
+```         
+git config --global user.email
+```
+
+There was a way I did this before that was simpler, but what seemed to work (thanks [stackoverflow](https://stackoverflow.com/questions/4981126/how-to-amend-several-commits-in-git-to-change-author/69947947#69947947)) was to install `git-filter-repo`
+
+``` bash
+pip3 install git-filter-repo  
+```
+
+I had to use the one-line option in the comments (likely because of windows)
+
+``` powershell
+git filter-repo --force --email-callback "    return email if email != b'wrong@email' else b'correct@email'"
+```
+
+It said it hung, but ended up working. And retained dates, which lots of other options didn't.
+
+Presumably this would work on unix
+
+``` bash
+git filter-repo --email-callback '
+    return email if email != b"incorrect@email" else b"correct@email"
+' 
+```

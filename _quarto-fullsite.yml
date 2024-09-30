@@ -54,6 +54,10 @@ website:
               text: "Installing from github with renv"
             - href: small_helpers/breaking_whiles.qmd
               text: "While loops, break, and debugging"
+            - href: small_helpers/package_dll_error.qmd
+              text: "Package DLL error"
+            - href: small_helpers/git_remote_and_emails.qmd
+              text: "Changing git remote and private email"
 
 
         - section: "Plotting"

@@ -1,0 +1,18 @@
+---
+title: "Package DLL not found"
+format: html
+---
+
+Since upgrading Rstudio, I keep getting this error:
+
+```         
+Error in library.dynam(lib, package, package.lib) :    DLL ‘testthat’ not found: maybe not installed for this architecture?
+```
+
+It's intermittent- I could use `testthat` the day before. And it seems to hit packages randomly. Very frustrating. The only solution seems to be to use
+
+```{r}
+renv::paths$cache()
+```
+
+to find the cache, delete that package, and reinstall it.
