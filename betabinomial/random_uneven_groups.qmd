@@ -1,0 +1,631 @@
+---
+title: "Random effects with uneven groups"
+format: html
+---
+
+```{r}
+library(tidyverse)
+library(withr)
+library(glmmTMB)
+devtools::load_all()
+```
+
+This is essentially preamble to understanding the beta-binomial issues we're having. But we should be able to do a better job sharpening our intuition of what we expect if we start off with gaussian.
+
+This builds on the [outline](beta_binomial_error_outline.qmd) I developed and the work Sarah did (students/Sarah_Taig/Random Effects Simulations) (though I think the emphasis will be different; we'll see), as well as some beta-binom errorbar checks in caddis/Testing/Error_bars.qmd.
+
+I think I'll likely just do gaussian here. Then bb in a parallel doc. And likely will do a model comparison thing too- i.e. spaMM vs glmTMB vs lme4::glmer as in caddis/Analyses/Testing/df_z_t_for_sarah/ (and add {brms}).
+
+And will likely need to incorporate some assessments of the se being calculated at various scales, as explored in caddis/Analyses/Testing/Error_bars.qmd.
+
+We'll need to bring in real data at some point, but I think not in this doc (hence why it's here, and some of the other testing is in caddis.
+
+Are we just recapitulating [this](https://m-clark.github.io/posts/2019-05-14-shrinkage-in-mixed-models/)? Kind of. Slightly different emphasis and we'll end up taking it further, but should be careful.
+
+The data generation function lets us have random slopes. These are super relevant in some cases, e.g. following people or riffles through time, where observations might have different x-values within the cluster. I *think* I'll largely ignore them here, because the situation we're trying to address doesn't (each cluster has a single x), and so the in-cluster slopes are irrelevant. They could certainly be dealt with in this general exploration, but it would just make everything factorially complicated.
+
+# random and residual sd and fits
+
+Before we do anything with unbalanced clusters, let's first just see how the random and residual sd alters the way fits work. More importantly, let's establish some approaches to seeing how the random structure affects the outcome.
+
+-   fits through points
+-   fits through clusters
+-   full model fit
+-   cluster error bars on the clusters, i.e. from a fixed model of the clusters
+-   cluster error bars from the random model. What *is* this? the random sd will be the error of each around the *line*, then residual will be within-cluster. Can I extract and plot that? I think that will actually be key to understanding what's happening.
+
+*all* of this from model fits.
+
+```{r}
+
+with_seed(18,
+          sdparams <- expand_grid(
+            n_per_cluster = 5, 
+            n_clusters = 10, 
+            intercept = 1, 
+            slope = 0.5,
+            sigma = c(0.1, 1),
+            sd_rand_intercept = c(0.5, 2),
+            sd_rand_slope = 0, 
+            rand_si_cor = 0,
+            # putting this in a list lets me send in vectors that are all the same
+            cluster_x = list(runif(n_clusters,
+                                   min = 0, max = 10)),
+            obs_x_sd = 0
+          )
+)
+
+# There's got to be a way to pmap straight into a mutate without having to send the dataframe in again.
+with_seed(18, 
+          sddata <- sdparams |>
+            purrr::pmap(simulate_gaussian_mm) |> 
+            tibble(simdata = _) |> 
+            bind_cols(sdparams)
+)
+```
+
+```{r}
+sddata |> 
+  unnest(cols = simdata) |> 
+ggplot(aes(x = x, y = y, color = factor(cluster))) + 
+  geom_point() +
+  facet_grid(sigma ~ sd_rand_intercept)
+```
+
+## Fit models
+
+Now, we can fit the models. What do we want to use here? Build in the model comparison now, or deal with that later? Later, I think (though likely that will mean coming back up here).
+
+```{r}
+sddata <- sddata |> 
+  mutate(cluster_rand_x = map(simdata, \(x) glmmTMB(y ~ x + (1|cluster), data = x)),
+         # This one ends up rank-deficient for the last cluster usually
+         cluster_fixed_x = map(simdata, \(x) glmmTMB(y ~ x + cluster, data = x)),
+         cluster_fixed = map(simdata, \(x) glmmTMB(y ~ cluster, data = x)),
+         cluster_rand = map(simdata, \(x) glmmTMB(y ~ 1|cluster, data = x)))
+```
+
+I want to extract the cluster estimates for each model *skipping the intercept estimates here, though we might want to revisit that (see below)*
+
+First, set up two datasets we're going to want to predict on
+
+```{r}
+# clusterdata <- sddata$simdata[[3]] |> 
+#   select(x, cluster) |> 
+#   distinct()
+
+xdata <- tibble(x = 0:10)
+
+make_clusterdata <- function(alldata) {
+    alldata |> 
+    select(x, cluster) |> 
+    distinct()
+}
+
+```
+
+Start setting this up for a function.
+
+For the models with cluster random, we could get the values straight out of the main fit. But I think we want to actually get them from ranef and coef, because those are more directly what it's estimating for the *point* estimates of the clusters. It ends up being the same value, but not the same sd.
+
+```{r}
+# I'm not sure if I actually want this one or not. I think I might, in conjunction with a basic summarise() for the fixefs. Or a clever extraction from summary(model)$coefficients, but the catch is sorting out the x's and intercepts.
+cluster_estimates_rand <- function(model, alldata) {
+  clusterdata <- make_clusterdata(alldata)
+  clustib <- tibble(cluster = row.names(ranef(model)$cond$cluster),
+  intercept = fixef(model)$cond["(Intercept)"], 
+       slope = fixef(model)$cond['x'], 
+       cluster_deviation = ranef(model)$cond$cluster[[1]], 
+       cluster_sd = sqrt(c(attributes(ranef(model)$cond$cluster)$condVar))) |> 
+  mutate(slope = ifelse(is.na(slope), 0, slope)) |> 
+  left_join(clusterdata, by = 'cluster') |> 
+  mutate(cluster_estimate = intercept + slope*x + cluster_deviation)
+  
+  return(dplyr::select(clustib, cluster, x, cluster_estimate, cluster_sd))
+}
+```
+
+Try to get that for the non-random. There's an issue with the se for the intercept level
+```{r}
+
+cluster_estimates_fixed <- function(model, alldata) {
+  clusterdata <- make_clusterdata(alldata)
+  sumvals <- summary(model)$coefficients$cond
+  unique(clusterdata$cluster)
+  row.names(sumvals) <- stringr::str_remove_all(row.names(sumvals), 'cluster')
+  missingc <- setdiff(unique(clusterdata$cluster), row.names(sumvals))
+  # We get the intercept elsewhere
+  sumvals[row.names(sumvals) == '(Intercept)', 'Estimate'] <- 0
+  row.names(sumvals)[row.names(sumvals) == '(Intercept)'] <- missingc
+  
+  
+  clustib <- as_tibble(sumvals, rownames = 'cluster') |> 
+    select(cluster, estimate = Estimate, se = `Std. Error`) |> 
+    mutate(intercept = fixef(model)$cond['(Intercept)'],
+           slope = fixef(model)$cond['x'],
+           slope = ifelse(is.na(slope), 0, slope)) |> 
+    filter(cluster != 'x') |> 
+    left_join(clusterdata) |> 
+    mutate(cluster_estimate = intercept + estimate + slope*x)
+  
+  return(dplyr::select(clustib, cluster, x, cluster_estimate, cluster_sd = se))
+  
+}
+
+```
+
+```{r}
+extract_cluster_terms <- function(model, alldata) {
+  clusterdata <- make_clusterdata(alldata)
+  if (length(ranef(test_fixed)$cond) == 0) {
+    clustib <- cluster_estimates_fixed(model, clusterdata)
+  } else {
+    clustib <- cluster_estimates_rand(model, clusterdata)
+  }
+  
+  return(clustib)
+}
+```
+
+
+This gets the cluster estimates from the fits at the cluster values. Because it accounts for the full model, the se in particular are not the same. 
+
+```{r}
+predict_at_clusters <- function(model, alldata) {
+  clusterdata <- make_clusterdata(alldata)
+  fitcluster <- clusterdata |> 
+  add_predictions(model, se.fit = TRUE) |> 
+  rename(predicted = fit, sd = se.fit)
+  return(fitcluster)
+}
+```
+
+```{r}
+naive_clusters <- function(alldata) {
+  alldata |> 
+    summarise(cluster_mean = mean(y),
+           cluster_se = sd(y)/sqrt(n()), .by = cluster)
+}
+```
+
+So, the above should let us get the cluster points.
+
+Do we really want to stay in this tibble framework, or move on to something else?
+
+Break it down to a single thing to make sure we have what we want. Should be able to re-purr if we want. But I think we probably will want to skip some intermediate steps
+
+One set of data
+
+```{r}
+simdata <- sddata$simdata[[3]]
+```
+
+fit the models
+
+```{r}
+cluster_rand_x <- glmmTMB(y ~ x + (1|cluster), data = simdata)
+# This one ends up rank-deficient for the last cluster usually
+cluster_fixed_x <- glmmTMB(y ~ x + cluster, data = simdata)
+cluster_fixed <- glmmTMB(y ~ cluster, data = simdata)
+cluster_rand <- glmmTMB(y ~ 1|cluster, data = simdata)
+
+```
+Get estimates for each cluster
+
+```{r}
+clusters_from_rand_x <- extract_cluster_terms(cluster_rand_x, simdata)
+clusters_from_fixed_x <- extract_cluster_terms(cluster_fixed_x, simdata)
+clusters_from_rand <- extract_cluster_terms(cluster_rand, simdata)
+clusters_from_fixed <- extract_cluster_terms(cluster_fixed, simdata)
+```
+
+
+```{r}
+sddata <- sddata |> 
+  mutate(cluster_rand_x_extract = map(simdata, \(x) extract_cluster_terms(x$cluster_rand_x, x$simdata)),
+         # This one ends up rank-deficient for the last cluster usually
+         cluster_fixed_x_extract = map(simdata, \(x) extract_cluster_terms(x$cluster_fixed_x, x$simdata)),
+         cluster_fixed_extract = map(simdata, \(x) extract_cluster_terms(x$cluster_fixed_x, x$simdata)),
+         cluster_rand_extract = map(simdata, \(x) extract_cluster_terms(x$cluster_rand_x, x$simdata)))
+```
+
+
+Then, we want to get predictions for the fits (where possible)- need to revist the below to get the fit of the full fixed model (and the non-x models won't do it)
+
+And fits through the points. And the raw points.
+
+And then make sure I'm making reasonable comparisons.
+
+
+
+
+## Testing
+
+So, this is working. Let's choose one of those and sort out everything we want to do and then do the purrrring.
+
+```{r}
+test_full <- sddata$cluster_rand_x[[3]]
+test_fixed <- sddata$cluster_fixed_x[[3]]
+test_cluster <- sddata$cluster_fixed[[3]]
+test_rand <- sddata$cluster_rand[[3]]
+```
+
+Can I get shrinkage from these? I'm now far enough from what the website is doing, I'm a bit lost. Because he still seems to be building a mixed model at this point.
+
+```{r}
+# 'For coef.glmmTMB: a similar list, but containing the overall coefficient value for each level, i.e., the sum of the fixed effect estimate and the random effect value for that level'
+coef(test_full)
+
+```
+
+```{r}
+ranef(test_full)
+```
+
+I can extract the conditional variance too, though it's a hassle to get. Will be very useful though, I think.
+
+```{r}
+attributes(ranef(test_full)$cond$cluster)$condVar |> c()
+```
+
+```{r}
+fixef(test_full)
+```
+
+```{r}
+coef(test_rand)
+```
+
+```{r}
+ranef(test_rand)
+```
+
+```{r}
+fixef(test_rand)
+```
+
+```{r}
+fixef(test_cluster)
+```
+
+Can I plot all of those? Will move on to predicting the whole line in a bit. I just really want to understand what I'm dealing with.
+
+```{r}
+add_predictions <- function(df, model, se.fit = TRUE, ...) {
+  preds <- predict(object = model,
+                   newdata = df,
+                   se.fit = TRUE, ...) |> 
+    as_tibble()
+  
+  df <- bind_cols(df, preds)
+  return(df)
+}
+```
+
+```{r}
+
+full_coefs <- as_tibble(coef(test_full)$cond$cluster, rownames = 'cluster') |> 
+  # this adds the condVar- are these sd or se?
+  bind_cols(sd = sqrt(c(attributes(ranef(test_full)$cond$cluster)$condVar))) |>
+  rename(intercept = `(Intercept)`) |> 
+  mutate(model = 'full_mm', hasx = TRUE, ismm = TRUE)
+
+rand_coefs <- as_tibble(coef(test_rand)$cond$cluster, rownames = 'cluster') |> 
+    # this adds the condVar- are these sd or se?
+  bind_cols(sd = sqrt(c(attributes(ranef(test_rand)$cond$cluster)$condVar))) |>
+  rename(intercept = `(Intercept)`) |> 
+  mutate(model = 'rand', hasx = FALSE, ismm = TRUE)
+
+# I *think* this is what I want- the effect of cluster at x = 0 in the fixed model. That's not the same as the cluster estimates in the cluster model, which don't account for the x. They'll come in when we look at the actual fit line.
+fixed_coefs <- tibble(cluster = unique(full_coefs$cluster), x = 0) |> 
+ add_predictions(test_fixed, se.fit = TRUE) |> 
+  rename(intercept = fit, sd = se.fit) |>  # for this specific case at x = 0
+  mutate(model = 'fixed', hasx = TRUE, ismm = FALSE)
+
+# cluster coefs- these are comparable to 'rand', I think- there's no x term to that gets rolled into cluster.
+cluster_coefs <- tibble(cluster = unique(full_coefs$cluster), x = 0) |> 
+  add_predictions(test_cluster) |> 
+  rename(intercept = fit, sd = se.fit) |>  # these don't even have an x, so doesn't matter
+  mutate(model = 'cluster', hasx = FALSE, ismm = FALSE)
+
+
+
+intercept_compare <- bind_rows(full_coefs, rand_coefs, 
+                               fixed_coefs, cluster_coefs) |> mutate(model = forcats::fct_reorder(model, ismm))
+
+```
+
+We can see the 'shrinkage' here in two ways- first in the models with an x term assessed at the origin, where the clusters are estimating different random intercepts and we just extract the intercepts from a fixed model. The blue points move closer to the intercept (horizontal line). Though in some cases they cross it.
+
+```{r}
+# Leaving here to remind myself why we dont' want rand.
+ggplot(intercept_compare |> filter(hasx), 
+       aes(x = cluster, y = intercept, 
+           color = model)) +
+  geom_pointrange(aes(ymax = intercept+sd, ymin = intercept-sd),
+                  position = position_dodge(width = 0.1)) +
+  geom_hline(yintercept = fixef(test_full)$cond[1])
+```
+
+Similarly, if we look at a model without an x term, and so just estimate the clusters themselves, the blue (random) version is closer to the intercept than the red (clusters as fixed effects).
+
+```{r}
+ggplot(intercept_compare |> filter(!hasx), 
+       aes(x = cluster, y = intercept, color = model)) +
+    geom_pointrange(aes(ymax = intercept+sd, ymin = intercept-sd),
+                  position = position_dodge(width = 0.1)) +
+  geom_hline(yintercept = fixef(test_rand)$cond[1])
+```
+
+So now, can we plot the *fits* along x, and see if we can get the lines to make sense in terms of what they're doing relative to those points above?
+
+```{r}
+full_preds_cluster <- as_tibble(coef(test_full)$cond$cluster, 
+                                  rownames = 'cluster') |> 
+  bind_cols(sd = sqrt(c(attributes(ranef(test_full)$cond$cluster)$condVar))) |>
+  rename(intercept = `(Intercept)`, slope = x)
+
+full_clusterx <- test_full$frame |> select(x, cluster) |> distinct()
+
+full_preds_cluster <- full_preds_cluster |> 
+  left_join(full_clusterx) |> 
+  mutate(predicted = intercept + slope*x) |> 
+  mutate(model = 'full_mm', hasx = TRUE, ismm = TRUE)
+
+# add some checks
+# The full model fit- fits match,se a bit smaller
+full_preds_cluster <- full_preds_cluster |> 
+  add_predictions(test_full) |> 
+  rename(full_model_fit = fit, 
+         full_model_sd = se.fit)
+
+# can we build it from ranef?
+full_preds_cluster <- full_preds_cluster |> 
+  bind_cols(ranef(test_full)$cond$cluster) |> 
+  rename(randdev = `(Intercept)`) |> 
+  add_predictions(test_full, re.form = NA) |> 
+  rename(no_clust_fit = fit, no_clust_sd = se.fit) |> 
+  mutate(check_re = no_clust_fit + randdev)
+  
+
+# rand_preds <- as_tibble(coef(test_rand)$cond$cluster, rownames = 'cluster') |> 
+#     # this adds the condVar- are these sd or se?
+#   bind_cols(sd = sqrt(c(attributes(ranef(test_rand)$cond$cluster)$condVar))) |>
+#   rename(intercept = `(Intercept)`) |> 
+#   mutate(model = 'rand', hasx = FALSE, ismm = TRUE)
+
+# I *think* this is what I want- the effect of cluster at x = 0 in the fixed model. That's not the same as the cluster estimates in the cluster model, which don't account for the x. They'll come in when we look at the actual fit line.
+fixed_preds_cluster <- test_fixed$frame |>
+  select(x, cluster) |> distinct() |> 
+  add_predictions(test_fixed, se.fit = TRUE) |> 
+  rename(predicted = fit, sd = se.fit) |>  # for this specific case at x = 0
+  mutate(model = 'fixed', hasx = TRUE, ismm = FALSE)
+
+preds_compare <- bind_rows(full_preds_cluster, 
+                           fixed_preds_cluster) |> 
+  mutate(model = forcats::fct_reorder(model, ismm))
+```
+
+A quick check of the various point fits for the full model- the estimates for the clusters are the same whether we use the full model or extract them in various ways from coef and ranef. The blue points here are the odd one out, they are the fits in the no-cluster predict (and the orchid are those with the cluster deviations added back on).
+
+```{r}
+ggplot(full_preds_cluster) +
+  geom_point(aes(x = x, y = predicted), color = 'firebrick') +
+  geom_point(aes(x = x+0.1, y = full_model_fit), color = 'forestgreen') +
+  geom_point(aes(x = x+0.2, y = no_clust_fit), color = 'dodgerblue') +
+  geom_point(aes(x = x+0.3, y = check_re), color = 'orchid')
+  
+```
+
+Now, I want to fit some *lines*.
+
+First, let's fit those models themselves.
+
+```{r}
+newdata_nc <- tibble(x = 0:10)
+# use re.form = NA to fit at population
+fit_full <- newdata_nc |> 
+  add_predictions(test_full, se.fit = TRUE, re.form = NA) |> 
+  rename(predicted = fit, sd = se.fit) |> 
+  mutate(model = 'full_mm')
+
+newdata_c <- expand_grid(newdata_nc, cluster = unique(full_coefs$cluster))
+fit_fixed <- newdata_c |> 
+  add_predictions(test_fixed, se.fit = TRUE) |> 
+  rename(predicted = fit, sd = se.fit) |> 
+  mutate(model = 'fixed')
+
+# That gives a line for each cluster. But what I want is the main effect of x. I can get that slope from fixef(test_fixed), but the intercept is cluster 1, not the true intercept. so I need to calculate that?
+fixed_intercept <- test_fixed$frame |> filter(cluster == 1) |> 
+  distinct(x) |> pull()
+
+fixed_slope <- fixef(test_fixed)$cond['x']
+
+# intercept error (note, I'm not trying to deal with slope error here yet)
+int_se <- summary(test_fixed)$coefficients$cond[1, 'Std. Error']
+
+fit_fixed2 <- newdata_nc |> 
+  mutate(predicted = fixed_intercept + fixed_slope*x,
+         sd = int_se,
+         model = 'fixed')
+```
+
+Let's also add lines that fit through the cluster estimates. Note that these will have much too high error, but we're largely ignoring that anyway.
+
+```{r}
+fitrandclusts <- glmmTMB(predicted ~ x, 
+                         data = preds_compare |> filter(model == 'full_mm'))
+
+fitfixedclusts <- glmmTMB(predicted ~ x, 
+                         data = preds_compare |> filter(model == 'fixed'))
+
+# I think we can add the other two on here too, if we join to the relevant x-values
+xc <- sddata$simdata[[3]] |> 
+  select(x, cluster) |> 
+  distinct()
+
+# Fit the cluster estimates
+rand_addx <- rand_coefs |> 
+  left_join(xc) |> 
+  rename(predicted = intercept)
+
+cluster_addx <- cluster_coefs |> 
+  select(-x) |> 
+  left_join(xc) |> 
+  rename(predicted = intercept)
+
+fitrandonly <- glmmTMB(predicted ~ x, 
+                         data = rand_addx)
+fitclustonly <- glmmTMB(predicted ~ x, 
+                         data = cluster_addx)
+
+fit_randonly <- newdata_nc |> 
+  add_predictions(fitrandonly, se.fit = TRUE, re.form = NA) |> 
+  rename(predicted = fit, sd = se.fit) |> 
+  mutate(model = 'rand')
+
+fit_clusteronly <- newdata_nc |> 
+  add_predictions(fitclustonly, se.fit = TRUE, re.form = NA) |> 
+  rename(predicted = fit, sd = se.fit) |> 
+  mutate(model = 'cluster')
+
+# Fit the points without cluster info
+model_nocluster <- glmmTMB(y ~ x, data = sddata$simdata[[3]])
+
+fit_nocluster <- newdata_nc |> 
+  add_predictions(model_nocluster, se.fit = TRUE, re.form = NA) |> 
+  rename(predicted = fit, sd = se.fit) |> 
+  mutate(model = 'nocluster')
+
+preds_withextra <- bind_rows(preds_compare, rand_addx, cluster_addx)
+```
+
+Need a linetype here to see that the red (fixed effect for cluster, then fit x) and blue (cluster random with x) sit on top of each other. Which seems odd. I expected the random cluster, then fit x would match (i.e. the purple), but that doesn't. Doesnt' this imply zero shrinkage? I guess in the slope. So maybe that's actually right??
+
+```{r}
+ggplot(preds_withextra, aes(x = x, y = predicted, 
+                          ymin = predicted-sd, 
+                          ymax = predicted+sd, 
+                          color = model,
+                          linetype = model)) +
+  geom_pointrange(position = position_dodge(width = 0.1)) +
+  geom_line(data = fit_full) +
+  geom_line(data = fit_fixed2) +
+  geom_line(data = fit_randonly) +
+  geom_line(data = fit_clusteronly) +
+  geom_line(data = fit_nocluster)
+```
+
+What do I want to do now? Clean up the above so it makes more sense.
+
+## Cleanup
+
+\##
+
+-   
+
+-   ranef(test_full)
+
+-   Plot the fit and error
+
+    -   At mean random
+
+    -   at each random
+
+-   The other stuff above- just points, just cluster means, etc.
+
+-   What's the 'shrinkage'? Can we plot essentially the points they move to a la the website?
+
+-   Plot
+
+-   Nested? Is that where the shrinkage ends up mattering?
+
+# Simple illustrations
+
+## What do random effects *mean*?
+
+Some plots here of how the data looks- points around clusters following the mean.
+
+For the situation we have in our data, with each 'cluster' (random level) having the same x-value, we can see how the various terms work out to yield the overall distribution given some 'true' slope and intercept, random variance, and observation-level variance.
+
+```{r}
+simdata <- simulate_gaussian_mm(n_per_cluster = 5,
+                                    n_clusters = 10,
+                                    intercept = 1,
+                                    slope = 0.5,
+                                    sigma = 0.1,
+                                    sd_rand_intercept = 0.2,
+                                    sd_rand_slope = 0,
+                                    rand_si_cor = 0,
+                                    cluster_x = \(x) runif(x, min = 0, max = 10),
+                                    obs_x_sd = 0)
+
+ggplot(simdata, aes(x = x, y = y, color = factor(cluster))) + geom_point()
+```
+
+Increasing random variance
+
+```{r}
+simdatarv <- simulate_gaussian_mm(n_per_cluster = 5,
+                                    n_clusters = 10,
+                                    intercept = 1,
+                                    slope = 0.5,
+                                    sigma = 0.1,
+                                    sd_rand_intercept = 1,
+                                    sd_rand_slope = 0,
+                                    rand_si_cor = 0,
+                                    cluster_x = \(x) runif(x, min = 0, max = 10),
+                                    obs_x_sd = 0)
+
+ggplot(simdatarv, aes(x = x, y = y, color = factor(cluster))) + geom_point()
+
+```
+
+Increasing obs variance
+
+```{r}
+simdataov <- simulate_gaussian_mm(n_per_cluster = 5,
+                                    n_clusters = 10,
+                                    intercept = 1,
+                                    slope = 0.5,
+                                    sigma = 1,
+                                    sd_rand_intercept = 0.2,
+                                    sd_rand_slope = 0,
+                                    rand_si_cor = 0,
+                                    cluster_x = \(x) runif(x, min = 0, max = 10),
+                                    obs_x_sd = 0)
+
+ggplot(simdataov, aes(x = x, y = y, color = factor(cluster))) + geom_point()
+```
+
+This will make my life easier moving forward to figure this out:
+
+```{r}
+simparams <- expand_grid(n_per_cluster = 5, 
+                         n_clusters = 10, 
+                         intercept = 1, 
+                         slope = 0.5,
+                         sigma = c(0.1, 1),
+                         sd_rand_intercept = c(0.5, 2),
+                         sd_rand_slope = 0, 
+                         rand_si_cor = 0,
+                         obs_x_sd = 0)
+
+```
+
+```{r}
+# Have to do cluster_x not in the expand_grid-it doesnt' fit in a row.
+# Tibbles *will* hold functions, but it's weirdly hard to get them in there if not handbuilding.
+simresults <- simparams |> 
+  bind_cols(tibble(simdata = purrr::pmap(simparams, simulate_gaussian_mm, 
+                                         cluster_x = \(x) runif(x, min = 0, max = 10))))
+```
+
+```{r}
+# I thought there might be a way to ggplot straight out of the nested cols, but not obviously working
+simresults |> 
+  unnest(cols = simdata) |> 
+ggplot(aes(x = x, y = y, color = factor(cluster))) + 
+  geom_point() +
+  facet_grid(sigma ~ sd_rand_intercept)
+```

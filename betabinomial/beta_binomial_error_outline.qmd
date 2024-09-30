@@ -88,7 +88,7 @@ It will I think also help us understand e.g. Georgia's paper, and allow analysis
 
 see caddis/Analyses/Testing/errorbarchecks.R for some poking I did on the experiments
 
-I know I did a bunch of checking different glm functions for Sarah's data and the t-z issue that might be relevant at some point, but I can't find it.
+I know I did a bunch of checking different glm functions for Sarah's data and the t-z issue that might be relevant at some point, in caddis/Analyses/Testing/df_z_t_for_sarah/
 
 The visualisations [here](https://m-clark.github.io/posts/2019-05-14-shrinkage-in-mixed-models/) are really good, and get at a fair amount of this in a way that will help us think through things more clearly, though we'll want to dig into it more. They also have a function that does some of what we need for data generation. Might as well start there or lightly re-write it. They largely do the first couple main questions, but I think we'll want to focus things a bit differently.
 
@@ -111,6 +111,8 @@ The [spaMM repo](https://gitlab.mbb.univ-montp2.fr/francois/spamm-ref) has links
 # Specific questions
 
 Writing these in vague order, but likely will need to be rearranged.
+
+For most/all of them, we should show the fits for the naive (no groups) and fixed groups, so we can see the impact of the random effects and shrinkage.
 
 ## General understanding of n within levels and n levels
 
@@ -230,7 +232,7 @@ Does random variable mean there's a mean binomial p PBar for n = x, but each roc
 
 it seems to be what harrison 7-10 is saying. There's a true pi, but the pi for a rock is beta.pi, which is found from pi and phi. doing the math for a beta mean, it is pi.
 
-SO, need to sort out if something about our setup biases this somehow. maybe small numbers, maybe biases in the beta variance, maybe \...
+SO, need to sort out if something about our setup biases this somehow. maybe small numbers, maybe biases in the beta variance, maybe ...
 
 Simulate. Set a function describing the relationship of the binomial probability to number of eggs on a rock. Then simulate with and without between rock variation inthe beta.pi
 
