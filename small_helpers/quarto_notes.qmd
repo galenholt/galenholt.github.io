@@ -184,3 +184,7 @@ Error in `lazyLoadDBinsertVariable()`: ! long vectors not supported yet: connect
 ```
 
 is caused by trying to read-in an object too big for a lazy cache. It often only occurs when rendering, not previewing or running the qmd. The solution is to put `cache-lazy: false` in the chunk header of the offending chunk. Make it go slower, but it goes.
+
+## Quarto for github readmes
+
+If we want to use quarto for github readmes, see the [quarto docs](https://quarto.org/docs/output-formats/gfm.html). The key is to use `format: gfm` and then render before pushing to generate the github flavored .md file.

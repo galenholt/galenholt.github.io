@@ -77,12 +77,12 @@ ggplot(aes(x = x, y = y, color = factor(cluster))) +
 Now, we can fit the models. What do we want to use here? Build in the model comparison now, or deal with that later? Later, I think (though likely that will mean coming back up here).
 
 ```{r}
-sddata <- sddata |> 
-  mutate(cluster_rand_x = map(simdata, \(x) glmmTMB(y ~ x + (1|cluster), data = x)),
-         # This one ends up rank-deficient for the last cluster usually
-         cluster_fixed_x = map(simdata, \(x) glmmTMB(y ~ x + cluster, data = x)),
-         cluster_fixed = map(simdata, \(x) glmmTMB(y ~ cluster, data = x)),
-         cluster_rand = map(simdata, \(x) glmmTMB(y ~ 1|cluster, data = x)))
+# sddata <- sddata |> 
+#   mutate(cluster_rand_x = map(simdata, \(x) glmmTMB(y ~ x + (1|cluster), data = x)),
+#          # This one ends up rank-deficient for the last cluster usually
+#          cluster_fixed_x = map(simdata, \(x) glmmTMB(y ~ x + cluster, data = x)),
+#          cluster_fixed = map(simdata, \(x) glmmTMB(y ~ cluster, data = x)),
+#          cluster_rand = map(simdata, \(x) glmmTMB(y ~ 1|cluster, data = x)))
 ```
 
 I want to extract the cluster estimates for each model *skipping the intercept estimates here, though we might want to revisit that (see below)*
@@ -96,11 +96,7 @@ First, set up two datasets we're going to want to predict on
 
 xdata <- tibble(x = 0:10)
 
-make_clusterdata <- function(alldata) {
-    alldata |> 
-    select(x, cluster) |> 
-    distinct()
-}
+
 
 ```
 
@@ -110,82 +106,82 @@ For the models with cluster random, we could get the values straight out of the 
 
 ```{r}
 # I'm not sure if I actually want this one or not. I think I might, in conjunction with a basic summarise() for the fixefs. Or a clever extraction from summary(model)$coefficients, but the catch is sorting out the x's and intercepts.
-cluster_estimates_rand <- function(model, alldata) {
-  clusterdata <- make_clusterdata(alldata)
-  clustib <- tibble(cluster = row.names(ranef(model)$cond$cluster),
-  intercept = fixef(model)$cond["(Intercept)"], 
-       slope = fixef(model)$cond['x'], 
-       cluster_deviation = ranef(model)$cond$cluster[[1]], 
-       cluster_sd = sqrt(c(attributes(ranef(model)$cond$cluster)$condVar))) |> 
-  mutate(slope = ifelse(is.na(slope), 0, slope)) |> 
-  left_join(clusterdata, by = 'cluster') |> 
-  mutate(cluster_estimate = intercept + slope*x + cluster_deviation)
-  
-  return(dplyr::select(clustib, cluster, x, cluster_estimate, cluster_sd))
-}
+# cluster_estimates_rand <- function(model, alldata) {
+#   clusterdata <- make_clusterdata(alldata)
+#   clustib <- tibble(cluster = row.names(ranef(model)$cond$cluster),
+#   intercept = fixef(model)$cond["(Intercept)"], 
+#        slope = fixef(model)$cond['x'], 
+#        cluster_deviation = ranef(model)$cond$cluster[[1]], 
+#        cluster_sd = sqrt(c(attributes(ranef(model)$cond$cluster)$condVar))) |> 
+#   mutate(slope = ifelse(is.na(slope), 0, slope)) |> 
+#   left_join(clusterdata, by = 'cluster') |> 
+#   mutate(cluster_estimate = intercept + slope*x + cluster_deviation)
+#   
+#   return(dplyr::select(clustib, cluster, x, cluster_estimate, cluster_sd))
+# }
 ```
 
 Try to get that for the non-random. There's an issue with the se for the intercept level
+
 ```{r}
 
-cluster_estimates_fixed <- function(model, alldata) {
-  clusterdata <- make_clusterdata(alldata)
-  sumvals <- summary(model)$coefficients$cond
-  unique(clusterdata$cluster)
-  row.names(sumvals) <- stringr::str_remove_all(row.names(sumvals), 'cluster')
-  missingc <- setdiff(unique(clusterdata$cluster), row.names(sumvals))
-  # We get the intercept elsewhere
-  sumvals[row.names(sumvals) == '(Intercept)', 'Estimate'] <- 0
-  row.names(sumvals)[row.names(sumvals) == '(Intercept)'] <- missingc
-  
-  
-  clustib <- as_tibble(sumvals, rownames = 'cluster') |> 
-    select(cluster, estimate = Estimate, se = `Std. Error`) |> 
-    mutate(intercept = fixef(model)$cond['(Intercept)'],
-           slope = fixef(model)$cond['x'],
-           slope = ifelse(is.na(slope), 0, slope)) |> 
-    filter(cluster != 'x') |> 
-    left_join(clusterdata) |> 
-    mutate(cluster_estimate = intercept + estimate + slope*x)
-  
-  return(dplyr::select(clustib, cluster, x, cluster_estimate, cluster_sd = se))
-  
-}
+# cluster_estimates_fixed <- function(model, alldata) {
+#   clusterdata <- make_clusterdata(alldata)
+#   sumvals <- summary(model)$coefficients$cond
+#   unique(clusterdata$cluster)
+#   row.names(sumvals) <- stringr::str_remove_all(row.names(sumvals), 'cluster')
+#   missingc <- setdiff(unique(clusterdata$cluster), row.names(sumvals))
+#   # We get the intercept elsewhere
+#   sumvals[row.names(sumvals) == '(Intercept)', 'Estimate'] <- 0
+#   row.names(sumvals)[row.names(sumvals) == '(Intercept)'] <- missingc
+#   
+#   
+#   clustib <- as_tibble(sumvals, rownames = 'cluster') |> 
+#     select(cluster, estimate = Estimate, se = `Std. Error`) |> 
+#     mutate(intercept = fixef(model)$cond['(Intercept)'],
+#            slope = fixef(model)$cond['x'],
+#            slope = ifelse(is.na(slope), 0, slope)) |> 
+#     filter(cluster != 'x') |> 
+#     left_join(clusterdata) |> 
+#     mutate(cluster_estimate = intercept + estimate + slope*x)
+#   
+#   return(dplyr::select(clustib, cluster, x, cluster_estimate, cluster_sd = se))
+#   
+# }
 
 ```
 
 ```{r}
-extract_cluster_terms <- function(model, alldata) {
-  clusterdata <- make_clusterdata(alldata)
-  if (length(ranef(test_fixed)$cond) == 0) {
-    clustib <- cluster_estimates_fixed(model, clusterdata)
-  } else {
-    clustib <- cluster_estimates_rand(model, clusterdata)
-  }
-  
-  return(clustib)
-}
+# extract_cluster_terms <- function(model, alldata) {
+#   clusterdata <- make_clusterdata(alldata)
+#   if (length(ranef(test_fixed)$cond) == 0) {
+#     clustib <- cluster_estimates_fixed(model, clusterdata)
+#   } else {
+#     clustib <- cluster_estimates_rand(model, clusterdata)
+#   }
+#   
+#   return(clustib)
+# }
 ```
 
-
-This gets the cluster estimates from the fits at the cluster values. Because it accounts for the full model, the se in particular are not the same. 
+This gets the cluster estimates from the fits at the cluster values. Because it accounts for the full model, the se in particular are not the same.
 
 ```{r}
-predict_at_clusters <- function(model, alldata) {
-  clusterdata <- make_clusterdata(alldata)
-  fitcluster <- clusterdata |> 
-  add_predictions(model, se.fit = TRUE) |> 
-  rename(predicted = fit, sd = se.fit)
-  return(fitcluster)
-}
+# predict_at_clusters <- function(model, alldata) {
+#   clusterdata <- make_clusterdata(alldata)
+#   fitcluster <- clusterdata |> 
+#   add_predictions(model, se.fit = TRUE) |> 
+#   rename(predicted = fit, sd = se.fit)
+#   return(fitcluster)
+# }
 ```
 
 ```{r}
-naive_clusters <- function(alldata) {
-  alldata |> 
-    summarise(cluster_mean = mean(y),
-           cluster_se = sd(y)/sqrt(n()), .by = cluster)
-}
+# naive_clusters <- function(alldata) {
+#   alldata |> 
+#     summarise(cluster_mean = mean(y),
+#            cluster_se = sd(y)/sqrt(n()), .by = cluster)
+# }
 ```
 
 So, the above should let us get the cluster points.
@@ -209,35 +205,246 @@ cluster_fixed_x <- glmmTMB(y ~ x + cluster, data = simdata)
 cluster_fixed <- glmmTMB(y ~ cluster, data = simdata)
 cluster_rand <- glmmTMB(y ~ 1|cluster, data = simdata)
 
+no_cluster <- glmmTMB(y ~ x, data = simdata)
 ```
+
 Get estimates for each cluster
 
 ```{r}
+# Extraction as best I can of *just* the cluster estimates and se
 clusters_from_rand_x <- extract_cluster_terms(cluster_rand_x, simdata)
 clusters_from_fixed_x <- extract_cluster_terms(cluster_fixed_x, simdata)
 clusters_from_rand <- extract_cluster_terms(cluster_rand, simdata)
 clusters_from_fixed <- extract_cluster_terms(cluster_fixed, simdata)
+
+# From the data
+clusters_from_raw <- naive_clusters(simdata)
+
+# Extraction of estimates from the full model for the clusters at their x values (this works here with no in-cluster x variation)
+clusters_full_rand_x <- predict_at_clusters(cluster_rand_x, simdata)
+clusters_full_fixed_x <- predict_at_clusters(cluster_fixed_x, simdata)
+clusters_full_rand <- predict_at_clusters(cluster_rand, simdata)
+clusters_full_fixed <- predict_at_clusters(cluster_fixed, simdata)
+
+no_cluster_full <- predict_at_clusters(no_cluster, simdata)
+
+
 ```
 
+There are a LOT of potential comparisons there; let's try to clarify what they are.
+
+Preliminary (sort of sideways, but checking):
+
+1.  How do the cluster estimates differ from those from a full model?
+
+The extracted cluster term has the same estimate and marginally larger se, as we would expect.
 
 ```{r}
-sddata <- sddata |> 
-  mutate(cluster_rand_x_extract = map(simdata, \(x) extract_cluster_terms(x$cluster_rand_x, x$simdata)),
-         # This one ends up rank-deficient for the last cluster usually
-         cluster_fixed_x_extract = map(simdata, \(x) extract_cluster_terms(x$cluster_fixed_x, x$simdata)),
-         cluster_fixed_extract = map(simdata, \(x) extract_cluster_terms(x$cluster_fixed_x, x$simdata)),
-         cluster_rand_extract = map(simdata, \(x) extract_cluster_terms(x$cluster_rand_x, x$simdata)))
+
+est_compare <- 
+  bind_rows(clusters_from_fixed, clusters_full_fixed,
+            clusters_from_fixed_x, clusters_full_fixed_x, 
+            clusters_from_rand_x, clusters_full_rand_x, 
+            clusters_from_rand, clusters_full_rand) |> 
+  ggplot(aes(y = estimate, x = x, color = estimate_type, ymin = estimate-se, ymax = estimate+se)) + 
+  geom_pointrange(position = position_dodge(width = 0.1)) +
+  facet_wrap('model')
+
+est_compare
 ```
 
+2.  How does the inclusion of x affect cluster estimates?
 
-Then, we want to get predictions for the fits (where possible)- need to revist the below to get the fit of the full fixed model (and the non-x models won't do it)
+If clusters are a fixed effect, nothing changes. If clusters are random, we do see some deviations between the estimates, which don't look much different if we just have the cluster term or the full predictions.
 
-And fits through the points. And the raw points.
+```{r}
+x_compare <- 
+  bind_rows(clusters_from_fixed, clusters_full_fixed,
+            clusters_from_fixed_x, clusters_full_fixed_x, 
+            clusters_from_rand_x, clusters_full_rand_x, 
+            clusters_from_rand, clusters_full_rand) |> 
+  mutate(hasx = grepl('_x$', model),
+         clusterrand = grepl('_rand', model)) |> 
+  ggplot(aes(y = estimate, x = x, color = hasx, ymin = estimate-se, ymax = estimate+se)) + 
+  geom_pointrange(position = position_dodge(width = 0.1)) +
+  facet_grid(estimate_type ~ clusterrand, labeller = 'label_both')
 
-And then make sure I'm making reasonable comparisons.
+x_compare
+```
 
+3.  Does the 'separate' estimation of each cluster match the fixeds?
 
+At the mean, yes. It has a smaller se than the cluster terms themselves, but larger than the full model (usually).
 
+```{r}
+sep_fixed <- 
+  bind_rows(clusters_from_fixed,
+            clusters_from_fixed_x,
+            clusters_full_fixed, 
+            clusters_full_fixed_x,
+            # so I can include on both facets
+            clusters_from_raw |> mutate(estimate_type = 'cluster_term'),
+            clusters_from_raw |> mutate(estimate_type = 'full_model_predict')) |> 
+  
+  ggplot(aes(y = estimate, x = x, color = model, ymin = estimate-se, ymax = estimate+se)) + 
+  geom_pointrange(position = position_dodge(width = 0.3)) +
+  facet_wrap('estimate_type')
+
+sep_fixed
+```
+
+Here's what I really want to know- how do predictions change between fixed effect estimates (and the naive, but since that's the same, not including here), and the random? I think I'll use the cluster term fits (not full model), and I suppose with and without x in the random models. I'll also include the 'no cluster' model as a reference.
+
+So, the rands (particularly rand_x) tend to pull closer to the points without a cluster term (blue, 'no_cluster')
+
+```{r}
+cluster_compare <- 
+  bind_rows(clusters_from_fixed,
+            clusters_from_rand_x, 
+            clusters_from_rand,
+            no_cluster_full) |> 
+  ggplot(aes(y = estimate, x = x, color = model, ymin = estimate-se, ymax = estimate+se)) + 
+  geom_pointrange(position = position_dodge(width = 0.3))
+
+cluster_compare
+```
+
+On to lines- how does any of this change the FITS?
+
+-   For the models themselves? (rand_x, fixed_x, no_cluster)
+
+-   New fits through the cluster estimates (IE how we try to mentally fit the the data in a plot) (rand_x- do I want the full model or just the cluster ests?-, fixed_x, naive)
+
+Get the fits that our eyes will try to draw:
+
+```{r}
+cluster_model_rand_x <- glmmTMB(y ~ x, data = clusters_from_rand_x |> rename(y = estimate))
+cluster_model_fixed_x <- glmmTMB(y ~ x, data = clusters_from_fixed_x |> rename(y = estimate))
+cluster_model_raw <- glmmTMB(y ~ x, data = clusters_from_raw |> rename(y = estimate))
+# This is what we're doing in the plots, though there it's internally nested as well
+cluster_model_fixed <- glmmTMB(y ~ x, data = clusters_from_fixed |> rename(y = estimate))
+```
+
+Fit the lines for each model At the mean random level when relevant
+
+```{r}
+# The full models
+lines_rand_x <- predict_fit(cluster_rand_x, xdata)
+lines_fixed_x <- predict_fit(cluster_fixed_x, xdata)
+lines_no_cluster <- predict_fit(no_cluster, xdata)
+
+# Fits to the cluster estimates
+lines_rand_x_clusters <- predict_fit(cluster_model_rand_x, xdata)
+lines_fixed_x_clusters <- predict_fit(cluster_model_fixed_x, xdata)
+lines_raw_clusters <- predict_fit(cluster_model_raw, xdata)
+lines_fixed_clusters <- predict_fit(cluster_model_fixed, xdata)
+```
+
+Now set up some comparisons
+
+Again, some prelim to know what we're dealing with
+
+1.  Do the full models differ?
+
+The no cluster points are annoying, but this basically works. The fit through the data matches the fit of the random clusters, and is slightly different than the fit you'd get if it were possible to fit the x from the model with fixed clusters.
+
+```{r}
+bind_rows(lines_rand_x,
+          lines_fixed_x,
+          lines_no_cluster) |> 
+ggplot(aes(x = x, y = estimate, color = model, linetype = model)) +
+  geom_line() +
+  geom_point(data = bind_rows(clusters_from_rand_x, 
+                              clusters_from_fixed_x, 
+                              simdata |> mutate(estimate = y, model = 'no_cluster')))
+```
+
+2.  How do the full fits differ from fits through the summary points for each set? The last two are a funny comparison (no cluster fit and the raw clusters).
+
+```{r}
+bind_rows(lines_rand_x,
+          lines_rand_x_clusters,
+          lines_fixed_x, 
+          lines_fixed_x_clusters,
+          lines_no_cluster,
+          lines_raw_clusters) |> 
+  mutate(fittype = ifelse(grepl('model', model), 'clusters', 'data'),
+         model_group = stringr::str_remove_all(model, 'model_'),
+         model_group = case_when(model_group %in% c('no_cluster', 'cluster_raw') ~ 'data',
+                                 .default = model_group)) |> 
+  ggplot(aes(x = x, y = estimate, color = fittype, linetype = fittype)) +
+  geom_line() +
+  facet_wrap('model_group') +
+  geom_point(data = bind_rows(clusters_from_rand_x, clusters_from_fixed_x, clusters_from_raw) |> 
+               mutate(model_group = ifelse(model == 'separate', 'data', model),
+                      fittype = 'clusters'))
+```
+
+Now, let's figure out the situation we *have*, and what we actually want.
+
+We're plotting the model fits (lines_rand_x), and the cluster estimates from a cluster model
+
+```{r}
+lines_rand_x |> 
+  ggplot(aes(x = x, y = estimate, ymin = estimate-se, ymax = estimate + se)) +
+    geom_ribbon(alpha = 0.25) +
+  geom_line() +
+  geom_point(data = clusters_from_fixed) +
+  geom_errorbar(data = clusters_from_fixed)
+```
+
+What makes more sense as a target is the random estimates and the fit
+
+```{r}
+lines_rand_x |> 
+  ggplot(aes(x = x, y = estimate, ymin = estimate-se, ymax = estimate + se)) +
+    geom_ribbon(alpha = 0.25) +
+  geom_line() +
+  geom_point(data = clusters_from_rand_x) +
+  geom_errorbar(data = clusters_from_rand_x)
+```
+
+For error testing as we go, there's a few more things I want to plot- the naive cluster estimates, their fit, and the fit to all the data. We basically have that above, but this gets more directly at it. As we move to nested randoms, we will likely end up wanting the thing we currently do in the paper (the outer-level as fixed with inner random). But let's cross that bridge when we get to it.
+
+```{r}
+lines_rand_x |> 
+  ggplot(aes(x = x, y = estimate, ymin = estimate-se, ymax = estimate + se)) +
+    geom_ribbon(alpha = 0.25) +
+  geom_line() +
+  geom_point(data = clusters_from_rand_x) +
+  geom_errorbar(data = clusters_from_rand_x) +
+  geom_point(data = clusters_from_raw, color = 'seagreen1') +
+  geom_errorbar(data = clusters_from_raw, color = 'seagreen1') +
+  geom_line(data = lines_raw_clusters, color = 'seagreen1', linetype = 'dashed') +
+  geom_line(data = lines_no_cluster, color = 'orchid', linetype = 'dotted')
+  
+```
+
+Can I build that in a tidier way? Yes. Need to come up with a better set of colors, but whatever.
+
+```{r}
+linedf <- bind_rows(lines_rand_x, lines_raw_clusters, lines_no_cluster) |> 
+  mutate(model2 = case_when(model == 'cluster_rand_x' ~ 'Random cluster estimates',
+                            model == 'cluster_model_raw' ~ 'Naive cluster estimates',
+                            model == 'no_cluster' ~ 'No cluster term'))
+
+pointdf <- bind_rows(clusters_from_rand_x, clusters_from_raw) |> 
+  mutate(model2 = case_when(model == 'cluster_rand_x' ~ 'Random cluster estimates',
+                            model == 'separate' ~ 'Naive cluster estimates'))
+
+ggplot(linedf, 
+       aes(x = x, y = estimate, ymin = estimate-se, ymax = estimate + se, 
+           color = model2, linetype = model2)) +
+    geom_ribbon(data = linedf |> filter(model2 == 'Random cluster estimates'),
+                alpha = 0.25, linetype = 0) +
+  geom_line() +
+  geom_point(data = pointdf) +
+  geom_errorbar(data = pointdf)
+```
+
+THEN, package all this up so we can do it for different sds. And unbalanced. And beta-binom. And nested.
+
+DO I want to make the 'Intercept' plots below to show shrinkage directly? Or is it obvious enough here?
 
 ## Testing
 
@@ -291,15 +498,15 @@ fixef(test_cluster)
 Can I plot all of those? Will move on to predicting the whole line in a bit. I just really want to understand what I'm dealing with.
 
 ```{r}
-add_predictions <- function(df, model, se.fit = TRUE, ...) {
-  preds <- predict(object = model,
-                   newdata = df,
-                   se.fit = TRUE, ...) |> 
-    as_tibble()
-  
-  df <- bind_cols(df, preds)
-  return(df)
-}
+# add_predictions <- function(df, model, se.fit = TRUE, ...) {
+#   preds <- predict(object = model,
+#                    newdata = df,
+#                    se.fit = TRUE, ...) |> 
+#     as_tibble()
+#   
+#   df <- bind_cols(df, preds)
+#   return(df)
+# }
 ```
 
 ```{r}
