@@ -38,7 +38,9 @@ Before we do anything with unbalanced clusters, let's first just see how the ran
 
 ```{r}
 
-with_seed(18,
+xrange = c(0, 10)
+
+with_seed(11,
           sdparams <- expand_grid(
             n_per_cluster = 5, 
             n_clusters = 10, 
@@ -50,13 +52,13 @@ with_seed(18,
             rand_si_cor = 0,
             # putting this in a list lets me send in vectors that are all the same
             cluster_x = list(runif(n_clusters,
-                                   min = 0, max = 10)),
+                                   min = min(xrange), max = max(xrange))),
             obs_x_sd = 0
           )
 )
 
 # There's got to be a way to pmap straight into a mutate without having to send the dataframe in again.
-with_seed(18, 
+with_seed(11, 
           sddata <- sdparams |>
             purrr::pmap(simulate_gaussian_mm) |> 
             tibble(simdata = _) |> 
@@ -87,14 +89,14 @@ Now, we can fit the models. What do we want to use here? Build in the model comp
 
 I want to extract the cluster estimates for each model *skipping the intercept estimates here, though we might want to revisit that (see below)*
 
-First, set up two datasets we're going to want to predict on
+First, set up a dataset we're going to want to predict on for the continuous fits
 
 ```{r}
 # clusterdata <- sddata$simdata[[3]] |> 
 #   select(x, cluster) |> 
 #   distinct()
 
-xdata <- tibble(x = 0:10)
+xdata <- tibble(x = seq(from = min(xrange), to = max(xrange), by = diff(xrange)/100))
 
 
 
@@ -439,12 +441,185 @@ ggplot(linedf,
                 alpha = 0.25, linetype = 0) +
   geom_line() +
   geom_point(data = pointdf) +
-  geom_errorbar(data = pointdf)
+  geom_errorbar(data = pointdf) +
+  geom_text(data = pointdf |> filter(model == 'cluster_rand_x'), aes(label = cluster), nudge_x = 0.2)
 ```
+
+Where are the fixeds? I end up needing them below (maybe?)
+```{r}
+ggplot(lines_fixed_x, 
+       aes(x = x, y = estimate, ymin = estimate-se, ymax = estimate + se, 
+           color = model, linetype = model)) +
+      geom_line() +
+  geom_point(data = clusters_from_fixed_x) +
+  geom_errorbar(data = clusters_from_fixed_x) +
+  geom_text(data = clusters_from_fixed_x, aes(label = cluster), nudge_x = 0.2)
+```
+
 
 THEN, package all this up so we can do it for different sds. And unbalanced. And beta-binom. And nested.
 
-DO I want to make the 'Intercept' plots below to show shrinkage directly? Or is it obvious enough here?
+Do I want to make the 'Intercept' plots below to show shrinkage directly? Or is it obvious enough here?
+
+```{r}
+
+# These top two are comparable
+rand_x_coefs <- as_tibble(coef(cluster_rand_x)$cond$cluster, 
+                          rownames = 'cluster') |>
+  # this adds the condVar- are these sd or se?
+  bind_cols(se = 
+              sqrt(c(attributes(ranef(cluster_rand_x)$cond$cluster)$condVar))) |>
+  rename(intercept = `(Intercept)`) |> 
+  mutate(grand_intercept = fixef(cluster_rand_x)$cond['(Intercept)']) |> 
+  mutate(model = 'cluster_rand_x', hasx = TRUE, ismm = TRUE)
+
+# I *think* this is what I want- the effect of cluster at x = 0 in the fixed model. That's not the same as the cluster estimates in the cluster model, which don't account for the x (or the purely naive estimates).
+# Or is it unique(simdata$x[simdata$cluster == 1])
+fixed_x_coefs <- tibble(cluster = unique(simdata$cluster), 
+                        x = 0) |> 
+ add_predictions(cluster_fixed_x, se.fit = TRUE) |> 
+  rename(intercept = fit, se= se.fit) |>  # for this specific case at x = 0
+    # mutate(grand_intercept = fixef(cluster_fixed_x)$cond['(Intercept)']) |> 
+      mutate(grand_intercept = fixef(cluster_fixed_x)$cond['(Intercept)'] + fixef(cluster_fixed_x)$cond['x']*unique(simdata$x[simdata$cluster == 1])) |> 
+
+  mutate(model = 'cluster_fixed_x', hasx = TRUE, ismm = FALSE)
+
+# These are comparable and already created, but don't have the slope taken out.
+# clusters_from_rand
+# clusters_from_raw 
+
+```
+
+```{r}
+bind_rows(rand_x_coefs, fixed_x_coefs) |> 
+ggplot(aes(x = cluster, y = intercept, 
+           color = model)) +  
+  geom_point(position = position_dodge(width = 0.1)) +
+  geom_linerange(aes(ymax = intercept+se, ymin = intercept-se),
+                  position = position_dodge(width = 0.1)) +
+  geom_hline(aes(yintercept = grand_intercept, color = model, linetype = model)) 
+```
+The way I do it below is better with the ranefs.
+
+```{r}
+bind_rows(clusters_from_rand |> 
+            mutate(grand_intercept = fixef(cluster_rand)$cond['(Intercept)']),
+          clusters_from_raw |> 
+            # Should this be overall data mean or mean of the estimates? It doesn't matter here, but will when we have uneven data.
+            mutate(grand_intercept = mean(estimate))) |> 
+            # mutate(grand_intercept = mean(simdata$y))) |> 
+ggplot(aes(x = x, y = estimate, 
+           color = model)) +  
+  geom_point(position = position_dodge(width = 0.1)) +
+  geom_linerange(aes(ymax = estimate+se, ymin = estimate-se),
+                  position = position_dodge(width = 0.1))  +
+  geom_hline(aes(yintercept = grand_intercept, color = model, linetype = model)) 
+```
+
+I really need to set up a standard set of colors, this is really hard when the colors keep changing.
+
+What about the way m-clark does it? He fits lmList, which splits the dataset into clusters and fits them as random. The catch is because I have a true fixed x and no in-cluster x variation, his method doesn't work the same, and so I end up with the full cluster estimates
+
+```{r}
+ll <- lme4::lmList(y ~ 1|cluster, simdata)
+```
+
+There's no exact equivalent in glmmTMB, but easy enough to loop, for ex
+
+```{r}
+tl <- glmmTMB(y ~ 1|cluster, data = simdata |> filter(cluster == 9))
+```
+
+But we see that that has the full value (as doe the lmList version), and adding x in doesn't help
+
+```{r}
+tl <- glmmTMB(y ~ x|cluster, data = simdata |> filter(cluster == 9))
+tl <- glmmTMB(y ~ x + 1|cluster, data = simdata |> filter(cluster == 9))
+```
+
+Can I look at the full model, extract the difference from the fixed line at that x value and compare to the ranef? Do we need to? *These coef values from the clusters random but separate are exactly* `clusters_from_fixed` and `clusters_full_fixed_x` . SO. REALLY, I need to make sure I'm doing the proper comparisons to the fixed values. It's clear from the above that the 'intercept' isn't working, at least how I'm extracting it.
+
+so yeah, coef is giving me the ranef + fixef. and there's no obviously great way to do that for the fixed clusters. BUT, I should be able to extract them as the difference between their value and a 'pure' fit of the line, and compare that to ranef. TRY THAT.
+
+So basically, what I want is the cluster residuals. But again, how do I get them for the fixed model?
+They're also (at least for this case) the same as cluster_from_raw
+
+
+```{r}
+# The full models
+nc_rand_x <- predict_fit(cluster_rand_x, make_clusterdata(simdata)) |> 
+  rename(line_est = estimate, line_se = se) |> 
+  left_join(clusters_from_rand_x) |> 
+  mutate(cluster_resid = estimate-line_est) |> 
+  # As a check that this is correct,
+  left_join(as_tibble(ranef(cluster_rand_x)$cond$cluster, rownames = 'cluster')) |> 
+  rename(extract_ranef = `(Intercept)`) |> 
+  mutate(check = cluster_resid - extract_ranef)
+
+# Need to figure this one out eventually, probably, but it's not working.
+# nc_fixed_x <- predict_fit(cluster_fixed_x, make_clusterdata(simdata)) |> 
+#   rename(line_est = estimate, line_se = se) |>
+#   left_join(clusters_from_fixed_x) |> 
+#   mutate(cluster_resid = estimate-line_est)
+
+nc_raw_cluster <- predict_fit(no_cluster, make_clusterdata(simdata)) |> 
+  rename(line_est = estimate, line_se = se) |> 
+  select(-model) |> 
+  left_join(clusters_from_raw) |> 
+  mutate(cluster_resid = estimate-line_est)
+
+# Fits to the cluster estimates
+# I don't think I actually need this
+# nc_rand_x_clusters <- predict_fit(cluster_model_rand_x, make_clusterdata(simdata))
+# nc_fixed_x_clusters <- predict_fit(cluster_model_fixed_x, make_clusterdata(simdata))
+# nc_raw_clusters <- predict_fit(cluster_model_raw, make_clusterdata(simdata))
+# nc_fixed_clusters <- predict_fit(cluster_model_fixed, make_clusterdata(simdata))
+```
+This will work to show shrinkage.
+```{r}
+ggplot(bind_rows(nc_rand_x, nc_raw_cluster), aes(x = x, y = cluster_resid, 
+                                                 ymin = cluster_resid-se, 
+                                                 ymax = cluster_resid + se, 
+                                                 color = model)) + 
+  geom_point() +
+  geom_linerange() +
+  geom_hline(yintercept = 0)
+```
+
+
+Can we get the full fixed model to give up its values?
+Following https://stackoverflow.com/questions/72820236/comparing-all-factor-levels-to-the-grand-mean-can-i-tweak-contrasts-in-linear-m
+
+This might work, but the NA in cluster 9 kills me every time.
+```{r}
+ContrSumMat <- function (fctr, sparse = FALSE) {
+  if (!is.factor(fctr)) stop("'fctr' is not a factor variable!")
+  N <- nlevels(fctr)
+  Cmat <- contr.sum(N, sparse = sparse)
+  dimnames(Cmat) <- list(levels(fctr), seq_len(N - 1))
+  Cmat
+}
+```
+
+```{r}
+
+Cmat <- ContrSumMat(as.factor(simdata$cluster))
+
+```
+Extract
+```{r}
+coef_ac <- summary(cluster_fixed_x)$coef$cond[3:nrow(summary(cluster_fixed_x)$coef$cond), 'Estimate']
+```
+
+Level-specific
+```{r}
+coef_bc <- (Cmat %*% coef_ac)[, 1]
+```
+
+
+
+
+
 
 ## Testing
 
