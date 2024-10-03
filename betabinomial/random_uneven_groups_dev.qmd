@@ -446,6 +446,7 @@ ggplot(linedf,
 ```
 
 Where are the fixeds? I end up needing them below (maybe?)
+
 ```{r}
 ggplot(lines_fixed_x, 
        aes(x = x, y = estimate, ymin = estimate-se, ymax = estimate + se, 
@@ -455,7 +456,6 @@ ggplot(lines_fixed_x,
   geom_errorbar(data = clusters_from_fixed_x) +
   geom_text(data = clusters_from_fixed_x, aes(label = cluster), nudge_x = 0.2)
 ```
-
 
 THEN, package all this up so we can do it for different sds. And unbalanced. And beta-binom. And nested.
 
@@ -499,6 +499,7 @@ ggplot(aes(x = cluster, y = intercept,
                   position = position_dodge(width = 0.1)) +
   geom_hline(aes(yintercept = grand_intercept, color = model, linetype = model)) 
 ```
+
 The way I do it below is better with the ranefs.
 
 ```{r}
@@ -541,9 +542,7 @@ Can I look at the full model, extract the difference from the fixed line at that
 
 so yeah, coef is giving me the ranef + fixef. and there's no obviously great way to do that for the fixed clusters. BUT, I should be able to extract them as the difference between their value and a 'pure' fit of the line, and compare that to ranef. TRY THAT.
 
-So basically, what I want is the cluster residuals. But again, how do I get them for the fixed model?
-They're also (at least for this case) the same as cluster_from_raw
-
+So basically, what I want is the cluster residuals. But again, how do I get them for the fixed model? They're also (at least for this case) the same as cluster_from_raw
 
 ```{r}
 # The full models
@@ -575,7 +574,9 @@ nc_raw_cluster <- predict_fit(no_cluster, make_clusterdata(simdata)) |>
 # nc_raw_clusters <- predict_fit(cluster_model_raw, make_clusterdata(simdata))
 # nc_fixed_clusters <- predict_fit(cluster_model_fixed, make_clusterdata(simdata))
 ```
+
 This will work to show shrinkage.
+
 ```{r}
 ggplot(bind_rows(nc_rand_x, nc_raw_cluster), aes(x = x, y = cluster_resid, 
                                                  ymin = cluster_resid-se, 
@@ -586,11 +587,10 @@ ggplot(bind_rows(nc_rand_x, nc_raw_cluster), aes(x = x, y = cluster_resid,
   geom_hline(yintercept = 0)
 ```
 
-
-Can we get the full fixed model to give up its values?
-Following https://stackoverflow.com/questions/72820236/comparing-all-factor-levels-to-the-grand-mean-can-i-tweak-contrasts-in-linear-m
+Can we get the full fixed model to give up its values? Following https://stackoverflow.com/questions/72820236/comparing-all-factor-levels-to-the-grand-mean-can-i-tweak-contrasts-in-linear-m
 
 This might work, but the NA in cluster 9 kills me every time.
+
 ```{r}
 ContrSumMat <- function (fctr, sparse = FALSE) {
   if (!is.factor(fctr)) stop("'fctr' is not a factor variable!")
@@ -606,20 +606,18 @@ ContrSumMat <- function (fctr, sparse = FALSE) {
 Cmat <- ContrSumMat(as.factor(simdata$cluster))
 
 ```
+
 Extract
+
 ```{r}
 coef_ac <- summary(cluster_fixed_x)$coef$cond[3:nrow(summary(cluster_fixed_x)$coef$cond), 'Estimate']
 ```
 
 Level-specific
+
 ```{r}
 coef_bc <- (Cmat %*% coef_ac)[, 1]
 ```
-
-
-
-
-
 
 ## Testing
 

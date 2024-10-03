@@ -15,7 +15,7 @@ naive_clusters <- function(alldata) {
               x = unique(x),
               .by = cluster) |>
     mutate(estimate_type = 'separate',
-           model = 'separate')
+           model = 'cluster_raw')
 }
 
 
@@ -30,7 +30,9 @@ naive_clusters <- function(alldata) {
 #' @examples
 predict_at_clusters <- function(model, alldata) {
   clusterdata <- make_clusterdata(alldata)
-  mname <- deparse(substitute(model))
+  mname <- deparse(substitute(model)) |>
+    stringr::str_remove_all('.*\\$')
+
   fitcluster <- clusterdata |>
     add_predictions(model, se.fit = TRUE) |>
     rename(estimate = fit, se = se.fit) |>
@@ -52,11 +54,14 @@ predict_at_clusters <- function(model, alldata) {
 #' @examples
 predict_fit <- function(model, xsteps) {
 
-  mname <- deparse(substitute(model))
+  mname <- deparse(substitute(model)) |>
+    stringr::str_remove_all('.*\\$')
 
   # If we have clusters as fixed effects, we can't get the 'pure' effect of x using `predict`, so have to hand-roll
   if (length(ranef(model)$cond) == 0 && any(grepl('cluster', attributes(terms(model))$term.labels))) {
-    intercept <- fixef(model)$cond['(Intercept)']
+    intercepts <- predict(model, newdata = tibble(x = 0, cluster = unique(model$frame$cluster)))
+    intercept <- mean(intercepts) # should maybe be weighted?
+
     int_se <- summary(model)$coef$cond['(Intercept)', 'Std. Error']
     slope <- fixef(model)$cond['x']
     slope_se <- summary(model)$coef$cond['x', 'Std. Error']
@@ -90,7 +95,9 @@ predict_fit <- function(model, xsteps) {
 #' @examples
 extract_cluster_terms <- function(model, alldata) {
   clusterdata <- make_clusterdata(alldata)
-  mname <- deparse(substitute(model))
+
+  mname <- deparse(substitute(model)) |>
+    stringr::str_remove_all('.*\\$')
 
   if (length(ranef(model)$cond) == 0) {
     clustib <- cluster_estimates_fixed(model, clusterdata)
@@ -158,6 +165,30 @@ cluster_estimates_fixed <- function(model, alldata) {
     mutate(estimate = intercept + estimate + slope*x)
 
   return(dplyr::select(clustib, cluster, x, estimate, se))
+
+}
+
+cluster_residuals <- function(model, alldata, cluster_ests) {
+
+  if (length(ranef(model)$cond) == 0) {
+    resids <- predict_fit(model, make_clusterdata(alldata)) |>
+      rename(line_est = estimate, line_se = se) |>
+      select(-model) |>
+      left_join(cluster_ests) |>
+      mutate(cluster_resid = estimate-line_est)
+  } else {
+    resids <- predict_fit(model, make_clusterdata(alldata)) |>
+      # Extract these directly from ranef to make sure we're not assuming anything
+      left_join(as_tibble(ranef(model)$cond$cluster, rownames = 'cluster')) |>
+      rename(cluster_resid = `(Intercept)`)
+
+      # As a check that this is correct, we get the same thing from this:
+      # rename(line_est = estimate, line_se = se) |>
+      # left_join(cluster_estimates$cluster_rand_x) |>
+      # mutate(cluster_resid = estimate-line_est) |>
+  }
+
+  return(resids)
 
 }
 
