@@ -94,15 +94,14 @@ predict_fit <- function(model, xsteps) {
 #'
 #' @examples
 extract_cluster_terms <- function(model, alldata) {
-  clusterdata <- make_clusterdata(alldata)
 
   mname <- deparse(substitute(model)) |>
     stringr::str_remove_all('.*\\$')
 
   if (length(ranef(model)$cond) == 0) {
-    clustib <- cluster_estimates_fixed(model, clusterdata)
+    clustib <- cluster_estimates_fixed(model, alldata)
   } else {
-    clustib <- cluster_estimates_rand(model, clusterdata)
+    clustib <- cluster_estimates_rand(model, alldata)
   }
 
   clustib <- clustib |>
@@ -127,10 +126,13 @@ cluster_estimates_rand <- function(model, alldata) {
                     intercept = fixef(model)$cond["(Intercept)"],
                     slope = fixef(model)$cond['x'],
                     cluster_deviation = ranef(model)$cond$cluster[[1]],
-                    se = sqrt(c(attributes(ranef(model)$cond$cluster)$condVar))) |>
+                    sd = sqrt(c(attributes(ranef(model)$cond$cluster)$condVar))) |>
     mutate(slope = ifelse(is.na(slope), 0, slope)) |>
     left_join(clusterdata, by = 'cluster') |>
-    mutate(estimate = intercept + slope*x + cluster_deviation)
+    mutate(estimate = intercept + slope*x + cluster_deviation,
+           se = sd/sqrt(n))
+
+  # Note- checking against as.data.frame(ranef(model)), and these are the same numbers (including the condsd)
 
   return(dplyr::select(clustib, cluster, x, estimate, se))
 }
@@ -203,6 +205,7 @@ cluster_residuals <- function(model, alldata, cluster_ests) {
 make_clusterdata <- function(alldata) {
   alldata |>
     select(x, cluster) |>
+    mutate(n = n(), .by = cluster) |>
     distinct()
 }
 
