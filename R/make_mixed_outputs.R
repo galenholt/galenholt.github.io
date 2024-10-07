@@ -254,89 +254,122 @@ make_full_method_comparison <- function(fitted_x_lines, fitted_x_lines_tocluster
 }
 
 make_analysed_tibble <- function(params, mod_pal) {
-  with_seed(11,
-            sddata <- params |>
+  inout_data <- params |>
               purrr::pmap(simulate_gaussian_mm) |>
               tibble(simdata = _) |>
-              bind_cols(sdparams)
-  )
+              bind_cols(params)
 
   # Get the full models
-  sddata <- sddata |>
+  inout_data <- inout_data |>
     mutate(full_models = map(simdata, \(x) make_fullmodels(x)))
 
   # Get the cluster estimates as directly as possible
-  sddata <- sddata |>
+  inout_data <- inout_data |>
     mutate(cluster_estimates = map2(full_models, simdata,
                                     \(x,y) estimate_clusters(x, y)))
 
   # Get the predictions at each cluster and corresponding x
-  sddata <- sddata |>
+  inout_data <- inout_data |>
     mutate(cluster_predictions = map2(full_models, simdata,
                                       \(x,y) predict_clusters(x, y)))
 
   # Get the lines through the cluster estimates- what our eyes will try to draw if we plot the cluster points
-  sddata <- sddata |>
+  inout_data <- inout_data |>
     mutate(cluster_models = map(cluster_estimates,
                                 \(x) model_from_clusters(x)))
 
   # Fit the actual model fits for the x range for the full models and the fits through cluster estimate models
   # the warnings here are important but are about the estimation; nothing is broken with the code here.
-  sddata <- sddata |>
+  inout_data <- inout_data |>
     mutate(fitted_x_lines = map(full_models,
                                 \(x) fit_x_full(x, xvals = xdata)),
            fitted_x_lines_tocluster = map(cluster_models,
                                           \(x) fit_x_cluster(x, xvals = xdata)))
 
   # Get the cluster residuals so we can see shrinkage.
-  sddata <- sddata |>
-    mutate(cluster_deviations = pmap(sddata, get_cluster_residuals))
+  inout_data <- inout_data |>
+    mutate(cluster_deviations = pmap(inout_data, get_cluster_residuals))
 
   ## FIGURES
 
   # Need to add the palette if I want one
-  sddata <- sddata |>
+  inout_data <- inout_data |>
     mutate(mod_pal = list(mod_pal))
 
 
   # THe main fig we actually want
-  sddata <- sddata |>
-    mutate(fit_with_clusters = pmap(sddata, make_fit_figure))
+  inout_data <- inout_data |>
+    mutate(fit_with_clusters = pmap(inout_data, make_fit_figure))
 
   # The most relevant diagnostic- the fit of and cluster estimates compared to a naive fit without clusters and direct estimation of cluster values
-  sddata <- sddata |>
-    mutate(method_comparison = pmap(sddata, make_fit_vs_naive))
+  inout_data <- inout_data |>
+    mutate(method_comparison = pmap(inout_data, make_fit_vs_naive))
 
   # Shrinkage
-  sddata <- sddata |>
+  inout_data <- inout_data |>
     mutate(shrink = map2(cluster_deviations, mod_pal,
                          \(x,y) make_shrinkage(x, y)))
 
   # These are more for testing and reference
 
   # more complete cluster estimate comparison
-  sddata <- sddata |>
-    mutate(cluster_compare = pmap(sddata, compare_cluster_estimates))
+  inout_data <- inout_data |>
+    mutate(cluster_compare = pmap(inout_data, compare_cluster_estimates))
 
   # compare the to-cluster-estimate fits to teh full fits
-  sddata <- sddata |>
-    mutate(fit_data_v_clusters = pmap(sddata, compare_cluster_to_full))
+  inout_data <- inout_data |>
+    mutate(fit_data_v_clusters = pmap(inout_data, compare_cluster_to_full))
 
   # Now we're gettng fairly esoteric
 
   # Compare the estimates for the cluster with what we get from 'predict' on the models
   # and the impact of including x on cluster estimates.
-  sddata <- sddata |>
-    mutate(cluster_est_to_pred = pmap(sddata, compare_cluster_est_to_pred)) |>
-    mutate(cluster_x_effect = pmap(sddata, compare_effect_of_x)) |>
-    mutate(cluster_sep_v_fixed = pmap(sddata, compare_sep_to_fixed))
+  inout_data <- inout_data |>
+    mutate(cluster_est_to_pred = pmap(inout_data, compare_cluster_est_to_pred)) |>
+    mutate(cluster_x_effect = pmap(inout_data, compare_effect_of_x)) |>
+    mutate(cluster_sep_v_fixed = pmap(inout_data, compare_sep_to_fixed))
 
   # these will help us see what's going on with our current method, but might need to be updated once we have nesting.
-  sddata <- sddata |>
-    mutate(current_method = pmap(sddata, make_current_plot)) |>
-    mutate(method_comparison_all = pmap(sddata, make_full_method_comparison))
+  inout_data <- inout_data |>
+    mutate(current_method = pmap(inout_data, make_current_plot)) |>
+    mutate(method_comparison_all = pmap(inout_data, make_full_method_comparison))
 
 
-  return(sddata)
+  return(inout_data)
 
+}
+
+
+
+# Extract the DATA to a list ----------------------------------------------
+
+extract_unnest <- function(data, paramdf) {
+
+  paramvals <- names(paramdf)[names(paramdf) != 'cluster_x']
+
+  fitlines <- data |>
+    select({{paramvals}}, fitted_x_lines) |>
+    unnest(cols = fitted_x_lines) |>
+    unnest(cols = fitted_x_lines)
+
+  fitclusters <- data |>
+    select({{paramvals}}, cluster_estimates) |>
+    unnest(cols = cluster_estimates) |>
+    unnest(cols = cluster_estimates)
+
+  fitlinesc <- data |>
+    select({{paramvals}}, fitted_x_lines_tocluster) |>
+    unnest(cols = fitted_x_lines_tocluster) |>
+    unnest(cols = fitted_x_lines_tocluster)
+
+  shrink <- data |>
+    select({{paramvals}}, cluster_deviations) |>
+    unnest(cols = cluster_deviations) |>
+    unnest(cols = cluster_deviations)
+
+  points <- data |>
+    select({{paramvals}}, simdata) |>
+    unnest(cols = simdata)
+
+  return(tibble::lst(fitlines, fitclusters, fitlinesc, shrink, points))
 }

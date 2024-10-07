@@ -80,6 +80,7 @@ simulate_gaussian_mm <- function(n_clusters,
   }
 
   # We could generalise this to reduce dependence on x (ie set the probabilities elsewhere, and then sort by x if we want it correlated, thoguh that would need to have noise somehow)
+    # That approach, using a Poisson or nbinom (with a +1 adjustment) might be a really good way to control the proportion singletons.
   # This approach does keep things consistent.
   if (is.character(cluster_N)) {
     if (cluster_N == 'uneven') {
@@ -90,7 +91,24 @@ simulate_gaussian_mm <- function(n_clusters,
       # Needs some checks so we don't lose clusters entirely
       missing_clusters <- as.character(1:n_clusters)[!as.character(1:n_clusters) %in% rownames(n_per_cluster)]
       n_per_cluster <- c(n_per_cluster, rep(1, length(missing_clusters)) |> setNames(missing_clusters))
-      n_per_cluster[match(sort(as.numeric(names(n_per_cluster))), as.numeric(names(n_per_cluster)))]
+      n_per_cluster <- n_per_cluster[match(sort(as.numeric(names(n_per_cluster))), as.numeric(names(n_per_cluster)))]
+
+      # If we added one(s), we'll be over N. Remove but not if it pushes somethign below 0
+      # Try to retain the distribution though.
+
+      while(sum(n_per_cluster) > N) {
+        removers <- sample(1:n_clusters, size = length(missing_clusters), replace = TRUE,
+                           prob = proportions(n_per_cluster)) |> table()
+        for (i in removers) {
+          thisindex <- names(n_per_cluster) == names(removers[1])
+          thisper <- n_per_cluster[thisindex]
+          if (thisper > 1) {
+            n_per_cluster[thisindex] <- thisper - 1
+          }
+        }
+      }
+
+
       # That's correlated with x
 
       # Uncorrelate with x if desired
