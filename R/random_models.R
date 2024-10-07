@@ -194,6 +194,43 @@ cluster_residuals <- function(model, alldata, cluster_ests) {
 
 }
 
+#' Extract the term estimates from glmmTMB
+#'
+#' @param model
+#'
+#' @return
+#' @export
+#'
+#' @examples
+extract_glmmTMB_ests <- function(model, mname) {
+
+  # mname <- deparse(substitute(model)) |>
+  #   stringr::str_remove_all('.*\\$')
+
+  ms <- summary(model)
+
+  tib <- confint(model) |>
+    as_tibble(rownames = 'term') |>
+    mutate(term = case_when(term == '(Intercept)' ~ 'intercept',
+                            term == 'x' ~ 'slope',
+                            term == 'Std.Dev.(Intercept)|cluster' ~ 'sd_rand_intercept',
+                            .default = term)) |>
+    rename(cil = `2.5 %`, ciu = `97.5 %`, estimate = Estimate)
+
+  # If the model only has fixed, just use the residual sd.
+  if (length(ranef(model)$cond) == 0 && any(grepl('cluster', attributes(terms(model))$term.labels))) {
+    resid_sig <- tibble(term = 'obs_sigma', estimate = sd(resid(model)))
+  } else {
+    resid_sig <- tibble(term = 'obs_sigma', estimate = attributes(ms$varcor$cond)$sc)
+  }
+
+  tib <- bind_rows(tib, resid_sig) |>
+    mutate(model = mname)
+
+  return(tib)
+
+}
+
 #' Helper
 #'
 #' @param alldata

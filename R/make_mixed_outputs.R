@@ -10,6 +10,19 @@ make_fullmodels <- function(simdata) {
   return(full_models)
 }
 
+extract_terms <- function(full_models) {
+  # Extraction as best I can of *just* the cluster estimates and se
+  term_estimates <- imap(full_models, extract_glmmTMB_ests)
+  # term_estimates <- list(
+  #   cluster_rand_x = extract_glmmTMB_ests(full_models$cluster_rand_x),
+  #   cluster_fixed_x = extract_glmmTMB_ests(full_models$cluster_fixed_x),
+  #   cluster_rand = extract_glmmTMB_ests(full_models$cluster_rand),
+  #   cluster_fixed = extract_glmmTMB_ests(full_models$cluster_fixed)
+  # )
+
+  return(term_estimates)
+}
+
 estimate_clusters <- function(full_models, simdata) {
   # Extraction as best I can of *just* the cluster estimates and se
   cluster_estimates <- list(
@@ -263,6 +276,10 @@ make_analysed_tibble <- function(params, mod_pal) {
   inout_data <- inout_data |>
     mutate(full_models = map(simdata, \(x) make_fullmodels(x)))
 
+  # Get the terms estimated by the models
+  inout_data <- inout_data |>
+    mutate(term_estimates = map(full_models, \(x) extract_terms(x)))
+
   # Get the cluster estimates as directly as possible
   inout_data <- inout_data |>
     mutate(cluster_estimates = map2(full_models, simdata,
@@ -371,5 +388,24 @@ extract_unnest <- function(data, paramdf) {
     select({{paramvals}}, simdata) |>
     unnest(cols = simdata)
 
-  return(tibble::lst(fitlines, fitclusters, fitlinesc, shrink, points))
+  set_v_est <- data |>
+    select(intercept, slope, obs_sigma, sd_rand_intercept, term_estimates) |>
+    mutate(group = row_number()) |>
+    pivot_longer(cols = c(intercept, slope, obs_sigma, sd_rand_intercept)) |>
+    unnest(term_estimates) |> unnest(term_estimates) |>
+    filter(model == 'cluster_rand_x' & term == name) |>
+    select(-name, -model, set_value = value) |>
+    mutate(term = factor(term, levels = c('intercept', 'slope', 'sd_rand_intercept', 'obs_sigma')),
+           type = case_when(term %in% c('intercept', 'slope') ~ 'fixed',
+                            term == 'sd_rand_intercept' ~ 'random',
+                            term == 'obs_sigma' ~ 'residual'))
+
+  groupattach <- data |>
+    select({{paramvals}}) |>
+    mutate(group = row_number())
+
+  set_v_est <- set_v_est |>
+    left_join(groupattach)
+
+  return(tibble::lst(fitlines, fitclusters, fitlinesc, shrink, points, set_v_est))
 }

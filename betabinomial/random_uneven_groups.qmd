@@ -38,7 +38,7 @@ And will likely need to incorporate some assessments of the se being calculated 
 
 We'll need to bring in real data at some point, but I think not in this doc (hence why it's here, and some of the other testing is in caddis.
 
-I think We'll want to do some actual math here somewhere too, to show exactly how the random coefficients relate to the estimates of the fit and the clusters. 
+I think We'll want to do some actual math here somewhere too, to show exactly how the random coefficients relate to the estimates of the fit and the clusters.
 
 And extract the coefficients as sarah did and see if they match what they should.
 
@@ -66,7 +66,7 @@ with_seed(11,
             cluster_N = 'even',
             intercept = 1, 
             slope = 0.5,
-            sigma = c(0.1, 1),
+            obs_sigma = c(0.1, 1),
             sd_rand_intercept = c(0.5, 2),
             sd_rand_slope = 0, 
             rand_si_cor = 0,
@@ -87,19 +87,21 @@ sddata <- with_seed(11,
 sdstacks <- extract_unnest(sddata, sdparams)
 ```
 
+## Results
+
+### Data
+
 ```{r}
 
 sdstacks$points |> 
   ggplot(aes(x = x, y = y, color = factor(cluster, levels = c(1:max(as.numeric(cluster)))))) + 
   geom_point() +
-  facet_grid(sigma ~ sd_rand_intercept) +
+  facet_grid(obs_sigma ~ sd_rand_intercept) +
   labs(color = 'Cluster ID')
 
 ```
 
-## Results
-
-The main result
+### Main result
 
 ```{r}
 
@@ -117,7 +119,7 @@ sd_fit <- sdstacks$fitlines |>
                   filter(model == 'cluster_rand_x'),
                 aes(y = estimate, ymin = estimate-se, ymax = estimate + se)) +
   scale_color_manual(values = mod_pal) +
-  facet_grid(sigma ~ sd_rand_intercept) +
+  facet_grid(obs_sigma ~ sd_rand_intercept) +
   scale_x_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(random $\sigma$)'),
                                          breaks = NULL, labels = NULL)) +
   scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(obs $\sigma$)'),
@@ -125,6 +127,28 @@ sd_fit <- sdstacks$fitlines |>
 
 sd_fit + theme(legend.position = 'none')
 ```
+
+How did we do on the estimates? The error bars here are 95% CI of the estimates. Observation sd does not have an se, it's the leftovers, and so does not have error bars.
+
+```{r}
+sdstacks$set_v_est |> 
+  ggplot(aes(x = term, shape = type)) + 
+  geom_point(mapping = aes(y = estimate)) +
+  geom_errorbar(mapping = aes(ymin = cil, ymax = ciu, width = 0.1)) +
+  geom_point(mapping = aes(y = set_value), color = 'firebrick')  +
+  facet_grid(obs_sigma ~ sd_rand_intercept, labeller = 'label_both') +
+  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(obs $\sigma$)'),
+                                         breaks = NULL, labels = NULL))
+
+
+# The plot is nicer than the table
+# knitr::kable(set_v_est |> 
+#                select(-group, `2.5%` = cil, `97.5%` = ciu) |> 
+#                mutate(across(where(is.numeric), \(x) round(x, digits = 3))))
+  
+```
+
+### Method comparison
 
 Now, how does that compare with the raw cluster esimates or the fit through the data with no random structure? The dashed blue line is the fit through the raw cluster estimates for visualisation.
 
@@ -148,7 +172,7 @@ sd_method_comparison <-
                   filter(model %in% c('cluster_rand_x', "cluster_raw")),
                 aes(y = estimate, ymin = estimate-se, ymax = estimate + se)) +
   scale_color_manual(values = mod_pal)  +
-  facet_grid(sigma ~ sd_rand_intercept) +
+  facet_grid(obs_sigma ~ sd_rand_intercept) +
   scale_x_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(random $\sigma$)'),
                                          breaks = NULL, labels = NULL)) +
   scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(obs $\sigma$)'),
@@ -156,6 +180,8 @@ sd_method_comparison <-
 
 sd_method_comparison
 ```
+
+### Shrinkage
 
 And here we can see the very different shrinkage. I guess what we really need to do is show how *unbalanced shrinkage* yields different sloped lines.
 
@@ -172,7 +198,7 @@ sd_shrink <- sdstacks$shrink |>
   geom_linerange(position = position_dodge(width = 0.1)) +
   geom_hline(yintercept = 0) +
   scale_color_manual(values = mod_pal) +
-  facet_grid(sigma ~ sd_rand_intercept) +
+  facet_grid(obs_sigma ~ sd_rand_intercept) +
   scale_x_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(random $\sigma$)'),
                                          breaks = NULL, labels = NULL)) +
   scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(obs $\sigma$)'),
@@ -180,6 +206,7 @@ sd_shrink <- sdstacks$shrink |>
 
 sd_shrink
 ```
+
 ## Unbalanced groups
 
 For now, we'll just use two of the options from above, the sd_rand of 0.5 and 2 and sigma of 1, so random variance is half or double residual.
@@ -196,7 +223,7 @@ with_seed(11,
             uneven_exponent = c(0, 0.5, 1),
             intercept = 1, 
             slope = 0.5,
-            sigma = c(1),
+            obs_sigma = c(1),
             sd_rand_intercept = c(0.5, 2),
             sd_rand_slope = 0, 
             rand_si_cor = 0,
@@ -217,8 +244,10 @@ unbaldata <- with_seed(11,
 # this can be more useful
 unbal <- extract_unnest(unbaldata, unbalparams)
 ```
+
 ## Results
 
+### Data
 Again, we look at the data, and now can see there are different numbers of points.
 
 ```{r}
@@ -228,6 +257,7 @@ unbal$points |>
   facet_grid(uneven_exponent ~ sd_rand_intercept) +
   labs(color = 'Cluster ID')
 ```
+
 Probably worth being explicit here about the unevenness. I really do thing I'm going to want to rethink this to use nbinom. Then once we get to our data, could parameterise based on what we see.
 
 ```{r}
@@ -238,9 +268,7 @@ unbal$points |>
   theme(legend.position = 'none')
 ```
 
-## Results
-
-The main result
+### Main result
 
 ```{r}
 
@@ -266,6 +294,19 @@ unbal_fit <- unbal$fitlines |>
 
 unbal_fit + theme(legend.position = 'none')
 ```
+
+How did we do on the estimates? The error bars here are 95% CI of the estimates. Observation sd does not have an se, it's the leftovers, and so does not have error bars.
+
+```{r}
+unbal$set_v_est |> 
+  ggplot(aes(x = term, shape = type)) + 
+  geom_point(mapping = aes(y = estimate)) +
+  geom_errorbar(mapping = aes(ymin = cil, ymax = ciu, width = 0.1)) +
+  geom_point(mapping = aes(y = set_value), color = 'firebrick') +
+  facet_grid(uneven_exponent ~ sd_rand_intercept, labeller = 'label_both')
+```
+
+### Method comparison
 
 Now we have some meaningful shrinkage and it can cause the lines to deviate. The dashed blue line is the fit through the raw cluster estimates for visualisation.
 
@@ -297,7 +338,9 @@ unbal_method_comparison <-
 
 unbal_method_comparison
 ```
+
 It can help to look at one of those more closely just to see what's happening, and show the fit through the raw clusters as well.
+
 ```{r}
 unbal_method_comparison_single <-
   ggplot(mapping = aes(x = x, color = model)) +
@@ -332,6 +375,8 @@ unbal_method_comparison_single <-
 unbal_method_comparison_single
 ```
 
+### Shrinkage
+
 And here we can see the very different shrinkage. I guess what we really need to do is show how *unbalanced shrinkage* yields different sloped lines.
 
 ```{r}
@@ -356,6 +401,7 @@ unbal_shrink
 ```
 
 Do the clusters with few observations shrink more? Yes, but not a 1:1 relationship
+
 ```{r}
 unbal_shrinksize <- unbal$shrink |> 
   
@@ -376,6 +422,8 @@ unbal_shrinksize <- unbal$shrink |>
 
 unbal_shrinksize
 ```
+
+### Full vs through estimate diagnostic
 
 And finally, do the fits through the random cluster estimates match the line from the random model?
 
@@ -406,12 +454,260 @@ unbal_fit_with_clusters_compare <- unbal$fitlines |>
 unbal_fit_with_clusters_compare + theme(legend.position = 'none')
 ```
 
+## X is density
+
+For now, we'll just use two of the options from above, the sd_rand of 0.5 and 2 and sigma of 1, so random variance is half or double residual. By using `x_is_density = TRUE`, we generate the obs among clusters as before, and then calculate density from that. So this should have the same distribution of cluster sizes, but now it's arranged on x.
 
 
-AND, finally, what should we plot? What should we DO. It's one thing to find out the stats are working *right*, it's another to decide how to present them or whether we need to do something else.
+```{r}
+with_seed(11,
+          xdensparams <- expand_grid(
+            N = 50, 
+            n_clusters = 10,
+            cluster_N = 'uneven',
+            # Definitely want 0, the others are essentailly arbitrary
+            uneven_exponent = c(0, 0.5, 1),
+            intercept = 1, 
+            slope = 0.5,
+            obs_sigma = c(1),
+            sd_rand_intercept = c(0.5, 2),
+            sd_rand_slope = 0, 
+            rand_si_cor = 0,
+            # putting this in a list lets me send in vectors that are all the same
+            cluster_x = list(runif(n_clusters,
+                                   min = min(xrange), max = max(xrange))),
+            obs_x_sd = 0,
+            x_is_density = TRUE
+          )
+)
+
+```
+
+```{r}
+xdensdata <- with_seed(11, 
+                       make_analysed_tibble(xdensparams, mod_pal)
+)
+
+# this can be more useful
+xdens <- extract_unnest(xdensdata, xdensparams)
+```
+
+## Results
+
+### Data
+
+Again, we look at the data, same as above, but now arranged on x.
+
+```{r}
+xdens$points |> 
+  ggplot(aes(x = x, y = y, color = factor(cluster, levels = c(1:max(as.numeric(cluster)))))) + 
+  geom_point() +
+  facet_grid(uneven_exponent ~ sd_rand_intercept) +
+  labs(color = 'Cluster ID')
+```
+
+This is the same distribution as avove.
+
+```{r}
+xdens$points |> 
+  ggplot(aes(x = cluster, color = factor(cluster, levels = c(1:max(as.numeric(cluster)))))) + 
+  geom_bar() +
+  facet_grid(uneven_exponent ~ sd_rand_intercept) +
+  theme(legend.position = 'none')
+```
+
+### Main result
+
+```{r}
+
+xdens_fit <- xdens$fitlines |>
+  filter(model == 'cluster_rand_x') |> 
+  ggplot(aes(x = x, color = model)) +
+  geom_point(data = xdens$points, aes(y = y), color = 'grey20', alpha = 0.2) +
+  geom_ribbon(aes(y = estimate, ymin = estimate-se, ymax = estimate + se),
+              alpha = 0.25, linetype = 0) +
+  geom_line(aes(y = estimate)) +
+  geom_point(data = xdens$fitclusters  |>
+               filter(model == 'cluster_rand_x'),
+             aes(y = estimate)) +
+  geom_errorbar(data = xdens$fitclusters |>
+                  filter(model == 'cluster_rand_x'),
+                aes(y = estimate, ymin = estimate-se, ymax = estimate + se)) +
+  scale_color_manual(values = mod_pal) +
+  facet_grid(uneven_exponent ~ sd_rand_intercept) +
+  scale_x_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(random $\sigma$)'),
+                                         breaks = NULL, labels = NULL)) +
+  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(Uneven exponent)'),
+                                         breaks = NULL, labels = NULL))
+
+xdens_fit + theme(legend.position = 'none')
+```
+
+How did we do on the estimates? The error bars here are 95% CI of the estimates. Observation sd does not have an se, it's the leftovers, and so does not have error bars.
+
+```{r}
+xdens$set_v_est |> 
+  ggplot(aes(x = term, shape = type)) + 
+  geom_point(mapping = aes(y = estimate)) +
+  geom_errorbar(mapping = aes(ymin = cil, ymax = ciu, width = 0.1)) +
+  geom_point(mapping = aes(y = set_value), color = 'firebrick') +
+  facet_grid(uneven_exponent ~ sd_rand_intercept, labeller = 'label_both')
+```
+
+### Method comparison
+
+Now we have some meaningful shrinkage and it can cause the lines to deviate. The dashed blue line is the fit through the raw cluster estimates for visualisation.
+
+```{r}
+xdens_method_comparison <-
+  ggplot(mapping = aes(x = x, color = model)) +
+  geom_ribbon(data = xdens$fitlines |>
+                filter(model %in% c('cluster_rand_x')),
+              aes(y = estimate, ymin = estimate-se, ymax = estimate + se),
+              alpha = 0.25, linetype = 0) +
+  geom_line(data = xdens$fitlines |>
+              filter(model %in% c('cluster_rand_x', 'cluster_raw', 'no_cluster')),
+            aes(y = estimate)) +
+  geom_line(data = xdens$fitlinesc |>
+              filter(model %in% c('cluster_raw')),
+            aes(y = estimate), linetype = 'dashed') +
+  geom_point(data = xdens$fitclusters  |>
+               filter(model %in% c('cluster_rand_x', "cluster_raw")),
+             aes(y = estimate)) +
+  geom_errorbar(data = xdens$fitclusters |>
+                  filter(model %in% c('cluster_rand_x', "cluster_raw")),
+                aes(y = estimate, ymin = estimate-se, ymax = estimate + se)) +
+  scale_color_manual(values = mod_pal) +
+  facet_grid(uneven_exponent ~ sd_rand_intercept) +
+  scale_x_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(random $\sigma$)'),
+                                         breaks = NULL, labels = NULL)) +
+  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(Uneven exponent)'),
+                                         breaks = NULL, labels = NULL))
+
+xdens_method_comparison
+```
+
+It can help to look at one of those more closely just to see what's happening, and show the fit through the raw clusters as well.
+
+```{r}
+xdens_method_comparison_single <-
+  ggplot(mapping = aes(x = x, color = model)) +
+  geom_ribbon(data = xdens$fitlines |>
+                filter(model %in% c('cluster_rand_x') &
+                         uneven_exponent == 1 & sd_rand_intercept == 2),
+              aes(y = estimate, ymin = estimate-se, ymax = estimate + se),
+              alpha = 0.25, linetype = 0) +
+  geom_line(data = xdens$fitlines |>
+              filter(model %in% c('cluster_rand_x', 'cluster_raw', 'no_cluster') &
+                       uneven_exponent == 1 & sd_rand_intercept == 2),
+            aes(y = estimate)) +
+  geom_line(data = xdens$fitlinesc |>
+              filter(model %in% c('cluster_raw') &
+                       uneven_exponent == 1 & sd_rand_intercept == 2),
+            aes(y = estimate), linetype = 'dashed') +
+  geom_point(data = xdens$fitclusters  |>
+               filter(model %in% c('cluster_rand_x', "cluster_raw") &
+                        uneven_exponent == 1 & sd_rand_intercept == 2),
+             aes(y = estimate)) +
+  geom_errorbar(data = xdens$fitclusters |>
+                  filter(model %in% c('cluster_rand_x', "cluster_raw") &
+                           uneven_exponent == 1 & sd_rand_intercept == 2),
+                aes(y = estimate, ymin = estimate-se, ymax = estimate + se)) +
+  scale_color_manual(values = mod_pal) +
+  facet_grid(uneven_exponent ~ sd_rand_intercept) +
+  scale_x_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(random $\sigma$)'),
+                                         breaks = NULL, labels = NULL)) +
+  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(Uneven exponent)'),
+                                         breaks = NULL, labels = NULL))
+
+xdens_method_comparison_single
+```
+### Shrinkage
+
+And here we can see the very different shrinkage. I guess what we really need to do is show how *xdensanced shrinkage* yields different sloped lines.
+
+```{r}
+xdens_shrink <- xdens$shrink |> 
+  
+  ggplot(
+    aes(x = x, y = cluster_resid,
+        ymin = cluster_resid-se,
+        ymax = cluster_resid + se,
+        color = model)) +
+  geom_point(position = position_dodge(width = 0.1)) +
+  geom_linerange(position = position_dodge(width = 0.1)) +
+  geom_hline(yintercept = 0) +
+  scale_color_manual(values = mod_pal) +
+  facet_grid(uneven_exponent ~ sd_rand_intercept) +
+  scale_x_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(random $\sigma$)'),
+                                         breaks = NULL, labels = NULL)) +
+  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(Uneven exponent)'),
+                                         breaks = NULL, labels = NULL))
+
+xdens_shrink
+```
+
+Do the clusters with few observations shrink more? Yes, but not a 1:1 relationship
+
+```{r}
+xdens_shrinksize <- xdens$shrink |> 
+  
+  ggplot(
+    aes(x = x, y = cluster_resid,
+        ymin = cluster_resid-se,
+        ymax = cluster_resid + se,
+        color = model)) +
+  geom_point(aes(size = n), position = position_dodge(width = 0.1), alpha = 0.5) +
+  # geom_linerange(position = position_dodge(width = 0.1)) +
+  geom_hline(yintercept = 0) +
+  scale_color_manual(values = mod_pal) +
+  facet_grid(uneven_exponent ~ sd_rand_intercept) +
+  scale_x_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(random $\sigma$)'),
+                                         breaks = NULL, labels = NULL)) +
+  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(Uneven exponent)'),
+                                         breaks = NULL, labels = NULL))
+
+xdens_shrinksize
+```
+### Full vs through estimate diagnostic
+
+And finally, do the fits through the random cluster estimates match the line from the random model?
+
+```{r}
+
+xdens_fit_with_clusters_compare <- xdens$fitlines |> 
+  filter(model == 'cluster_rand_x') |>
+  ggplot(aes(x = x, color = model)) +
+  geom_ribbon(aes(y = estimate, ymin = estimate-se, ymax = estimate + se),
+              alpha = 0.25, linetype = 0) +
+  geom_line(aes(y = estimate)) +
+  geom_line(data = xdens$fitlinesc |> 
+              filter(model == 'cluster_rand_x'), 
+            aes(y = estimate), color = 'black', linetype = 'dashed') +
+  geom_point(data = xdens$fitclusters |> 
+               filter(model == 'cluster_rand_x'), 
+             aes(y = estimate)) +
+  geom_errorbar(data = xdens$fitclusters |> 
+                  filter(model == 'cluster_rand_x'),
+                aes(y = estimate, ymin = estimate-se, ymax = estimate + se)) +
+  scale_color_manual(values = mod_pal) +
+  facet_grid(uneven_exponent ~ sd_rand_intercept) +
+  scale_x_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(random $\sigma$)'),
+                                         breaks = NULL, labels = NULL)) +
+  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(Uneven exponent)'),
+                                         breaks = NULL, labels = NULL))
+
+xdens_fit_with_clusters_compare + theme(legend.position = 'none')
+```
 
 ## Next
 
-And what if that is structured?
-
 And how does nesting work, especially if it is again uneven?
+
+(maybe- crank up the numbers, especially of obs, to allow us to have larger differences in n_obs between clusters). 50 or 100 clusters, 1000 or so obs? 
+
+Explicitly look at singletons? Scaling- if we have 50 singletons at an x, is it as 'good' as 1 50?
+
+Then, does the beta introduce additional issues?
+
+AND, finally, what should we plot? What should we DO. It's one thing to find out the stats are working *right* and understand why they're counterintuitive, it's another to decide how to present them or whether we need to do something else.

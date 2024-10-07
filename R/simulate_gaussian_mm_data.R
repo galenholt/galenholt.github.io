@@ -9,7 +9,7 @@
 #' @param n_clusters Number of clusters (levels of random factor)
 #' @param intercept True intercept of the relationship between x and y
 #' @param slope True slope of the x-y relationship
-#' @param sigma Observation-level sd, i.e. variance relative to the cluster mean (residual variance)
+#' @param obs_sigma Observation-level sd, i.e. variance relative to the cluster mean (residual variance)
 #' @param sd_rand_intercept Standard deviation of the random intercept, i.e. constant variance of the random levels around the line
 #' @param sd_rand_slope Standard deviation of the random slope, i.e. how much does the slope of the x-y relationship vary between random levels
 #' @param rand_si_cor Correlation between random slope and intercept.
@@ -24,14 +24,15 @@ simulate_gaussian_mm <- function(n_clusters,
                                  cluster_N = round(N/n_clusters),
                                  intercept,
                                  slope,
-                                 sigma,
+                                 obs_sigma,
                                  sd_rand_intercept,
                                  sd_rand_slope,
                                  rand_si_cor,
                                  cluster_x,
                                  obs_x_sd,
                                  uneven_exponent = 0,
-                                 uneven_with_x = FALSE) {
+                                 uneven_with_x = FALSE,
+                                 x_is_density = FALSE) {
 
   # Get the Observations per cluster.
   # They could be set or chosen randomly, whether independent or correlated with x or exactly x.
@@ -125,12 +126,10 @@ simulate_gaussian_mm <- function(n_clusters,
   }
 
   # Now, if x is density, it needs to match the number of observations, even if htere's a translation
-  if (is.character(cluster_x)) {
-    if (cluster_x == 'density') {
+  if (x_is_density) {
       # Get the range about right. This will work better if we're always positive. We can't actually *stretch* the range out while assuming clusters are the same physical size
       maxshift <- max(xc)/max(n_per_cluster)
       xc <- n_per_cluster*maxshift
-    }
   }
 
   # These next two bits are really about having variation in x within clusters and random slopes
@@ -147,7 +146,7 @@ simulate_gaussian_mm <- function(n_clusters,
   cluster <- rep(1:n_clusters, times = n_per_cluster)
 
   # Realized y, accounting for cluster deviations in intercept and slope betas and residual (observation within cluster) error
-  y <- (intercept + re[cluster, 'intercept']) + (slope + re[cluster, 'slope'])*x + rnorm(N, sd = sigma)
+  y <- (intercept + re[cluster, 'intercept']) + (slope + re[cluster, 'slope'])*x + rnorm(N, sd = obs_sigma)
 
   # make cluster obviously a category, not numeric.
   return(tibble::tibble(x, y, cluster = as.character(cluster)))
