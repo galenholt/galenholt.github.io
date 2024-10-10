@@ -5,7 +5,6 @@
 #' The choice of x structure is important here, and reflects sampling strategies and experimental design. I've added a lot of ability to control it, though we may still need more.
 #' This has one level of random factor, 'cluster', with some number of observations within it.
 #'
-#' @param n_per_cluster Number of observations within a cluster
 #' @param n_clusters Number of clusters (levels of random factor)
 #' @param intercept True intercept of the relationship between x and y
 #' @param slope True slope of the x-y relationship
@@ -15,39 +14,37 @@
 #' @param rand_si_cor Correlation between random slope and intercept.
 #' @param cluster_x How to handle x-values of the cluster. If numeric and length n_clusters, it gives the x of each cluster. If a function, e.g. \(x) runif(x, min = -1, max = 2) or \(x) rnorm(x), it chooses the cluster-mean x's from those distributions. In the special case of a length-1 numeric, it gives a common value to all clusters, which is particularly useful if you want the observations to vary along x but not the clusters themselves (as the original function did).
 #' @param obs_x_sd Standard deviation of observational x-variation around cluster means. If 0, all obs in a cluster have the same value. If cluster_x is length-1, then this just yields a common distribution for all obs.
+#' @param N total number of observations
+#' @param cluster_N character, 'fixed', 'uneven', with fixed yielding N/n_clusters per cluster, uneven being a random number of obs in each cluster chosen by rnbinom.
+#' @param nobs_mean character, 'fixed', 'x'. If `cluster_N = 'uneven'`, this controls whether the `mu` term in [stats::rnbinom()] is the same for all clusters (n_clusters/N) or varies (with x, but that may be shuffled according to `uneven_with_x`)
+#' @param force_nclusters logical- force the number of realised clusters to equal n_clusters. Done by adding 1 to any clusters that randomly end up with 0.
+#' @param force_N logical- force the total realised obs to equal N. Done by sampling from the realised obs in clusters given its probabilities until we get N.
+#' @param nbsize `size` argument to [stats::rnbinom()]
+#' @param uneven_with_x logical- keep any uneven rnbinom `mu` correlated with x (TRUE) or shuffle relative to x (FALSE)
+#' @param x_is_density logical- re-calculate x directly from the number of obs in the cluster; e.g. x *is* density.
 #'
 #' @return a dataframe of simulated data
 #' @export
 #'
 simulate_gaussian_mm <- function(n_clusters,
                                  N,
-                                 cluster_N = round(N/n_clusters),
                                  intercept,
                                  slope,
                                  obs_sigma,
                                  sd_rand_intercept,
                                  sd_rand_slope,
                                  rand_si_cor,
-                                 cluster_x,
                                  obs_x_sd,
-                                 uneven_exponent = 0,
+                                 cluster_N = 'fixed',
+                                 nobs_mean = 'fixed',
+                                 force_nclusters = TRUE,
+                                 force_N = TRUE,
+                                 cluster_x,
+                                 nbsize,
                                  uneven_with_x = FALSE,
                                  x_is_density = FALSE) {
 
-  # Get the Observations per cluster.
-  # They could be set or chosen randomly, whether independent or correlated with x or exactly x.
-  # If cluster_N is numeric, give each cluster those values
-  if (is.integer(cluster_N)) {
-    if (length(cluster_N) == 1) {
-      n_per_cluster <- rep(cluster_N, n_clusters)
-    } else if (length(cluster_N) == n_clusters) {
-      n_per_cluster <- cluster_N
-    } else {
-      rlang::abort("cluster_N is numeric but wrong length")
-    }
-  }
-
-  # we base the uneven on x, at least right now, so get x first (noting that it gets overwritten if x = density)
+  # we sometimes base uneven mean on x, at least right now, so get x first (noting that it gets overwritten if x = density)
 
   # Get the x-values for each observation. They could be set by cluster, or vary around the cluster, or independent.
   # If cluster_x is numeric, give each cluster those values
@@ -66,52 +63,18 @@ simulate_gaussian_mm <- function(n_clusters,
     xc <- cluster_x(n_clusters)
   }
 
-  # We could generalise this to reduce dependence on x (ie set the probabilities elsewhere, and then sort by x if we want it correlated, thoguh that would need to have noise somehow)
-    # That approach, using a Poisson or nbinom (with a +1 adjustment) might be a really good way to control the proportion singletons.
-  # This approach does keep things consistent.
-  if (is.character(cluster_N)) {
-    if (cluster_N == 'uneven') {
-      # number per cluster chosen randomly (lots of potential distributions, but a distribution based on the x values has some advantages)
-      # This is kind of funny to assign and then count, but it helps hold N constant vs something like n_per_cluster <- rnbinom(length(xc), size = 1, prob = proportions(xc)), which is entirely open-ended
-      n_per_cluster <- sample(1:n_clusters, size = N, replace = TRUE,
-                              prob = proportions(xc^uneven_exponent)) |> table()
-      # Needs some checks so we don't lose clusters entirely
-      missing_clusters <- as.character(1:n_clusters)[!as.character(1:n_clusters) %in% rownames(n_per_cluster)]
-      n_per_cluster <- c(n_per_cluster, rep(1, length(missing_clusters)) |> setNames(missing_clusters))
-      n_per_cluster <- n_per_cluster[match(sort(as.numeric(names(n_per_cluster))), as.numeric(names(n_per_cluster)))]
+  # get the number of observatons in each cluster. THis has become a beast, so making it a subfunciton
+  n_per_cluster <- get_clusterobs(n_clusters = n_clusters,
+                                  N = N,
+                                  xvals = xc,
+                                  cluster_N = cluster_N,
+                                  nobs_mean = nobs_mean,
+                                  force_nclusters = force_nclusters,
+                                  force_N = force_N,
+                                  nbsize = nbsize,
+                                  uneven_with_x = uneven_with_x)
 
-      # If we added one(s), we'll be over N. Remove but not if it pushes somethign below 0
-      # Try to retain the distribution though.
-
-      while(sum(n_per_cluster) > N) {
-        removers <- sample(1:n_clusters, size = length(missing_clusters), replace = TRUE,
-                           prob = proportions(n_per_cluster)) |> table()
-        for (i in removers) {
-          thisindex <- names(n_per_cluster) == names(removers[1])
-          thisper <- n_per_cluster[thisindex]
-          if (thisper > 1) {
-            n_per_cluster[thisindex] <- thisper - 1
-          }
-        }
-      }
-
-
-      # That's correlated with x
-
-      # Uncorrelate with x if desired
-      if (!uneven_with_x) {
-        n_per_cluster <- sample(n_per_cluster)
-      }
-
-    } else if (cluster_N == 'even') {
-      n_per_cluster <- rep(round(N/n_clusters), n_clusters)
-    } else {
-      rlang::abort('Character options for cluster_N other than "uneven" and "even" need to be written.')
-    }
-
-  }
-
-  # Now, if x is density, it needs to match the number of observations, even if there's a translation
+  # Now, if x is density, it needs to match the number of observations, so re-calculate it. even if there's a translation
   if (x_is_density) {
       # Get the range about right. This will work better if we're always positive. We can't actually *stretch* the range out while assuming clusters are the same physical size
       maxshift <- max(xc)/max(n_per_cluster)
@@ -120,7 +83,7 @@ simulate_gaussian_mm <- function(n_clusters,
 
   # These next two bits are really about having variation in x within clusters and random slopes
   # Make x then normally distributed around those cluster x means. I guess there might be a reason to do this uniform too, but for now, don't bother.
-  x <- rnorm(N, mean = rep(xc, times = n_per_cluster), sd = obs_x_sd)
+  x <- rnorm(sum(n_per_cluster), mean = rep(xc, times = n_per_cluster), sd = obs_x_sd)
   # Get the vcov matrix of the random effect betas
   varmat <- matrix(c(sd_rand_intercept^2, rand_si_cor, rand_si_cor, sd_rand_slope^2), 2, 2)
 
@@ -132,8 +95,105 @@ simulate_gaussian_mm <- function(n_clusters,
   cluster <- rep(1:n_clusters, times = n_per_cluster)
 
   # Realized y, accounting for cluster deviations in intercept and slope betas and residual (observation within cluster) error
-  y <- (intercept + re[cluster, 'intercept']) + (slope + re[cluster, 'slope'])*x + rnorm(N, sd = obs_sigma)
+  y <- (intercept + re[cluster, 'intercept']) + (slope + re[cluster, 'slope'])*x + rnorm(sum(n_per_cluster), sd = obs_sigma)
 
   # make cluster obviously a category, not numeric.
   return(tibble::tibble(x, y, cluster = as.character(cluster)))
+}
+
+#' Get the observations in each cluster
+#'
+#' @inheritParams simulate_gaussian_mm
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_clusterobs <- function(n_clusters,
+                           N,
+                           xvals,
+                           cluster_N = 'fixed',
+                           nobs_mean = 'fixed',
+                           force_nclusters = TRUE,
+                           force_N = TRUE,
+                           nbsize,
+                           uneven_with_x = FALSE) {
+  # We could generalise this to reduce dependence on x (ie set the probabilities elsewhere, and then sort by x if we want it correlated, thoguh that would need to have noise somehow)
+  # That approach, using a Poisson or nbinom (with a +1 adjustment) might be a really good way to control the proportion singletons.
+  # This approach does keep things consistent.
+
+  # Get the Observations per cluster.
+  # If cluster_N is fixed, give each cluster the same number of obs.
+  if (cluster_N == 'fixed') {
+    if (!is.null(N)) {
+      n_per_cluster <- rep(round(N/n_clusters), n_clusters)
+    } else {
+      rlang::abort("cluster_N cannot be fixed if N is not set.")
+    }
+    # If it's fixed, we just return here.
+    return(n_per_cluster)
+  }
+
+  if (cluster_N == 'uneven') {
+    if (!is.null(N) & nobs_mean == 'fixed') {
+      cmean <- rep(round(N/n_clusters), n_clusters)
+    } else {
+      rlang::abort("nobs_mean cannot be fixed if N is not set.")
+    }
+    if (nobs_mean == 'x') {
+      cmean <- xc
+    }
+
+    n_per_cluster <- rnbinom(n_clusters, size = nbsize, mu = cmean)
+  }
+
+  if (force_nclusters) {
+    n_per_cluster[n_per_cluster < 1] <- 1
+  }
+
+  if (force_N) {
+
+    # if we're under, go up
+    while(sum(n_per_cluster) < N) {
+      adders <- sample(1:n_clusters, size = N-sum(n_per_cluster), replace = TRUE,
+                       prob = proportions(n_per_cluster)) |> table()
+      for (i in 1:length(adders)) {
+        thisindex <- as.numeric(names(adders[i]))
+
+        n_per_cluster[thisindex] <- n_per_cluster[thisindex]+adders[i]
+      }
+    }
+
+    # If we drew from nbin or added one(s), we might be over N. Remove but not if it pushes somethign below 0
+    # Try to retain the distribution, though this will tend to flatten things out.
+
+    while(sum(n_per_cluster) > N) {
+      removers <- sample(1:n_clusters, size = sum(n_per_cluster) - N, replace = TRUE,
+                         prob = proportions(n_per_cluster)) |> table()
+      for (i in 1:length(removers)) {
+        thisindex <- as.numeric(names(removers[i]))
+        thisper <- n_per_cluster[thisindex]
+
+        n_per_cluster[thisindex] <- thisper-removers[i]
+
+      }
+
+      # Don't drop below 1 if we can't lose clusters, and never go below 0
+      if (force_nclusters) {
+        n_per_cluster[n_per_cluster < 1] <- 1
+      } else {
+        n_per_cluster[n_per_cluster < 0] <- 0
+      }
+    }
+  }
+
+
+
+
+  # if we have `nobs_mean = x`, nobs is correlated with x break that if desired.
+  if (!uneven_with_x) {
+    n_per_cluster <- sample(n_per_cluster)
+  }
+
+  return(n_per_cluster)
 }

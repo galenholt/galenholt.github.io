@@ -63,7 +63,7 @@ with_seed(2,
           sdparams <- expand_grid(
             N = 50, 
             n_clusters = 10,
-            cluster_N = 'even',
+            cluster_N = 'fixed',
             intercept = 1, 
             slope = 0.5,
             obs_sigma = c(0.1, 1),
@@ -219,8 +219,11 @@ with_seed(2,
             N = 50, 
             n_clusters = 10,
             cluster_N = 'uneven',
+            nobs_mean = 'fixed', # keep simple for now
+            force_nclusters = TRUE,
+            force_N = TRUE,
             # Definitely want 0, the others are essentailly arbitrary
-            uneven_exponent = c(0, 0.5, 1),
+            nbsize = c(1, 5, 50),
             intercept = 1, 
             slope = 0.5,
             obs_sigma = c(1),
@@ -255,7 +258,7 @@ Again, we look at the data, and now can see there are different numbers of point
 unbal$points |> 
   ggplot(aes(x = x, y = y, color = factor(cluster, levels = c(1:max(as.numeric(cluster)))))) + 
   geom_point() +
-  facet_grid(uneven_exponent ~ sd_rand_intercept) +
+  facet_grid(nbsize ~ sd_rand_intercept) +
   labs(color = 'Cluster ID')
 ```
 
@@ -265,7 +268,7 @@ Probably worth being explicit here about the unevenness. I really do thing I'm g
 unbal$points |> 
   ggplot(aes(x = cluster, color = factor(cluster, levels = c(1:max(as.numeric(cluster)))))) + 
   geom_bar() +
-  facet_grid(uneven_exponent ~ sd_rand_intercept) +
+  facet_grid(nbsize ~ sd_rand_intercept) +
   theme(legend.position = 'none')
 ```
 
@@ -287,10 +290,10 @@ unbal_fit <- unbal$fitlines |>
                   filter(model == 'cluster_rand_x'),
                 aes(y = estimate, ymin = estimate-se, ymax = estimate + se)) +
   scale_color_manual(values = mod_pal) +
-  facet_grid(uneven_exponent ~ sd_rand_intercept) +
+  facet_grid(nbsize ~ sd_rand_intercept) +
   scale_x_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(random $\sigma$)'),
                                          breaks = NULL, labels = NULL)) +
-  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(Uneven exponent)'),
+  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(N successes ("size"))'),
                                          breaks = NULL, labels = NULL))
 
 unbal_fit + theme(legend.position = 'none')
@@ -304,7 +307,7 @@ unbal$set_v_est |>
   geom_point(mapping = aes(y = estimate)) +
   geom_errorbar(mapping = aes(ymin = cil, ymax = ciu, width = 0.1)) +
   geom_point(mapping = aes(y = set_value), color = 'firebrick') +
-  facet_grid(uneven_exponent ~ sd_rand_intercept, labeller = 'label_both')
+  facet_grid(nbsize ~ sd_rand_intercept, labeller = 'label_both')
 ```
 
 ### Method comparison
@@ -331,10 +334,10 @@ unbal_method_comparison <-
                   filter(model %in% c('cluster_rand_x', "cluster_raw")),
                 aes(y = estimate, ymin = estimate-se, ymax = estimate + se)) +
   scale_color_manual(values = mod_pal) +
-  facet_grid(uneven_exponent ~ sd_rand_intercept) +
+  facet_grid(nbsize ~ sd_rand_intercept) +
   scale_x_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(random $\sigma$)'),
                                          breaks = NULL, labels = NULL)) +
-  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(Uneven exponent)'),
+  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(N successes ("size"))'),
                                          breaks = NULL, labels = NULL))
 
 unbal_method_comparison
@@ -347,30 +350,30 @@ unbal_method_comparison_single <-
   ggplot(mapping = aes(x = x, color = model)) +
   geom_ribbon(data = unbal$fitlines |>
                 filter(model %in% c('cluster_rand_x') &
-                         uneven_exponent == 1 & sd_rand_intercept == 2),
+                         nbsize == 1 & sd_rand_intercept == 2),
               aes(y = estimate, ymin = estimate-se, ymax = estimate + se),
               alpha = 0.25, linetype = 0) +
   geom_line(data = unbal$fitlines |>
               filter(model %in% c('cluster_rand_x', 'cluster_raw', 'no_cluster') &
-                       uneven_exponent == 1 & sd_rand_intercept == 2),
+                       nbsize == 1 & sd_rand_intercept == 2),
             aes(y = estimate)) +
   geom_line(data = unbal$fitlinesc |>
               filter(model %in% c('cluster_raw') &
-                       uneven_exponent == 1 & sd_rand_intercept == 2),
+                       nbsize == 1 & sd_rand_intercept == 2),
             aes(y = estimate), linetype = 'dashed') +
   geom_point(data = unbal$fitclusters  |>
                filter(model %in% c('cluster_rand_x', "cluster_raw") &
-                        uneven_exponent == 1 & sd_rand_intercept == 2),
+                        nbsize == 1 & sd_rand_intercept == 2),
              aes(y = estimate)) +
   geom_errorbar(data = unbal$fitclusters |>
                   filter(model %in% c('cluster_rand_x', "cluster_raw") &
-                           uneven_exponent == 1 & sd_rand_intercept == 2),
+                           nbsize == 1 & sd_rand_intercept == 2),
                 aes(y = estimate, ymin = estimate-se, ymax = estimate + se)) +
   scale_color_manual(values = mod_pal) +
-  facet_grid(uneven_exponent ~ sd_rand_intercept) +
+  facet_grid(nbsize ~ sd_rand_intercept) +
   scale_x_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(random $\sigma$)'),
                                          breaks = NULL, labels = NULL)) +
-  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(Uneven exponent)'),
+  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(N successes ("size"))'),
                                          breaks = NULL, labels = NULL))
 
 unbal_method_comparison_single
@@ -392,10 +395,10 @@ unbal_shrink <- unbal$shrink |>
   geom_linerange(position = position_dodge(width = 0.1)) +
   geom_hline(yintercept = 0) +
   scale_color_manual(values = mod_pal) +
-  facet_grid(uneven_exponent ~ sd_rand_intercept) +
+  facet_grid(nbsize ~ sd_rand_intercept) +
   scale_x_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(random $\sigma$)'),
                                          breaks = NULL, labels = NULL)) +
-  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(Uneven exponent)'),
+  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(N successes ("size"))'),
                                          breaks = NULL, labels = NULL))
 
 unbal_shrink
@@ -415,10 +418,10 @@ unbal_shrinksize <- unbal$shrink |>
   # geom_linerange(position = position_dodge(width = 0.1)) +
   geom_hline(yintercept = 0) +
   scale_color_manual(values = mod_pal) +
-  facet_grid(uneven_exponent ~ sd_rand_intercept) +
+  facet_grid(nbsize ~ sd_rand_intercept) +
   scale_x_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(random $\sigma$)'),
                                          breaks = NULL, labels = NULL)) +
-  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(Uneven exponent)'),
+  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(N successes ("size"))'),
                                          breaks = NULL, labels = NULL))
 
 unbal_shrinksize
@@ -446,10 +449,10 @@ unbal_fit_with_clusters_compare <- unbal$fitlines |>
                   filter(model == 'cluster_rand_x'),
                 aes(y = estimate, ymin = estimate-se, ymax = estimate + se)) +
   scale_color_manual(values = mod_pal) +
-  facet_grid(uneven_exponent ~ sd_rand_intercept) +
+  facet_grid(nbsize ~ sd_rand_intercept) +
   scale_x_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(random $\sigma$)'),
                                          breaks = NULL, labels = NULL)) +
-  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(Uneven exponent)'),
+  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(N successes ("size"))'),
                                          breaks = NULL, labels = NULL))
 
 unbal_fit_with_clusters_compare + theme(legend.position = 'none')
@@ -463,20 +466,23 @@ For now, we'll just use two of the options from above, the sd_rand of 0.5 and 2 
 with_seed(2,
           xdensparams <- expand_grid(
             N = 50, 
-            n_clusters = 10,
-            cluster_N = 'uneven',
-            # Definitely want 0, the others are essentailly arbitrary
-            uneven_exponent = c(0, 0.5, 1),
-            intercept = 1, 
-            slope = 0.5,
-            obs_sigma = c(1),
-            sd_rand_intercept = c(0.5, 2),
-            sd_rand_slope = 0, 
-            rand_si_cor = 0,
-            # putting this in a list lets me send in vectors that are all the same
-            cluster_x = list(runif(n_clusters,
-                                   min = min(xrange), max = max(xrange))),
-            obs_x_sd = 0,
+              n_clusters = 10,
+              cluster_N = 'uneven',
+              nobs_mean = 'fixed', # keep simple for now
+              force_nclusters = TRUE,
+              force_N = TRUE,
+              # Definitely want 0, the others are essentailly arbitrary
+              nbsize = c(1, 5, 50),
+              intercept = 1, 
+              slope = 0.5,
+              obs_sigma = c(1),
+              sd_rand_intercept = c(0.5, 2),
+              sd_rand_slope = 0, 
+              rand_si_cor = 0,
+              # putting this in a list lets me send in vectors that are all the same
+              cluster_x = list(runif(n_clusters,
+                                     min = min(xrange), max = max(xrange))),
+              obs_x_sd = 0,
             x_is_density = TRUE
           )
 )
@@ -502,17 +508,17 @@ Again, we look at the data, same as above, but now arranged on x.
 xdens$points |> 
   ggplot(aes(x = x, y = y, color = factor(cluster, levels = c(1:max(as.numeric(cluster)))))) + 
   geom_point() +
-  facet_grid(uneven_exponent ~ sd_rand_intercept) +
+  facet_grid(nbsize ~ sd_rand_intercept) +
   labs(color = 'Cluster ID')
 ```
 
-This is the same distribution as avove.
+This is the same distribution as above.
 
 ```{r}
 xdens$points |> 
   ggplot(aes(x = cluster, color = factor(cluster, levels = c(1:max(as.numeric(cluster)))))) + 
   geom_bar() +
-  facet_grid(uneven_exponent ~ sd_rand_intercept) +
+  facet_grid(nbsize ~ sd_rand_intercept) +
   theme(legend.position = 'none')
 ```
 
@@ -534,10 +540,10 @@ xdens_fit <- xdens$fitlines |>
                   filter(model == 'cluster_rand_x'),
                 aes(y = estimate, ymin = estimate-se, ymax = estimate + se)) +
   scale_color_manual(values = mod_pal) +
-  facet_grid(uneven_exponent ~ sd_rand_intercept) +
+  facet_grid(nbsize ~ sd_rand_intercept) +
   scale_x_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(random $\sigma$)'),
                                          breaks = NULL, labels = NULL)) +
-  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(Uneven exponent)'),
+  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(N successes ("size"))'),
                                          breaks = NULL, labels = NULL))
 
 xdens_fit + theme(legend.position = 'none')
@@ -551,7 +557,7 @@ xdens$set_v_est |>
   geom_point(mapping = aes(y = estimate)) +
   geom_errorbar(mapping = aes(ymin = cil, ymax = ciu, width = 0.1)) +
   geom_point(mapping = aes(y = set_value), color = 'firebrick') +
-  facet_grid(uneven_exponent ~ sd_rand_intercept, labeller = 'label_both')
+  facet_grid(nbsize ~ sd_rand_intercept, labeller = 'label_both')
 ```
 
 ### Method comparison
@@ -578,10 +584,10 @@ xdens_method_comparison <-
                   filter(model %in% c('cluster_rand_x', "cluster_raw")),
                 aes(y = estimate, ymin = estimate-se, ymax = estimate + se)) +
   scale_color_manual(values = mod_pal) +
-  facet_grid(uneven_exponent ~ sd_rand_intercept) +
+  facet_grid(nbsize ~ sd_rand_intercept) +
   scale_x_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(random $\sigma$)'),
                                          breaks = NULL, labels = NULL)) +
-  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(Uneven exponent)'),
+  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(N successes ("size"))'),
                                          breaks = NULL, labels = NULL))
 
 xdens_method_comparison
@@ -594,31 +600,31 @@ xdens_method_comparison_single <-
   ggplot(mapping = aes(x = x, color = model)) +
   geom_ribbon(data = xdens$fitlines |>
                 filter(model %in% c('cluster_rand_x') &
-                         uneven_exponent == 1 & sd_rand_intercept == 2),
+                         nbsize == 1 & sd_rand_intercept == 2),
               aes(y = estimate, ymin = estimate-se, ymax = estimate + se),
               alpha = 0.25, linetype = 0) +
   geom_line(data = xdens$fitlines |>
               filter(model %in% c('cluster_rand_x', 'cluster_raw', 'no_cluster') &
-                       uneven_exponent == 1 & sd_rand_intercept == 2),
+                       nbsize == 1 & sd_rand_intercept == 2),
             aes(y = estimate)) +
   geom_line(data = xdens$fitlinesc |>
               filter(model %in% c('cluster_raw') &
-                       uneven_exponent == 1 & sd_rand_intercept == 2),
+                       nbsize == 1 & sd_rand_intercept == 2),
             aes(y = estimate), linetype = 'dashed') +
   geom_point(data = xdens$fitclusters  |>
                filter(model %in% c('cluster_rand_x', "cluster_raw") &
-                        uneven_exponent == 1 & sd_rand_intercept == 2),
+                        nbsize == 1 & sd_rand_intercept == 2),
              aes(y = estimate)) +
   geom_errorbar(data = xdens$fitclusters |>
                   filter(model %in% c('cluster_rand_x', "cluster_raw") &
-                           uneven_exponent == 1 & sd_rand_intercept == 2),
+                           nbsize == 1 & sd_rand_intercept == 2),
                 aes(y = estimate, ymin = estimate-se, ymax = estimate + se),
                 width = 0.2) +
   scale_color_manual(values = mod_pal) +
-  facet_grid(uneven_exponent ~ sd_rand_intercept) +
+  facet_grid(nbsize ~ sd_rand_intercept) +
   scale_x_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(random $\sigma$)'),
                                          breaks = NULL, labels = NULL)) +
-  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(Uneven exponent)'),
+  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(N successes ("size"))'),
                                          breaks = NULL, labels = NULL))
 
 xdens_method_comparison_single
@@ -640,10 +646,10 @@ xdens_shrink <- xdens$shrink |>
   geom_linerange(position = position_dodge(width = 0.1)) +
   geom_hline(yintercept = 0) +
   scale_color_manual(values = mod_pal) +
-  facet_grid(uneven_exponent ~ sd_rand_intercept) +
+  facet_grid(nbsize ~ sd_rand_intercept) +
   scale_x_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(random $\sigma$)'),
                                          breaks = NULL, labels = NULL)) +
-  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(Uneven exponent)'),
+  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(N successes ("size"))'),
                                          breaks = NULL, labels = NULL))
 
 xdens_shrink
@@ -663,10 +669,10 @@ xdens_shrinksize <- xdens$shrink |>
   # geom_linerange(position = position_dodge(width = 0.1)) +
   geom_hline(yintercept = 0) +
   scale_color_manual(values = mod_pal) +
-  facet_grid(uneven_exponent ~ sd_rand_intercept) +
+  facet_grid(nbsize ~ sd_rand_intercept) +
   scale_x_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(random $\sigma$)'),
                                          breaks = NULL, labels = NULL)) +
-  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(Uneven exponent)'),
+  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(N successes ("size"))'),
                                          breaks = NULL, labels = NULL))
 
 xdens_shrinksize
@@ -694,10 +700,10 @@ xdens_fit_with_clusters_compare <- xdens$fitlines |>
                   filter(model == 'cluster_rand_x'),
                 aes(y = estimate, ymin = estimate-se, ymax = estimate + se)) +
   scale_color_manual(values = mod_pal) +
-  facet_grid(uneven_exponent ~ sd_rand_intercept) +
+  facet_grid(nbsize ~ sd_rand_intercept) +
   scale_x_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(random $\sigma$)'),
                                          breaks = NULL, labels = NULL)) +
-  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(Uneven exponent)'),
+  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(N successes ("size"))'),
                                          breaks = NULL, labels = NULL))
 
 xdens_fit_with_clusters_compare + theme(legend.position = 'none')
@@ -709,7 +715,7 @@ So far, there's not an obvious issue with biased shrinkage.Everything differs fr
 
 And how does nesting work, especially if it is again uneven?
 
-(maybe- crank up the numbers, especially of obs, to allow us to have larger differences in n_obs between clusters). 50 or 100 clusters, 1000 or so obs?
+(maybe- crank up the numbers, especially of obs, to allow us to have larger differences in n_obs between clusters). 50 or 100 clusters, 1000 or so obs? Am I just not getting extreme enough differences along x here?
 
 Explicitly look at singletons? Scaling- if we have 50 singletons at an x, is it as 'good' as 1 50?
 
