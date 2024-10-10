@@ -59,7 +59,7 @@ Before we do anything with unbalanced clusters, let's first just see how the ran
 *all* of this from model fits.
 
 ```{r}
-with_seed(11,
+with_seed(2,
           sdparams <- expand_grid(
             N = 50, 
             n_clusters = 10,
@@ -80,7 +80,7 @@ with_seed(11,
 ```
 
 ```{r}
-sddata <- with_seed(11,
+sddata <- with_seed(2,
                     make_analysed_tibble(sdparams, mod_pal)
 )
 
@@ -214,7 +214,7 @@ For now, we'll just use two of the options from above, the sd_rand of 0.5 and 2 
 I'm tempted to include an 'even' option, but we can either just refer back to the previous or bind_rows the relevant rows.
 
 ```{r}
-with_seed(11,
+with_seed(2,
           unbalparams <- expand_grid(
             N = 50, 
             n_clusters = 10,
@@ -237,7 +237,7 @@ with_seed(11,
 ```
 
 ```{r}
-unbaldata <- with_seed(11, 
+unbaldata <- with_seed(2, 
                        make_analysed_tibble(unbalparams, mod_pal)
 )
 
@@ -248,6 +248,7 @@ unbal <- extract_unnest(unbaldata, unbalparams)
 ## Results
 
 ### Data
+
 Again, we look at the data, and now can see there are different numbers of points.
 
 ```{r}
@@ -458,9 +459,8 @@ unbal_fit_with_clusters_compare + theme(legend.position = 'none')
 
 For now, we'll just use two of the options from above, the sd_rand of 0.5 and 2 and sigma of 1, so random variance is half or double residual. By using `x_is_density = TRUE`, we generate the obs among clusters as before, and then calculate density from that. So this should have the same distribution of cluster sizes, but now it's arranged on x.
 
-
 ```{r}
-with_seed(11,
+with_seed(2,
           xdensparams <- expand_grid(
             N = 50, 
             n_clusters = 10,
@@ -484,7 +484,7 @@ with_seed(11,
 ```
 
 ```{r}
-xdensdata <- with_seed(11, 
+xdensdata <- with_seed(2, 
                        make_analysed_tibble(xdensparams, mod_pal)
 )
 
@@ -612,7 +612,8 @@ xdens_method_comparison_single <-
   geom_errorbar(data = xdens$fitclusters |>
                   filter(model %in% c('cluster_rand_x', "cluster_raw") &
                            uneven_exponent == 1 & sd_rand_intercept == 2),
-                aes(y = estimate, ymin = estimate-se, ymax = estimate + se)) +
+                aes(y = estimate, ymin = estimate-se, ymax = estimate + se),
+                width = 0.2) +
   scale_color_manual(values = mod_pal) +
   facet_grid(uneven_exponent ~ sd_rand_intercept) +
   scale_x_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(random $\sigma$)'),
@@ -622,6 +623,7 @@ xdens_method_comparison_single <-
 
 xdens_method_comparison_single
 ```
+
 ### Shrinkage
 
 And here we can see the very different shrinkage. I guess what we really need to do is show how *xdensanced shrinkage* yields different sloped lines.
@@ -669,6 +671,7 @@ xdens_shrinksize <- xdens$shrink |>
 
 xdens_shrinksize
 ```
+
 ### Full vs through estimate diagnostic
 
 And finally, do the fits through the random cluster estimates match the line from the random model?
@@ -700,11 +703,13 @@ xdens_fit_with_clusters_compare <- xdens$fitlines |>
 xdens_fit_with_clusters_compare + theme(legend.position = 'none')
 ```
 
+So far, there's not an obvious issue with biased shrinkage.Everything differs from a naive fit without randoms, but that's clearly wrong anyway.
+
 ## Next
 
 And how does nesting work, especially if it is again uneven?
 
-(maybe- crank up the numbers, especially of obs, to allow us to have larger differences in n_obs between clusters). 50 or 100 clusters, 1000 or so obs? 
+(maybe- crank up the numbers, especially of obs, to allow us to have larger differences in n_obs between clusters). 50 or 100 clusters, 1000 or so obs?
 
 Explicitly look at singletons? Scaling- if we have 50 singletons at an x, is it as 'good' as 1 50?
 

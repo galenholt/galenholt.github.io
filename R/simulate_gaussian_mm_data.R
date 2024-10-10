@@ -49,20 +49,6 @@ simulate_gaussian_mm <- function(n_clusters,
 
   # we base the uneven on x, at least right now, so get x first (noting that it gets overwritten if x = density)
 
-  # does somethign like this work?
-  # N <- 100
-  # n_clusters <- 10
-  #
-  # binprobs <- rnbinom(n_clusters, 1, 0.2)
-  # binprobs
-  # sample(1:n_clusters, size = N, replace = TRUE, prob = binprobs/sum(binprobs))
-  # # yes, but does it make sense as an approach? Especially when it comes time to make it correlated with x?
-
-  # cluster identity
-  # cluster <- rep(1:n_clusters, each = n_per_cluster)
-  # # Number of observations in total
-  # N <- n_clusters * n_per_cluster
-
   # Get the x-values for each observation. They could be set by cluster, or vary around the cluster, or independent.
   # If cluster_x is numeric, give each cluster those values
   if (is.numeric(cluster_x)) {
@@ -125,7 +111,7 @@ simulate_gaussian_mm <- function(n_clusters,
 
   }
 
-  # Now, if x is density, it needs to match the number of observations, even if htere's a translation
+  # Now, if x is density, it needs to match the number of observations, even if there's a translation
   if (x_is_density) {
       # Get the range about right. This will work better if we're always positive. We can't actually *stretch* the range out while assuming clusters are the same physical size
       maxshift <- max(xc)/max(n_per_cluster)
