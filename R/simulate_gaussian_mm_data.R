@@ -135,13 +135,15 @@ get_clusterobs <- function(n_clusters,
   }
 
   if (cluster_N == 'uneven') {
-    if (!is.null(N) & nobs_mean == 'fixed') {
-      cmean <- rep(round(N/n_clusters), n_clusters)
-    } else {
+    if (nobs_mean == 'fixed') {
+      if (!is.null(N)) {
+        cmean <- rep(round(N/n_clusters), n_clusters)
+      } else {
       rlang::abort("nobs_mean cannot be fixed if N is not set.")
+      }
     }
     if (nobs_mean == 'x') {
-      cmean <- xc
+      cmean <- xvals
     }
 
     n_per_cluster <- rnbinom(n_clusters, size = nbsize, mu = cmean)

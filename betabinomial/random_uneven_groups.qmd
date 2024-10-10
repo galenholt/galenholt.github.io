@@ -711,11 +711,262 @@ xdens_fit_with_clusters_compare + theme(legend.position = 'none')
 
 So far, there's not an obvious issue with biased shrinkage.Everything differs from a naive fit without randoms, but that's clearly wrong anyway.
 
+## Larger numbers and freer obs per cluster distribution
+
+I'll adjust the above to have larger obs and more variance between clusters and also change the nbin mu. Basically crank up the variation and biases. Should I crank up n_clusters? Maybe not (or just a bit), if they're 'riffles'.
+
+```{r}
+with_seed(2,
+          bigdensparams <- expand_grid(
+            N = 1000, 
+              n_clusters = 15,
+              cluster_N = 'uneven',
+              nobs_mean = 'x', 
+              force_nclusters = FALSE,
+              force_N = FALSE,
+              # Definitely want 0, the others are essentailly arbitrary
+              nbsize = c(0.5, 1, 10),
+              intercept = 1, 
+              slope = 0.5,
+              obs_sigma = c(1),
+              sd_rand_intercept = c(0.5, 2),
+              sd_rand_slope = 0, 
+              rand_si_cor = 0,
+              # putting this in a list lets me send in vectors that are all the same
+              cluster_x = list(runif(n_clusters,
+                                     min = min(xrange), max = max(xrange))),
+              obs_x_sd = 0,
+            x_is_density = TRUE
+          )
+)
+
+```
+
+```{r}
+bigdensdata <- with_seed(2, 
+                       make_analysed_tibble(bigdensparams, mod_pal)
+)
+
+# this can be more useful
+bigdens <- extract_unnest(bigdensdata,bigdensparams)
+```
+
+## Results
+
+### Data
+
+Again, we look at the data, same as above.
+
+```{r}
+bigdens$points |> 
+  ggplot(aes(x = x, y = y, color = factor(cluster, levels = c(1:max(as.numeric(cluster)))))) + 
+  geom_point() +
+  facet_grid(nbsize ~ sd_rand_intercept) +
+  labs(color = 'Cluster ID')
+```
+
+This is the same distribution as above.
+
+```{r}
+bigdens$points |> 
+  ggplot(aes(x = cluster, color = factor(cluster, levels = c(1:max(as.numeric(cluster)))))) + 
+  geom_bar() +
+  facet_grid(nbsize ~ sd_rand_intercept) +
+  theme(legend.position = 'none')
+```
+
+### Main result
+
+```{r}
+
+bigdens_fit <-bigdens$fitlines |>
+  filter(model == 'cluster_rand_x') |> 
+  ggplot(aes(x = x, color = model)) +
+  geom_point(data =bigdens$points, aes(y = y), color = 'grey20', alpha = 0.2) +
+  geom_ribbon(aes(y = estimate, ymin = estimate-se, ymax = estimate + se),
+              alpha = 0.25, linetype = 0) +
+  geom_line(aes(y = estimate)) +
+  geom_point(data =bigdens$fitclusters  |>
+               filter(model == 'cluster_rand_x'),
+             aes(y = estimate)) +
+  geom_errorbar(data =bigdens$fitclusters |>
+                  filter(model == 'cluster_rand_x'),
+                aes(y = estimate, ymin = estimate-se, ymax = estimate + se)) +
+  scale_color_manual(values = mod_pal) +
+  facet_grid(nbsize ~ sd_rand_intercept) +
+  scale_x_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(random $\sigma$)'),
+                                         breaks = NULL, labels = NULL)) +
+  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(N successes ("size"))'),
+                                         breaks = NULL, labels = NULL))
+
+bigdens_fit + theme(legend.position = 'none')
+```
+
+How did we do on the estimates? The error bars here are 95% CI of the estimates. Observation sd does not have an se, it's the leftovers, and so does not have error bars.
+
+```{r}
+bigdens$set_v_est |> 
+  ggplot(aes(x = term, shape = type)) + 
+  geom_point(mapping = aes(y = estimate)) +
+  geom_errorbar(mapping = aes(ymin = cil, ymax = ciu, width = 0.1)) +
+  geom_point(mapping = aes(y = set_value), color = 'firebrick') +
+  facet_grid(nbsize ~ sd_rand_intercept, labeller = 'label_both')
+```
+
+### Method comparison
+
+Now we have some meaningful shrinkage and it can cause the lines to deviate. The dashed blue line is the fit through the raw cluster estimates for visualisation.
+Where these are deviating from the no cluster fit, it seems appropriate- they're equalising the weight between clusters, and not letting the super dense ones pull the whole fit around. Which is right, provided we have enough data to estimate the low ones.
+
+```{r}
+bigdens_method_comparison <-
+  ggplot(mapping = aes(x = x, color = model)) +
+  geom_ribbon(data =bigdens$fitlines |>
+                filter(model %in% c('cluster_rand_x')),
+              aes(y = estimate, ymin = estimate-se, ymax = estimate + se),
+              alpha = 0.25, linetype = 0) +
+  geom_line(data =bigdens$fitlines |>
+              filter(model %in% c('cluster_rand_x', 'cluster_raw', 'no_cluster')),
+            aes(y = estimate)) +
+  geom_line(data =bigdens$fitlinesc |>
+              filter(model %in% c('cluster_raw')),
+            aes(y = estimate), linetype = 'dashed') +
+  geom_point(data =bigdens$fitclusters  |>
+               filter(model %in% c('cluster_rand_x', "cluster_raw")),
+             aes(y = estimate)) +
+  geom_errorbar(data =bigdens$fitclusters |>
+                  filter(model %in% c('cluster_rand_x', "cluster_raw")),
+                aes(y = estimate, ymin = estimate-se, ymax = estimate + se)) +
+  scale_color_manual(values = mod_pal) +
+  facet_grid(nbsize ~ sd_rand_intercept) +
+  scale_x_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(random $\sigma$)'),
+                                         breaks = NULL, labels = NULL)) +
+  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(N successes ("size"))'),
+                                         breaks = NULL, labels = NULL))
+
+bigdens_method_comparison
+```
+
+It can help to look at one of those more closely just to see what's happening, and show the fit through the raw clusters as well.
+
+```{r}
+bigdens_method_comparison_single <-
+  ggplot(mapping = aes(x = x, color = model)) +
+  geom_ribbon(data =bigdens$fitlines |>
+                filter(model %in% c('cluster_rand_x') &
+                         nbsize == 1 & sd_rand_intercept == 2),
+              aes(y = estimate, ymin = estimate-se, ymax = estimate + se),
+              alpha = 0.25, linetype = 0) +
+  geom_line(data =bigdens$fitlines |>
+              filter(model %in% c('cluster_rand_x', 'cluster_raw', 'no_cluster') &
+                       nbsize == 1 & sd_rand_intercept == 2),
+            aes(y = estimate)) +
+  geom_line(data =bigdens$fitlinesc |>
+              filter(model %in% c('cluster_raw') &
+                       nbsize == 1 & sd_rand_intercept == 2),
+            aes(y = estimate), linetype = 'dashed') +
+  geom_point(data =bigdens$fitclusters  |>
+               filter(model %in% c('cluster_rand_x', "cluster_raw") &
+                        nbsize == 1 & sd_rand_intercept == 2),
+             aes(y = estimate)) +
+  geom_errorbar(data =bigdens$fitclusters |>
+                  filter(model %in% c('cluster_rand_x', "cluster_raw") &
+                           nbsize == 1 & sd_rand_intercept == 2),
+                aes(y = estimate, ymin = estimate-se, ymax = estimate + se),
+                width = 0.2) +
+  scale_color_manual(values = mod_pal) +
+  facet_grid(nbsize ~ sd_rand_intercept) +
+  scale_x_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(random $\sigma$)'),
+                                         breaks = NULL, labels = NULL)) +
+  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(N successes ("size"))'),
+                                         breaks = NULL, labels = NULL))
+
+bigdens_method_comparison_single
+```
+
+### Shrinkage
+
+And here we can see the very different shrinkage. I guess what we really need to do is show how *bigdensanced shrinkage* yields different sloped lines.
+
+```{r}
+bigdens_shrink <-bigdens$shrink |> 
+  
+  ggplot(
+    aes(x = x, y = cluster_resid,
+        ymin = cluster_resid-se,
+        ymax = cluster_resid + se,
+        color = model)) +
+  geom_point(position = position_dodge(width = 0.1)) +
+  geom_linerange(position = position_dodge(width = 0.1)) +
+  geom_hline(yintercept = 0) +
+  scale_color_manual(values = mod_pal) +
+  facet_grid(nbsize ~ sd_rand_intercept) +
+  scale_x_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(random $\sigma$)'),
+                                         breaks = NULL, labels = NULL)) +
+  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(N successes ("size"))'),
+                                         breaks = NULL, labels = NULL))
+
+bigdens_shrink
+```
+
+Do the clusters with few observations shrink more? Yes, but not a 1:1 relationship
+
+```{r}
+bigdens_shrinksize <-bigdens$shrink |> 
+  
+  ggplot(
+    aes(x = x, y = cluster_resid,
+        ymin = cluster_resid-se,
+        ymax = cluster_resid + se,
+        color = model)) +
+  geom_point(aes(size = n), position = position_dodge(width = 0.1), alpha = 0.5) +
+  # geom_linerange(position = position_dodge(width = 0.1)) +
+  geom_hline(yintercept = 0) +
+  scale_color_manual(values = mod_pal) +
+  facet_grid(nbsize ~ sd_rand_intercept) +
+  scale_x_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(random $\sigma$)'),
+                                         breaks = NULL, labels = NULL)) +
+  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(N successes ("size"))'),
+                                         breaks = NULL, labels = NULL))
+
+bigdens_shrinksize
+```
+
+### Full vs through estimate diagnostic
+
+And finally, do the fits through the random cluster estimates match the line from the random model?
+
+```{r}
+
+bigdens_fit_with_clusters_compare <-bigdens$fitlines |> 
+  filter(model == 'cluster_rand_x') |>
+  ggplot(aes(x = x, color = model)) +
+  geom_ribbon(aes(y = estimate, ymin = estimate-se, ymax = estimate + se),
+              alpha = 0.25, linetype = 0) +
+  geom_line(aes(y = estimate)) +
+  geom_line(data =bigdens$fitlinesc |> 
+              filter(model == 'cluster_rand_x'), 
+            aes(y = estimate), color = 'black', linetype = 'dashed') +
+  geom_point(data =bigdens$fitclusters |> 
+               filter(model == 'cluster_rand_x'), 
+             aes(y = estimate)) +
+  geom_errorbar(data =bigdens$fitclusters |> 
+                  filter(model == 'cluster_rand_x'),
+                aes(y = estimate, ymin = estimate-se, ymax = estimate + se)) +
+  scale_color_manual(values = mod_pal) +
+  facet_grid(nbsize ~ sd_rand_intercept) +
+  scale_x_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(random $\sigma$)'),
+                                         breaks = NULL, labels = NULL)) +
+  scale_y_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(N successes ("size"))'),
+                                         breaks = NULL, labels = NULL))
+
+bigdens_fit_with_clusters_compare + theme(legend.position = 'none')
+```
+
+
 ## Next
 
 And how does nesting work, especially if it is again uneven?
-
-(maybe- crank up the numbers, especially of obs, to allow us to have larger differences in n_obs between clusters). 50 or 100 clusters, 1000 or so obs? Am I just not getting extreme enough differences along x here?
 
 Explicitly look at singletons? Scaling- if we have 50 singletons at an x, is it as 'good' as 1 50?
 
