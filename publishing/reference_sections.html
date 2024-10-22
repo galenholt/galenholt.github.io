@@ -129,7 +129,7 @@ div.csl-indent {
 <meta property="og:site_name" content="Galen Holt">
 </head>
 
-<body class="nav-fixed">
+<body class="nav-sidebar floating nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -155,7 +155,7 @@ div.csl-indent {
 <span class="menu-text">Research</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../code_demos.html"> 
+    <a class="nav-link active" href="../code_demos.html" aria-current="page"> 
 <span class="menu-text">Code Demos</span></a>
   </li>  
 </ul>
@@ -187,10 +187,705 @@ div.csl-indent {
 </div>
       </div> <!-- /container-fluid -->
     </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../website_notes/quarto_website_github.html">Quarto</a></li><li class="breadcrumb-item"><a href="../publishing/reference_sections.html">Sections and numbering</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
 </header>
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code_demos.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Code Demos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Small how-tos</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/smallpieces.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bits and pieces</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/quarto_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Quarto notes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../setup/rstudio_themes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Editing Rstudio themes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/zip_downloading.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Download and unpack zips</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/json_api_construction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Building JSON syntax from R for API calls</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/list_names.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Naming rules for lists</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../publishing/private_github_figshare.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Creating Figshare from private github</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/error_handling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Intro to error handling</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/error_safely.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><code>Safe</code> error passing in loops</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/lifecycle_warnings.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Intermittent lifecycle warnings</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/dplyr_filter_matrix_errors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dplyr filter matrices</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/private_github_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dealing with private github</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/renv_github.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Installing from github with renv</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/breaking_whiles.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">While loops, break, and debugging</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/package_dll_error.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Package DLL error</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/git_remote_and_emails.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Changing git remote and private email</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Plotting</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/ggplot_themes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">ggplot themes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/setting_colors_for_groups.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Consistent colors</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/tweaks_tricks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Saving and themeing plots</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/hcl_exploration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Exploring HCL colorspace</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/rgb_to_hex.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Converting RGB to hex colors</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/fonts.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Fonts</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/faded_colors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Faded 2d colour ramps</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/math_in_ggplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Latex in ggplot with latex2exp</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/rayshader.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3d plotting with rayshader</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/legend_in_facet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Legends in empty facets</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../plotting/venn_diagrams.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Venn diagrams in ggplot2</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Quarto</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../website_notes/quarto_website_github.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Getting started</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../website_notes/updating_website.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Updating and maintaining website</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../website_notes/quarto_change_yml.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Avoiding rendering whole site for testing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../website_notes/quarto_images_misc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Figures in quarto</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../website_notes/render_word.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Rendering to word</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../website_notes/render_pdf.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Rendering to pdf</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../website_notes/multiple_render_formats.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Rendering multiple formats (and serving from web)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../website_notes/commenting_quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Adding comments to html</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../website_notes/quarto_profiles.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Quarto profiles for incremental render</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../publishing/reference_sections.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Sections and numbering</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../publishing/tables_in_word.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Testing word table formatting</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Theory, simulation, statistics, probability</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../simmodelling/twoDautocorr.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Generate 2d autocorrelation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats_probability/spatial_ac.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Regressions with spatial autocorrelation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats_probability/expected_shannon.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bootstrapping the expected shannon diversity</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats_probability/fitting_lognormals.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Intro to fitting lognormals</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats_probability/shifting_normals.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Basic shifts of normal moments</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stats_probability/fitting_truncated.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Shifting and fitting truncated lognormals</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../betabinomial/betadists.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Quick look at beta pdfs</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Drones</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../drones/overlaps_reactive.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Calculations for flight planning</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../drones/overlaps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Figuring out flight plan calcs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pix4d/read_pix4d_outputs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Reading and plotting pix4d outputs</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Observable</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../observable/trying_observable.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Figuring out how to use ojs chunks</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">R and python</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/python_setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Python environments with pyenv and poetry</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/py_in_rpkg.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Wrapping python in R package</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/RandPython.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using R and python together</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/R_py_shared_projects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Shared R-py project structure</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/py_r_dates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Passing complex objects py-R</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/R_py_type_passing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Passing types between R and python</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/py_r_project_overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview of building R-py package</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/python_nameerror.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Intermittent NameError py-R</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/python_updated_functions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Small python bits</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/python_testing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Testing python</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">Setting up projects</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/rig.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Managing old R versions with rig</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/managingprivate.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Private data for website repo</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../setup/R_in_VS.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using R in VScode</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../RpyEnvs/end_run_renv.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dealing with renv failures</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Building packages</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../package/package_creation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">First pass at building a package</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../package/indexing_version.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Automatically indexing package versions with git</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../tidyprogramming/tidy_programs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Programming with dplyr and rlang</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../hydrogauge/hydrogauge_testing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Testing hydrogauge API</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/failing_snapshot_check.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Snapshot failures on check</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/vdiffr_networks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Testing network plots with vdiffr</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true">
+ <span class="menu-text">Data</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data_acquisition/bom_gauges.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">BOM gauge locations with httr2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../hydrogauge/hydrogauge_api_howtocall.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Experimenting with API calls for {hydrogauge}</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data_acquisition/bom_water.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Experimenting with API calls from BOM</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data_acquisition/gauge_data_pre_gauge.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data from pre-gauged periods</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data_acquisition/ALA_data_pull.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Pulling data from Atlas of Living Australia</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data_acquisition/get_geofabric.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Downloading Australian rivers geofabric</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data_acquisition/read_geofabric.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using Australian rivers geofabric</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true">
+ <span class="menu-text">R parallel processing (general)</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/interrogating_parallel.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Interrogating parallel resources</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/nested_parallel.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Testing nested parallelism</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/parallel_speed.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Speed-testing parallel</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/globals_speed.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Global objects and parallel speed</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/nested_dependent_iterations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dependencies of inner parallelism on outer</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../setup/R_in_databricks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">R in databricks setup</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="true">
+ <span class="menu-text">R parallel processing on HPC</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/hpc_ephemera.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">HPC notes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/plans_and_hpc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using single-machine plans on HPC</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/initial_future_batchtools.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Figuring out future.batchtools</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/changing_batchtools_template.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Switching templates, matching to resources</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/template_modification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Modifying templates</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/master_persistence.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Consequences of master timing out</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/nested_parallel_hpc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Nested parallel on HPC nodes and cores</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../parallelism/conditional_plans.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Conditional plans for local and HPC</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
@@ -207,7 +902,7 @@ div.csl-indent {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../website_notes/quarto_website_github.html">Quarto</a></li><li class="breadcrumb-item"><a href="../publishing/reference_sections.html">Sections and numbering</a></li></ol></nav>
 <div class="quarto-title">
 <h1 class="title">Reference sections</h1>
 </div>
@@ -1064,6 +1759,16 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     <li class="nav-item">
     <a class="nav-link" href="mailto:g.holt@deakin.edu.au">
 <p>Contact</p>
+</a>
+  </li>  
+    <li class="nav-item">
+    <a class="nav-link" href="https://orcid.org/0000-0002-7455-9275">
+<p>ORCID</p>
+</a>
+  </li>  
+    <li class="nav-item">
+    <a class="nav-link" href="https://experts.deakin.edu.au/43512-galen-holt/about">
+<p>Profile</p>
 </a>
   </li>  
 </ul>

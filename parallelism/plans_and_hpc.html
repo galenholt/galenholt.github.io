@@ -284,6 +284,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">While loops, break, and debugging</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/package_dll_error.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Package DLL error</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/git_remote_and_emails.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Changing git remote and private email</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -424,6 +436,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../website_notes/quarto_profiles.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Quarto profiles for incremental render</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../publishing/reference_sections.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sections and numbering</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../publishing/tables_in_word.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Testing word table formatting</span></a>
   </div>
 </li>
       </ul>
@@ -772,6 +796,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Dependencies of inner parallelism on outer</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../setup/R_in_databricks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">R in databricks setup</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -922,7 +952,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>I’ve done some haphazard poking at this, and at that time, if we just had a slurm script that requested multiple nodes, but then called a single R script, I couldn’t use workers on more than one node. My workaround was to use array jobs to do the node-parallelisation, and then {future} for the cores. But this splits the parallelisation into some being handled by shell scripts and slurm, and some handled by R and futures. And that makes it harder to control and load-balance. And in fact, I had an extra level, where I had shell scripts that started a set of SLURM array jobs, which then split into cores. This approach worked, but it’s very hardcodey, even when we auto-generate the batch and SLURM scripts. It tends to not be well-balanced without a lot of manual intervention every time anything changes. And it’s not portable- we have to restructure the code to run locally vs on the HPC.</p>
 <p>What would be nice is to auto-break-up the set of work into evenly-sized chunks, and then fire off the SLURM commands to start an appropriate number of nodes with some number of cores. And have that also work locally, where it would just parallelise over those things. Can I figure that out?</p>
 <p>I’m not sure how I’m going to test this in a quarto doc, since I need to run things on the HPC and return to stdout. Might have to copy-paste and treat this like onenote or something. But I should be able to set up the desired structure here, anyway.</p>
-<p>I think I’ll start similarly to some of my local parallel testing, <a href="interrogatin_parallel.qmd">where I just returned process IDs</a> to see what resources are being used.</p>
+<p>I think I’ll start similarly to some of my local parallel testing, <a href="../parallelism/interrogating_parallel.html">where I just returned process IDs</a> to see what resources are being used.</p>
 <p>And I think I’ll start by requesting resources with <code>sbatch</code> and slurm scripts that call <code>Rscript</code> and see what that gets me and whether we can access all the resources, and then move on to trying to get R to generate the SLURM calls, likely with <code>future.batchtools</code>.</p>
 <section id="setting-up-tests" class="level2">
 <h2 class="anchored" data-anchor-id="setting-up-tests">Setting up tests</h2>
@@ -1855,6 +1885,16 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     <li class="nav-item">
     <a class="nav-link" href="mailto:g.holt@deakin.edu.au">
 <p>Contact</p>
+</a>
+  </li>  
+    <li class="nav-item">
+    <a class="nav-link" href="https://orcid.org/0000-0002-7455-9275">
+<p>ORCID</p>
+</a>
+  </li>  
+    <li class="nav-item">
+    <a class="nav-link" href="https://experts.deakin.edu.au/43512-galen-holt/about">
+<p>Profile</p>
 </a>
   </li>  
 </ul>

@@ -283,6 +283,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">While loops, break, and debugging</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/package_dll_error.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Package DLL error</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/git_remote_and_emails.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Changing git remote and private email</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -423,6 +435,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../website_notes/quarto_profiles.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Quarto profiles for incremental render</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../publishing/reference_sections.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sections and numbering</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../publishing/tables_in_word.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Testing word table formatting</span></a>
   </div>
 </li>
       </ul>
@@ -771,6 +795,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Dependencies of inner parallelism on outer</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../setup/R_in_databricks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">R in databricks setup</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -882,7 +912,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="https" class="level3">
 <h3 class="anchored" data-anchor-id="https">HTTPS</h3>
 <p>This is what is usually the default, but to get it to work with renv, there are some tricks. In all cases for private repos, you’ll need to set up a github PAT (I found the <a href="https://usethis.r-lib.org/articles/git-credentials.html">usethis instructions</a> easier to follow than those at github).</p>
-<p>For the longest time I wasn’t able to authenticate to private repos. Until I was reading the <a href="https://usethis.r-lib.org/articles/git-credentials.html">usethis docs</a>, which note that <code>remotes</code> (which <code>renv</code> uses for github) doesn’t hit <code>gitcreds</code> to obtain the GitHub PAT. So, the solution is to install <code>gitcreds</code> (or <code>devtools</code> or <code>usethis</code>, really; we almost always need at least one of them), run <code>gitcreds::gitcreds_get()</code> in the session to activate the PAT, and then we can install <code>renv::install('private/repo')</code>.</p>
+<p>For the longest time I wasn’t able to authenticate to private repos. Until I was reading the <a href="https://usethis.r-lib.org/articles/git-credentials.html">usethis docs</a>, which note that <code>remotes</code> (which <code>renv</code> uses for github) doesn’t hit <code>gitcreds</code> to obtain the GitHub PAT. So, the solution is to install <code>gitcreds</code> (or <code>devtools</code> or <code>usethis</code>, really; we almost always need at least one of them), run <code>gitcreds::gitcreds_get()</code> in the session to activate the PAT (‘tickle’ it, in the usethis docs), and then we can install <code>renv::install('private/repo')</code>.</p>
 <p>The other solution is to use <code>pak</code> , which seems to be where the tidyverse crew is moving. pak uses gitcreds, so just works if we use <code>pak::pkg_install('private/repo')</code> . To set that up with <code>renv</code> put <code>options(renv.config.pak.enabled = TRUE)</code> in .Rprofile and restart. <em>The catch here, at least as far as I can tell, is that pak doesn’t hit the renv cache, so if you have multiple projects, it redownloads packages each time instead of linking to cached versions.</em> I’d <em>really</em> like to figure out how to get <code>pak</code> to avoid unneeded downloads a la renv. I.e. why doesn’t <code>options(renv.pak.enabled = TRUE)</code> just use pak for all the downloading and building but still use the versioning and caching? It seems to lose at least the caching.</p>
 </section>
 <section id="ssh" class="level3">
@@ -1487,6 +1517,16 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     <li class="nav-item">
     <a class="nav-link" href="mailto:g.holt@deakin.edu.au">
 <p>Contact</p>
+</a>
+  </li>  
+    <li class="nav-item">
+    <a class="nav-link" href="https://orcid.org/0000-0002-7455-9275">
+<p>ORCID</p>
+</a>
+  </li>  
+    <li class="nav-item">
+    <a class="nav-link" href="https://experts.deakin.edu.au/43512-galen-holt/about">
+<p>Profile</p>
 </a>
   </li>  
 </ul>

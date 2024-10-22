@@ -283,6 +283,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">While loops, break, and debugging</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/package_dll_error.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Package DLL error</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../small_helpers/git_remote_and_emails.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Changing git remote and private email</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -423,6 +435,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../website_notes/quarto_profiles.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Quarto profiles for incremental render</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../publishing/reference_sections.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sections and numbering</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../publishing/tables_in_word.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Testing word table formatting</span></a>
   </div>
 </li>
       </ul>
@@ -771,6 +795,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Dependencies of inner parallelism on outer</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../setup/R_in_databricks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">R in databricks setup</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -862,6 +892,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#website" id="toc-website" class="nav-link" data-scroll-target="#website">Website</a></li>
   <li><a href="#rendering-1" id="toc-rendering-1" class="nav-link" data-scroll-target="#rendering-1">Rendering 1</a></li>
   <li><a href="#rendering-2" id="toc-rendering-2" class="nav-link" data-scroll-target="#rendering-2">Rendering 2</a></li>
+  <li><a href="#quarto-for-github-readmes" id="toc-quarto-for-github-readmes" class="nav-link" data-scroll-target="#quarto-for-github-readmes">Quarto for github readmes</a></li>
   </ul>
 </nav>
     </div>
@@ -3156,7 +3187,7 @@ PY_PYTHON='werptoolkitpy/.venv/Scripts/python.exe'</code></pre>
 </section>
 <section id="website" class="level2">
 <h2 class="anchored" data-anchor-id="website">Website</h2>
-<p><a href="../website/quarto_website_github.qmd">Starting</a> and <a href="../website/updating_website.qmd">updating</a> quarto websites has a few tricks, written up in more detail at those links.</p>
+<p><a href="../website_notes/quarto_website_github.html">Starting</a> and <a href="../website_notes/updating_website.html">updating</a> quarto websites has a few tricks, written up in more detail at those links.</p>
 </section>
 <section id="rendering-1" class="level2">
 <h2 class="anchored" data-anchor-id="rendering-1">Rendering 1</h2>
@@ -3169,6 +3200,10 @@ PY_PYTHON='werptoolkitpy/.venv/Scripts/python.exe'</code></pre>
 <p>The error</p>
 <pre><code>Error in `lazyLoadDBinsertVariable()`: ! long vectors not supported yet: connections.c:6201</code></pre>
 <p>is caused by trying to read-in an object too big for a lazy cache. It often only occurs when rendering, not previewing or running the qmd. The solution is to put <code>cache-lazy: false</code> in the chunk header of the offending chunk. Make it go slower, but it goes.</p>
+</section>
+<section id="quarto-for-github-readmes" class="level2">
+<h2 class="anchored" data-anchor-id="quarto-for-github-readmes">Quarto for github readmes</h2>
+<p>If we want to use quarto for github readmes, see the <a href="https://quarto.org/docs/output-formats/gfm.html">quarto docs</a>. The key is to use <code>format: gfm</code> and then render before pushing to generate the github flavored .md file.</p>
 
 
 </section>
@@ -3749,6 +3784,16 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     <li class="nav-item">
     <a class="nav-link" href="mailto:g.holt@deakin.edu.au">
 <p>Contact</p>
+</a>
+  </li>  
+    <li class="nav-item">
+    <a class="nav-link" href="https://orcid.org/0000-0002-7455-9275">
+<p>ORCID</p>
+</a>
+  </li>  
+    <li class="nav-item">
+    <a class="nav-link" href="https://experts.deakin.edu.au/43512-galen-holt/about">
+<p>Profile</p>
 </a>
   </li>  
 </ul>
