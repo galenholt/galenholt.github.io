@@ -18,7 +18,7 @@ What would be nice is to auto-break-up the set of work into evenly-sized chunks,
 
 I'm not sure how I'm going to test this in a quarto doc, since I need to run things on the HPC and return to stdout. Might have to copy-paste and treat this like onenote or something. But I should be able to set up the desired structure here, anyway.
 
-I think I'll start similarly to some of my local parallel testing, [where I just returned process IDs](interrogatin_parallel.qmd) to see what resources are being used.
+I think I'll start similarly to some of my local parallel testing, [where I just returned process IDs](interrogating_parallel.qmd) to see what resources are being used.
 
 And I think I'll start by requesting resources with `sbatch` and slurm scripts that call `Rscript` and see what that gets me and whether we can access all the resources, and then move on to trying to get R to generate the SLURM calls, likely with `future.batchtools`.
 

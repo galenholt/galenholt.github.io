@@ -13,7 +13,7 @@ Then, we have to get it to run. Each Notebook seems to be essentially its own in
 
 I can't get any of the usual ways of installing from private github repos to work.
 
-`renv::install()` (and by extension, `remotes::install_github()` can't authenticate, even when passing in the PAT directly to `auth_token`, and accessing the PAT with the [gitcreds load-in trick](renv_github.qmd) doesn't work because `gitcreds::gitcreds_set()` only runs in an interactive session, and for some reason the Databricks notebooks aren't (i.e. `interactive()` returns TRUE).
+`renv::install()` (and by extension, `remotes::install_github()` can't authenticate, even when passing in the PAT directly to `auth_token`, and accessing the PAT with the [gitcreds load-in trick](../small_helpers/renv_github.qmd) doesn't work because `gitcreds::gitcreds_set()` only runs in an interactive session, and for some reason the Databricks notebooks aren't (i.e. `interactive()` returns TRUE).
 
 Trying `pak::pkg_install('org/repo')` also fails, because it should be auto-hitting that gitcred and it doesn't exist.
 

@@ -16,6 +16,12 @@ The basic idea of profiles is to keep the common bits in `_quarto.yml`, and then
 
     2.  We want this to be the default, so when we press the Render button in Rstudio it just renders the one page
 
+*Note-* if using profiles, the argument needs to be passed to `publish` as well as `render`, e.g
+
+``` bash
+quarto publish gh-pages --profile fullsite
+```
+
 ## Implementation
 
 We set up a general `_quarto.yml` file that contains the website headers and overall formatting code. We then have a `_quarto-fullsite.yml` with the full website build (structure of the pages). Finally, we have a `_quarto-singlefile.yml` without the structure of the website.

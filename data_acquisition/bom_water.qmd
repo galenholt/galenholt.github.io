@@ -272,7 +272,7 @@ ki_station_list(hub = "http://www.bom.gov.au/waterdata/services",
                 search_term = "Gordon*")
 ```
 
-## Add to vicwate?
+## Add to hydrogauge?
 
 Can I get this to work?
 

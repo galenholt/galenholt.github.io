@@ -2,7 +2,8 @@ project:
   render:
     - "*.qmd"
     - "!CV"
-    - "!*beta_binomial.qmd"
+    - "!*beta_binomial"
+    - "!*random_uneven_groups"
     - "!*negbin_autocorr"
     - "!*docker_containers.qmd"
 

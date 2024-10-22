@@ -1,6 +1,7 @@
 ---
 title: "Random effects with uneven groups"
 format: html
+eval: false
 ---
 
 ```{r}

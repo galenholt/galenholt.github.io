@@ -55,11 +55,15 @@ as I'm developing
 
 This works from console, after I put the file in the inst/python
 
-    reticulate::source_python(file.path('inst', 'python', 'controller_functions.py'))
+```         
+reticulate::source_python(file.path('inst', 'python', 'controller_functions.py'))
+```
 
 tested with
 
-    scene_namer(file.path('inst', 'extdata', 'testsmall'))
+```         
+scene_namer(file.path('inst', 'extdata', 'testsmall'))
+```
 
 At first it didn't work to have the Config/retictulate in description and the source_python in .onLoad. I didn't get anything. Then I fixed it by adding it to the package's global environment with the argument `envir = globalenv()`, and it started working. But only when I already have a python environment. If I try to get the `Config/reticulate` to build a python environment with the necessary dependencies in a bare project, it won't even install the package.
 
@@ -80,7 +84,7 @@ If we assume the user *has the python dependencies installed and accessible to r
 }
 ```
 
-See [some initial work I've done sorting this out](R_py_package.qmd).
+See [some initial work I've done sorting this out](py_in_rpkg.qmd).
 
 ## Passing types
 

@@ -163,7 +163,7 @@ ggplot(iris, aes(x = Petal.Length * param_val, y = Petal.Width * param_val, colo
 
 ## Website
 
-[Starting](../website/quarto_website_github.qmd) and [updating](../website/updating_website.qmd) quarto websites has a few tricks, written up in more detail at those links.
+[Starting](../website_notes/quarto_website_github.qmd) and [updating](../website_notes/updating_website.qmd) quarto websites has a few tricks, written up in more detail at those links.
 
 ## Rendering 1
 
