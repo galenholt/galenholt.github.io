@@ -1,0 +1,69 @@
+---
+title: "No visible binding for global variable"
+format: html
+---
+
+## No visible binding issue
+
+When we check packages (usually with `devtools::check()`, but presumably R CMD CHECK as well, we get a lot of notes about "no visible binding for global variable" if we use tidyverse code. This is because of the data masking dplyr et al do to let us use bare names.
+
+However, there's a different fix for `select` (and `tidyselect` generally) than for other verbs like `mutate` and `summarise`. It's hard to find, because we can fix all of the 'global variable' errors with `.data`, but that then causes deprecation warnings for `select` and friends while testing.
+
+While `styler` does not find this problem, `lintr` does. So it's *very* helpful to install `lintr` and lint files, rather than running a full `check`. It doesn't pick up the issues with `tidyselect` deprecating `.data` though. At least `test` works on single files and picks that issue up.
+
+Note- use `devtools::load_all()` before linting, or it won't pick up `.data` itself and will throw *that* as a non-visible global.
+
+
+### data masking verbs
+
+The answer for non-`select` verbs is to use the `.data[['variable_name']]` or `.data$variable_name` convention everywhere and `usethis::use_import_from('rlang', '.data')`. That works to get rid of the errors, but now we’ve lost one of the really nice things about writing dplyr code- the simplicity of bare data variable names.
+
+Then, we need to actually find all of those places we need to add `.data$` in front of names. The notes `check` produces help, and then we just have to look through the files. In general, it's everything in tidyverse that uses a bare name, with a few exceptions. I put together a [repo](https://github.com/galenholt/rlangcheck) to minimally check which functions need it.
+
+### `tidyselect`
+
+The `tidyselect` approach has deprecated `.data` after 1.2.0. It still `check`s fine, and gets rid of the global variable issue, but we get lots of warnings `Use of .data in tidyselect expressions was deprecated in tidyselect 1.2.0`. The reasoning is described on the [tidyselect blog](https://www.tidyverse.org/blog/2022/10/tidyselect-1-2-0/), where the suggested solution is to use `all_of` (or just to use characters). That seems OK, but is again clunky- we now need to stuff at minimum "" around the terms, and at worst, `tidyselect::all_of` all over the place. At some point it's just easier to use `[`. Where it's likely going to be most needed is where the tidyselect is a helper to other verbs, e.g. in the `.by` argument of `mutate` and `summarise`.
+
+The [example repo](https://github.com/galenholt/rlangcheck) is set up to not throw checks or errors, and so we can see what works for different verbs.
+
+
+## foreach
+
+The 'no visible binding of global variable' also shows up for foreach indices. The solution there is to initialise the variable first. From [foreach github issues](https://github.com/RevolutionAnalytics/foreach/issues/37).
+
+```{{r}}
+## To please 'R CMD check'
+x <- NULL
+
+y <- foreach::foreach(x = 1:3) %do% {
+  sqrt(x)
+}
+```
+
+## Cheat sheet
+
+```{r}
+#| include: false
+
+cheat_tibble <- tibble::tibble(verb = c('mutate', 'mutate','summarise', 'summarise',
+                                        'group_by', 'across', 'select', 'rename',
+                                        'join_by', 'unnest', 'unnest_longer', 'unnest_wider',
+                                        'case_when (in mutate)', 'filter', 'filter',
+                                        'foreach'),
+                       argument = c('...', '.by', '...', '.by',
+                                    '...', '.cols', '...', '...',
+                                    '...', 'cols', 'col', 'col',
+                                    '...', '...', '.by', 'index'),
+                       fix = c('.data', 'tidyselect', '.data', 'tidyselect',
+                               '.data', 'tidyselect', 'tidyselect', 'tidyselect',
+                               'character?', 'tidyselect', 'tidyselect', 'tidyselect', 
+                               '.data', '.data', 'tidyselect', 'preassign NULL'))
+```
+
+A cheatsheet of what to use where. As far as I can tell, anywhere where this says `tidyselect`, if we just have a set of variable names, we can use either `tidyselect::all_of(c("v1", 'v2'))` or just `c('v1', 'v2')` (or, obviously, more complex tidyselecting).
+
+```{r}
+cheat_tibble |> 
+  knitr::kable()
+```
+
