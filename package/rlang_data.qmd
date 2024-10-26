@@ -49,20 +49,41 @@ cheat_tibble <- tibble::tibble(verb = c('mutate', 'mutate','summarise', 'summari
                                         'group_by', 'across', 'select', 'rename',
                                         'join_by', 'unnest', 'unnest_longer', 'unnest_wider',
                                         'case_when (in mutate)', 'filter', 'filter',
-                                        'foreach'),
+                                        'ggplot2::aes',
+                                        'foreach', 'tidyr::separate',
+                                        'pivot_wider', 'pivot_wider', 'pivot_wider',
+                                        'distinct', 'DiagrammeR::add_nodes_from_table',
+                                        'DiagrammeR::add_nodes_from_table',
+                                        'DiagrammeR::add_nodes_from_table',
+                                        'DiagrammeR::add_nodes_from_table'),
                        argument = c('...', '.by', '...', '.by',
                                     '...', '.cols', '...', '...',
                                     '...', 'cols', 'col', 'col',
-                                    '...', '...', '.by', 'index'),
+                                    '...', '...', '.by',
+                                    'x,y,...',
+                                    'index', 'col',
+                                    'id_cols', 'names_from', 'values_from',
+                                    '...', 'label_col', 
+                                    'set_type',
+                                    'drop_cols', 
+                                    'type_col'),
                        fix = c('.data', 'tidyselect', '.data', 'tidyselect',
                                '.data', 'tidyselect', 'tidyselect', 'tidyselect',
                                'character?', 'tidyselect', 'tidyselect', 'tidyselect', 
-                               '.data', '.data', 'tidyselect', 'preassign NULL'))
+                               '.data', '.data', 'tidyselect',
+                               '.data',
+                               'preassign NULL', 'tidyselect',
+                               'tidyselect','tidyselect','tidyselect',
+                               '.data','tidyselect',
+                               'tidyselect',
+                               'tidyselect',
+                               'tidyselect'))
 ```
 
-A cheatsheet of what to use where. As far as I can tell, anywhere where this says `tidyselect`, if we just have a set of variable names, we can use either `tidyselect::all_of(c("v1", 'v2'))` or just `c('v1', 'v2')` (or, obviously, more complex tidyselecting).
+In general, the key is if the help says an argument uses 'data masking', use `.data`, and if it says it uses tidy-select, use `tidyselect`. The catch is, it can be annoying to check, and some functions aren't very clear. A cheatsheet of what to use where is in @tbl-tidycheat. Also, as far as I can tell, anywhere where this says `tidyselect`, if we just have a set of variable names, we can use either `tidyselect::all_of(c("v1", 'v2'))` or just `c('v1', 'v2')` (or, obviously, more complex tidyselecting).
 
 ```{r}
+#| label: tbl-tidycheat
 cheat_tibble |> 
   knitr::kable()
 ```
