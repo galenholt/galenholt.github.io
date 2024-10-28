@@ -815,8 +815,7 @@ bigdens$set_v_est |>
 
 ### Method comparison
 
-Now we have some meaningful shrinkage and it can cause the lines to deviate. The dashed blue line is the fit through the raw cluster estimates for visualisation.
-Where these are deviating from the no cluster fit, it seems appropriate- they're equalising the weight between clusters, and not letting the super dense ones pull the whole fit around. Which is right, provided we have enough data to estimate the low ones.
+Now we have some meaningful shrinkage and it can cause the lines to deviate. The dashed blue line is the fit through the raw cluster estimates for visualisation. Where these are deviating from the no cluster fit, it seems appropriate- they're equalising the weight between clusters, and not letting the super dense ones pull the whole fit around. Which is right, provided we have enough data to estimate the low ones.
 
 ```{r}
 bigdens_method_comparison <-
@@ -963,6 +962,44 @@ bigdens_fit_with_clusters_compare <-bigdens$fitlines |>
 bigdens_fit_with_clusters_compare + theme(legend.position = 'none')
 ```
 
+## Subclusters
+
+testing for now
+
+```{r}
+with_seed(2,
+          subparams <- expand_grid(
+            N = 10000, 
+            n_clusters = 10, # 'riffles'
+            n_subclusters = list(c(100, 1000)), # 'rocks' (absolute, not per-riffle I think?)
+            cluster_N = 'uneven',
+            nobs_mean = 'fixed', # keep simple for now
+            force_nclusters = TRUE,
+            force_N = TRUE,
+            # Definitely want 0, the others are essentailly arbitrary
+            nbsize = c(1, 5, 50),
+            intercept = 1, 
+            slope = 0.5,
+            obs_sigma = c(1),
+            sd_rand_intercept = list(c(0.5, 2, 1)),
+            sd_rand_slope = list(c(0, 0, 0)), 
+            rand_si_cor = 0,
+            # putting this in a list lets me send in vectors that are all the same
+            cluster_x = list(runif(n_clusters,
+                                   min = min(xrange), max = max(xrange))),
+            obs_x_sd = 0
+          )
+)
+```
+
+```{r}
+subdata <- with_seed(2, 
+                       make_analysed_tibble(subparams, mod_pal)
+)
+
+# this can be more useful
+subout <- extract_unnest(subdata, subparams)
+```
 
 ## Next
 
