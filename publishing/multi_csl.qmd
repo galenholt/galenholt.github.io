@@ -1,0 +1,60 @@
+---
+title: "Multi-csl?"
+format: html
+bibliography: references.bib
+---
+
+Does it work to set multiple csl files? and multiple reference sections? Why would I want to do that? Because the ecology.csl isn't producing what I'd expect (or what Zotero produces with it). Instead of DOIs printing, it turns the titles into links. So I want to make a huge doc that shows how the different CSLs actually export from Quarto.
+
+Try to cite [@holt2018] here with the default csl
+
+::: {#refs-default}
+:::
+
+We know it works to set csl in the quarto header, but can we set it later and swap? Insert a yaml block
+
+---
+csl: nature.csl
+---
+
+Try that again. Do we get the earlier cite too, cite a different paper to check @holt2021.
+
+::: {#refs-nature}
+:::
+
+That overrode the default even above. What happens if we add yet another explicit CSL?
+
+---
+csl: ecology.csl
+---
+
+And cite yet another @holt2024.
+
+::: {#refs-ecology}
+:::
+
+And now everything is in Ecology format. So whatever's last overrides earlier, and it doesn't seem possible. Unless perhaps we actually make new docs and glue them together.
+
+I doubt it; the [includes webpage](https://quarto.org/docs/authoring/includes.html) says
+
+<div>
+
+It also means that if the included file has a metadata block, that block will take effect in all included files. In most cases, having metadata blocks in an included file will cause unexpected behavior.
+
+</div>
+
+This probably isn't worth much more effort. I'll just look individually at the most likely csls to work.
+
+---
+csl: freshwater-biology.csl
+---
+
+::: {#refs-fwb}
+:::
+
+---
+csl: apa.csl
+---
+
+::: {#refs-apa}
+:::

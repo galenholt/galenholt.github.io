@@ -1,0 +1,55 @@
+{
+    "status": "OK",
+    "code": 200,
+    "locale": "en_US",
+    "seed": null,
+    "total": 2,
+    "data": [
+        {
+            "id": 1,
+            "firstname": "Roma",
+            "lastname": "Sawayn",
+            "email": "dulce48@dooley.com",
+            "phone": "+17432577963",
+            "birthday": "1961-10-22",
+            "gender": "female",
+            "address": {
+                "id": 1,
+                "street": "522 Yost Burg",
+                "streetName": "Kshlerin Ridge",
+                "buildingNumber": "530",
+                "city": "East Evelyn",
+                "zipcode": "32920-2979",
+                "country": "Zambia",
+                "country_code": "ZM",
+                "latitude": 12.679717,
+                "longitude": 26.499619
+            },
+            "website": "http://steuber.com",
+            "image": "http://placeimg.com/640/480/people"
+        },
+        {
+            "id": 2,
+            "firstname": "Beulah",
+            "lastname": "Wehner",
+            "email": "akeem32@emmerich.com",
+            "phone": "+13379423905",
+            "birthday": "1965-11-15",
+            "gender": "female",
+            "address": {
+                "id": 1,
+                "street": "40426 Garrick Cove",
+                "streetName": "Barrows Ferry",
+                "buildingNumber": "86059",
+                "city": "South Seamus",
+                "zipcode": "40698",
+                "country": "U.S. Virgin Islands",
+                "country_code": "VI",
+                "latitude": 13.603785,
+                "longitude": 88.9781
+            },
+            "website": "http://glover.biz",
+            "image": "http://placeimg.com/640/480/people"
+        }
+    ]
+}

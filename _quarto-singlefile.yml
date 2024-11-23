@@ -1,3 +1,3 @@
 project:
   render:
-  - data_acquisition/bom_water.qmd
+  - publishing/flextable_word.qmd

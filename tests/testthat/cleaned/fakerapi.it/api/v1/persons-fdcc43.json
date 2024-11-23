@@ -1,0 +1,55 @@
+{
+    "status": "OK",
+    "code": 200,
+    "locale": "en_US",
+    "seed": null,
+    "total": 2,
+    "data": [
+        {
+            "id": 1,
+            "firstname": "Della",
+            "lastname": "Kuhn",
+            "email": "carter.shields@yahoo.com",
+            "phone": "+14585126853",
+            "birthday": "1987-08-09",
+            "gender": "female",
+            "address": {
+                "id": 1,
+                "street": "2158 Cristina Park",
+                "streetName": "Agnes Tunnel",
+                "buildingNumber": "94274",
+                "city": "East Norma",
+                "zipcode": "73534",
+                "country": "Iran",
+                "country_code": "IR",
+                "latitude": 58.805162,
+                "longitude": -21.448584
+            },
+            "website": "http://fisher.com",
+            "image": "http://placeimg.com/640/480/people"
+        },
+        {
+            "id": 2,
+            "firstname": "Sheila",
+            "lastname": "Goldner",
+            "email": "goyette.oliver@bruen.com",
+            "phone": "+17347563160",
+            "birthday": "2003-07-19",
+            "gender": "female",
+            "address": {
+                "id": 1,
+                "street": "64811 Delfina Ridge Apt. 475",
+                "streetName": "Dale Orchard",
+                "buildingNumber": "980",
+                "city": "North Henri",
+                "zipcode": "13607",
+                "country": "Falkland Islands",
+                "country_code": "FK",
+                "latitude": 48.213107,
+                "longitude": -9.087171
+            },
+            "website": "http://padberg.org",
+            "image": "http://placeimg.com/640/480/people"
+        }
+    ]
+}

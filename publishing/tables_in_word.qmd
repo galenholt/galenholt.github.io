@@ -13,7 +13,61 @@ format:
     # setting these to the html defaults so they don't get jumbled between format
     fig-width: 7
     fig-height: 5
+    reference-doc: ../default_word_template.docx
 ---
+
+Tables tend to look fine in html, but when rendering to word they completely fall down. Below, I test a bunch of the standard packages. \*The one that seems to work best is \[flextable::flecxtable()\], which is interesting, since \[huxtable::huxtable()\] claims to build on it but doesn't work well at all.
+
+*NOTE: this doc probably looks fine on the website. The issue is word rendering.*
+
+I'll test two tables- iris, which has narrow columns, and a table with lots of text, which tends to cause the most problems.
+
+```{r}
+#| message: false
+texttab <- readr::read_csv(file.path('data/component_table.csv'), 
+                           show_col_types = FALSE) |> 
+  dplyr::select(-tidyselect::last_col())
+
+```
+
+## The solution
+
+Maybe. This exact code works great in another project, and not at all here. I have no idea what's going on.
+
+```{r}
+library(flextable)
+
+set_flextable_defaults(font.family = 'Calibri',
+                       font.size = 10,
+                       table.layout = 'autofit')
+```
+
+Use `flextable` with `set_table_properties(layout = 'autofit')` .
+
+```{r}
+#| label: tbl-flex
+#| tbl-cap: This is a table with flextable
+#| message: false
+
+head(iris) |> 
+  flextable()
+
+```
+
+```{r}
+#| label: tbl-flex-text
+#| tbl-cap: This is a table with lots of text in flextable
+#| message: false
+
+texttab |> 
+  flextable() #|> 
+  # set_table_properties(layout = "autofit")
+
+```
+
+Note that there is an issue still if the table prints into a div. I think because divs render in word as tables, and so flextable struggles with what it controls. I'll show that below.
+
+## The others 
 
 These all look fine in html, most things do. But the word doc is where things seem to fall down. Especially if they have lots of text.
 
@@ -51,15 +105,13 @@ head(iris) |>
  gt::gt()
 ```
 
-### Long text
+## Long text
 
-This table is giving me fits elsewhere, let's try it here. It has a common issue of
+This table is giving me fits elsewhere, let's try it here. It has a common issue of wrapping words.
 
 ```{r}
 #| label: tbl-raw
 #| tbl-cap: This is just printed
-#| message: false
-texttab <- readr::read_csv('data/component_table.csv', show_col_types = FALSE)
 
 texttab
 ```
@@ -91,7 +143,6 @@ texttab |>
 gt seems to really have a lot of issues here. What if I use divs?
 
 ::: {#tbl-gt3}
-
 ```{r}
 texttab |> 
  gt::gt()
@@ -100,7 +151,7 @@ texttab |>
 This is a table with gt in a div.
 :::
 
-## Column widths. 
+## Column widths.
 
 None of those handle column widths with long text. kable smashes the first col, huxtable and gt smash them all.
 
@@ -121,3 +172,30 @@ texttab |>
   huxtable::theme_article()
 ```
 
+## Divs
+
+Flextable struggles in divs. The best we can do is to set `width = 1` to at least make all the cols the same width and use the whole space. Though usually what i end up doing is rendering those tables outside a div and pasting in.
+
+::: {#divtable style="color: gray"}
+```{r}
+#| label: tbl-flex-div
+#| tbl-cap: This is a flextable in a div with `width = 1`
+
+texttab |> 
+  flextable::flextable() |> 
+  flextable::set_table_properties(layout = "autofit", width = 1)
+
+
+```
+
+If we don't set widths, it's smooshed, even with autofit.
+
+```{r}
+#| label: tbl-flex-div-nowidth
+#| tbl-cap: This is a flextable in a div with `width = 1`
+
+texttab |> 
+  flextable::flextable() |> 
+  flextable::set_table_properties(layout = "autofit")
+```
+:::

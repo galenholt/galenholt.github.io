@@ -1,0 +1,31 @@
+---
+title: "Github citations"
+format: html
+---
+
+Use [cffr](https://docs.ropensci.org/cffr/) to create repo citations.
+
+Though it needs a package (or at least a DESCRIPTION). If you don't have that, what we really need is something like this in CITATION.cff
+
+```         
+message: 'To cite this repo use:'
+type: software
+license: MIT
+title: 'Repo title'
+version: 0.1.0
+abstract: What the repo's for
+authors:
+- family-names: Holt
+  given-names: Galen
+  email: g.holt@deakin.edu.au
+  orcid: https://orcid.org/0000-0002-7455-9275
+- family-names: Last
+  given-names: First
+  email: first.last@email.com
+  orcid: https://orcid.org/0000-0002-1234-5678
+contact:
+- family-names: Holt
+  given-names: Galen
+  email: g.holt@deakin.edu.au
+  orcid: https://orcid.org/0000-0002-7455-9275
+```

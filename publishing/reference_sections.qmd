@@ -23,9 +23,21 @@ bibliography: references.bib
 library(ggplot2)
 ```
 
+## Bibliography style
+
+Use a csl file to change the referencing style, both in-text and in-bib. Put
+
+``` yaml
+csl: ecology.csl
+```
+
+in the header to use a different file. Get CSL files from [their github](https://github.com/citation-style-language/styles), and look at what they actually look like from [CSL](https://editor.citationstyles.org/searchByExample/)'s visual editor (which seems to kick over to something managed by Zotero.
+
 ## References (bibliography)
 
 To put the bibliography wherever you want, include a div `::: {#refs}` wherever you want it to be. If we cite @holt2018, we can put the bib right here.
+
+Note, we need square brackets around the citation to get the author in parentheses. This one has square brackets [@holt2018] and this one @holt2018 does not.
 
 ::: {#refs}
 :::

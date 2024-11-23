@@ -1,0 +1,48 @@
+---
+title: "Flextable in word"
+
+echo: false
+
+format:
+  html:
+    embed-resources: true
+    toc: true
+    comments:
+      hypothesis: true
+  docx:
+    toc: false
+    prefer-html: true
+    # 7 and 5 are html defaults and look better, but 6.3 is 16cm and so full-page width in word and usually submissions
+    fig-width: 6.2 # 7
+    fig-height: 4.5 # 5
+    fig-dpi: 300
+    tbl-width: 6.2
+    reference-doc: ../default_word_template.docx
+---
+
+## Tables
+
+```{r}
+library(dplyr)
+library(flextable)
+```
+
+```{r}
+set_flextable_defaults(font.family = 'Calibri',
+                       font.size = 10,
+                       table.layout = 'autofit')
+```
+
+Comp
+
+```{r}
+
+comp_tab <- readr::read_csv(file.path('data/component_table.csv'), show_col_types = FALSE)
+
+# Both huxtable and knitr are bad for word export. Probably will just have to save CSVs for submission
+
+comp_tab |> 
+  # Too much text in the last col
+  dplyr::select(-last_col()) |> 
+  flextable()
+```
