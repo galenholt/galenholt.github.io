@@ -1,0 +1,242 @@
+---
+title: "httptest2"
+format: html
+---
+
+I'm running into all sorts of issues with testing my API package [{hydrogauge}](github.com/galenholt/hydrogauge) and building vignettes. In theory, [{httptest2}](enpiar.com/httptest2) is the answer, but the examples are all a bit simple, so I want to test them quickly.
+
+Basically, the examples there just return the raw json anyway, whereas most of my tests are of the outer functions that call the API and then process the outputs. I need that wrapper setup, and want to be able to test cleanly, so want to see if httptest2 actually mocks the api return when it's not the returned object.
+
+```{r}
+library(testthat)
+library(httr2)
+library(httptest2)
+```
+
+Start by using their example
+
+```{r}
+faker_person <- function(gender = NULL, birthday_start = NULL, birthday_end = NULL, quantity = 1, locale = "en_US", seed = NULL) {
+  faker(
+    "persons",
+    gender = gender,
+    birthday_start = birthday_start,
+    birthday_end = birthday_end,
+    quantity = quantity,
+    locale = locale,
+    seed = seed
+  )
+}
+
+faker <- function(resource, ..., quantity = 1, locale = "en_US", seed = NULL) {
+  params <- list(
+    ...,
+    quantity = quantity,
+    locale = locale,
+    seed = seed
+  )
+  names(params) <- paste0("_", names(params))
+
+  request("https://fakerapi.it/api/v1") %>%
+    req_url_path_append(resource) %>%
+    req_url_query(!!!params) %>%
+    req_user_agent("my_package_name (http://my.package.web.site)") %>%
+    req_perform() %>%
+    resp_body_json()
+}
+```
+
+Ha! The example in their example has changed. Guess a good illustration of why this sort of thing is necessary. Used to be length 2. It's not that the quantity isn't working right, we're getting headers. Though that would seem to imply the `quantity` isn't working right.
+
+```{r}
+test_that("We can get people", {
+  expect_length(faker_person("female", quantity = 2), 6)
+})
+```
+
+Now we get the verbose
+
+```{r}
+options(httptest2.verbose = TRUE)
+
+with_mock_dir("person", {
+  system.time(peeps <- faker_person("female", quantity = 2))
+})
+
+```
+
+And now it should work from that mocked data
+
+```{r}
+with_mock_dir("person", {
+  system.time(peeps2 <- faker_person("female", quantity = 2))
+})
+```
+
+What does that mocked data look like?
+
+``` json
+{
+    "status": "OK",
+    "code": 200,
+    "locale": "en_US",
+    "seed": null,
+    "total": 2,
+    "data": [
+        {
+            "id": 1,
+            "firstname": "Roma",
+            "lastname": "Sawayn",
+            "email": "dulce48@dooley.com",
+            "phone": "+17432577963",
+            "birthday": "1961-10-22",
+            "gender": "female",
+            "address": {
+                "id": 1,
+                "street": "522 Yost Burg",
+                "streetName": "Kshlerin Ridge",
+                "buildingNumber": "530",
+                "city": "East Evelyn",
+                "zipcode": "32920-2979",
+                "country": "Zambia",
+                "country_code": "ZM",
+                "latitude": 12.679717,
+                "longitude": 26.499619
+            },
+            "website": "http://steuber.com",
+            "image": "http://placeimg.com/640/480/people"
+        },
+        {
+            "id": 2,
+            "firstname": "Beulah",
+            "lastname": "Wehner",
+            "email": "akeem32@emmerich.com",
+            "phone": "+13379423905",
+            "birthday": "1965-11-15",
+            "gender": "female",
+            "address": {
+                "id": 1,
+                "street": "40426 Garrick Cove",
+                "streetName": "Barrows Ferry",
+                "buildingNumber": "86059",
+                "city": "South Seamus",
+                "zipcode": "40698",
+                "country": "U.S. Virgin Islands",
+                "country_code": "VI",
+                "latitude": 13.603785,
+                "longitude": 88.9781
+            },
+            "website": "http://glover.biz",
+            "image": "http://placeimg.com/640/480/people"
+        }
+    ]
+}
+```
+
+## Wrapped
+
+Now, the situation I have is that I have a lot of wrapper functions that don't return raw responses. Does `httrtest2` return save the API response, or the function output?
+
+```{r}
+clean_people <- function(fakepeeps) {
+  cleanpeeps <-purrr::map(fakepeeps[[6]], tibble::as_tibble) |> 
+    purrr::list_rbind() |> 
+    dplyr::select(-'address') |> 
+    dplyr::distinct()
+  
+  return(cleanpeeps)
+}
+```
+
+We then wrap together
+
+```{r}
+pullnclean <- function(gender, quantity) {
+  fp <- faker_person(gender = gender, quantity = quantity)
+  cl <- clean_people(fp)
+  return(cl)
+}
+```
+
+```{r}
+test_that("Cleaning cleans", {
+  np <- pullnclean('female', 2)
+  expect_s3_class(np, 'tbl_df')
+})
+```
+
+Now, what happens if we mock that
+
+```{r}
+with_mock_dir("cleaned", {
+  system.time(np <- pullnclean('female', 2))
+})
+```
+
+```{r}
+with_mock_dir("cleaned", {
+  system.time(np <- pullnclean('female', 2))
+})
+```
+
+And what's in that file?
+
+The json. So maybe this will work. Is there a limit to depth? maybe. Now I just have to go wrap a million tests with `with_mock_dir`. Better than everything failing though. Ideally I'd reuse calls, but that'll be harder than just wrapping each test.
+
+``` json
+{
+    "status": "OK",
+    "code": 200,
+    "locale": "en_US",
+    "seed": null,
+    "total": 2,
+    "data": [
+        {
+            "id": 1,
+            "firstname": "Della",
+            "lastname": "Kuhn",
+            "email": "carter.shields@yahoo.com",
+            "phone": "+14585126853",
+            "birthday": "1987-08-09",
+            "gender": "female",
+            "address": {
+                "id": 1,
+                "street": "2158 Cristina Park",
+                "streetName": "Agnes Tunnel",
+                "buildingNumber": "94274",
+                "city": "East Norma",
+                "zipcode": "73534",
+                "country": "Iran",
+                "country_code": "IR",
+                "latitude": 58.805162,
+                "longitude": -21.448584
+            },
+            "website": "http://fisher.com",
+            "image": "http://placeimg.com/640/480/people"
+        },
+        {
+            "id": 2,
+            "firstname": "Sheila",
+            "lastname": "Goldner",
+            "email": "goyette.oliver@bruen.com",
+            "phone": "+17347563160",
+            "birthday": "2003-07-19",
+            "gender": "female",
+            "address": {
+                "id": 1,
+                "street": "64811 Delfina Ridge Apt. 475",
+                "streetName": "Dale Orchard",
+                "buildingNumber": "980",
+                "city": "North Henri",
+                "zipcode": "13607",
+                "country": "Falkland Islands",
+                "country_code": "FK",
+                "latitude": 48.213107,
+                "longitude": -9.087171
+            },
+            "website": "http://padberg.org",
+            "image": "http://placeimg.com/640/480/people"
+        }
+    ]
+}
+```
