@@ -1,0 +1,113 @@
+---
+title: "HydroSHEDS/RIVERS/ATLAS"
+format: html
+---
+
+```{r}
+library(sf)
+library(ggplot2)
+library(dplyr)
+```
+
+HydroSHEDS has BASINS, RIVERS, LAKES, and ATLAS, with the atlas being versions of the others with covariates.
+
+I'm mostly interested in the rivers and sheds atlases. For now, get rivers.
+
+```{r}
+ratlas <- "https://figshare.com/ndownloader/files/20087321"
+```
+
+```{r}
+zipdownload('RiverATLAS_Data_v10.gdb', 'data', ratlas)
+```
+
+What layers are in that gdb?
+
+```{r}
+st_layers(file.path('data',
+                    'RiverATLAS_Data_v10', 'RiverATLAS_v10.gdb'))
+```
+
+Only one layer, but pretty big (it *is* the whole world), probably worth using the `query` argument.
+
+The docs have a pdf of available columns. The real trick is going to be figuring out their *values* so we can filter on them.
+
+Those are in HydroATLAS_v10_Legends.xlsx.
+
+Can I get the available countries (global administrative areas)?
+
+```{r}
+gad_ids <- st_read(file.path('data',
+                    'RiverATLAS_Data_v10', 'RiverATLAS_v10.gdb'),
+                   query = sprintf("SELECT DISTINCT gad_id_cmj FROM \"%s\"", 'RiverATLAS_v10'))
+```
+
+Those aren't particularly useful on their own. Are they [ISO codes](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes)? Supposedly, but they don't match the numerics.
+
+That suggests Australia is 036, but HydroATLAS_v10_Legends.xlsx has it as 14. The country_code does match though.
+
+This takes a LONG time, and only returns 5375 shapes, which is *way* fewer than HydroRIVERS has for Australia.
+
+```{r}
+aus_rivers <- st_read(file.path('data',
+                    'RiverATLAS_Data_v10', 'RiverATLAS_v10.gdb'),
+                   query = sprintf("SELECT * FROM \"%s\" WHERE gad_id_cmj = 14", 'RiverATLAS_v10'))
+```
+
+Mapping that
+
+```{r}
+ggplot() +
+  geom_sf(data = aus_rivers |> filter(ORD_STRA >= 3), mapping = aes(color = log10(DIST_UP_KM)))
+```
+
+We can also use a spatial filter see `wkt_filter` argument to pass e.g. a bounding box. I'm guessing that's super slow.
+
+Some other interesting variables
+
+irrigated area upstream
+
+```{r}
+ggplot() +
+  geom_sf(data = aus_rivers |> filter(ORD_STRA >= 3), mapping = aes(color = log10(ire_pc_use)))
+```
+
+PET
+
+```{r}
+ggplot() +
+  geom_sf(data = aus_rivers |> filter(ORD_STRA >= 3), mapping = aes(color = (pet_mm_uyr))) +
+  scale_color_viridis_c(option = 'inferno')
+```
+
+precip
+
+```{r}
+ggplot() +
+  geom_sf(data = aus_rivers |> filter(ORD_STRA >= 3), mapping = aes(color = pre_mm_uyr)) +
+  scale_color_viridis_c(option = 'mako', trans = 'log10')
+```
+
+temp
+
+```{r}
+ggplot() +
+  geom_sf(data = aus_rivers |> filter(ORD_STRA >= 3), mapping = aes(color = (tmp_dc_uyr))) +
+  scale_color_viridis_c(option = 'magma')
+```
+
+Discharge
+
+```{r}
+ggplot() +
+  geom_sf(data = aus_rivers |> filter(ORD_STRA >= 3), mapping = aes(color = dis_m3_pyr)) +
+  scale_color_viridis_c(option = 'mako', trans = 'log10')
+```
+
+Regulation
+
+```{r}
+ggplot() +
+  geom_sf(data = aus_rivers |> filter(ORD_STRA >= 3), mapping = aes(color = dor_pc_pva)) +
+  scale_color_viridis_c(option = 'rocket', trans = 'log10')
+```
