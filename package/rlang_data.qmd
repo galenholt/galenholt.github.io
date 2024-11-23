@@ -13,7 +13,6 @@ While `styler` does not find this problem, `lintr` does. So it's *very* helpful 
 
 Note- use `devtools::load_all()` before linting, or it won't pick up `.data` itself and will throw *that* as a non-visible global.
 
-
 ### data masking verbs
 
 The answer for non-`select` verbs is to use the `.data[['variable_name']]` or `.data$variable_name` convention everywhere and `usethis::use_import_from('rlang', '.data')`. That works to get rid of the errors, but now we’ve lost one of the really nice things about writing dplyr code- the simplicity of bare data variable names.
@@ -25,7 +24,6 @@ Then, we need to actually find all of those places we need to add `.data$` in fr
 The `tidyselect` approach has deprecated `.data` after 1.2.0. It still `check`s fine, and gets rid of the global variable issue, but we get lots of warnings `Use of .data in tidyselect expressions was deprecated in tidyselect 1.2.0`. The reasoning is described on the [tidyselect blog](https://www.tidyverse.org/blog/2022/10/tidyselect-1-2-0/), where the suggested solution is to use `all_of` (or just to use characters). That seems OK, but is again clunky- we now need to stuff at minimum "" around the terms, and at worst, `tidyselect::all_of` all over the place. At some point it's just easier to use `[`. Where it's likely going to be most needed is where the tidyselect is a helper to other verbs, e.g. in the `.by` argument of `mutate` and `summarise`.
 
 The [example repo](https://github.com/galenholt/rlangcheck) is set up to not throw checks or errors, and so we can see what works for different verbs.
-
 
 ## foreach
 
@@ -55,7 +53,8 @@ cheat_tibble <- tibble::tibble(verb = c('mutate', 'mutate','summarise', 'summari
                                         'distinct', 'DiagrammeR::add_nodes_from_table',
                                         'DiagrammeR::add_nodes_from_table',
                                         'DiagrammeR::add_nodes_from_table',
-                                        'DiagrammeR::add_nodes_from_table'),
+                                        'DiagrammeR::add_nodes_from_table',
+                                        'arrange'),
                        argument = c('...', '.by', '...', '.by',
                                     '...', '.cols', '...', '...',
                                     '...', 'cols', 'col', 'col',
@@ -66,7 +65,8 @@ cheat_tibble <- tibble::tibble(verb = c('mutate', 'mutate','summarise', 'summari
                                     '...', 'label_col', 
                                     'set_type',
                                     'drop_cols', 
-                                    'type_col'),
+                                    'type_col',
+                                    '...'),
                        fix = c('.data', 'tidyselect', '.data', 'tidyselect',
                                '.data', 'tidyselect', 'tidyselect', 'tidyselect',
                                'character?', 'tidyselect', 'tidyselect', 'tidyselect', 
@@ -77,7 +77,8 @@ cheat_tibble <- tibble::tibble(verb = c('mutate', 'mutate','summarise', 'summari
                                '.data','tidyselect',
                                'tidyselect',
                                'tidyselect',
-                               'tidyselect'))
+                               'tidyselect',
+                               '.data'))
 ```
 
 In general, the key is if the help says an argument uses 'data masking', use `.data`, and if it says it uses tidy-select, use `tidyselect`. The catch is, it can be annoying to check, and some functions aren't very clear. A cheatsheet of what to use where is in @tbl-tidycheat. Also, as far as I can tell, anywhere where this says `tidyselect`, if we just have a set of variable names, we can use either `tidyselect::all_of(c("v1", 'v2'))` or just `c('v1', 'v2')` (or, obviously, more complex tidyselecting).

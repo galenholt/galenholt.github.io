@@ -196,7 +196,17 @@ devtools::build_readme()
 
 To put the badges in.
 
-Getting the coverage to work was *really* unclear to me. After cobbling it together, what seems to work is go to the [codecov](app.codecov.io) website and sign up for an account. Link it to your github, and then choose the repo you want and click 'setup'. That tells you to put in a "repository secret". Do that. It also says to 'add codecov to your github actions', which I didn't do and it seems to work, I think because the `use_github_action` has already set that bit up (though it doesn't have the particular text they say to add). That action seems to only run on `master` or `main`, so if nothing happens on a branch, try pushing there.
+Getting the coverage to work was *really* unclear to me. After cobbling it together, what seems to work is go to the [codecov](app.codecov.io) website and sign up for an account. Link it to your github, and then choose the repo you want and click 'setup'. That tells you to put in a "repository secret". Do that. It also says to 'add codecov to your github actions', which I didn't do and it seems to work, I think because the `use_github_action` has already set that bit up (though it doesn't have the particular text they say to add). That action seems to only run on `master` or `main`, so if nothing happens on a branch, try pushing there. You can add branches in the github action in `test-coverage.yaml`.
+
+I've lately had a hard time getting it to actually connect to repos. Even not being able to use `check_results <- covr::package_coverage()` followed by `covr::codecov(coverage = check_results)` to upload manually. I did manage to get it to upload manually by switching from the global token to repo-specific, found on the codecov page, click on the repo, then Configuration then General, then add the repo token to `codecov.yml`. 
+
+::: {.callout-tip title="Manual uploading"}
+
+It does work (the badges in the readme update) to use the manual approach above- we don't need to re-render the readme locally *or* run it through CI/CD.
+
+:::
+
+But the larger issue was that the repo had been deactivated. Most of them have (likely start that way), but in the setup steps activation is never mentioned. So go to the repo in codecov, Configuration, General, down in the Danger Zone, click Activate if it isn't already.
 
 ### Making a package from an existing project
 
@@ -209,3 +219,20 @@ after you double check the working directory is right (should be, if you're alre
 This *did* cause a series of cascading issues that should have been expected. First, since {renv} puts the library in a different place for packages vs projects, it wanted to reinstall all packages. That took a while because I hadn't been keeping up. Then it took a few restarts of Rstudio to get it to register the structure and make things like shortcuts to `devtools::load_all()` available.
 
 It sure is nice to be able to load functions in though.
+
+### Pkgdown
+
+Don't rely on the github action, it fails largely silently and 404s. Instead, run `pkgdown::build_site_github_pages()` *before* pushing to make sure things actually work.
+
+I've tried using Quarto articles and vignettes, and no matter what I do I *cannot* get them to build. I just repeatedly get 
+
+```
+Running `quarto render`
+Error: 
+! in callr subprocess.
+Caused by error in `.f(.x[[i]], .y[[i]], ...)`:
+! No built file found for vignettes/articles/Data-portals.qmd
+ℹ See `$stdout` and `$stderr` for standard output and error.
+```
+
+And there's nothing useful in `.Last.error` or `$stderr` or `$stdout`. Switching to Rmd seems to have fixed it, but I really wish Quarto would work; all my figure refs etc are broken in Rmd. 
