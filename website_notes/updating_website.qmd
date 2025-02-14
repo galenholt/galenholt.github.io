@@ -90,6 +90,12 @@ Ah. I see now that there's a warning about this in [the quarto docs](https://qua
 
 > As you preview your site, pages will be rendered and updated. However, if you make changes to global options (e.g. \_quarto.yml or included files) you need to fully re-render your site to have all of the changes reflected. Consequently, you should always fully quarto render your site before deploying it, even if you have already previewed changes to some pages with the preview server.
 
+So, since I'm using profiles, run
+
+```         
+quarto render --profile fullsite
+```
+
 ### Publishing
 
 I'm now using

@@ -1,7 +1,7 @@
 ---
 title: "Beta distributions"
 format: html
-bibliography: references.bib
+bibliography: ../publishing/references.bib
 ---
 
 This is fairly sketchy, just trying to see how the $\phi$ from @harrison2015 affect beta probability distributions.

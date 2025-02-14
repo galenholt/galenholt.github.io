@@ -74,6 +74,20 @@ mtcars %>%
 
 Why is that useful? We can see not only that these aren't fully duplicated rows (which we also could have done with `duplicated` on the whole table), but also actually look at what differs easily.
 
+#### Full table
+
+If we do want to look at fully duplicated rows, we can use a similar approach, we just have to group_by everything. Duplicating three rows to demonstrate:
+
+```{r}
+mtcars |> 
+  # bind on some duplicates
+  dplyr::bind_rows(mtcars |> dplyr::slice(c(1,9,12))) |>
+  dplyr::group_by(dplyr::across(tidyselect::everything())) |> 
+  dplyr::filter(dplyr::n()>1) |> 
+  dplyr::ungroup() |> 
+  dplyr::arrange(dplyr::across(tidyselect::everything()))
+```
+
 #### In a list
 
 We might have a list with internal duplicates, e.g.
@@ -175,3 +189,9 @@ Now, if you want to really go for it, delete the rmds. That makes git happier be
 #| eval: false
 # file.remove(allrmd)
 ```
+
+## Debugging R from Quarto
+
+Sometimes (often) if you call a function with a breakpoint from a Quarto notebook, nothing prints to the console. I.e. I'll type a variable name `var_a` to see what it is, and nothing will print. The issue is that values are going to a different `stdout`.
+
+Type `sink()` and it should start working.

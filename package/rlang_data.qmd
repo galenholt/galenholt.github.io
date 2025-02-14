@@ -88,4 +88,3 @@ In general, the key is if the help says an argument uses 'data masking', use `.d
 cheat_tibble |> 
   knitr::kable()
 ```
-

@@ -224,6 +224,35 @@ It sure is nice to be able to load functions in though.
 
 Don't rely on the github action, it fails largely silently and 404s. Instead, run `pkgdown::build_site_github_pages()` *before* pushing to make sure things actually work.
 
+ `pkgdown::preview_site()` to see it locally.
+ 
+ I had a really hard time getting a github icon/link in the header. It turns out you need two URLs in the DESCRIPTION. like
+ 
+```
+URL: https://github.com/galenholt/hydrogauge/, https://galenholt.github.io/hydrogauge/
+```
+
+The trailing slashes might be required too.
+
+I've had major problems with github actions failing on vignettes. If the site builds locally, a workaround is to 
+
+```
+pkgdown::build_site_github_pages()
+pkgdown::deploy_to_branch()
+```
+
+which pushes the locally-produced html.
+
+Links between articles is a pain. It would be really nice if it worked like quarto, but doesn't seem to. For (true) Vignettes (not articles), apparently `vignette("some-topic")` works, according to the [R packages book](https://r-pkgs.org/website.html).
+
+But articles don't link that way, and 'Non-vignette articles must be linked like any other URL.' What does that mean in practice? We have to use the website they will be published to, e.g. :
+
+`[their vignette](https://galenholt.github.io/hydrogauge/articles/kiwis-wrapper.html)`
+
+If you change things in the Readme.Rmd, which is the site homepage, *you have to run* `devtools::build_readme()`, or it won't update.
+ 
+ 
+
 I've tried using Quarto articles and vignettes, and no matter what I do I *cannot* get them to build. I just repeatedly get 
 
 ```

@@ -46,7 +46,7 @@ faker <- function(resource, ..., quantity = 1, locale = "en_US", seed = NULL) {
 }
 ```
 
-Ha! The example in their example has changed. Guess a good illustration of why this sort of thing is necessary. Used to be length 2. It's not that the quantity isn't working right, we're getting headers. Though that would seem to imply the `quantity` isn't working right.
+Ha! The example in their example has changed. Guess a good illustration of why this sort of thing is necessary. Used to be length 2. It's not that the quantity isn't working right, we're getting headers. Though that *would* seem to imply the `quantity` isn't working right.
 
 ```{r}
 test_that("We can get people", {

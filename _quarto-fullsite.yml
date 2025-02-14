@@ -2,7 +2,7 @@ project:
   render:
     - "*.qmd"
     - "!CV"
-    - "!*beta_binomial"
+    - "!*betabinomial"
     - "!*random_uneven_groups"
     - "!*negbin_autocorr"
     - "!*docker_containers.qmd"
@@ -109,6 +109,8 @@ website:
               text: "Sections and numbering"
             - href: publishing/tables_in_word.qmd
               text: "Testing word table formatting"
+            - href: publishing/multi_csl.qmd
+              tect: "Using citation formats in quarto"
 
         - section: "Theory, simulation, statistics, probability"
           contents:
@@ -124,7 +126,7 @@ website:
               text: "Basic shifts of normal moments"
             - href: stats_probability/fitting_truncated.qmd
               text: "Shifting and fitting truncated lognormals"
-            - href: betabinomial/betadists.qmd
+            - href: stats_probability/betadists.qmd
               text: "Quick look at beta pdfs"
 
         - section: "Drones"
@@ -187,6 +189,12 @@ website:
             - small_helpers/failing_snapshot_check.qmd
             - href: small_helpers/vdiffr_networks.qmd
               text: "Testing network plots with vdiffr"
+            - href: package/httptest2.qmd
+              text: "Testing API packages with httptest2"
+            - href: package/rlang_data.qmd
+              text: "Handling the rlang no visible binding issue"
+            - href: publishing/github_citation_files.qmd
+              text: "Adding citation files to github"
 
 
 
@@ -206,6 +214,8 @@ website:
               text: "Downloading Australian rivers geofabric"
             - href: data_acquisition/read_geofabric.qmd
               text: "Using Australian rivers geofabric"
+            - href: data_acquisition/hydro_sheds_rivers_atlas.qmd
+              text: "HydroSheds river atlas"
 
         - section: "R parallel processing (general)"
           contents:
