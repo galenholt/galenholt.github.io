@@ -450,6 +450,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Testing word table formatting</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../publishing/multi_csl.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Multi-csl?</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -499,7 +505,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../betabinomial/betadists.html" class="sidebar-item-text sidebar-link">
+  <a href="../stats_probability/betadists.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Quick look at beta pdfs</span></a>
   </div>
 </li>
@@ -702,6 +708,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Testing network plots with vdiffr</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../package/httptest2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Testing API packages with httptest2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../package/rlang_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Handling the rlang no visible binding issue</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../publishing/github_citation_files.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Adding citation files to github</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -753,6 +777,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../data_acquisition/read_geofabric.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Using Australian rivers geofabric</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data_acquisition/hydro_sheds_rivers_atlas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">HydroSheds river atlas</span></a>
   </div>
 </li>
       </ul>
@@ -891,10 +921,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#renv" id="toc-renv" class="nav-link" data-scroll-target="#renv">renv</a></li>
   <li><a href="#testing-figures" id="toc-testing-figures" class="nav-link" data-scroll-target="#testing-figures">testing figures</a></li>
-  <li><a href="#global-variables-and-dplyr" id="toc-global-variables-and-dplyr" class="nav-link" data-scroll-target="#global-variables-and-dplyr">‘global’ variables and dplyr</a></li>
+  <li><a href="#global-variables-dplyr-tidyverse-foreach" id="toc-global-variables-dplyr-tidyverse-foreach" class="nav-link" data-scroll-target="#global-variables-dplyr-tidyverse-foreach">‘global’ variables (dplyr, tidyverse, foreach)</a></li>
   <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a></li>
   <li><a href="#using-code-coverage" id="toc-using-code-coverage" class="nav-link" data-scroll-target="#using-code-coverage">Using code coverage</a></li>
   <li><a href="#making-a-package-from-an-existing-project" id="toc-making-a-package-from-an-existing-project" class="nav-link" data-scroll-target="#making-a-package-from-an-existing-project">Making a package from an existing project</a></li>
+  <li><a href="#pkgdown" id="toc-pkgdown" class="nav-link" data-scroll-target="#pkgdown">Pkgdown</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -1078,10 +1109,12 @@ Sentiment:???</code></pre>
 <h3 class="anchored" data-anchor-id="testing-figures">testing figures</h3>
 <p>I need to make some standard figure functions as part of the package. To test them, I’ve found the <a href="https://www.tidyverse.org/blog/2021/06/vdiffr-1-0-0/">{vdiffr} package</a>. It saves a figure if one doesn’t exist and if one does exist, it checks against the saved version. It seems to work well, the only trick is to remember to <code>usethis::use_package('vdiffr', 'Suggests')</code>, or it won’t be available to use by <code>devtools::check()</code>.</p>
 </section>
-<section id="global-variables-and-dplyr" class="level3">
-<h3 class="anchored" data-anchor-id="global-variables-and-dplyr">‘global’ variables and dplyr</h3>
+<section id="global-variables-dplyr-tidyverse-foreach" class="level3">
+<h3 class="anchored" data-anchor-id="global-variables-dplyr-tidyverse-foreach">‘global’ variables (dplyr, tidyverse, foreach)</h3>
 <p>When I <code>devtools::check()</code> on a package using dplyr, I get a million errors about ‘no visible binding for global variable ’variable_name’’. The issue is that R CMD CHECK is interpreting the bare variable names in <code>mutate</code>, <code>summarise</code>, etc as variables and can’t find them. The code runs fine, but it’s annoying.</p>
 <p>The answer, unfortunately, is to use the <code>.data[['variable_name']]</code> or <code>.data$variable_name</code> convention everywhere and <code>usethis::use_import_from('rlang', '.data')</code>. That works to get rid of the errors, but now we’ve lost one of the really nice things about writing dplyr code- the simplicity of bare data variable names.</p>
+<p>A similar issue crops up with foreach, and the solution is to pre-initialise them.</p>
+<p>See <a href="../package/rlang_data.html">no visible binding on check</a> for more details.</p>
 </section>
 <section id="data" class="level3">
 <h3 class="anchored" data-anchor-id="data">Data</h3>
@@ -1100,7 +1133,22 @@ Sentiment:???</code></pre>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">build_readme</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>To put the badges in.</p>
-<p>Getting the coverage to work was <em>really</em> unclear to me. After cobbling it together, what seems to work is go to the <a href="app.codecov.io">codecov</a> website and sign up for an account. Link it to your github, and then choose the repo you want and click ‘setup’. That tells you to put in a “repository secret”. Do that. It also says to ‘add codecov to your github actions’, which I didn’t do and it seems to work, I think because the <code>use_github_action</code> has already set that bit up (though it doesn’t have the particular text they say to add). That action seems to only run on <code>master</code> or <code>main</code>, so if nothing happens on a branch, try pushing there.</p>
+<p>Getting the coverage to work was <em>really</em> unclear to me. After cobbling it together, what seems to work is go to the <a href="app.codecov.io">codecov</a> website and sign up for an account. Link it to your github, and then choose the repo you want and click ‘setup’. That tells you to put in a “repository secret”. Do that. It also says to ‘add codecov to your github actions’, which I didn’t do and it seems to work, I think because the <code>use_github_action</code> has already set that bit up (though it doesn’t have the particular text they say to add). That action seems to only run on <code>master</code> or <code>main</code>, so if nothing happens on a branch, try pushing there. You can add branches in the github action in <code>test-coverage.yaml</code>.</p>
+<p>I’ve lately had a hard time getting it to actually connect to repos. Even not being able to use <code>check_results &lt;- covr::package_coverage()</code> followed by <code>covr::codecov(coverage = check_results)</code> to upload manually. I did manage to get it to upload manually by switching from the global token to repo-specific, found on the codecov page, click on the repo, then Configuration then General, then add the repo token to <code>codecov.yml</code>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Manual uploading">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Manual uploading
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>It does work (the badges in the readme update) to use the manual approach above- we don’t need to re-render the readme locally <em>or</em> run it through CI/CD.</p>
+</div>
+</div>
+<p>But the larger issue was that the repo had been deactivated. Most of them have (likely start that way), but in the setup steps activation is never mentioned. So go to the repo in codecov, Configuration, General, down in the Danger Zone, click Activate if it isn’t already.</p>
 </section>
 <section id="making-a-package-from-an-existing-project" class="level3">
 <h3 class="anchored" data-anchor-id="making-a-package-from-an-existing-project">Making a package from an existing project</h3>
@@ -1109,6 +1157,30 @@ Sentiment:???</code></pre>
 <p>after you double check the working directory is right (should be, if you’re already in a project), and the <code>check_name = FALSE</code> because we likely don’t care if it’s a name that makes CRAN happy (if we do, obviously set that to <code>TRUE</code>).</p>
 <p>This <em>did</em> cause a series of cascading issues that should have been expected. First, since {renv} puts the library in a different place for packages vs projects, it wanted to reinstall all packages. That took a while because I hadn’t been keeping up. Then it took a few restarts of Rstudio to get it to register the structure and make things like shortcuts to <code>devtools::load_all()</code> available.</p>
 <p>It sure is nice to be able to load functions in though.</p>
+</section>
+<section id="pkgdown" class="level3">
+<h3 class="anchored" data-anchor-id="pkgdown">Pkgdown</h3>
+<p>Don’t rely on the github action, it fails largely silently and 404s. Instead, run <code>pkgdown::build_site_github_pages()</code> <em>before</em> pushing to make sure things actually work.</p>
+<p><code>pkgdown::preview_site()</code> to see it locally.</p>
+<p>I had a really hard time getting a github icon/link in the header. It turns out you need two URLs in the DESCRIPTION. like</p>
+<pre><code>URL: https://github.com/galenholt/hydrogauge/, https://galenholt.github.io/hydrogauge/</code></pre>
+<p>The trailing slashes might be required too.</p>
+<p>I’ve had major problems with github actions failing on vignettes. If the site builds locally, a workaround is to</p>
+<pre><code>pkgdown::build_site_github_pages()
+pkgdown::deploy_to_branch()</code></pre>
+<p>which pushes the locally-produced html.</p>
+<p>Links between articles is a pain. It would be really nice if it worked like quarto, but doesn’t seem to. For (true) Vignettes (not articles), apparently <code>vignette("some-topic")</code> works, according to the <a href="https://r-pkgs.org/website.html">R packages book</a>.</p>
+<p>But articles don’t link that way, and ‘Non-vignette articles must be linked like any other URL.’ What does that mean in practice? We have to use the website they will be published to, e.g.&nbsp;:</p>
+<p><code>[their vignette](https://galenholt.github.io/hydrogauge/articles/kiwis-wrapper.html)</code></p>
+<p>If you change things in the Readme.Rmd, which is the site homepage, <em>you have to run</em> <code>devtools::build_readme()</code>, or it won’t update.</p>
+<p>I’ve tried using Quarto articles and vignettes, and no matter what I do I <em>cannot</em> get them to build. I just repeatedly get</p>
+<pre><code>Running `quarto render`
+Error: 
+! in callr subprocess.
+Caused by error in `.f(.x[[i]], .y[[i]], ...)`:
+! No built file found for vignettes/articles/Data-portals.qmd
+ℹ See `$stdout` and `$stderr` for standard output and error.</code></pre>
+<p>And there’s nothing useful in <code>.Last.error</code> or <code>$stderr</code> or <code>$stdout</code>. Switching to Rmd seems to have fixed it, but I really wish Quarto would work; all my figure refs etc are broken in Rmd.</p>
 
 
 </section>

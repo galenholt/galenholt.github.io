@@ -469,6 +469,12 @@ div.csl-indent {
  <span class="menu-text">Testing word table formatting</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../publishing/multi_csl.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Multi-csl?</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -518,7 +524,7 @@ div.csl-indent {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../betabinomial/betadists.html" class="sidebar-item-text sidebar-link">
+  <a href="../stats_probability/betadists.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Quick look at beta pdfs</span></a>
   </div>
 </li>
@@ -721,6 +727,24 @@ div.csl-indent {
  <span class="menu-text">Testing network plots with vdiffr</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../package/httptest2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Testing API packages with httptest2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../package/rlang_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Handling the rlang no visible binding issue</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../publishing/github_citation_files.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Adding citation files to github</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -772,6 +796,12 @@ div.csl-indent {
   <div class="sidebar-item-container"> 
   <a href="../data_acquisition/read_geofabric.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Using Australian rivers geofabric</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data_acquisition/hydro_sheds_rivers_atlas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">HydroSheds river atlas</span></a>
   </div>
 </li>
       </ul>
@@ -892,9 +922,10 @@ div.csl-indent {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#references-bibliography" id="toc-references-bibliography" class="nav-link active" data-scroll-target="#references-bibliography"><span class="header-section-number">1</span> References (bibliography)</a></li>
-  <li><a href="#figures-and-tables-with-sections" id="toc-figures-and-tables-with-sections" class="nav-link" data-scroll-target="#figures-and-tables-with-sections"><span class="header-section-number">2</span> Figures and tables with sections</a></li>
-  <li><a href="#new-section" id="toc-new-section" class="nav-link" data-scroll-target="#new-section"><span class="header-section-number">3</span> New section</a></li>
+  <li><a href="#bibliography-style" id="toc-bibliography-style" class="nav-link active" data-scroll-target="#bibliography-style"><span class="header-section-number">1</span> Bibliography style</a></li>
+  <li><a href="#references-bibliography" id="toc-references-bibliography" class="nav-link" data-scroll-target="#references-bibliography"><span class="header-section-number">2</span> References (bibliography)</a></li>
+  <li><a href="#figures-and-tables-with-sections" id="toc-figures-and-tables-with-sections" class="nav-link" data-scroll-target="#figures-and-tables-with-sections"><span class="header-section-number">3</span> Figures and tables with sections</a></li>
+  <li><a href="#new-section" id="toc-new-section" class="nav-link" data-scroll-target="#new-section"><span class="header-section-number">4</span> New section</a></li>
   <li><a href="#unnumbered-sections" id="toc-unnumbered-sections" class="nav-link" data-scroll-target="#unnumbered-sections">Unnumbered sections</a></li>
   </ul>
 </nav>
@@ -924,25 +955,32 @@ div.csl-indent {
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="references-bibliography" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="references-bibliography"><span class="header-section-number">1</span> References (bibliography)</h2>
+<section id="bibliography-style" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="bibliography-style"><span class="header-section-number">1</span> Bibliography style</h2>
+<p>Use a csl file to change the referencing style, both in-text and in-bib. Put</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">csl</span><span class="kw">:</span><span class="at"> ecology.csl</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>in the header to use a different file. Get CSL files from <a href="https://github.com/citation-style-language/styles">their github</a>, and look at what they actually look like from <a href="https://editor.citationstyles.org/searchByExample/">CSL</a>’s visual editor (which seems to kick over to something managed by Zotero.</p>
+</section>
+<section id="references-bibliography" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="references-bibliography"><span class="header-section-number">2</span> References (bibliography)</h2>
 <p>To put the bibliography wherever you want, include a div <code>::: {#refs}</code> wherever you want it to be. If we cite <span class="citation" data-cites="holt2018">Holt and Chesson (<a href="#ref-holt2018" role="doc-biblioref">2018</a>)</span>, we can put the bib right here.</p>
+<p>Note, we need square brackets around the citation to get the author in parentheses. This one has square brackets <span class="citation" data-cites="holt2018">(<a href="#ref-holt2018" role="doc-biblioref">Holt and Chesson 2018</a>)</span> and this one <span class="citation" data-cites="holt2018">Holt and Chesson (<a href="#ref-holt2018" role="doc-biblioref">2018</a>)</span> does not.</p>
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-holt2018" class="csl-entry" role="listitem">
 Holt, Galen, and Peter Chesson. 2018. <span>“The Role of Branching in the Maintenance of Diversity in Watersheds.”</span> <em>Freshwater Science</em> 37 (4): 712–30. <a href="https://doi.org/10.1086/700680">https://doi.org/10.1086/700680</a>.
 </div>
 </div>
 </section>
-<section id="figures-and-tables-with-sections" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="figures-and-tables-with-sections"><span class="header-section-number">2</span> Figures and tables with sections</h2>
+<section id="figures-and-tables-with-sections" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="figures-and-tables-with-sections"><span class="header-section-number">3</span> Figures and tables with sections</h2>
 <p>I want to have figs and tables in different sections; e.g.&nbsp;in main text and supplement or different chapters. It seems to work different for figs generated from code and images loaded in.</p>
 <p>In the main text, we just use <code>tbl</code> and <code>fig</code>, referenced with <code>@tbl-iris</code> (<a href="#tbl-iris" class="quarto-xref">Table&nbsp;1</a>) for tables, <code>@fig-branching</code> (<a href="#fig-branching" class="quarto-xref">Figure&nbsp;1</a>) for read-in images, and <code>@fig-iris</code> (<a href="#fig-iris" class="quarto-xref">Figure&nbsp;2</a>) for code-generated figures:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="in">#| label: tbl-iris</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="in">#| tbl-cap: Head of iris dataframe</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="in">head(iris) |&gt; knitr::kable()</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="in">#| label: tbl-iris</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="in">#| tbl-cap: Head of iris dataframe</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="in">head(iris) |&gt; knitr::kable()</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div id="tbl-iris" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-iris-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -1022,13 +1060,13 @@ Figure&nbsp;1: An image of branching
 </figure>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="in">#| label: fig-iris</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="in">#| fig-cap: A figure of the iris dataframe</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="in">ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) +</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="in">  geom_point()</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="in">#| label: fig-iris</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="in">#| fig-cap: A figure of the iris dataframe</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="in">ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) +</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="in">  geom_point()</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="fig-iris" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -1043,22 +1081,22 @@ Figure&nbsp;2: A figure of the iris dataframe
 </div>
 </div>
 </section>
-<section id="new-section" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="new-section"><span class="header-section-number">3</span> New section</h2>
+<section id="new-section" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="new-section"><span class="header-section-number">4</span> New section</h2>
 <p>Now, according to the <a href="https://quarto.org/docs/authoring/cross-references-custom.html">Quarto docs</a>, we can add a new kind of crossref. So I’ve put the following from that site in the yaml header:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">crossref</span><span class="kw">:</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">custom</span><span class="kw">:</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">kind</span><span class="kw">:</span><span class="at"> float</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">key</span><span class="kw">:</span><span class="at"> suppfig</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">latex-env</span><span class="kw">:</span><span class="at"> suppfig</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">reference-prefix</span><span class="kw">:</span><span class="at"> Figure S</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">space-before-numbering</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">kind</span><span class="kw">:</span><span class="at"> float</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">key</span><span class="kw">:</span><span class="at"> supptbl</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">latex-env</span><span class="kw">:</span><span class="at"> supptbl</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">reference-prefix</span><span class="kw">:</span><span class="at"> Table S</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">space-before-numbering</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">caption-location</span><span class="kw">:</span><span class="at"> top</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">crossref</span><span class="kw">:</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">custom</span><span class="kw">:</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">kind</span><span class="kw">:</span><span class="at"> float</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">key</span><span class="kw">:</span><span class="at"> suppfig</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">latex-env</span><span class="kw">:</span><span class="at"> suppfig</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">reference-prefix</span><span class="kw">:</span><span class="at"> Figure S</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">space-before-numbering</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">kind</span><span class="kw">:</span><span class="at"> float</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">key</span><span class="kw">:</span><span class="at"> supptbl</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">latex-env</span><span class="kw">:</span><span class="at"> supptbl</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">reference-prefix</span><span class="kw">:</span><span class="at"> Table S</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">space-before-numbering</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">caption-location</span><span class="kw">:</span><span class="at"> top</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>See <a href="https://quarto.org/docs/reference/metadata/crossref.html#custom">docs</a> for options.</p>
 <p>Now, the trick, which I missed, is that it only works for fenced divs (see <a href="https://github.com/quarto-dev/quarto-cli/issues/8956">github issues</a>). See <a href="https://quarto.org/docs/authoring/cross-references-divs.html">quarto docs</a>.</p>
 <p>Now, it <em>should</em> work to use <code>suppfig</code> to reference loaded figures such as <code>@suppfig-elephant</code> (<a href="#suppfig-elephant" class="quarto-xref">Figure S1</a>) for read-in images, and <code>@suppfig-iris</code> (<a href="#suppfig-iris" class="quarto-xref">Figure S2</a>) for code-generated figures and tables <code>@supptbl-iris</code> (<a href="#supptbl-iris" class="quarto-xref">Table S1</a>) <em>Only if we use divs</em>:</p>
@@ -1078,10 +1116,10 @@ Figure S1: An image of Surus
 <figure class="quarto-float quarto-float-suppfig figure">
 <div aria-describedby="suppfig-iris-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="in">ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = Petal.Width)) +</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="in">  geom_point()</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="in">ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = Petal.Width)) +</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="in">  geom_point()</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1104,9 +1142,9 @@ Table S1: Tail of the iris df.
 </figcaption>
 <div aria-describedby="supptbl-iris-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="in">tail(iris) |&gt; knitr::kable()</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="in">tail(iris) |&gt; knitr::kable()</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <thead>

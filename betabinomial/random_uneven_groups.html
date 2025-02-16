@@ -213,6 +213,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#shrinkage-3" id="toc-shrinkage-3" class="nav-link" data-scroll-target="#shrinkage-3">Shrinkage</a></li>
   <li><a href="#full-vs-through-estimate-diagnostic-2" id="toc-full-vs-through-estimate-diagnostic-2" class="nav-link" data-scroll-target="#full-vs-through-estimate-diagnostic-2">Full vs through estimate diagnostic</a></li>
   </ul></li>
+  <li><a href="#subclusters" id="toc-subclusters" class="nav-link" data-scroll-target="#subclusters">Subclusters</a></li>
   <li><a href="#next" id="toc-next" class="nav-link" data-scroll-target="#next">Next</a></li>
   </ul></li>
   </ul>
@@ -1649,6 +1650,44 @@ Joining with `by = join_by(x, cluster)`</code></pre>
 </div>
 </div>
 </section>
+</section>
+<section id="subclusters" class="level2">
+<h2 class="anchored" data-anchor-id="subclusters">Subclusters</h2>
+<p>testing for now</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with_seed</span>(<span class="dv">2</span>,</span>
+<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a>          subparams <span class="ot">&lt;-</span> <span class="fu">expand_grid</span>(</span>
+<span id="cb89-3"><a href="#cb89-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">N =</span> <span class="dv">10000</span>, </span>
+<span id="cb89-4"><a href="#cb89-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">n_clusters =</span> <span class="dv">10</span>, <span class="co"># 'riffles'</span></span>
+<span id="cb89-5"><a href="#cb89-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">n_subclusters =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">1000</span>)), <span class="co"># 'rocks' (absolute, not per-riffle I think?)</span></span>
+<span id="cb89-6"><a href="#cb89-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">cluster_N =</span> <span class="st">'uneven'</span>,</span>
+<span id="cb89-7"><a href="#cb89-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">nobs_mean =</span> <span class="st">'fixed'</span>, <span class="co"># keep simple for now</span></span>
+<span id="cb89-8"><a href="#cb89-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">force_nclusters =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb89-9"><a href="#cb89-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">force_N =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb89-10"><a href="#cb89-10" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Definitely want 0, the others are essentailly arbitrary</span></span>
+<span id="cb89-11"><a href="#cb89-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">nbsize =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">50</span>),</span>
+<span id="cb89-12"><a href="#cb89-12" aria-hidden="true" tabindex="-1"></a>            <span class="at">intercept =</span> <span class="dv">1</span>, </span>
+<span id="cb89-13"><a href="#cb89-13" aria-hidden="true" tabindex="-1"></a>            <span class="at">slope =</span> <span class="fl">0.5</span>,</span>
+<span id="cb89-14"><a href="#cb89-14" aria-hidden="true" tabindex="-1"></a>            <span class="at">obs_sigma =</span> <span class="fu">c</span>(<span class="dv">1</span>),</span>
+<span id="cb89-15"><a href="#cb89-15" aria-hidden="true" tabindex="-1"></a>            <span class="at">sd_rand_intercept =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="fl">0.5</span>, <span class="dv">2</span>, <span class="dv">1</span>)),</span>
+<span id="cb89-16"><a href="#cb89-16" aria-hidden="true" tabindex="-1"></a>            <span class="at">sd_rand_slope =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)), </span>
+<span id="cb89-17"><a href="#cb89-17" aria-hidden="true" tabindex="-1"></a>            <span class="at">rand_si_cor =</span> <span class="dv">0</span>,</span>
+<span id="cb89-18"><a href="#cb89-18" aria-hidden="true" tabindex="-1"></a>            <span class="co"># putting this in a list lets me send in vectors that are all the same</span></span>
+<span id="cb89-19"><a href="#cb89-19" aria-hidden="true" tabindex="-1"></a>            <span class="at">cluster_x =</span> <span class="fu">list</span>(<span class="fu">runif</span>(n_clusters,</span>
+<span id="cb89-20"><a href="#cb89-20" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">min =</span> <span class="fu">min</span>(xrange), <span class="at">max =</span> <span class="fu">max</span>(xrange))),</span>
+<span id="cb89-21"><a href="#cb89-21" aria-hidden="true" tabindex="-1"></a>            <span class="at">obs_x_sd =</span> <span class="dv">0</span></span>
+<span id="cb89-22"><a href="#cb89-22" aria-hidden="true" tabindex="-1"></a>          )</span>
+<span id="cb89-23"><a href="#cb89-23" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This is throwing an error, need to fix.</span></span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a>subdata <span class="ot">&lt;-</span> <span class="fu">with_seed</span>(<span class="dv">2</span>, </span>
+<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a>                       <span class="fu">make_analysed_tibble</span>(subparams, mod_pal)</span>
+<span id="cb90-4"><a href="#cb90-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb90-5"><a href="#cb90-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-6"><a href="#cb90-6" aria-hidden="true" tabindex="-1"></a><span class="co"># this can be more useful</span></span>
+<span id="cb90-7"><a href="#cb90-7" aria-hidden="true" tabindex="-1"></a>subout <span class="ot">&lt;-</span> <span class="fu">extract_unnest</span>(subdata, subparams)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
 <section id="next" class="level2">
 <h2 class="anchored" data-anchor-id="next">Next</h2>

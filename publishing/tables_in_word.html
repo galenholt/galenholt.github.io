@@ -108,6 +108,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     document.body.classList.add('hypothesis-enabled');
   });
 </script>
+<link href="../site_libs/tabwid-1.1.3/tabwid.css" rel="stylesheet">
+
+<script src="../site_libs/tabwid-1.1.3/tabwid.js"></script>
+
 
 
 <meta property="og:title" content="Less ugly tables – Galen Holt">
@@ -455,6 +459,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Testing word table formatting</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../publishing/multi_csl.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Multi-csl?</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -504,7 +514,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../betabinomial/betadists.html" class="sidebar-item-text sidebar-link">
+  <a href="../stats_probability/betadists.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Quick look at beta pdfs</span></a>
   </div>
 </li>
@@ -707,6 +717,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Testing network plots with vdiffr</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../package/httptest2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Testing API packages with httptest2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../package/rlang_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Handling the rlang no visible binding issue</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../publishing/github_citation_files.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Adding citation files to github</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -758,6 +786,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../data_acquisition/read_geofabric.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Using Australian rivers geofabric</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data_acquisition/hydro_sheds_rivers_atlas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">HydroSheds river atlas</span></a>
   </div>
 </li>
       </ul>
@@ -878,8 +912,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#long-text" id="toc-long-text" class="nav-link active" data-scroll-target="#long-text">Long text</a></li>
+  <li><a href="#the-solution" id="toc-the-solution" class="nav-link active" data-scroll-target="#the-solution">The solution</a></li>
+  <li><a href="#the-others" id="toc-the-others" class="nav-link" data-scroll-target="#the-others">The others</a></li>
+  <li><a href="#long-text" id="toc-long-text" class="nav-link" data-scroll-target="#long-text">Long text</a></li>
   <li><a href="#column-widths." id="toc-column-widths." class="nav-link" data-scroll-target="#column-widths.">Column widths.</a></li>
+  <li><a href="#divs" id="toc-divs" class="nav-link" data-scroll-target="#divs">Divs</a></li>
   </ul>
 <div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="tables_in_word.docx"><i class="bi bi-file-word"></i>MS Word</a></li></ul></div></nav>
     </div>
@@ -905,14 +942,72 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
+<p>Tables tend to look fine in html, but when rendering to word they completely fall down. Below, I test a bunch of the standard packages. *The one that seems to work best is [flextable::flecxtable()], which is interesting, since [huxtable::huxtable()] claims to build on it but doesn’t work well at all.</p>
+<p><em>NOTE: this doc probably looks fine on the website. The issue is word rendering.</em></p>
+<p>I’ll test two tables- iris, which has narrow columns, and a table with lots of text, which tends to cause the most problems.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>texttab <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="fu">file.path</span>(<span class="st">'data/component_table.csv'</span>), </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                           <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>tidyselect<span class="sc">::</span><span class="fu">last_col</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="the-solution" class="level2">
+<h2 class="anchored" data-anchor-id="the-solution">The solution</h2>
+<p>Maybe. This exact code works great in another project, and not at all here. I have no idea what’s going on.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(flextable)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'flextable' was built under R version 4.4.2</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set_flextable_defaults</span>(<span class="at">font.family =</span> <span class="st">'Calibri'</span>,</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">font.size =</span> <span class="dv">10</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                       <span class="at">table.layout =</span> <span class="st">'autofit'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Use <code>flextable</code> with <code>set_table_properties(layout = 'autofit')</code> .</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(iris) <span class="sc">|&gt;</span> </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">flextable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="tbl-flex" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-flex-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: This is a table with flextable
+</figcaption>
+<div aria-describedby="tbl-flex-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<div class="tabwid"><style>.cl-1f93e8b0{table-layout:auto;}.cl-1f8d4a00{font-family:'Calibri';font-size:10pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-1f8fd1c6{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-1f8fd1c7{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-1f8fe8d2{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-1f8fe8d3{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-1f8fe8dc{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-1f8fe8dd{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-1f8fe8e6{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-1f8fe8e7{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-1f93e8b0"><thead><tr style="overflow-wrap:break-word;"><th class="cl-1f8fe8d2"><p class="cl-1f8fd1c6"><span class="cl-1f8d4a00">Sepal.Length</span></p></th><th class="cl-1f8fe8d2"><p class="cl-1f8fd1c6"><span class="cl-1f8d4a00">Sepal.Width</span></p></th><th class="cl-1f8fe8d2"><p class="cl-1f8fd1c6"><span class="cl-1f8d4a00">Petal.Length</span></p></th><th class="cl-1f8fe8d2"><p class="cl-1f8fd1c6"><span class="cl-1f8d4a00">Petal.Width</span></p></th><th class="cl-1f8fe8d3"><p class="cl-1f8fd1c7"><span class="cl-1f8d4a00">Species</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-1f8fe8dc"><p class="cl-1f8fd1c6"><span class="cl-1f8d4a00">5.1</span></p></td><td class="cl-1f8fe8dc"><p class="cl-1f8fd1c6"><span class="cl-1f8d4a00">3.5</span></p></td><td class="cl-1f8fe8dc"><p class="cl-1f8fd1c6"><span class="cl-1f8d4a00">1.4</span></p></td><td class="cl-1f8fe8dc"><p class="cl-1f8fd1c6"><span class="cl-1f8d4a00">0.2</span></p></td><td class="cl-1f8fe8dd"><p class="cl-1f8fd1c7"><span class="cl-1f8d4a00">setosa</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-1f8fe8dc"><p class="cl-1f8fd1c6"><span class="cl-1f8d4a00">4.9</span></p></td><td class="cl-1f8fe8dc"><p class="cl-1f8fd1c6"><span class="cl-1f8d4a00">3.0</span></p></td><td class="cl-1f8fe8dc"><p class="cl-1f8fd1c6"><span class="cl-1f8d4a00">1.4</span></p></td><td class="cl-1f8fe8dc"><p class="cl-1f8fd1c6"><span class="cl-1f8d4a00">0.2</span></p></td><td class="cl-1f8fe8dd"><p class="cl-1f8fd1c7"><span class="cl-1f8d4a00">setosa</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-1f8fe8dc"><p class="cl-1f8fd1c6"><span class="cl-1f8d4a00">4.7</span></p></td><td class="cl-1f8fe8dc"><p class="cl-1f8fd1c6"><span class="cl-1f8d4a00">3.2</span></p></td><td class="cl-1f8fe8dc"><p class="cl-1f8fd1c6"><span class="cl-1f8d4a00">1.3</span></p></td><td class="cl-1f8fe8dc"><p class="cl-1f8fd1c6"><span class="cl-1f8d4a00">0.2</span></p></td><td class="cl-1f8fe8dd"><p class="cl-1f8fd1c7"><span class="cl-1f8d4a00">setosa</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-1f8fe8dc"><p class="cl-1f8fd1c6"><span class="cl-1f8d4a00">4.6</span></p></td><td class="cl-1f8fe8dc"><p class="cl-1f8fd1c6"><span class="cl-1f8d4a00">3.1</span></p></td><td class="cl-1f8fe8dc"><p class="cl-1f8fd1c6"><span class="cl-1f8d4a00">1.5</span></p></td><td class="cl-1f8fe8dc"><p class="cl-1f8fd1c6"><span class="cl-1f8d4a00">0.2</span></p></td><td class="cl-1f8fe8dd"><p class="cl-1f8fd1c7"><span class="cl-1f8d4a00">setosa</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-1f8fe8dc"><p class="cl-1f8fd1c6"><span class="cl-1f8d4a00">5.0</span></p></td><td class="cl-1f8fe8dc"><p class="cl-1f8fd1c6"><span class="cl-1f8d4a00">3.6</span></p></td><td class="cl-1f8fe8dc"><p class="cl-1f8fd1c6"><span class="cl-1f8d4a00">1.4</span></p></td><td class="cl-1f8fe8dc"><p class="cl-1f8fd1c6"><span class="cl-1f8d4a00">0.2</span></p></td><td class="cl-1f8fe8dd"><p class="cl-1f8fd1c7"><span class="cl-1f8d4a00">setosa</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-1f8fe8e6"><p class="cl-1f8fd1c6"><span class="cl-1f8d4a00">5.4</span></p></td><td class="cl-1f8fe8e6"><p class="cl-1f8fd1c6"><span class="cl-1f8d4a00">3.9</span></p></td><td class="cl-1f8fe8e6"><p class="cl-1f8fd1c6"><span class="cl-1f8d4a00">1.7</span></p></td><td class="cl-1f8fe8e6"><p class="cl-1f8fd1c6"><span class="cl-1f8d4a00">0.4</span></p></td><td class="cl-1f8fe8e7"><p class="cl-1f8fd1c7"><span class="cl-1f8d4a00">setosa</span></p></td></tr></tbody></table></div>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>texttab <span class="sc">|&gt;</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">flextable</span>() <span class="co">#|&gt; </span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># set_table_properties(layout = "autofit")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="tbl-flex-text" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-flex-text-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2: This is a table with lots of text in flextable
+</figcaption>
+<div aria-describedby="tbl-flex-text-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<div class="tabwid"><style>.cl-1fa9c202{table-layout:auto;}.cl-1fa3cee2{font-family:'Calibri';font-size:10pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-1fa5ee84{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-1fa6057c{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-1fa6057d{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-1fa60586{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-1fa9c202"><thead><tr style="overflow-wrap:break-word;"><th class="cl-1fa6057c"><p class="cl-1fa5ee84"><span class="cl-1fa3cee2">General HydroBOT components</span></p></th><th class="cl-1fa6057c"><p class="cl-1fa5ee84"><span class="cl-1fa3cee2">Type</span></p></th><th class="cl-1fa6057c"><p class="cl-1fa5ee84"><span class="cl-1fa3cee2">General component definitions</span></p></th><th class="cl-1fa6057c"><p class="cl-1fa5ee84"><span class="cl-1fa3cee2">Specific components used in our example</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-1fa6057d"><p class="cl-1fa5ee84"><span class="cl-1fa3cee2">Input data</span></p></td><td class="cl-1fa6057d"><p class="cl-1fa5ee84"><span class="cl-1fa3cee2">Not part of HydroBOT</span></p></td><td class="cl-1fa6057d"><p class="cl-1fa5ee84"><span class="cl-1fa3cee2">Hydrologic data (timeseries). Typically representing multiple scenarios, e.g. climate and climate adaptations. May include other inputs as needed by response models.&nbsp;</span></p></td><td class="cl-1fa6057d"><p class="cl-1fa5ee84"><span class="cl-1fa3cee2">Modified historical hydrographs to represent hypothetical climate change and adaptations (45 gauges, 15 scenarios)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-1fa6057d"><p class="cl-1fa5ee84"><span class="cl-1fa3cee2">Controller</span></p></td><td class="cl-1fa6057d"><p class="cl-1fa5ee84"><span class="cl-1fa3cee2">Workflow</span></p></td><td class="cl-1fa6057d"><p class="cl-1fa5ee84"><span class="cl-1fa3cee2">Interface between input data, response model, and other toolkit components. Sets up run(s).</span></p></td><td class="cl-1fa6057d"><p class="cl-1fa5ee84"><span class="cl-1fa3cee2">Sets up links to data and parameters for EWR tool and aggregations.</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-1fa6057d"><p class="cl-1fa5ee84"><span class="cl-1fa3cee2">Response models</span></p></td><td class="cl-1fa6057d"><p class="cl-1fa5ee84"><span class="cl-1fa3cee2">External, integrated</span></p></td><td class="cl-1fa6057d"><p class="cl-1fa5ee84"><span class="cl-1fa3cee2">A model of the response of values, e.g.  social, cultural, environmental, or economic values in response to hydrologic drivers.</span></p></td><td class="cl-1fa6057d"><p class="cl-1fa5ee84"><span class="cl-1fa3cee2">EWR tool</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-1fa6057d"><p class="cl-1fa5ee84"><span class="cl-1fa3cee2">Aggregator</span></p></td><td class="cl-1fa6057d"><p class="cl-1fa5ee84"><span class="cl-1fa3cee2">Workflow</span></p></td><td class="cl-1fa6057d"><p class="cl-1fa5ee84"><span class="cl-1fa3cee2">Aggregates response model results to scales across the dimensions of time, space, and theme.&nbsp;</span></p></td><td class="cl-1fa6057d"><p class="cl-1fa5ee84"><span class="cl-1fa3cee2">Response model sets the base scale for aggregation. EWR tool assesses hydrologic indicators (value) at gauges (space) and year (time).</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-1fa6057d"><p class="cl-1fa5ee84"><span class="cl-1fa3cee2">Comparer</span></p></td><td class="cl-1fa6057d"><p class="cl-1fa5ee84"><span class="cl-1fa3cee2">Workflow</span></p></td><td class="cl-1fa6057d"><p class="cl-1fa5ee84"><span class="cl-1fa3cee2">Compares scenarios (typically) or other groupings. Provides standard outputs including comparison methods, plots, and tables.</span></p></td><td class="cl-1fa6057d"><p class="cl-1fa5ee84"><span class="cl-1fa3cee2">Comparison of environmental values at various theme scales for the example climate and adaptation scenarios</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-1fa6057d"><p class="cl-1fa5ee84"><span class="cl-1fa3cee2">Causal networks</span></p></td><td class="cl-1fa6057d"><p class="cl-1fa5ee84"><span class="cl-1fa3cee2">External, integrated</span></p></td><td class="cl-1fa6057d"><p class="cl-1fa5ee84"><span class="cl-1fa3cee2">Describe causal relationships between values.</span></p></td><td class="cl-1fa6057d"><p class="cl-1fa5ee84"><span class="cl-1fa3cee2">Long Term Water Plan (LTWP)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-1fa60586"><p class="cl-1fa5ee84"><span class="cl-1fa3cee2">Spatial data</span></p></td><td class="cl-1fa60586"><p class="cl-1fa5ee84"><span class="cl-1fa3cee2">External, integrated</span></p></td><td class="cl-1fa60586"><p class="cl-1fa5ee84"><span class="cl-1fa3cee2">Describe spatial relationships</span></p></td><td class="cl-1fa60586"><p class="cl-1fa5ee84"><span class="cl-1fa3cee2">Gauge locations, Sustainable Diversion Limits (SDL) units, Murray-Darling Basin</span></p></td></tr></tbody></table></div>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>Note that there is an issue still if the table prints into a div. I think because divs render in word as tables, and so flextable struggles with what it controls. I’ll show that below.</p>
+</section>
+<section id="the-others" class="level2">
+<h2 class="anchored" data-anchor-id="the-others">The others</h2>
 <p>These all look fine in html, most things do. But the word doc is where things seem to fall down. Especially if they have lots of text.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(iris) <span class="sc">|&gt;</span> </span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(iris) <span class="sc">|&gt;</span> </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div id="tbl-kable" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-kable-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;1: This is a table with kable
+Table&nbsp;3: This is a table with kable
 </figcaption>
 <div aria-describedby="tbl-kable-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -979,7 +1074,7 @@ Table&nbsp;1: This is a table with kable
 <div id="tbl-extra" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-extra-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;2: This is a table with kableExtra. It does not render to word. It used to with <code>prefer-html: true</code>, but that workarounds seems not to work anymore.
+Table&nbsp;4: This is a table with kableExtra. It does not render to word. It used to with <code>prefer-html: true</code>, but that workarounds seems not to work anymore.
 </figcaption>
 <div aria-describedby="tbl-extra-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="sourceCode cell-code anchored" id="tbl-extra"><pre class="sourceCode r cell code-with-copy"><code class="sourceCode r"><span id="tbl-extra-1"><a href="#tbl-extra-1" aria-hidden="true" tabindex="-1"></a><span class="co"># head(iris) |&gt; </span></span>
@@ -989,13 +1084,13 @@ Table&nbsp;2: This is a table with kableExtra. It does not render to word. It us
 </figure>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(iris) <span class="sc">|&gt;</span> </span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  huxtable<span class="sc">::</span><span class="fu">huxtable</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  huxtable<span class="sc">::</span><span class="fu">theme_article</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(iris) <span class="sc">|&gt;</span> </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  huxtable<span class="sc">::</span><span class="fu">huxtable</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  huxtable<span class="sc">::</span><span class="fu">theme_article</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div id="tbl-hux" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-hux-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;3: This is a table with huxtable
+Table&nbsp;5: This is a table with huxtable
 </figcaption>
 <div aria-describedby="tbl-hux-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -1022,12 +1117,12 @@ Table&nbsp;3: This is a table with huxtable
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(iris) <span class="sc">|&gt;</span> </span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a> gt<span class="sc">::</span><span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(iris) <span class="sc">|&gt;</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a> gt<span class="sc">::</span><span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div id="tbl-gt" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-gt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;4: This is a table with gt
+Table&nbsp;6: This is a table with gt
 </figcaption>
 <div aria-describedby="tbl-gt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -1543,42 +1638,42 @@ Table&nbsp;4: This is a table with gt
 </figure>
 </div>
 </div>
-<section id="long-text" class="level3">
-<h3 class="anchored" data-anchor-id="long-text">Long text</h3>
-<p>This table is giving me fits elsewhere, let’s try it here. It has a common issue of</p>
+</section>
+<section id="long-text" class="level2">
+<h2 class="anchored" data-anchor-id="long-text">Long text</h2>
+<p>This table is giving me fits elsewhere, let’s try it here. It has a common issue of wrapping words.</p>
 <div id="tbl-raw" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-raw-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;5: This is just printed
+Table&nbsp;7: This is just printed
 </figcaption>
 <div aria-describedby="tbl-raw-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>texttab <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">'data/component_table.csv'</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>texttab</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>texttab</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 4
-  `General HydroBOT components` General component defin…¹ Specific components …²
-  &lt;chr&gt;                         &lt;chr&gt;                     &lt;chr&gt;                 
-1 Input data                    Hydrologic data (timeser… Modified historical h…
-2 Controller                    Interface between input … Sets up links to data…
-3 Response models               A model of the response … EWR tool              
-4 Aggregator                    Aggregates response mode… Response model sets t…
-5 Comparer                      Compares scenarios (typi… Comparison of environ…
-6 Causal networks               Describe causal relation… Long Term Water Plan …
-# ℹ abbreviated names: ¹​`General component definitions`,
-#   ²​`Specific components used in our example`
-# ℹ 1 more variable: `Details of Specific components` &lt;chr&gt;</code></pre>
+<pre><code># A tibble: 7 × 4
+  General HydroBOT compone…¹ Type  General component de…² Specific components …³
+  &lt;chr&gt;                      &lt;chr&gt; &lt;chr&gt;                  &lt;chr&gt;                 
+1 Input data                 Not … Hydrologic data (time… Modified historical h…
+2 Controller                 Work… Interface between inp… Sets up links to data…
+3 Response models            Exte… A model of the respon… EWR tool              
+4 Aggregator                 Work… Aggregates response m… Response model sets t…
+5 Comparer                   Work… Compares scenarios (t… Comparison of environ…
+6 Causal networks            Exte… Describe causal relat… Long Term Water Plan …
+7 Spatial data               Exte… Describe spatial rela… Gauge locations, Sust…
+# ℹ abbreviated names: ¹​`General HydroBOT components`,
+#   ²​`General component definitions`,
+#   ³​`Specific components used in our example`</code></pre>
 </div>
 </div>
 </figure>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>texttab <span class="sc">|&gt;</span> </span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>texttab <span class="sc">|&gt;</span> </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div id="tbl-kable2" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-kable2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;6: This is a table with kable
+Table&nbsp;8: This is a table with kable
 </figcaption>
 <div aria-describedby="tbl-kable2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -1642,13 +1737,13 @@ Table&nbsp;6: This is a table with kable
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>texttab <span class="sc">|&gt;</span> </span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  huxtable<span class="sc">::</span><span class="fu">huxtable</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  huxtable<span class="sc">::</span><span class="fu">theme_article</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>texttab <span class="sc">|&gt;</span> </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  huxtable<span class="sc">::</span><span class="fu">huxtable</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  huxtable<span class="sc">::</span><span class="fu">theme_article</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div id="tbl-hux2" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-hux2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;7: This is a table with huxtable
+Table&nbsp;9: This is a table with huxtable
 </figcaption>
 <div aria-describedby="tbl-hux2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -1675,12 +1770,12 @@ Table&nbsp;7: This is a table with huxtable
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>texttab <span class="sc">|&gt;</span> </span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a> gt<span class="sc">::</span><span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>texttab <span class="sc">|&gt;</span> </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a> gt<span class="sc">::</span><span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div id="tbl-gt2" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-gt2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;8: This is a table with gt
+Table&nbsp;10: This is a table with gt
 </figcaption>
 <div aria-describedby="tbl-gt2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -2193,12 +2288,12 @@ Table&nbsp;8: This is a table with gt
 <div id="tbl-gt3" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-gt3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;9: This is a table with gt in a div.
+Table&nbsp;11: This is a table with gt in a div.
 </figcaption>
 <div aria-describedby="tbl-gt3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>texttab <span class="sc">|&gt;</span> </span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a> gt<span class="sc">::</span><span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>texttab <span class="sc">|&gt;</span> </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a> gt<span class="sc">::</span><span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="hdopfekmwz" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#hdopfekmwz table {
@@ -2654,47 +2749,53 @@ Table&nbsp;9: This is a table with gt in a div.
 <thead>
 <tr class="header gt_col_headings">
 <th id="General HydroBOT components" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">General HydroBOT components</th>
+<th id="Type" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Type</th>
 <th id="General component definitions" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">General component definitions</th>
 <th id="Specific components used in our example" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Specific components used in our example</th>
-<th id="Details of Specific components" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Details of Specific components</th>
 </tr>
 </thead>
 <tbody class="gt_table_body">
 <tr class="odd">
 <td class="gt_row gt_left" headers="General HydroBOT components">Input data</td>
+<td class="gt_row gt_left" headers="Type">Not part of HydroBOT</td>
 <td class="gt_row gt_left" headers="General component definitions">Hydrologic data (timeseries). Typically representing multiple scenarios, e.g. climate and climate adaptations. May include other inputs as needed by response models.&nbsp;</td>
 <td class="gt_row gt_left" headers="Specific components used in our example">Modified historical hydrographs to represent hypothetical climate change and adaptations (45 gauges, 15 scenarios)</td>
-<td class="gt_row gt_left" headers="Details of Specific components">Daily flow rates for 45 for 15 scenarios</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="General HydroBOT components">Controller</td>
+<td class="gt_row gt_left" headers="Type">Workflow</td>
 <td class="gt_row gt_left" headers="General component definitions">Interface between input data, response model, and other toolkit components. Sets up run(s).</td>
 <td class="gt_row gt_left" headers="Specific components used in our example">Sets up links to data and parameters for EWR tool and aggregations.</td>
-<td class="gt_row gt_left" headers="Details of Specific components">NA</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="General HydroBOT components">Response models</td>
+<td class="gt_row gt_left" headers="Type">External, integrated</td>
 <td class="gt_row gt_left" headers="General component definitions">A model of the response of values, e.g. social, cultural, environmental, or economic values in response to hydrologic drivers.</td>
 <td class="gt_row gt_left" headers="Specific components used in our example">EWR tool</td>
-<td class="gt_row gt_left" headers="Details of Specific components">The EWR tool holds databases of the EWRs required to meet the environmental objectives of the basin, which protect or enhance environmental assets that are valued based on ecological significance.</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="General HydroBOT components">Aggregator</td>
+<td class="gt_row gt_left" headers="Type">Workflow</td>
 <td class="gt_row gt_left" headers="General component definitions">Aggregates response model results to scales across the dimensions of time, space, and theme.&nbsp;</td>
 <td class="gt_row gt_left" headers="Specific components used in our example">Response model sets the base scale for aggregation. EWR tool assesses hydrologic indicators (value) at gauges (space) and year (time).</td>
-<td class="gt_row gt_left" headers="Details of Specific components">The spatial dimension consists of gauges nested within planning units within the basin. The time dimension assessess EWR performance averaged over the yearly data returned by the EWR tool. The value dimension consists of multiple EWRs (hydrologic indicators) that apply to environmental values (many-to-many), at multiple levels in the causal network (e.g. life-cycle components, species, groups of species, or long-term planning targets).</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="General HydroBOT components">Comparer</td>
+<td class="gt_row gt_left" headers="Type">Workflow</td>
 <td class="gt_row gt_left" headers="General component definitions">Compares scenarios (typically) or other groupings. Provides standard outputs including comparison methods, plots, and tables.</td>
 <td class="gt_row gt_left" headers="Specific components used in our example">Comparison of environmental values at various theme scales for the example climate and adaptation scenarios</td>
-<td class="gt_row gt_left" headers="Details of Specific components">Explored in detail in figures and tables</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="General HydroBOT components">Causal networks</td>
+<td class="gt_row gt_left" headers="Type">External, integrated</td>
 <td class="gt_row gt_left" headers="General component definitions">Describe causal relationships between values.</td>
 <td class="gt_row gt_left" headers="Specific components used in our example">Long Term Water Plan (LTWP)</td>
-<td class="gt_row gt_left" headers="Details of Specific components">Provided by HydroBOT. LTWP required of Basin States by the Murray-Darling Basin Plan and give effect to the Basin-wide Environmental Watering Strategy.&nbsp;</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="General HydroBOT components">Spatial data</td>
+<td class="gt_row gt_left" headers="Type">External, integrated</td>
+<td class="gt_row gt_left" headers="General component definitions">Describe spatial relationships</td>
+<td class="gt_row gt_left" headers="Specific components used in our example">Gauge locations, Sustainable Diversion Limits (SDL) units, Murray-Darling Basin</td>
 </tr>
 </tbody>
 </table>
@@ -2712,8 +2813,8 @@ Table&nbsp;9: This is a table with gt in a div.
 <p>Based on some <a href="https://github.com/quarto-dev/quarto-cli/issues/7321">github</a> <a href="https://github.com/quarto-dev/quarto-cli/issues/7151">issues</a>, does it work if I just don’t use a label at all?</p>
 <p>Gt no label</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>texttab <span class="sc">|&gt;</span> </span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a> gt<span class="sc">::</span><span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>texttab <span class="sc">|&gt;</span> </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a> gt<span class="sc">::</span><span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="cpqcatndux" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#cpqcatndux table {
@@ -3169,47 +3270,53 @@ Table&nbsp;9: This is a table with gt in a div.
 <thead>
 <tr class="header gt_col_headings">
 <th id="General HydroBOT components" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">General HydroBOT components</th>
+<th id="Type" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Type</th>
 <th id="General component definitions" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">General component definitions</th>
 <th id="Specific components used in our example" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Specific components used in our example</th>
-<th id="Details of Specific components" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Details of Specific components</th>
 </tr>
 </thead>
 <tbody class="gt_table_body">
 <tr class="odd">
 <td class="gt_row gt_left" headers="General HydroBOT components">Input data</td>
+<td class="gt_row gt_left" headers="Type">Not part of HydroBOT</td>
 <td class="gt_row gt_left" headers="General component definitions">Hydrologic data (timeseries). Typically representing multiple scenarios, e.g. climate and climate adaptations. May include other inputs as needed by response models.&nbsp;</td>
 <td class="gt_row gt_left" headers="Specific components used in our example">Modified historical hydrographs to represent hypothetical climate change and adaptations (45 gauges, 15 scenarios)</td>
-<td class="gt_row gt_left" headers="Details of Specific components">Daily flow rates for 45 for 15 scenarios</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="General HydroBOT components">Controller</td>
+<td class="gt_row gt_left" headers="Type">Workflow</td>
 <td class="gt_row gt_left" headers="General component definitions">Interface between input data, response model, and other toolkit components. Sets up run(s).</td>
 <td class="gt_row gt_left" headers="Specific components used in our example">Sets up links to data and parameters for EWR tool and aggregations.</td>
-<td class="gt_row gt_left" headers="Details of Specific components">NA</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="General HydroBOT components">Response models</td>
+<td class="gt_row gt_left" headers="Type">External, integrated</td>
 <td class="gt_row gt_left" headers="General component definitions">A model of the response of values, e.g. social, cultural, environmental, or economic values in response to hydrologic drivers.</td>
 <td class="gt_row gt_left" headers="Specific components used in our example">EWR tool</td>
-<td class="gt_row gt_left" headers="Details of Specific components">The EWR tool holds databases of the EWRs required to meet the environmental objectives of the basin, which protect or enhance environmental assets that are valued based on ecological significance.</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="General HydroBOT components">Aggregator</td>
+<td class="gt_row gt_left" headers="Type">Workflow</td>
 <td class="gt_row gt_left" headers="General component definitions">Aggregates response model results to scales across the dimensions of time, space, and theme.&nbsp;</td>
 <td class="gt_row gt_left" headers="Specific components used in our example">Response model sets the base scale for aggregation. EWR tool assesses hydrologic indicators (value) at gauges (space) and year (time).</td>
-<td class="gt_row gt_left" headers="Details of Specific components">The spatial dimension consists of gauges nested within planning units within the basin. The time dimension assessess EWR performance averaged over the yearly data returned by the EWR tool. The value dimension consists of multiple EWRs (hydrologic indicators) that apply to environmental values (many-to-many), at multiple levels in the causal network (e.g. life-cycle components, species, groups of species, or long-term planning targets).</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="General HydroBOT components">Comparer</td>
+<td class="gt_row gt_left" headers="Type">Workflow</td>
 <td class="gt_row gt_left" headers="General component definitions">Compares scenarios (typically) or other groupings. Provides standard outputs including comparison methods, plots, and tables.</td>
 <td class="gt_row gt_left" headers="Specific components used in our example">Comparison of environmental values at various theme scales for the example climate and adaptation scenarios</td>
-<td class="gt_row gt_left" headers="Details of Specific components">Explored in detail in figures and tables</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="General HydroBOT components">Causal networks</td>
+<td class="gt_row gt_left" headers="Type">External, integrated</td>
 <td class="gt_row gt_left" headers="General component definitions">Describe causal relationships between values.</td>
 <td class="gt_row gt_left" headers="Specific components used in our example">Long Term Water Plan (LTWP)</td>
-<td class="gt_row gt_left" headers="Details of Specific components">Provided by HydroBOT. LTWP required of Basin States by the Murray-Darling Basin Plan and give effect to the Basin-wide Environmental Watering Strategy.&nbsp;</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="General HydroBOT components">Spatial data</td>
+<td class="gt_row gt_left" headers="Type">External, integrated</td>
+<td class="gt_row gt_left" headers="General component definitions">Describe spatial relationships</td>
+<td class="gt_row gt_left" headers="Specific components used in our example">Gauge locations, Sustainable Diversion Limits (SDL) units, Murray-Darling Basin</td>
 </tr>
 </tbody>
 </table>
@@ -3219,27 +3326,70 @@ Table&nbsp;9: This is a table with gt in a div.
 </div>
 <p>Huxtable no label</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>texttab <span class="sc">|&gt;</span> </span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  huxtable<span class="sc">::</span><span class="fu">huxtable</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  huxtable<span class="sc">::</span><span class="fu">theme_article</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>texttab <span class="sc">|&gt;</span> </span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  huxtable<span class="sc">::</span><span class="fu">huxtable</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  huxtable<span class="sc">::</span><span class="fu">theme_article</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="huxtable" data-quarto-disable-processing="true" style="border-collapse: collapse; border: 0px; margin-bottom: 2em; margin-top: 2em; ; margin-left: auto; margin-right: auto;  ">
 <colgroup><col><col><col><col></colgroup><tbody><tr>
-<th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 0pt; font-weight: bold;">General HydroBOT components</th><th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: bold;">General component definitions</th><th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: bold;">Specific components used in our example</th><th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0.4pt 0pt;    padding: 6pt 0pt 6pt 6pt; font-weight: bold;">Details of Specific components</th></tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 0pt; font-weight: bold;">General HydroBOT components</th><th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: bold;">Type</th><th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: bold;">General component definitions</th><th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0.4pt 0pt;    padding: 6pt 0pt 6pt 6pt; font-weight: bold;">Specific components used in our example</th></tr>
 <tr>
-<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 0pt; font-weight: normal;">Input data</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Hydrologic data (timeseries). Typically representing multiple scenarios, e.g. climate and climate adaptations. May include other inputs as needed by response models.&nbsp;</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Modified historical hydrographs to represent hypothetical climate change and adaptations (45 gauges, 15 scenarios)</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0pt 0pt;    padding: 6pt 0pt 6pt 6pt; font-weight: normal;">Daily flow rates for 45 for 15 scenarios</td></tr>
+<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 0pt; font-weight: normal;">Input data</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Not part of HydroBOT</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Hydrologic data (timeseries). Typically representing multiple scenarios, e.g. climate and climate adaptations. May include other inputs as needed by response models.&nbsp;</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0pt 0pt;    padding: 6pt 0pt 6pt 6pt; font-weight: normal;">Modified historical hydrographs to represent hypothetical climate change and adaptations (45 gauges, 15 scenarios)</td></tr>
 <tr>
-<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 0pt; font-weight: normal;">Controller</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Interface between input data, response model, and other toolkit components. Sets up run(s).</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Sets up links to data and parameters for EWR tool and aggregations.</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 0pt 6pt 6pt; font-weight: normal;"></td></tr>
+<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 0pt; font-weight: normal;">Controller</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Workflow</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Interface between input data, response model, and other toolkit components. Sets up run(s).</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 0pt 6pt 6pt; font-weight: normal;">Sets up links to data and parameters for EWR tool and aggregations.</td></tr>
 <tr>
-<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 0pt; font-weight: normal;">Response models</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">A model of the response of values, e.g.  social, cultural, environmental, or economic values in response to hydrologic drivers.</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">EWR tool</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 0pt 6pt 6pt; font-weight: normal;">The EWR tool holds databases of the EWRs required to meet the environmental objectives of the basin, which protect or enhance environmental assets that are valued based on ecological significance.</td></tr>
+<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 0pt; font-weight: normal;">Response models</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">External, integrated</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">A model of the response of values, e.g.  social, cultural, environmental, or economic values in response to hydrologic drivers.</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 0pt 6pt 6pt; font-weight: normal;">EWR tool</td></tr>
 <tr>
-<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 0pt; font-weight: normal;">Aggregator</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Aggregates response model results to scales across the dimensions of time, space, and theme.&nbsp;</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Response model sets the base scale for aggregation. EWR tool assesses hydrologic indicators (value) at gauges (space) and year (time).</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 0pt 6pt 6pt; font-weight: normal;">The spatial dimension consists of gauges nested within planning units within the basin. The time dimension assessess EWR performance averaged over the yearly data returned by the EWR tool. The value dimension consists of multiple EWRs (hydrologic indicators) that apply to environmental values (many-to-many), at multiple levels in the causal network (e.g. life-cycle components, species, groups of species, or long-term planning targets).</td></tr>
+<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 0pt; font-weight: normal;">Aggregator</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Workflow</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Aggregates response model results to scales across the dimensions of time, space, and theme.&nbsp;</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 0pt 6pt 6pt; font-weight: normal;">Response model sets the base scale for aggregation. EWR tool assesses hydrologic indicators (value) at gauges (space) and year (time).</td></tr>
 <tr>
-<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 0pt; font-weight: normal;">Comparer</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Compares scenarios (typically) or other groupings. Provides standard outputs including comparison methods, plots, and tables.</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Comparison of environmental values at various theme scales for the example climate and adaptation scenarios</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 0pt 6pt 6pt; font-weight: normal;">Explored in detail in figures and tables</td></tr>
+<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 0pt; font-weight: normal;">Comparer</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Workflow</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Compares scenarios (typically) or other groupings. Provides standard outputs including comparison methods, plots, and tables.</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 0pt 6pt 6pt; font-weight: normal;">Comparison of environmental values at various theme scales for the example climate and adaptation scenarios</td></tr>
 <tr>
-<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 0pt; font-weight: normal;">Causal networks</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Describe causal relationships between values.</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Long Term Water Plan (LTWP)</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.4pt 0pt;    padding: 6pt 0pt 6pt 6pt; font-weight: normal;">Provided by HydroBOT. LTWP required of Basin States by the Murray-Darling Basin Plan and give effect to the Basin-wide Environmental Watering Strategy.&nbsp;</td></tr>
+<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 0pt; font-weight: normal;">Causal networks</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">External, integrated</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Describe causal relationships between values.</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 0pt 6pt 6pt; font-weight: normal;">Long Term Water Plan (LTWP)</td></tr>
+<tr>
+<td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 0pt; font-weight: normal;">Spatial data</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">External, integrated</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Describe spatial relationships</td><td style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.4pt 0pt;    padding: 6pt 0pt 6pt 6pt; font-weight: normal;">Gauge locations, Sustainable Diversion Limits (SDL) units, Murray-Darling Basin</td></tr>
 </tbody></table>
 
+</div>
+</div>
+</section>
+<section id="divs" class="level2">
+<h2 class="anchored" data-anchor-id="divs">Divs</h2>
+<p>Flextable struggles in divs. The best we can do is to set <code>width = 1</code> to at least make all the cols the same width and use the whole space. Though usually what i end up doing is rendering those tables outside a div and pasting in.</p>
+<div id="divtable" style="color: gray">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>texttab <span class="sc">|&gt;</span> </span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  flextable<span class="sc">::</span><span class="fu">flextable</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  flextable<span class="sc">::</span><span class="fu">set_table_properties</span>(<span class="at">layout =</span> <span class="st">"autofit"</span>, <span class="at">width =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="tbl-flex-div" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-flex-div-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;12: This is a flextable in a div with <code>width = 1</code>
+</figcaption>
+<div aria-describedby="tbl-flex-div-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<div class="tabwid"><style>.cl-2056f0ee{table-layout:auto;width:100%;}.cl-205131c2{font-family:'Calibri';font-size:10pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-2053a43e{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-2053bafa{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-2053bafb{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-2053bb04{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-2056f0ee"><thead><tr style="overflow-wrap:break-word;"><th class="cl-2053bafa"><p class="cl-2053a43e"><span class="cl-205131c2">General HydroBOT components</span></p></th><th class="cl-2053bafa"><p class="cl-2053a43e"><span class="cl-205131c2">Type</span></p></th><th class="cl-2053bafa"><p class="cl-2053a43e"><span class="cl-205131c2">General component definitions</span></p></th><th class="cl-2053bafa"><p class="cl-2053a43e"><span class="cl-205131c2">Specific components used in our example</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-2053bafb"><p class="cl-2053a43e"><span class="cl-205131c2">Input data</span></p></td><td class="cl-2053bafb"><p class="cl-2053a43e"><span class="cl-205131c2">Not part of HydroBOT</span></p></td><td class="cl-2053bafb"><p class="cl-2053a43e"><span class="cl-205131c2">Hydrologic data (timeseries). Typically representing multiple scenarios, e.g. climate and climate adaptations. May include other inputs as needed by response models.&nbsp;</span></p></td><td class="cl-2053bafb"><p class="cl-2053a43e"><span class="cl-205131c2">Modified historical hydrographs to represent hypothetical climate change and adaptations (45 gauges, 15 scenarios)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-2053bafb"><p class="cl-2053a43e"><span class="cl-205131c2">Controller</span></p></td><td class="cl-2053bafb"><p class="cl-2053a43e"><span class="cl-205131c2">Workflow</span></p></td><td class="cl-2053bafb"><p class="cl-2053a43e"><span class="cl-205131c2">Interface between input data, response model, and other toolkit components. Sets up run(s).</span></p></td><td class="cl-2053bafb"><p class="cl-2053a43e"><span class="cl-205131c2">Sets up links to data and parameters for EWR tool and aggregations.</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-2053bafb"><p class="cl-2053a43e"><span class="cl-205131c2">Response models</span></p></td><td class="cl-2053bafb"><p class="cl-2053a43e"><span class="cl-205131c2">External, integrated</span></p></td><td class="cl-2053bafb"><p class="cl-2053a43e"><span class="cl-205131c2">A model of the response of values, e.g.  social, cultural, environmental, or economic values in response to hydrologic drivers.</span></p></td><td class="cl-2053bafb"><p class="cl-2053a43e"><span class="cl-205131c2">EWR tool</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-2053bafb"><p class="cl-2053a43e"><span class="cl-205131c2">Aggregator</span></p></td><td class="cl-2053bafb"><p class="cl-2053a43e"><span class="cl-205131c2">Workflow</span></p></td><td class="cl-2053bafb"><p class="cl-2053a43e"><span class="cl-205131c2">Aggregates response model results to scales across the dimensions of time, space, and theme.&nbsp;</span></p></td><td class="cl-2053bafb"><p class="cl-2053a43e"><span class="cl-205131c2">Response model sets the base scale for aggregation. EWR tool assesses hydrologic indicators (value) at gauges (space) and year (time).</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-2053bafb"><p class="cl-2053a43e"><span class="cl-205131c2">Comparer</span></p></td><td class="cl-2053bafb"><p class="cl-2053a43e"><span class="cl-205131c2">Workflow</span></p></td><td class="cl-2053bafb"><p class="cl-2053a43e"><span class="cl-205131c2">Compares scenarios (typically) or other groupings. Provides standard outputs including comparison methods, plots, and tables.</span></p></td><td class="cl-2053bafb"><p class="cl-2053a43e"><span class="cl-205131c2">Comparison of environmental values at various theme scales for the example climate and adaptation scenarios</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-2053bafb"><p class="cl-2053a43e"><span class="cl-205131c2">Causal networks</span></p></td><td class="cl-2053bafb"><p class="cl-2053a43e"><span class="cl-205131c2">External, integrated</span></p></td><td class="cl-2053bafb"><p class="cl-2053a43e"><span class="cl-205131c2">Describe causal relationships between values.</span></p></td><td class="cl-2053bafb"><p class="cl-2053a43e"><span class="cl-205131c2">Long Term Water Plan (LTWP)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-2053bb04"><p class="cl-2053a43e"><span class="cl-205131c2">Spatial data</span></p></td><td class="cl-2053bb04"><p class="cl-2053a43e"><span class="cl-205131c2">External, integrated</span></p></td><td class="cl-2053bb04"><p class="cl-2053a43e"><span class="cl-205131c2">Describe spatial relationships</span></p></td><td class="cl-2053bb04"><p class="cl-2053a43e"><span class="cl-205131c2">Gauge locations, Sustainable Diversion Limits (SDL) units, Murray-Darling Basin</span></p></td></tr></tbody></table></div>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>If we don’t set widths, it’s smooshed, even with autofit.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>texttab <span class="sc">|&gt;</span> </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  flextable<span class="sc">::</span><span class="fu">flextable</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  flextable<span class="sc">::</span><span class="fu">set_table_properties</span>(<span class="at">layout =</span> <span class="st">"autofit"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="tbl-flex-div-nowidth" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-flex-div-nowidth-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;13: This is a flextable in a div with <code>width = 1</code>
+</figcaption>
+<div aria-describedby="tbl-flex-div-nowidth-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<div class="tabwid"><style>.cl-2069a8f6{table-layout:auto;}.cl-20636676{font-family:'Calibri';font-size:10pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-206612e0{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-20662a82{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-20662a83{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-20662a8c{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-2069a8f6"><thead><tr style="overflow-wrap:break-word;"><th class="cl-20662a82"><p class="cl-206612e0"><span class="cl-20636676">General HydroBOT components</span></p></th><th class="cl-20662a82"><p class="cl-206612e0"><span class="cl-20636676">Type</span></p></th><th class="cl-20662a82"><p class="cl-206612e0"><span class="cl-20636676">General component definitions</span></p></th><th class="cl-20662a82"><p class="cl-206612e0"><span class="cl-20636676">Specific components used in our example</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-20662a83"><p class="cl-206612e0"><span class="cl-20636676">Input data</span></p></td><td class="cl-20662a83"><p class="cl-206612e0"><span class="cl-20636676">Not part of HydroBOT</span></p></td><td class="cl-20662a83"><p class="cl-206612e0"><span class="cl-20636676">Hydrologic data (timeseries). Typically representing multiple scenarios, e.g. climate and climate adaptations. May include other inputs as needed by response models.&nbsp;</span></p></td><td class="cl-20662a83"><p class="cl-206612e0"><span class="cl-20636676">Modified historical hydrographs to represent hypothetical climate change and adaptations (45 gauges, 15 scenarios)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-20662a83"><p class="cl-206612e0"><span class="cl-20636676">Controller</span></p></td><td class="cl-20662a83"><p class="cl-206612e0"><span class="cl-20636676">Workflow</span></p></td><td class="cl-20662a83"><p class="cl-206612e0"><span class="cl-20636676">Interface between input data, response model, and other toolkit components. Sets up run(s).</span></p></td><td class="cl-20662a83"><p class="cl-206612e0"><span class="cl-20636676">Sets up links to data and parameters for EWR tool and aggregations.</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-20662a83"><p class="cl-206612e0"><span class="cl-20636676">Response models</span></p></td><td class="cl-20662a83"><p class="cl-206612e0"><span class="cl-20636676">External, integrated</span></p></td><td class="cl-20662a83"><p class="cl-206612e0"><span class="cl-20636676">A model of the response of values, e.g.  social, cultural, environmental, or economic values in response to hydrologic drivers.</span></p></td><td class="cl-20662a83"><p class="cl-206612e0"><span class="cl-20636676">EWR tool</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-20662a83"><p class="cl-206612e0"><span class="cl-20636676">Aggregator</span></p></td><td class="cl-20662a83"><p class="cl-206612e0"><span class="cl-20636676">Workflow</span></p></td><td class="cl-20662a83"><p class="cl-206612e0"><span class="cl-20636676">Aggregates response model results to scales across the dimensions of time, space, and theme.&nbsp;</span></p></td><td class="cl-20662a83"><p class="cl-206612e0"><span class="cl-20636676">Response model sets the base scale for aggregation. EWR tool assesses hydrologic indicators (value) at gauges (space) and year (time).</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-20662a83"><p class="cl-206612e0"><span class="cl-20636676">Comparer</span></p></td><td class="cl-20662a83"><p class="cl-206612e0"><span class="cl-20636676">Workflow</span></p></td><td class="cl-20662a83"><p class="cl-206612e0"><span class="cl-20636676">Compares scenarios (typically) or other groupings. Provides standard outputs including comparison methods, plots, and tables.</span></p></td><td class="cl-20662a83"><p class="cl-206612e0"><span class="cl-20636676">Comparison of environmental values at various theme scales for the example climate and adaptation scenarios</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-20662a83"><p class="cl-206612e0"><span class="cl-20636676">Causal networks</span></p></td><td class="cl-20662a83"><p class="cl-206612e0"><span class="cl-20636676">External, integrated</span></p></td><td class="cl-20662a83"><p class="cl-206612e0"><span class="cl-20636676">Describe causal relationships between values.</span></p></td><td class="cl-20662a83"><p class="cl-206612e0"><span class="cl-20636676">Long Term Water Plan (LTWP)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-20662a8c"><p class="cl-206612e0"><span class="cl-20636676">Spatial data</span></p></td><td class="cl-20662a8c"><p class="cl-206612e0"><span class="cl-20636676">External, integrated</span></p></td><td class="cl-20662a8c"><p class="cl-206612e0"><span class="cl-20636676">Describe spatial relationships</span></p></td><td class="cl-20662a8c"><p class="cl-206612e0"><span class="cl-20636676">Gauge locations, Sustainable Diversion Limits (SDL) units, Murray-Darling Basin</span></p></td></tr></tbody></table></div>
+</div>
+</div>
+</figure>
+</div>
 </div>
 </div>
 

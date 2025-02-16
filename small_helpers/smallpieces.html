@@ -453,6 +453,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Testing word table formatting</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../publishing/multi_csl.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Multi-csl?</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -502,7 +508,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../betabinomial/betadists.html" class="sidebar-item-text sidebar-link">
+  <a href="../stats_probability/betadists.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Quick look at beta pdfs</span></a>
   </div>
 </li>
@@ -705,6 +711,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Testing network plots with vdiffr</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../package/httptest2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Testing API packages with httptest2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../package/rlang_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Handling the rlang no visible binding issue</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../publishing/github_citation_files.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Adding citation files to github</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -756,6 +780,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../data_acquisition/read_geofabric.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Using Australian rivers geofabric</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data_acquisition/hydro_sheds_rivers_atlas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">HydroSheds river atlas</span></a>
   </div>
 </li>
       </ul>
@@ -887,6 +917,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#render-big-dfs-in-html" id="toc-render-big-dfs-in-html" class="nav-link" data-scroll-target="#render-big-dfs-in-html">Render big dfs in html</a></li>
   <li><a href="#convert-all-rmd-to-qmd" id="toc-convert-all-rmd-to-qmd" class="nav-link" data-scroll-target="#convert-all-rmd-to-qmd">Convert all rmd to qmd</a></li>
   </ul></li>
+  <li><a href="#debugging-r-from-quarto" id="toc-debugging-r-from-quarto" class="nav-link" data-scroll-target="#debugging-r-from-quarto">Debugging R from Quarto</a></li>
   </ul>
 </nav>
     </div>
@@ -977,12 +1008,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Why is that useful? We can see not only that these aren’t fully duplicated rows (which we also could have done with <code>duplicated</code> on the whole table), but also actually look at what differs easily.</p>
+<section id="full-table" class="level4">
+<h4 class="anchored" data-anchor-id="full-table">Full table</h4>
+<p>If we do want to look at fully duplicated rows, we can use a similar approach, we just have to group_by everything. Duplicating three rows to demonstrate:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>mtcars <span class="sc">|&gt;</span> </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># bind on some duplicates</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">bind_rows</span>(mtcars <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">slice</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">9</span>,<span class="dv">12</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(dplyr<span class="sc">::</span><span class="fu">across</span>(tidyselect<span class="sc">::</span><span class="fu">everything</span>())) <span class="sc">|&gt;</span> </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(dplyr<span class="sc">::</span><span class="fu">n</span>()<span class="sc">&gt;</span><span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">ungroup</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">across</span>(tidyselect<span class="sc">::</span><span class="fu">everything</span>()))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["mpg"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["cyl"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["disp"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["hp"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["drat"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["wt"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["qsec"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["vs"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["am"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["gear"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["carb"],"name":[11],"type":["dbl"],"align":["right"]}],"data":[{"1":"16.4","2":"8","3":"275.8","4":"180","5":"3.07","6":"4.07","7":"17.40","8":"0","9":"0","10":"3","11":"3"},{"1":"16.4","2":"8","3":"275.8","4":"180","5":"3.07","6":"4.07","7":"17.40","8":"0","9":"0","10":"3","11":"3"},{"1":"21.0","2":"6","3":"160.0","4":"110","5":"3.90","6":"2.62","7":"16.46","8":"0","9":"1","10":"4","11":"4"},{"1":"21.0","2":"6","3":"160.0","4":"110","5":"3.90","6":"2.62","7":"16.46","8":"0","9":"1","10":"4","11":"4"},{"1":"22.8","2":"4","3":"140.8","4":"95","5":"3.92","6":"3.15","7":"22.90","8":"1","9":"0","10":"4","11":"2"},{"1":"22.8","2":"4","3":"140.8","4":"95","5":"3.92","6":"3.15","7":"22.90","8":"1","9":"0","10":"4","11":"2"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section>
 <section id="in-a-list" class="level4">
 <h4 class="anchored" data-anchor-id="in-a-list">In a list</h4>
 <p>We might have a list with internal duplicates, e.g.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>duplist <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">a =</span> <span class="fu">c</span>(<span class="st">'a'</span>, <span class="st">'b'</span>), <span class="at">b =</span> <span class="fu">c</span>(<span class="st">'b'</span>, <span class="st">'c'</span>), <span class="at">d =</span> <span class="fu">c</span>(<span class="st">'a'</span>, <span class="st">'c'</span>), <span class="at">e =</span> <span class="fu">c</span>(<span class="st">'f'</span>, <span class="st">'g'</span>), <span class="at">f =</span> <span class="fu">c</span>(<span class="st">'f'</span>, <span class="st">'h'</span>), <span class="at">g =</span> <span class="fu">c</span>(<span class="st">'a'</span>, <span class="st">'l'</span>))</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>duplist</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>duplist <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">a =</span> <span class="fu">c</span>(<span class="st">'a'</span>, <span class="st">'b'</span>), <span class="at">b =</span> <span class="fu">c</span>(<span class="st">'b'</span>, <span class="st">'c'</span>), <span class="at">d =</span> <span class="fu">c</span>(<span class="st">'a'</span>, <span class="st">'c'</span>), <span class="at">e =</span> <span class="fu">c</span>(<span class="st">'f'</span>, <span class="st">'g'</span>), <span class="at">f =</span> <span class="fu">c</span>(<span class="st">'f'</span>, <span class="st">'h'</span>), <span class="at">g =</span> <span class="fu">c</span>(<span class="st">'a'</span>, <span class="st">'l'</span>))</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>duplist</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$a
 [1] "a" "b"
@@ -1005,9 +1056,9 @@ $g
 </div>
 <p>We can see which values in the first position are duplicated, but again, not the first instances.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>thedups <span class="ot">&lt;-</span> duplist[<span class="fu">duplicated</span>(purrr<span class="sc">::</span><span class="fu">map_chr</span>(duplist, \(x) x[<span class="dv">1</span>]))] <span class="sc">|&gt;</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>      purrr<span class="sc">::</span><span class="fu">map_chr</span>(\(x) x[<span class="dv">1</span>])</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>thedups</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>thedups <span class="ot">&lt;-</span> duplist[<span class="fu">duplicated</span>(purrr<span class="sc">::</span><span class="fu">map_chr</span>(duplist, \(x) x[<span class="dv">1</span>]))] <span class="sc">|&gt;</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>      purrr<span class="sc">::</span><span class="fu">map_chr</span>(\(x) x[<span class="dv">1</span>])</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>thedups</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  d   f   g 
 "a" "f" "a" </code></pre>
@@ -1015,9 +1066,9 @@ $g
 </div>
 <p>We can get all of them by mapping whether the first value is in <code>thedups</code> and then dropping empties</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>all_duplicated <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map</span>(duplist, \(x) x[x[<span class="dv">1</span>] <span class="sc">%in%</span> thedups]) <span class="sc">|&gt;</span> </span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">discard</span>(\(x) <span class="fu">length</span>(x) <span class="sc">==</span> <span class="dv">0</span>)</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>all_duplicated</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>all_duplicated <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map</span>(duplist, \(x) x[x[<span class="dv">1</span>] <span class="sc">%in%</span> thedups]) <span class="sc">|&gt;</span> </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">discard</span>(\(x) <span class="fu">length</span>(x) <span class="sc">==</span> <span class="dv">0</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>all_duplicated</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$a
 [1] "a" "b"
@@ -1042,13 +1093,13 @@ $g
 <p>Sometimes with long csvs, readr’s guess of col type based on the first thousand rows is wrong. But only for some cols. If we want to not have to specify all of them, we can use <code>.default</code> and only specify the offending col.</p>
 <p>First, save dummy data</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>dumtib <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">c1 =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3000</span>, <span class="at">c2 =</span> <span class="fu">rep</span>(letters, <span class="at">length.out =</span> <span class="dv">3000</span>), <span class="at">c3 =</span> <span class="fu">c</span>(c1[<span class="dv">1</span><span class="sc">:</span><span class="dv">2000</span>], c2[<span class="dv">2001</span><span class="sc">:</span><span class="dv">3000</span>]))</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(dumtib, <span class="at">file =</span> <span class="fu">file.path</span>(newdir, <span class="st">'colspectest.csv'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>dumtib <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">c1 =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3000</span>, <span class="at">c2 =</span> <span class="fu">rep</span>(letters, <span class="at">length.out =</span> <span class="dv">3000</span>), <span class="at">c3 =</span> <span class="fu">c</span>(c1[<span class="dv">1</span><span class="sc">:</span><span class="dv">2000</span>], c2[<span class="dv">2001</span><span class="sc">:</span><span class="dv">3000</span>]))</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(dumtib, <span class="at">file =</span> <span class="fu">file.path</span>(newdir, <span class="st">'colspectest.csv'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>If we read in without the cols, it assumes c3 is numeric and we get errors. But it doesn’t. why not? It keeps getting me elsewhere, but now I can’t create the problem. FIgure this out later, I guess</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>filein <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">file.path</span>(newdir, <span class="st">'colspectest.csv'</span>), <span class="at">guess_max =</span> <span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>filein <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">file.path</span>(newdir, <span class="st">'colspectest.csv'</span>), <span class="at">guess_max =</span> <span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Rows: 3000 Columns: 3
 ── Column specification ────────────────────────────────────────────────────────
@@ -1062,15 +1113,15 @@ dbl (1): c1
 </div>
 <p>Tell it the third col is character.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>filein <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="fu">file.path</span>(newdir, <span class="st">'colspectest.csv'</span>), <span class="at">col_types =</span> <span class="fu">cols</span>(<span class="at">.default =</span> <span class="st">"?"</span>, <span class="at">c3 =</span> <span class="st">"c"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>filein <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="fu">file.path</span>(newdir, <span class="st">'colspectest.csv'</span>), <span class="at">col_types =</span> <span class="fu">cols</span>(<span class="at">.default =</span> <span class="st">"?"</span>, <span class="at">c3 =</span> <span class="st">"c"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="sourcing-all-files-in-a-directory" class="level3">
 <h3 class="anchored" data-anchor-id="sourcing-all-files-in-a-directory">Sourcing all files in a directory</h3>
 <p>Yes, we <em>should</em> be building as a library in this case, but it’s often easier at least initially to not deal with the overhead. If, for example, all functions are in the ‘functions’ directory,</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load local functions</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">load_all</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load local functions</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">load_all</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>ℹ Loading galenR</code></pre>
 </div>
@@ -1080,37 +1131,42 @@ dbl (1): c1
 <h3 class="anchored" data-anchor-id="render-big-dfs-in-html">Render big dfs in html</h3>
 <p>Render in quarto defaults to making dfs text, and so often we can’t see all the columns (or rows), or access them. setting the <code>df-print</code> option to paged allows them to work. The header should look like this (commented out because this isn’t a header)</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># title: "TITLE"</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co"># author: "AUTHOR"</span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co"># format:</span></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   html:</span></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co">#     df-print: paged</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># title: "TITLE"</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co"># author: "AUTHOR"</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co"># format:</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   html:</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="co">#     df-print: paged</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="convert-all-rmd-to-qmd" class="level3">
 <h3 class="anchored" data-anchor-id="convert-all-rmd-to-qmd">Convert all rmd to qmd</h3>
 <p><code>convert_chunk_headers</code> is the main thing, but I want to apply it to a full directory. Let’s get the dir for here.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>allrmd <span class="ot">&lt;-</span> <span class="fu">list.files</span>(rprojroot<span class="sc">::</span><span class="fu">find_rstudio_root_file</span>(), <span class="at">pattern =</span> <span class="st">'.Rmd'</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">full.names =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>allrmd <span class="ot">&lt;-</span> allrmd[<span class="sc">!</span>stringr<span class="sc">::</span><span class="fu">str_detect</span>(allrmd, <span class="st">'renv'</span>)]</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>allqmd <span class="ot">&lt;-</span> stringr<span class="sc">::</span><span class="fu">str_replace</span>(allrmd, <span class="st">'.Rmd'</span>, <span class="st">'.qmd'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>allrmd <span class="ot">&lt;-</span> <span class="fu">list.files</span>(rprojroot<span class="sc">::</span><span class="fu">find_rstudio_root_file</span>(), <span class="at">pattern =</span> <span class="st">'.Rmd'</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">full.names =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>allrmd <span class="ot">&lt;-</span> allrmd[<span class="sc">!</span>stringr<span class="sc">::</span><span class="fu">str_detect</span>(allrmd, <span class="st">'renv'</span>)]</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>allqmd <span class="ot">&lt;-</span> stringr<span class="sc">::</span><span class="fu">str_replace</span>(allrmd, <span class="st">'.Rmd'</span>, <span class="st">'.qmd'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Can I vectorize? No, but a loop works. Git commit first!</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(allrmd)) {</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">convert_chunk_header</span>(<span class="at">input =</span> allrmd[i], <span class="at">output =</span> allqmd[i])</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(allrmd)) {</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">convert_chunk_header</span>(<span class="at">input =</span> allrmd[i], <span class="at">output =</span> allqmd[i])</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now, if you want to really go for it, delete the rmds. That makes git happier because then it can treat this as a rename and keep tracking the files.</p>
 <p><em>Dangerous</em>- make sure you’ve git-committed. I’m commenting out and eval: false ing this</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># file.remove(allrmd)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># file.remove(allrmd)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-
-
 </section>
+</section>
+<section id="debugging-r-from-quarto" class="level2">
+<h2 class="anchored" data-anchor-id="debugging-r-from-quarto">Debugging R from Quarto</h2>
+<p>Sometimes (often) if you call a function with a breakpoint from a Quarto notebook, nothing prints to the console. I.e. I’ll type a variable name <code>var_a</code> to see what it is, and nothing will print. The issue is that values are going to a different <code>stdout</code>.</p>
+<p>Type <code>sink()</code> and it should start working.</p>
+
+
 </section>
 
 </main> <!-- /main -->
