@@ -23,13 +23,13 @@ tmbasin <- tm_shape(basin) + tm_fill(col = 'DDIV_NAME', alpha = 0.75, title = ''
 tmbasin
 ```
 
-## [MD-WERP](https://getinvolved.mdba.gov.au/murray-darling-water-and-environment-research-program)
+## [MD-WERP](https://www.mdba.gov.au/climate-and-river-health/murray-darling-water-and-environment-research-program)
 
 [![](../_images/werp.png){width="200"}](https://getinvolved.mdba.gov.au/murray-darling-water-and-environment-research-program)
 
 The Murray-Darling Water & Environment Research Program is an initiative of the Murray-Darling Basin Authority to improve knowledge and management of the Murray-Darling Basin across a range of outcomes.
 
-I am a member of the [Climate Adaptation Theme](https://getinvolved.mdba.gov.au/murray-darling-water-and-environment-research-program-climate), where I lead development of a toolkit to incorporate disparate models of response to environmental condition and synthesize their outcomes into usable information for decisionmaking. Most scenario modelling for water management stops at hydrology; this toolkit targets the subsequent responses to that hydrology across a range of values. The primary target of this toolkit is the assesment of climate scenarios and scenarios representing adaptation to those scenarios, but its capabilities extend to assessment of any hydrologic scenario.
+I am a member of the [Climate Adaptation Theme](https://www.mdba.gov.au/climate-and-river-health/murray-darling-water-and-environment-research-program/climate-adaptation), where I lead development of a toolkit to incorporate disparate models of response to environmental condition and synthesize their outcomes into usable information for decisionmaking. Most scenario modelling for water management stops at hydrology; this toolkit targets the subsequent responses to that hydrology across a range of values. The primary target of this toolkit is the assesment of climate scenarios and scenarios representing adaptation to those scenarios, but its capabilities extend to assessment of any hydrologic scenario.
 
 A beta version of a [website documenting the toolkit and its capabilities](https://mdbauth.github.io/WERP_toolkit_demo/) is now live, with updated documentation and publicly available R package to come shortly.
 

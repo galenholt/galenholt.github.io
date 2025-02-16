@@ -22,6 +22,10 @@ website:
             - href: research/management_modeling.qmd
               text: "Management modeling"
 
+    - title: "Software"
+      contents:
+        - software.qmd
+
     - title: "Code Demos"
       contents:
         - code_demos.qmd

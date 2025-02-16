@@ -993,6 +993,9 @@ with_seed(2,
 ```
 
 ```{r}
+#| eval: false
+
+# This is throwing an error, need to fix.
 subdata <- with_seed(2, 
                        make_analysed_tibble(subparams, mod_pal)
 )

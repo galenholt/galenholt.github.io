@@ -37,6 +37,7 @@ website:
       - href: index.qmd
         text: Home
       - research.qmd
+      - software.qmd
       - code_demos.qmd
     right:
       - icon: github

@@ -1,0 +1,25 @@
+---
+title: "Software"
+format: html
+bibliography: references.bib
+---
+
+## [hydrogauge](hydrogauge)
+
+An R package for querying BoM and Australian state water gauge APIs. Useful not only for pulling flow data, but also identifying available parameters and periods of record.
+
+## [eFlowEval](https://github.com/galenholt/eFlowEval)
+
+A workflow and R package for modelling ecological response in flexible but standardised ways in wetlands in the Murray-Darling Basin, with capacity for spatial scaling and synthesis. See @holt2024.
+
+## [peeler](https://github.com/galenholt/peeler)
+
+An R package implementing the bvstep algorithm from @clarke1998 and provides the ability to 'peel' those outcomes (not recommended).
+
+## Other
+
+I have a number of [other repositories](https://github.com/galenholt) consisting of data analyses for published papers and demonstration/testing/template repositories (often discussed in more detail in [code demos](code_demos.qmd).)
+
+## Private packages
+
+I develop a number of other packages and data analysis repositories, but most are private due to data embargoes.

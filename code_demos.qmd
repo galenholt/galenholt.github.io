@@ -21,5 +21,3 @@ I spend quite a lot of time figuring out how to do things in code, understanding
 ## The process of coding
 
 I also think there can be value in seeing how I've solved a problem and tested the various avenues, both for my own future reference and others. For one, if I do later have a need for one of those side avenues, they're available. For another, it exposes the actual process of coding a bit more than the usual tutorial that has cleaned everything up start to finish. And it gives a better starting point for additional development potentially much later if I can see what I've already tried. Maybe most importantly, there are few tutorials/walkthroughs I've followed that don't end up with some sort of error, especially as soon as I try to modify them for my purposes. Seeing where I've hit errors, what caused them, and how I solved it can be incredibly helpful, rather than only seeing what worked.
-
-## 

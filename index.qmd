@@ -2,7 +2,7 @@
 title: "Home"
 ---
 
-I am a quantitative community ecologist with a focus on aquatic systems. I address questions of biodiversity maintenance and climate change responses using theoretical and empirical approaches, and also apply these skills to developing models for ecological and water management. I do quite a lot of coding in R and Matlab (and dabble in Python), including data cleaning, statistical analysis, and developing packages and software.
+I am a quantitative community ecologist with a focus on aquatic systems. I address questions of biodiversity maintenance and climate change responses using theoretical and empirical approaches, and also apply these skills to developing models for ecological and water management. I do quite a lot of coding in R and Matlab (and some Python), including data cleaning, statistical analysis, and developing packages and software.
 
 I am a Research Fellow in the [QAEL Lab](https://www.qael.org/) at Deakin University, where I pursue these research directions and supervise Honours, Masters, and PhD students.
 
