@@ -188,3 +188,7 @@ is caused by trying to read-in an object too big for a lazy cache. It often only
 ## Quarto for github readmes
 
 If we want to use quarto for github readmes, see the [quarto docs](https://quarto.org/docs/output-formats/gfm.html). The key is to use `format: gfm` and then render before pushing to generate the github flavored .md file.
+
+## Styling quarto
+
+The \[styler\](<https://styler.r-lib.org/>) package will style code in quarto, which is very useful. But it seems not to work well in visual mode. It repeatedly won't change indents if I have the document in Visual, and then works great once I shift to Source. It does seem to work if I use `styler::style_dir()`, but that always makes me nervous.
