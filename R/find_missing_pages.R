@@ -1,3 +1,12 @@
+#' Find quarto files not in _quarto
+#'
+#' @param files
+#' @param pattern
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 find_missing_pages <- function(files = NULL, pattern = "_quarto.*.yml") {
 
   if (is.null(files)) {

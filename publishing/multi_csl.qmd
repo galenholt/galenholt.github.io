@@ -13,9 +13,11 @@ Try to cite [@holt2018] here with the default csl
 
 We know it works to set csl in the quarto header, but can we set it later and swap? Insert a yaml block
 
+```
 ---
 csl: nature.csl
 ---
+```
 
 Try that again. Do we get the earlier cite too, cite a different paper to check @holt2021.
 
@@ -24,9 +26,11 @@ Try that again. Do we get the earlier cite too, cite a different paper to check 
 
 That overrode the default even above. What happens if we add yet another explicit CSL?
 
+```
 ---
 csl: ecology.csl
 ---
+```
 
 And cite yet another @holt2024.
 
@@ -45,16 +49,20 @@ It also means that if the included file has a metadata block, that block will ta
 
 This probably isn't worth much more effort. I'll just look individually at the most likely csls to work.
 
+```
 ---
 csl: freshwater-biology.csl
 ---
+```
 
 ::: {#refs-fwb}
 :::
 
+```
 ---
 csl: apa.csl
 ---
+```
 
 ::: {#refs-apa}
 :::
