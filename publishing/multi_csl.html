@@ -913,17 +913,23 @@ div.csl-indent {
 
 
 <p>Does it work to set multiple csl files? and multiple reference sections? Why would I want to do that? Because the ecology.csl isn’t producing what I’d expect (or what Zotero produces with it). Instead of DOIs printing, it turns the titles into links. So I want to make a huge doc that shows how the different CSLs actually export from Quarto.</p>
-<p>Try to cite <span class="citation" data-cites="holt2018">(<a href="#ref-holt2018" role="doc-biblioref">Holt &amp; Chesson, 2018</a>)</span> here with the default csl</p>
+<p>Try to cite <span class="citation" data-cites="holt2018">(<a href="#ref-holt2018" role="doc-biblioref">Holt and Chesson 2018</a>)</span> here with the default csl</p>
 <div id="refs-default">
 
 </div>
 <p>We know it works to set csl in the quarto header, but can we set it later and swap? Insert a yaml block</p>
+<pre><code>---
+csl: nature.csl
+---</code></pre>
 <p>Try that again. Do we get the earlier cite too, cite a different paper to check <span class="citation" data-cites="holt2021">Holt et al. (<a href="#ref-holt2021" role="doc-biblioref">2021</a>)</span>.</p>
 <div id="refs-nature">
 
 </div>
 <p>That overrode the default even above. What happens if we add yet another explicit CSL?</p>
-<p>And cite yet another <span class="citation" data-cites="holt2024">Holt et al. (<a href="#ref-holt2024" role="doc-biblioref">2024</a>)</span>.</p>
+<pre><code>---
+csl: ecology.csl
+---</code></pre>
+<p>And cite yet another <span class="citation" data-cites="holt2024">Holt, Macqueen, and Lester (<a href="#ref-holt2024" role="doc-biblioref">2024</a>)</span>.</p>
 <div id="refs-ecology">
 
 </div>
@@ -933,9 +939,15 @@ div.csl-indent {
 <p>It also means that if the included file has a metadata block, that block will take effect in all included files. In most cases, having metadata blocks in an included file will cause unexpected behavior.</p>
 </div>
 <p>This probably isn’t worth much more effort. I’ll just look individually at the most likely csls to work.</p>
+<pre><code>---
+csl: freshwater-biology.csl
+---</code></pre>
 <div id="refs-fwb">
 
 </div>
+<pre><code>---
+csl: apa.csl
+---</code></pre>
 <div id="refs-apa">
 
 </div>
@@ -943,15 +955,15 @@ div.csl-indent {
 
 
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list">
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-holt2018" class="csl-entry" role="listitem">
-Holt, G., &amp; Chesson, P. (2018). The role of branching in the maintenance of diversity in watersheds. <em>Freshwater Science</em>, <em>37</em>(4), 712–730. <a href="https://doi.org/10.1086/700680">https://doi.org/10.1086/700680</a>
+Holt, Galen, and Peter Chesson. 2018. <span>“The Role of Branching in the Maintenance of Diversity in Watersheds.”</span> <em>Freshwater Science</em> 37 (4): 712–30. <a href="https://doi.org/10.1086/700680">https://doi.org/10.1086/700680</a>.
 </div>
 <div id="ref-holt2021" class="csl-entry" role="listitem">
-Holt, G., Dwyer, G. K., Bourke, C., Matthews, T. G., Macqueen, A., &amp; Lester, R. E. (2021). Characteristics and consequences of a disease outbreak in aquatic insects. <em>Freshwater Biology</em>, <em>66</em>(7), 1267–1281. <a href="https://doi.org/10.1111/fwb.13715">https://doi.org/10.1111/fwb.13715</a>
+Holt, Galen, Georgia K. Dwyer, Courtney Bourke, Ty G. Matthews, Ashley Macqueen, and Rebecca E. Lester. 2021. <span>“Characteristics and Consequences of a Disease Outbreak in Aquatic Insects.”</span> <em>Freshwater Biology</em> 66 (7): 1267–81. <a href="https://doi.org/10.1111/fwb.13715">https://doi.org/10.1111/fwb.13715</a>.
 </div>
 <div id="ref-holt2024" class="csl-entry" role="listitem">
-Holt, G., Macqueen, A., &amp; Lester, R. E. (2024). A flexible consistent framework for modelling multiple interacting environmental responses to management in space and time. <em>Journal of Environmental Management</em>, <em>367</em>, 122054. <a href="https://doi.org/10.1016/j.jenvman.2024.122054">https://doi.org/10.1016/j.jenvman.2024.122054</a>
+Holt, Galen, Ashley Macqueen, and Rebecca E. Lester. 2024. <span>“A Flexible Consistent Framework for Modelling Multiple Interacting Environmental Responses to Management in Space and Time.”</span> <em>Journal of Environmental Management</em> 367 (September): 122054. <a href="https://doi.org/10.1016/j.jenvman.2024.122054">https://doi.org/10.1016/j.jenvman.2024.122054</a>.
 </div>
 </div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

@@ -927,6 +927,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#rendering-1" id="toc-rendering-1" class="nav-link" data-scroll-target="#rendering-1">Rendering 1</a></li>
   <li><a href="#rendering-2" id="toc-rendering-2" class="nav-link" data-scroll-target="#rendering-2">Rendering 2</a></li>
   <li><a href="#quarto-for-github-readmes" id="toc-quarto-for-github-readmes" class="nav-link" data-scroll-target="#quarto-for-github-readmes">Quarto for github readmes</a></li>
+  <li><a href="#styling-quarto" id="toc-styling-quarto" class="nav-link" data-scroll-target="#styling-quarto">Styling quarto</a></li>
   </ul>
 </nav>
     </div>
@@ -3238,6 +3239,10 @@ PY_PYTHON='werptoolkitpy/.venv/Scripts/python.exe'</code></pre>
 <section id="quarto-for-github-readmes" class="level2">
 <h2 class="anchored" data-anchor-id="quarto-for-github-readmes">Quarto for github readmes</h2>
 <p>If we want to use quarto for github readmes, see the <a href="https://quarto.org/docs/output-formats/gfm.html">quarto docs</a>. The key is to use <code>format: gfm</code> and then render before pushing to generate the github flavored .md file.</p>
+</section>
+<section id="styling-quarto" class="level2">
+<h2 class="anchored" data-anchor-id="styling-quarto">Styling quarto</h2>
+<p>The [styler](<a href="https://styler.r-lib.org/" class="uri">https://styler.r-lib.org/</a>) package will style code in quarto, which is very useful. But it seems not to work well in visual mode. It repeatedly won’t change indents if I have the document in Visual, and then works great once I shift to Source. It does seem to work if I use <code>styler::style_dir()</code>, but that always makes me nervous.</p>
 
 
 </section>
