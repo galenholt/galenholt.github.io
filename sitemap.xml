@@ -1,180 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://galenholt.github.io/tidyprogramming/tidy_programs.html</loc>
-    <lastmod>2023-09-25T13:13:23.195Z</lastmod>
+    <loc>https://galenholt.github.io/website_notes/updating_website.html</loc>
+    <lastmod>2025-06-23T01:40:59.462Z</lastmod>
   </url>
   <url>
-    <loc>https://galenholt.github.io/plotting/faded_colors.html</loc>
-    <lastmod>2023-07-14T01:47:04.910Z</lastmod>
+    <loc>https://galenholt.github.io/website_notes/render_pdf.html</loc>
+    <lastmod>2024-09-11T12:56:34.417Z</lastmod>
   </url>
   <url>
-    <loc>https://galenholt.github.io/pix4d/read_pix4d_outputs.html</loc>
-    <lastmod>2023-10-03T22:27:00.045Z</lastmod>
+    <loc>https://galenholt.github.io/website_notes/quarto_profiles.html</loc>
+    <lastmod>2025-02-14T00:37:45.574Z</lastmod>
   </url>
   <url>
-    <loc>https://galenholt.github.io/plotting/hcl_exploration.html</loc>
-    <lastmod>2023-07-14T01:47:05.834Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/betabinomial/random_uneven_groups.html</loc>
-    <lastmod>2025-03-25T03:37:28.994Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/observable/trying_observable.html</loc>
-    <lastmod>2024-09-11T12:56:34.364Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/small_helpers/error_safely.html</loc>
-    <lastmod>2024-09-11T12:56:34.400Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/parallelism/parallel_speed.html</loc>
-    <lastmod>2023-07-14T01:47:04.397Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/drones/overlaps_reactive.html</loc>
-    <lastmod>2023-10-03T22:27:00.045Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/publishing/tables_in_word.html</loc>
-    <lastmod>2025-02-14T00:37:45.568Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/RpyEnvs/python_nameerror.html</loc>
-    <lastmod>2023-07-14T01:47:06.866Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/plotting/rayshader.html</loc>
-    <lastmod>2024-09-03T02:45:07.342Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/plotting/venn_diagrams.html</loc>
-    <lastmod>2024-09-11T12:56:34.364Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/stats_probability/shifting_normals.html</loc>
-    <lastmod>2023-07-14T01:47:07.043Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/stats_probability/fitting_lognormals.html</loc>
-    <lastmod>2023-07-14T01:47:07.022Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/plotting/fonts.html</loc>
-    <lastmod>2023-07-14T01:47:05.566Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/parallelism/nested_parallel.html</loc>
-    <lastmod>2023-07-14T01:47:04.293Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/simmodelling/twoDautocorr.html</loc>
-    <lastmod>2023-07-14T01:47:07.016Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/small_helpers/quarto_notes.html</loc>
-    <lastmod>2025-03-25T03:37:29.001Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/RpyEnvs/py_r_dates.html</loc>
-    <lastmod>2023-07-14T01:47:06.865Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/RpyEnvs/R_py_type_passing.html</loc>
-    <lastmod>2023-07-14T01:47:06.911Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/plotting/ggplot_themes.html</loc>
-    <lastmod>2023-10-03T22:27:00.053Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/package/httptest2.html</loc>
-    <lastmod>2025-02-14T00:37:45.561Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/plotting/rgb_to_hex.html</loc>
-    <lastmod>2023-07-14T01:47:06.626Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/parallelism/nested_parallel_hpc.html</loc>
-    <lastmod>2024-09-11T12:56:34.364Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/small_helpers/error_handling.html</loc>
-    <lastmod>2024-09-11T12:56:34.399Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/data_acquisition/bom_gauges.html</loc>
-    <lastmod>2023-07-14T01:47:03.908Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/small_helpers/lifecycle_warnings.html</loc>
+    <loc>https://galenholt.github.io/website_notes/quarto_change_yml.html</loc>
     <lastmod>2024-09-11T12:56:34.401Z</lastmod>
   </url>
   <url>
-    <loc>https://galenholt.github.io/plotting/math_in_ggplot.html</loc>
-    <lastmod>2023-07-14T01:47:06.582Z</lastmod>
+    <loc>https://galenholt.github.io/website_notes/commenting_quarto.html</loc>
+    <lastmod>2024-09-11T12:56:34.401Z</lastmod>
   </url>
   <url>
-    <loc>https://galenholt.github.io/parallelism/template_modification.html</loc>
-    <lastmod>2023-07-14T01:47:04.442Z</lastmod>
+    <loc>https://galenholt.github.io/stats_probability/spatial_ac.html</loc>
+    <lastmod>2024-09-11T12:56:34.401Z</lastmod>
   </url>
   <url>
-    <loc>https://galenholt.github.io/research/management_modeling.html</loc>
-    <lastmod>2025-03-25T03:37:29.000Z</lastmod>
+    <loc>https://galenholt.github.io/stats_probability/fitting_truncated.html</loc>
+    <lastmod>2023-07-14T01:47:07.023Z</lastmod>
   </url>
   <url>
-    <loc>https://galenholt.github.io/RpyEnvs/end_run_renv.html</loc>
-    <lastmod>2023-07-14T01:47:06.855Z</lastmod>
+    <loc>https://galenholt.github.io/stats_probability/expected_shannon.html</loc>
+    <lastmod>2024-09-11T12:56:34.401Z</lastmod>
   </url>
   <url>
-    <loc>https://galenholt.github.io/small_helpers/dplyr_filter_matrix_errors.html</loc>
-    <lastmod>2024-09-11T12:56:34.397Z</lastmod>
+    <loc>https://galenholt.github.io/software.html</loc>
+    <lastmod>2025-09-19T22:50:53.732Z</lastmod>
   </url>
   <url>
-    <loc>https://galenholt.github.io/publishing/flextable_word.html</loc>
-    <lastmod>2025-02-14T00:37:45.565Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/parallelism/conditional_plans.html</loc>
-    <lastmod>2023-07-14T01:47:04.276Z</lastmod>
+    <loc>https://galenholt.github.io/small_helpers/vdiffr_networks.html</loc>
+    <lastmod>2024-09-11T12:56:34.401Z</lastmod>
   </url>
   <url>
     <loc>https://galenholt.github.io/small_helpers/renv_github.html</loc>
     <lastmod>2024-10-22T21:58:54.091Z</lastmod>
   </url>
   <url>
-    <loc>https://galenholt.github.io/website_notes/updating_website.html</loc>
-    <lastmod>2025-04-04T03:45:52.223Z</lastmod>
+    <loc>https://galenholt.github.io/small_helpers/private_github_notes.html</loc>
+    <lastmod>2023-07-31T01:11:01.317Z</lastmod>
   </url>
   <url>
-    <loc>https://galenholt.github.io/small_helpers/package_dll_error.html</loc>
-    <lastmod>2024-10-22T21:58:54.086Z</lastmod>
+    <loc>https://galenholt.github.io/small_helpers/list_names.html</loc>
+    <lastmod>2023-07-14T01:47:07.020Z</lastmod>
   </url>
   <url>
-    <loc>https://galenholt.github.io/parallelism/hpc_ephemera.html</loc>
-    <lastmod>2023-07-14T01:47:04.262Z</lastmod>
+    <loc>https://galenholt.github.io/small_helpers/json_api_construction.html</loc>
+    <lastmod>2024-09-11T12:56:34.401Z</lastmod>
   </url>
   <url>
-    <loc>https://galenholt.github.io/RpyEnvs/py_in_rpkg.html</loc>
-    <lastmod>2024-09-11T12:56:34.316Z</lastmod>
+    <loc>https://galenholt.github.io/small_helpers/failing_snapshot_check.html</loc>
+    <lastmod>2024-09-11T12:56:34.401Z</lastmod>
   </url>
   <url>
-    <loc>https://galenholt.github.io/website_notes/render_word.html</loc>
-    <lastmod>2024-09-11T12:56:34.418Z</lastmod>
+    <loc>https://galenholt.github.io/small_helpers/error_handling.html</loc>
+    <lastmod>2025-04-09T06:40:38.881Z</lastmod>
   </url>
   <url>
-    <loc>https://galenholt.github.io/website_notes/quarto_website_github.html</loc>
-    <lastmod>2023-07-14T01:52:33.058Z</lastmod>
+    <loc>https://galenholt.github.io/small_helpers/breaking_whiles.html</loc>
+    <lastmod>2024-09-11T12:56:34.396Z</lastmod>
   </url>
   <url>
-    <loc>https://galenholt.github.io/software.html</loc>
-    <lastmod>2025-03-25T03:37:29.002Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/small_helpers/git_remote_and_emails.html</loc>
-    <lastmod>2024-10-22T21:58:54.075Z</lastmod>
+    <loc>https://galenholt.github.io/simmodelling/negbin_autocorr_testing.html</loc>
+    <lastmod>2024-09-11T12:56:34.384Z</lastmod>
   </url>
   <url>
     <loc>https://galenholt.github.io/setup/rstudio_themes.html</loc>
@@ -185,27 +81,143 @@
     <lastmod>2023-07-14T01:47:07.012Z</lastmod>
   </url>
   <url>
-    <loc>https://galenholt.github.io/publishing/private_github_figshare.html</loc>
-    <lastmod>2023-07-14T01:47:06.793Z</lastmod>
+    <loc>https://galenholt.github.io/research.html</loc>
+    <lastmod>2024-09-11T12:56:34.384Z</lastmod>
   </url>
   <url>
-    <loc>https://galenholt.github.io/publishing/github_citation_files.html</loc>
-    <lastmod>2025-02-14T00:37:45.566Z</lastmod>
+    <loc>https://galenholt.github.io/publishing/reference_sections.html</loc>
+    <lastmod>2025-02-14T00:37:45.567Z</lastmod>
   </url>
   <url>
-    <loc>https://galenholt.github.io/parallelism/changing_batchtools_template.html</loc>
-    <lastmod>2023-07-14T01:47:04.264Z</lastmod>
+    <loc>https://galenholt.github.io/publishing/multi_csl.html</loc>
+    <lastmod>2025-04-04T03:14:38.602Z</lastmod>
   </url>
   <url>
-    <loc>https://galenholt.github.io/index.html</loc>
-    <lastmod>2025-03-25T03:37:28.997Z</lastmod>
+    <loc>https://galenholt.github.io/publishing/flextable_word.html</loc>
+    <lastmod>2025-02-14T00:37:45.565Z</lastmod>
   </url>
   <url>
-    <loc>https://galenholt.github.io/RpyEnvs/rig.html</loc>
+    <loc>https://galenholt.github.io/plotting/tweaks_tricks.html</loc>
+    <lastmod>2024-09-11T12:56:34.364Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/plotting/rgb_to_hex.html</loc>
+    <lastmod>2023-07-14T01:47:06.626Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/plotting/math_in_ggplot.html</loc>
+    <lastmod>2023-07-14T01:47:06.582Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/plotting/hcl_exploration.html</loc>
+    <lastmod>2023-07-14T01:47:05.834Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/plotting/fonts.html</loc>
+    <lastmod>2023-07-14T01:47:05.566Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/pix4d/read_pix4d_outputs.html</loc>
+    <lastmod>2023-10-03T22:27:00.045Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/parallelism/plans_and_hpc.html</loc>
+    <lastmod>2025-09-22T23:31:17.743Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/parallelism/nested_parallel_hpc.html</loc>
+    <lastmod>2024-09-11T12:56:34.364Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/parallelism/nested_dependent_iterations.html</loc>
+    <lastmod>2023-07-14T01:47:04.293Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/parallelism/interrogating_parallel.html</loc>
+    <lastmod>2024-09-11T12:56:34.364Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/parallelism/hpc_ephemera.html</loc>
+    <lastmod>2023-07-14T01:47:04.262Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/parallelism/conditional_plans.html</loc>
+    <lastmod>2023-07-14T01:47:04.276Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/package/rlang_data.html</loc>
+    <lastmod>2025-02-14T00:37:45.562Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/package/indexing_version.html</loc>
+    <lastmod>2024-09-11T12:56:34.364Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/observable/trying_observable.html</loc>
+    <lastmod>2024-09-11T12:56:34.364Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/hydrogauge/hydrogauge_testing.html</loc>
+    <lastmod>2024-09-11T12:56:34.348Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/drones/overlaps_reactive.html</loc>
+    <lastmod>2023-10-03T22:27:00.045Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/data_acquisition/read_geofabric.html</loc>
+    <lastmod>2024-09-11T12:56:34.332Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/data_acquisition/get_geofabric.html</loc>
+    <lastmod>2024-09-11T12:56:34.332Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/data_acquisition/bom_water.html</loc>
+    <lastmod>2025-02-14T00:37:45.550Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/data_acquisition/ALA_data_pull.html</loc>
+    <lastmod>2023-07-14T01:47:03.908Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/betabinomial/random_uneven_groups_dev.html</loc>
+    <lastmod>2025-02-14T00:37:45.549Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/betabinomial/beta_binomial_error_outline.html</loc>
+    <lastmod>2024-10-22T21:58:54.044Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/RpyEnvs/python_updated_functions.html</loc>
+    <lastmod>2023-07-14T01:47:06.874Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/RpyEnvs/python_setup.html</loc>
     <lastmod>2024-09-11T12:56:34.316Z</lastmod>
   </url>
   <url>
-    <loc>https://galenholt.github.io/RpyEnvs/python_testing.html</loc>
+    <loc>https://galenholt.github.io/RpyEnvs/py_r_project_overview.html</loc>
+    <lastmod>2025-02-14T00:37:45.546Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/RpyEnvs/py_in_rpkg.html</loc>
+    <lastmod>2024-09-11T12:56:34.316Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/RpyEnvs/end_run_renv.html</loc>
+    <lastmod>2023-07-14T01:47:06.855Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/RpyEnvs/R_py_type_passing.html</loc>
+    <lastmod>2023-07-14T01:47:06.911Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/RpyEnvs/R_py_shared_projects.html</loc>
+    <lastmod>2023-07-14T01:47:06.875Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/RpyEnvs/RandPython.html</loc>
     <lastmod>2024-09-11T12:56:34.316Z</lastmod>
   </url>
   <url>
@@ -213,215 +225,203 @@
     <lastmod>2023-07-14T01:47:06.863Z</lastmod>
   </url>
   <url>
-    <loc>https://galenholt.github.io/RpyEnvs/R_py_shared_projects.html</loc>
-    <lastmod>2023-07-14T01:47:06.875Z</lastmod>
+    <loc>https://galenholt.github.io/RpyEnvs/py_r_dates.html</loc>
+    <lastmod>2023-07-14T01:47:06.865Z</lastmod>
   </url>
   <url>
-    <loc>https://galenholt.github.io/RpyEnvs/python_setup.html</loc>
+    <loc>https://galenholt.github.io/RpyEnvs/python_nameerror.html</loc>
+    <lastmod>2023-07-14T01:47:06.866Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/RpyEnvs/python_testing.html</loc>
     <lastmod>2024-09-11T12:56:34.316Z</lastmod>
   </url>
   <url>
-    <loc>https://galenholt.github.io/RpyEnvs/python_updated_functions.html</loc>
-    <lastmod>2023-07-14T01:47:06.874Z</lastmod>
+    <loc>https://galenholt.github.io/RpyEnvs/rig.html</loc>
+    <lastmod>2024-09-11T12:56:34.316Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/betabinomial/random_uneven_groups.html</loc>
+    <lastmod>2025-06-23T02:18:00.399Z</lastmod>
   </url>
   <url>
     <loc>https://galenholt.github.io/code_demos.html</loc>
     <lastmod>2025-03-25T03:37:28.995Z</lastmod>
   </url>
   <url>
-    <loc>https://galenholt.github.io/package/indexing_version.html</loc>
-    <lastmod>2024-09-11T12:56:34.364Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/parallelism/master_persistence.html</loc>
-    <lastmod>2023-07-14T01:47:04.292Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/publishing/multi_csl.html</loc>
-    <lastmod>2025-04-04T03:14:38.602Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/research.html</loc>
-    <lastmod>2024-09-11T12:56:34.384Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/setup/R_in_databricks.html</loc>
-    <lastmod>2025-02-14T00:37:45.569Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/small_helpers/failing_snapshot_check.html</loc>
-    <lastmod>2024-09-11T12:56:34.401Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/small_helpers/private_github_notes.html</loc>
-    <lastmod>2023-07-31T01:11:01.317Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/website_notes/commenting_quarto.html</loc>
-    <lastmod>2024-09-11T12:56:34.401Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/website_notes/render_pdf.html</loc>
-    <lastmod>2024-09-11T12:56:34.417Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/website_notes/quarto_images_misc.html</loc>
-    <lastmod>2023-10-03T22:27:00.173Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/betabinomial/beta_binomial_error_outline.html</loc>
-    <lastmod>2024-10-22T21:58:54.044Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/parallelism/initial_future_batchtools.html</loc>
-    <lastmod>2023-07-14T01:47:04.283Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/website_notes/multiple_render_formats.html</loc>
-    <lastmod>2024-09-11T12:56:34.401Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/RpyEnvs/py_r_project_overview.html</loc>
-    <lastmod>2025-02-14T00:37:45.546Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/small_helpers/zip_downloading.html</loc>
-    <lastmod>2023-07-14T01:47:07.021Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/parallelism/plans_and_hpc.html</loc>
-    <lastmod>2025-02-14T00:37:45.563Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/small_helpers/breaking_whiles.html</loc>
-    <lastmod>2024-09-11T12:56:34.396Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/website_notes/quarto_change_yml.html</loc>
-    <lastmod>2024-09-11T12:56:34.401Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/package/rlang_data.html</loc>
-    <lastmod>2025-02-14T00:37:45.562Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/data_acquisition/get_geofabric.html</loc>
-    <lastmod>2024-09-11T12:56:34.332Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/website_notes/quarto_profiles.html</loc>
-    <lastmod>2025-02-14T00:37:45.574Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/data_acquisition/ALA_data_pull.html</loc>
+    <loc>https://galenholt.github.io/data_acquisition/bom_gauges.html</loc>
     <lastmod>2023-07-14T01:47:03.908Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/small_helpers/vdiffr_networks.html</loc>
-    <lastmod>2024-09-11T12:56:34.401Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/plotting/legend_in_facet.html</loc>
-    <lastmod>2024-09-11T12:56:34.364Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/stats_probability/betadists.html</loc>
-    <lastmod>2025-02-14T00:37:45.571Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/data_acquisition/read_geofabric.html</loc>
-    <lastmod>2024-09-11T12:56:34.332Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/stats_probability/expected_shannon.html</loc>
-    <lastmod>2024-09-11T12:56:34.401Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/parallelism/globals_speed.html</loc>
-    <lastmod>2023-07-14T01:47:04.270Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/publishing/reference_sections.html</loc>
-    <lastmod>2025-02-14T00:37:45.567Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/parallelism/nested_dependent_iterations.html</loc>
-    <lastmod>2023-07-14T01:47:04.293Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/small_helpers/json_api_construction.html</loc>
-    <lastmod>2024-09-11T12:56:34.401Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/data_acquisition/hydro_sheds_rivers_atlas.html</loc>
-    <lastmod>2025-03-25T03:37:28.996Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/package/package_creation.html</loc>
-    <lastmod>2025-02-14T00:37:45.562Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/small_helpers/list_names.html</loc>
-    <lastmod>2023-07-14T01:47:07.020Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/RpyEnvs/RandPython.html</loc>
-    <lastmod>2024-09-11T12:56:34.316Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/plotting/tweaks_tricks.html</loc>
-    <lastmod>2024-09-11T12:56:34.364Z</lastmod>
   </url>
   <url>
     <loc>https://galenholt.github.io/data_acquisition/gauge_data_pre_gauge.html</loc>
     <lastmod>2024-09-11T12:56:34.332Z</lastmod>
   </url>
   <url>
-    <loc>https://galenholt.github.io/plotting/setting_colors_for_groups.html</loc>
-    <lastmod>2023-07-14T01:47:06.657Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/small_helpers/smallpieces.html</loc>
-    <lastmod>2025-02-14T00:37:45.571Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/stats_probability/spatial_ac.html</loc>
-    <lastmod>2024-09-11T12:56:34.401Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/simmodelling/negbin_autocorr.html</loc>
-    <lastmod>2024-09-11T12:56:34.384Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/simmodelling/negbin_autocorr_testing.html</loc>
-    <lastmod>2024-09-11T12:56:34.384Z</lastmod>
+    <loc>https://galenholt.github.io/data_acquisition/hydro_sheds_rivers_atlas.html</loc>
+    <lastmod>2025-03-25T03:37:28.996Z</lastmod>
   </url>
   <url>
     <loc>https://galenholt.github.io/drones/overlaps.html</loc>
     <lastmod>2023-07-14T01:47:03.914Z</lastmod>
   </url>
   <url>
-    <loc>https://galenholt.github.io/parallelism/interrogating_parallel.html</loc>
-    <lastmod>2024-09-11T12:56:34.364Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/stats_probability/fitting_truncated.html</loc>
-    <lastmod>2023-07-14T01:47:07.023Z</lastmod>
-  </url>
-  <url>
-    <loc>https://galenholt.github.io/data_acquisition/bom_water.html</loc>
-    <lastmod>2025-02-14T00:37:45.550Z</lastmod>
-  </url>
-  <url>
     <loc>https://galenholt.github.io/hydrogauge/hydrogauge_api_howtocall.html</loc>
     <lastmod>2024-09-11T12:56:34.332Z</lastmod>
   </url>
   <url>
-    <loc>https://galenholt.github.io/betabinomial/random_uneven_groups_dev.html</loc>
-    <lastmod>2025-02-14T00:37:45.549Z</lastmod>
+    <loc>https://galenholt.github.io/index.html</loc>
+    <lastmod>2025-03-25T03:37:28.997Z</lastmod>
   </url>
   <url>
-    <loc>https://galenholt.github.io/hydrogauge/hydrogauge_testing.html</loc>
-    <lastmod>2024-09-11T12:56:34.348Z</lastmod>
+    <loc>https://galenholt.github.io/package/httptest2.html</loc>
+    <lastmod>2025-02-14T00:37:45.561Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/package/package_creation.html</loc>
+    <lastmod>2025-02-14T00:37:45.562Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/parallelism/changing_batchtools_template.html</loc>
+    <lastmod>2023-07-14T01:47:04.264Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/parallelism/globals_speed.html</loc>
+    <lastmod>2023-07-14T01:47:04.270Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/parallelism/initial_future_batchtools.html</loc>
+    <lastmod>2025-09-22T23:29:54.188Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/parallelism/master_persistence.html</loc>
+    <lastmod>2023-07-14T01:47:04.292Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/parallelism/nested_parallel.html</loc>
+    <lastmod>2023-07-14T01:47:04.293Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/parallelism/parallel_speed.html</loc>
+    <lastmod>2023-07-14T01:47:04.397Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/parallelism/template_modification.html</loc>
+    <lastmod>2023-07-14T01:47:04.442Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/plotting/faded_colors.html</loc>
+    <lastmod>2023-07-14T01:47:04.910Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/plotting/ggplot_themes.html</loc>
+    <lastmod>2023-10-03T22:27:00.053Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/plotting/legend_in_facet.html</loc>
+    <lastmod>2024-09-11T12:56:34.364Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/plotting/rayshader.html</loc>
+    <lastmod>2024-09-03T02:45:07.342Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/plotting/setting_colors_for_groups.html</loc>
+    <lastmod>2023-07-14T01:47:06.657Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/plotting/venn_diagrams.html</loc>
+    <lastmod>2024-09-11T12:56:34.364Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/publishing/github_citation_files.html</loc>
+    <lastmod>2025-02-14T00:37:45.566Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/publishing/private_github_figshare.html</loc>
+    <lastmod>2023-07-14T01:47:06.793Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/publishing/tables_in_word.html</loc>
+    <lastmod>2025-02-14T00:37:45.568Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/research/management_modeling.html</loc>
+    <lastmod>2025-03-25T03:37:29.000Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/setup/R_in_databricks.html</loc>
+    <lastmod>2025-02-14T00:37:45.569Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/simmodelling/negbin_autocorr.html</loc>
+    <lastmod>2024-09-11T12:56:34.384Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/simmodelling/twoDautocorr.html</loc>
+    <lastmod>2023-07-14T01:47:07.016Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/small_helpers/dplyr_filter_matrix_errors.html</loc>
+    <lastmod>2024-09-11T12:56:34.397Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/small_helpers/error_safely.html</loc>
+    <lastmod>2024-09-11T12:56:34.400Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/small_helpers/git_remote_and_emails.html</loc>
+    <lastmod>2024-10-22T21:58:54.075Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/small_helpers/lifecycle_warnings.html</loc>
+    <lastmod>2024-09-11T12:56:34.401Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/small_helpers/package_dll_error.html</loc>
+    <lastmod>2024-10-22T21:58:54.086Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/small_helpers/quarto_notes.html</loc>
+    <lastmod>2025-03-25T03:37:29.001Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/small_helpers/smallpieces.html</loc>
+    <lastmod>2025-02-14T00:37:45.571Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/small_helpers/zip_downloading.html</loc>
+    <lastmod>2023-07-14T01:47:07.021Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/stats_probability/betadists.html</loc>
+    <lastmod>2025-02-14T00:37:45.571Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/stats_probability/fitting_lognormals.html</loc>
+    <lastmod>2023-07-14T01:47:07.022Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/stats_probability/shifting_normals.html</loc>
+    <lastmod>2023-07-14T01:47:07.043Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/tidyprogramming/tidy_programs.html</loc>
+    <lastmod>2025-09-22T13:27:04.596Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/website_notes/multiple_render_formats.html</loc>
+    <lastmod>2024-09-11T12:56:34.401Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/website_notes/quarto_images_misc.html</loc>
+    <lastmod>2023-10-03T22:27:00.173Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/website_notes/quarto_website_github.html</loc>
+    <lastmod>2023-07-14T01:52:33.058Z</lastmod>
+  </url>
+  <url>
+    <loc>https://galenholt.github.io/website_notes/render_word.html</loc>
+    <lastmod>2024-09-11T12:56:34.418Z</lastmod>
   </url>
 </urlset>
