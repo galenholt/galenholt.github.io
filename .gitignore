@@ -26,3 +26,5 @@ docs/
 
 *figure-html/
 
+
+**/*.quarto_ipynb

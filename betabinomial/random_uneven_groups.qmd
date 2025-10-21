@@ -38,9 +38,9 @@ And will likely need to incorporate some assessments of the se being calculated 
 
 We'll need to bring in real data at some point, but I think not in this doc (hence why it's here, and some of the other testing is in caddis.
 
-I think We'll want to do some actual math here somewhere too, to show exactly how the random coefficients relate to the estimates of the fit and the clusters.
+I think we'll want to do some actual math here somewhere too, to show exactly how the random coefficients relate to the estimates of the fit and the clusters.
 
-And extract the coefficients as sarah did and see if they match what they should.
+And extract the coefficients as Sarah did and see if they match what they should.
 
 Are we just recapitulating [this](https://m-clark.github.io/posts/2019-05-14-shrinkage-in-mixed-models/)? Kind of. Slightly different emphasis and we'll end up taking it further, but should be careful.
 
@@ -50,13 +50,19 @@ The data generation function lets us have random slopes. These are super relevan
 
 Before we do anything with unbalanced clusters, let's first just see how the random and residual sd alters the way fits work. More importantly, let's establish some approaches to seeing how the random structure affects the outcome.
 
--   fits through points
--   fits through clusters
+-   fits through points (i.e. the minimal data units, nested within 'clusters')
+-   fits through clusters (i.e. the random units)
 -   full model fit
 -   cluster error bars on the clusters, i.e. from a fixed model of the clusters
 -   cluster error bars from the random model. What *is* this? the random sd will be the error of each around the *line*, then residual will be within-cluster. Can I extract and plot that? I think that will actually be key to understanding what's happening.
 
 *all* of this from model fits.
+
+Do that for progressively more complex situations
+
+## Balanced N per cluster, vary resid and random variance
+
+### Generate the data
 
 ```{r}
 with_seed(2,
@@ -79,6 +85,8 @@ with_seed(2,
 
 ```
 
+Generate the data
+
 ```{r}
 sddata <- with_seed(2,
                     make_analysed_tibble(sdparams, mod_pal)
@@ -87,31 +95,35 @@ sddata <- with_seed(2,
 sdstacks <- extract_unnest(sddata, sdparams)
 ```
 
-## Results
-
-### Data
+The resulting data; each dot is an observation, the 'cluster' (random units) are colors.
 
 ```{r}
-
 sdstacks$points |> 
   ggplot(aes(x = x, y = y, color = factor(cluster, levels = c(1:max(as.numeric(cluster)))))) + 
   geom_point() +
   facet_grid(obs_sigma ~ sd_rand_intercept) +
   labs(color = 'Cluster ID')
-
 ```
 
-### Main result
+### Results
+
+#### Main result
+
+This is the model fit for the full model (line +- se), along with the estimates of the clusters +- se extracted from the full model fit. Gray points are the underlying observations.
 
 ```{r}
 
-sd_fit <- sdstacks$fitlines |>
+sd_fit <- 
+  # The estimates +- se out of the model.
+  sdstacks$fitlines |>
   filter(model == 'cluster_rand_x') |> 
   ggplot(aes(x = x, color = model)) +
+  # The raw observations
   geom_point(data = sdstacks$points, aes(y = y), color = 'grey20', alpha = 0.2) +
   geom_ribbon(aes(y = estimate, ymin = estimate-se, ymax = estimate + se),
               alpha = 0.25, linetype = 0) +
   geom_line(aes(y = estimate)) +
+  # The cluster estimates with se errorbars out of the model
   geom_point(data = sdstacks$fitclusters  |>
                filter(model == 'cluster_rand_x'),
              aes(y = estimate)) +
@@ -119,6 +131,7 @@ sd_fit <- sdstacks$fitlines |>
                   filter(model == 'cluster_rand_x'),
                 aes(y = estimate, ymin = estimate-se, ymax = estimate + se)) +
   scale_color_manual(values = mod_pal) +
+  # facet by random residual sigmas 
   facet_grid(obs_sigma ~ sd_rand_intercept) +
   scale_x_continuous(sec.axis = sec_axis(~ . , name = TeX(r'(random $\sigma$)'),
                                          breaks = NULL, labels = NULL)) +
@@ -150,7 +163,7 @@ sdstacks$set_v_est |>
 
 ### Method comparison
 
-Now, how does that compare with the raw cluster esimates or the fit through the data with no random structure? The dashed blue line is the fit through the raw cluster estimates for visualisation.
+Now, how does that compare with the raw cluster estimates or the fit through the data with no random structure? The dashed blue line is the fit through the raw cluster estimates for visualisation.
 
 ```{r}
 sd_method_comparison <-
@@ -262,7 +275,7 @@ unbal$points |>
   labs(color = 'Cluster ID')
 ```
 
-Probably worth being explicit here about the unevenness. I really do thing I'm going to want to rethink this to use nbinom. Then once we get to our data, could parameterise based on what we see.
+Probably worth being explicit here about the unevenness. I really do think I'm going to want to rethink this to use nbinom. Then once we get to our data, could parameterise based on what we see.
 
 ```{r}
 unbal$points |> 
@@ -709,7 +722,7 @@ xdens_fit_with_clusters_compare <- xdens$fitlines |>
 xdens_fit_with_clusters_compare + theme(legend.position = 'none')
 ```
 
-So far, there's not an obvious issue with biased shrinkage.Everything differs from a naive fit without randoms, but that's clearly wrong anyway.
+So far, there's not an obvious issue with biased shrinkage. Everything differs from a naive fit without randoms, but that's clearly wrong anyway.
 
 ## Larger numbers and freer obs per cluster distribution
 
