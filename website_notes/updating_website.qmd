@@ -10,24 +10,39 @@ author: "Galen Holt"
 I often work on a bunch of pages and actually merge and push rarely. To identify pages that are present in the repo but not yet in the yaml (and so will not be included in the website), I wrote a little function that finds the files not in the yaml and also qmds in the yml but without a file, as when we change filenames. It's available in the `functions` dir and here:
 
 ```{r}
-find_missing_pages <- function() {
+find_missing_pages <- function(files = NULL, pattern = "_quarto.*.yml") {
+
+  # This deals with things like profiles with multiple ymls
+  if (is.null(files)) {
+    files <- list.files(pattern = pattern)
+  }
+
   qmd_in_proj <- list.files(pattern = "*.qmd", recursive = TRUE)
-  qmd_in_yml <- readLines("_quarto.yml") |> 
-    purrr::keep(\(x) grepl(".qmd", x)) |> 
-    gsub('\\s', '', x = _) |> 
-    gsub('-', '', x = _) |> 
-    gsub('href:', '', x = _)
+
+  qmd_in_yml <- vector(mode = 'character')
+  for (f in files) {
+    qmd_in_file <- readLines(f) |>
+      purrr::keep(\(x) grepl(".qmd", x)) |>
+      gsub('\\s', '', x = _) |>
+      gsub('-', '', x = _) |>
+      gsub('href:', '', x = _)
+
+    qmd_in_yml <- c(qmd_in_yml, qmd_in_file)
+  }
+
+  qmd_in_yml <- unique(qmd_in_yml)
+
   # The values in the `render` section are still there, but that's ok
-  
+
   not_present <- which(!(qmd_in_proj %in% qmd_in_yml))
-  
+
   missing_pages <- qmd_in_proj[not_present]
-  
+
   no_file <- which(!(qmd_in_yml %in% qmd_in_proj))
-  
+
   broken_links <- qmd_in_yml[no_file]
 
-  
+
   return(list(missing_pages = missing_pages, no_file_present = broken_links))
 }
 ```
@@ -88,7 +103,7 @@ I had thought that pushing the 'Render' button in Rstudio built the whole site- 
 
 Ah. I see now that there's a warning about this in [the quarto docs](https://quarto.org/docs/websites/#website-preview):
 
-> As you preview your site, pages will be rendered and updated. However, if you make changes to global options (e.g. \_quarto.yml or included files) you need to fully re-render your site to have all of the changes reflected. Consequently, you should always fully quarto render your site before deploying it, even if you have already previewed changes to some pages with the preview server.
+> As you preview your site, pages will be rendered and updated. However, if you make changes to global options (e.g.\_quarto.yml or included files) you need to fully re-render your site to have all of the changes reflected. Consequently, you should always fully quarto render your site before deploying it, even if you have already previewed changes to some pages with the preview server.
 
 So, since I'm using profiles, run
 

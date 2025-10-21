@@ -79,6 +79,129 @@ for (i in 1:10) {
 recorder2
 ```
 
+Now, for packages, sometimes I want to ignore certain warnings and messages that I know are OK, while letting other unexpected ones bubble up. I *think* according to Hadley [here](https://r4ds.github.io/bookclub-advr/handling-conditions.html) and [here](https://adv-r.hadley.nz/conditions.html), I want `withCallingHandlers()` rather than tryCatch because I want the code flow to proceed unimpeded.
+
+So, let's say I have a function that throws 'expected' warnings and messages and 'unexpected' ones, as well as errors (which should still error).
+
+```{r}
+expect_unexpect <- function(x) {
+  if ((x == 10)) {
+    stop('10 is error')
+  } else if (x == 2) {
+    warning('expected warning at 2')
+  } else if (x == 3) {
+    warning('unexpected warning at 3')
+  } else if (x == 4) {
+    message('expected message at 4')
+  } else if (x == 5) {
+    message('unexpected message at 5')
+  } else {x}
+  
+  x
+}
+```
+
+So, how does withCallingHandlers work?
+
+```{r}
+
+testvec <- 1:6*NA
+
+for (i in 1:6) {
+  testvec[i] <- withCallingHandlers(
+    warning = function(cnd) {
+      i *2
+    }, 
+    message = function(cnd) {
+      i * 3
+    },
+    expect_unexpect(i)
+  )
+}
+
+testvec
+```
+
+So that's clearly doing what it should in that it passes the actual output, but the bits where it's managing cnds needs work.
+
+What I actually want to do is ignore those warnings and messages when they are expected.
+
+What do the objects look like?
+
+```{r}
+rlang::catch_cnd(expect_unexpect(4))
+rlang::catch_cnd(expect_unexpect(4))$message
+rlang::catch_cnd(expect_unexpect(4))$call
+```
+
+Do I need that? or do I just need to do a check?
+
+This muffles warnings but not messages
+
+```{r}
+testvec <- 1:6*NA
+
+for (i in 1:6) {
+  testvec[i] <- withCallingHandlers(
+    warning = function(cnd) {
+        rlang::cnd_muffle(cnd)
+    },
+    message = function(cnd) {
+      i
+    },
+    expect_unexpect(i)
+  )
+}
+
+testvec
+```
+
+But how do I muffle only *some* warnings? I thought I needed `rlang::catch_cnd()`, but that's an extra unnecessary layer- it's null, the cnd being passed around here is already caught.
+
+```{r}
+testvec <- 1:6*NA
+
+for (i in 1:6) {
+  testvec[i] <- withCallingHandlers(
+    warning = function(cnd) {
+      print(cnd)
+      print(rlang::catch_cnd(cnd))
+      print(cnd$message)
+    },
+    message = function(cnd) {
+      i
+    },
+    expect_unexpect(i)
+  )
+}
+
+testvec
+```
+
+These don't have useful classes, so just use grep on the message. When I go to do this for real, will need to use `rlang::catch_cnd()` to look at what I'm dealin with and see if I can do a better condition.
+
+```{r}
+testvec <- 1:6*NA
+
+for (i in 1:6) {
+  testvec[i] <- withCallingHandlers(
+    warning = function(cnd) {
+      if (grepl('^expect', cnd$message)) {
+        rlang::cnd_muffle(cnd)
+      }
+    },
+    message = function(cnd) {
+      if (grepl('^expect', cnd$message)) {
+        rlang::cnd_muffle(cnd)
+      }
+    },
+    expect_unexpect(i)
+  )
+}
+
+testvec
+```
+
 ## Asides/specific cases
 
 For `purrr::map` and similar functions, [we can use](error_safely.qmd) `purrr::safely` and `purrr::possibly` to pass errors without failing a whole run. The output then needs to be unpacked and cleaned up.

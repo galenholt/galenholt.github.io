@@ -78,7 +78,9 @@ Then I *think* in the `plan` call, we `tweak` that? Let's just get it working. T
 
 I have both of those. I kind of want to test both. The docs say the template should be either at `./batchtools.slurm.tmpl` (associated with a particular working directory) or `~/.batchtools.slurm.tmpl` (for all processes to find it). But I want to be able to test multiple templates. I should be able to use
 
-    plan(batchtools_slurm, template = "/path/to/batchtools.slurm.tmpl")
+```         
+plan(batchtools_slurm, template = "/path/to/batchtools.slurm.tmpl")
+```
 
 but its a bit unclear whether the templates still need to be named `batchtools.slurm.tmpl`, or can have whatever filename we want, as long as I give the path. Guess I'll test that. Try first with it as `batchtools.slurm.tmpl` in the repo directory first though.
 
@@ -96,7 +98,8 @@ It doesn't seem to produce stdout or stderr, which is going to make it tricky to
 
 I can copy in from the terminal output:
 
-::: {#Simple output} Loading required package: foreach Loading required package: future Warning message: package 'future' was built under R version 4.0.5 Loading required package: parallelly Warning messages: 1: package 'future.batchtools' was built under R version 4.0.5 2: package 'parallelly' was built under R version 4.0.5
+::: {#simple-output style="color: gray"}
+Loading required package: foreach Loading required package: future Warning message: package 'future' was built under R version 4.0.5 Loading required package: parallelly Warning messages: 1: package 'future.batchtools' was built under R version 4.0.5 2: package 'parallelly' was built under R version 4.0.5
 
 Plan is: List of future strategies: 1. batchtools_slurm: - args: function (expr, envir = parent.frame(), substitute = TRUE, globals = TRUE, label = NULL, template = NULL, resources = list(), workers = NULL, registry = list(), ...) - tweaked: FALSE - call: plan(batchtools_slurm)
 
@@ -136,57 +139,84 @@ IDs of all cores used
 
 ## Nodes and pids
 
-               238059 238128 238197 238268 238335 238401 238466 238530 238594
+```         
+           238059 238128 238197 238268 238335 238401 238466 238530 238594
+```
 
 bilbo 6 6 6 6 6 6 7 6 7 frodo-vs01 0 0 0 0 0 0 0 0 0 frodo-vs02 0 0 0 0 0 0 0 0 0 frodo-vs03 0 0 0 0 0 0 0 0 0 frodo-vs04 0 0 0 0 0 0 0 0 0 gandalf-vm02 0 0 0 0 0 0 0 0 0 gandalf-vm03 0 0 0 0 0 0 0 0 0 gandalf-vm04 0 0 0 0 0 0 0 0 0 gandalf-vm05 0 0 0 0 0 0 0 0 0
 
-               238662 238727 238791 238857 238922 238989 239060 239129 1269189
+```         
+           238662 238727 238791 238857 238922 238989 239060 239129 1269189
+```
 
 bilbo 6 7 7 6 7 6 7 6 0 frodo-vs01 0 0 0 0 0 0 0 0 0 frodo-vs02 0 0 0 0 0 0 0 0 0 frodo-vs03 0 0 0 0 0 0 0 0 0 frodo-vs04 0 0 0 0 0 0 0 0 0 gandalf-vm02 0 0 0 0 0 0 0 0 0 gandalf-vm03 0 0 0 0 0 0 0 0 7 gandalf-vm04 0 0 0 0 0 0 0 0 0 gandalf-vm05 0 0 0 0 0 0 0 0 0
 
-               1269259 1345061 1345124 1500375 1500450 1500525 1500596 1500666
+```         
+           1269259 1345061 1345124 1500375 1500450 1500525 1500596 1500666
+```
 
 bilbo 0 0 0 0 0 0 0 0 frodo-vs01 0 0 0 0 0 0 0 0 frodo-vs02 0 0 0 0 0 0 0 0 frodo-vs03 0 0 0 6 6 6 6 7 frodo-vs04 0 0 0 0 0 0 0 0 gandalf-vm02 0 0 0 0 0 0 0 0 gandalf-vm03 6 0 0 0 0 0 0 0 gandalf-vm04 0 6 6 0 0 0 0 0 gandalf-vm05 0 0 0 0 0 0 0 0
 
-               1500739 1500811 1500879 1500952 1501019 1501090 1501158 1501225
+```         
+           1500739 1500811 1500879 1500952 1501019 1501090 1501158 1501225
+```
 
 bilbo 0 0 0 0 0 0 0 0 frodo-vs01 0 0 0 0 0 0 0 0 frodo-vs02 0 0 0 0 0 0 0 0 frodo-vs03 6 6 6 6 6 6 6 6 frodo-vs04 0 0 0 0 0 0 0 0 gandalf-vm02 0 0 0 0 0 0 0 0 gandalf-vm03 0 0 0 0 0 0 0 0 gandalf-vm04 0 0 0 0 0 0 0 0 gandalf-vm05 0 0 0 0 0 0 0 0
 
-               1501292 1501361 1501428 1501496 1513942 1514026 1514101 1514176
+```         
+           1501292 1501361 1501428 1501496 1513942 1514026 1514101 1514176
+```
 
 bilbo 0 0 0 0 0 0 0 0 frodo-vs01 0 0 0 0 0 0 0 0 frodo-vs02 0 0 0 0 0 0 0 0 frodo-vs03 7 6 7 6 0 0 0 0 frodo-vs04 0 0 0 0 6 7 6 6 gandalf-vm02 0 0 0 0 0 0 0 0 gandalf-vm03 0 0 0 0 0 0 0 0 gandalf-vm04 0 0 0 0 0 0 0 0 gandalf-vm05 0 0 0 0 0 0 0 0
 
-               1514254 1514328 1514402 1514479 1514555 1514630 1514708 1514786
+```         
+           1514254 1514328 1514402 1514479 1514555 1514630 1514708 1514786
+```
 
 bilbo 0 0 0 0 0 0 0 0 frodo-vs01 0 0 0 0 0 0 0 0 frodo-vs02 0 0 0 0 0 0 0 0 frodo-vs03 0 0 0 0 0 0 0 0 frodo-vs04 6 7 7 6 6 6 6 6 gandalf-vm02 0 0 0 0 0 0 0 0 gandalf-vm03 0 0 0 0 0 0 0 0 gandalf-vm04 0 0 0 0 0 0 0 0 gandalf-vm05 0 0 0 0 0 0 0 0
 
-               1514861 1514936 1518289 1518372 1518447 1518527 1518604 1518681
+```         
+           1514861 1514936 1518289 1518372 1518447 1518527 1518604 1518681
+```
 
 bilbo 0 0 0 0 0 0 0 0 frodo-vs01 0 0 0 0 0 0 0 0 frodo-vs02 0 0 7 7 6 6 6 6 frodo-vs03 0 0 0 0 0 0 0 0 frodo-vs04 6 6 0 0 0 0 0 0 gandalf-vm02 0 0 0 0 0 0 0 0 gandalf-vm03 0 0 0 0 0 0 0 0 gandalf-vm04 0 0 0 0 0 0 0 0 gandalf-vm05 0 0 0 0 0 0 0 0
 
-               1518756 1518828 1518901 1518977 1519049 1519121 1519194 1519271
+```         
+           1518756 1518828 1518901 1518977 1519049 1519121 1519194 1519271
+```
 
 bilbo 0 0 0 0 0 0 0 0 frodo-vs01 0 0 0 0 0 0 0 0 frodo-vs02 6 6 7 7 6 7 7 6 frodo-vs03 0 0 0 0 0 0 0 0 frodo-vs04 0 0 0 0 0 0 0 0 gandalf-vm02 0 0 0 0 0 0 0 0 gandalf-vm03 0 0 0 0 0 0 0 0 gandalf-vm04 0 0 0 0 0 0 0 0 gandalf-vm05 0 0 0 0 0 0 0 0
 
-               1519345 1519420 1519494 1524768 1524852 1524930 1525010 1525084
+```         
+           1519345 1519420 1519494 1524768 1524852 1524930 1525010 1525084
+```
 
 bilbo 0 0 0 0 0 0 0 0 frodo-vs01 0 0 0 6 6 6 7 6 frodo-vs02 7 6 7 0 0 0 0 0 frodo-vs03 0 0 0 0 0 0 0 0 frodo-vs04 0 0 0 0 0 0 0 0 gandalf-vm02 0 0 0 0 0 0 0 0 gandalf-vm03 0 0 0 0 0 0 0 0 gandalf-vm04 0 0 0 0 0 0 0 0 gandalf-vm05 0 0 0 0 0 0 0 0
 
-               1525164 1525241 1525316 1525391 1525467 1525542 1525621 1525693
+```         
+           1525164 1525241 1525316 1525391 1525467 1525542 1525621 1525693
+```
 
 bilbo 0 0 0 0 0 0 0 0 frodo-vs01 6 6 6 6 6 6 6 6 frodo-vs02 0 0 0 0 0 0 0 0 frodo-vs03 0 0 0 0 0 0 0 0 frodo-vs04 0 0 0 0 0 0 0 0 gandalf-vm02 0 0 0 0 0 0 0 0 gandalf-vm03 0 0 0 0 0 0 0 0 gandalf-vm04 0 0 0 0 0 0 0 0 gandalf-vm05 0 0 0 0 0 0 0 0
 
-               1525766 1525839 1525912 1525987 2623254 3264114 3264182 3264251
+```         
+           1525766 1525839 1525912 1525987 2623254 3264114 3264182 3264251
+```
 
 bilbo 0 0 0 0 0 0 0 0 frodo-vs01 6 6 6 6 0 0 0 0 frodo-vs02 0 0 0 0 0 0 0 0 frodo-vs03 0 0 0 0 0 0 0 0 frodo-vs04 0 0 0 0 0 0 0 0 gandalf-vm02 0 0 0 0 0 6 7 6 gandalf-vm03 0 0 0 0 0 0 0 0 gandalf-vm04 0 0 0 0 0 0 0 0 gandalf-vm05 0 0 0 0 6 0 0 0
 
-               3264327 3264408 3264478 3264562 3264640 3264715 3264796 3264863
+```         
+           3264327 3264408 3264478 3264562 3264640 3264715 3264796 3264863
+```
 
 bilbo 0 0 0 0 0 0 0 0 frodo-vs01 0 0 0 0 0 0 0 0 frodo-vs02 0 0 0 0 0 0 0 0 frodo-vs03 0 0 0 0 0 0 0 0 frodo-vs04 0 0 0 0 0 0 0 0 gandalf-vm02 7 7 6 6 6 6 6 6 gandalf-vm03 0 0 0 0 0 0 0 0 gandalf-vm04 0 0 0 0 0 0 0 0 gandalf-vm05 0 0 0 0 0 0 0 0
 
-               3264939 3265003
+```         
+           3264939 3265003
+```
 
-bilbo 0 0 frodo-vs01 0 0 frodo-vs02 0 0 frodo-vs03 0 0 frodo-vs04 0 0 gandalf-vm02 6 6 gandalf-vm03 0 0 gandalf-vm04 0 0 gandalf-vm05 0 0 :::
+bilbo 0 0 frodo-vs01 0 0 frodo-vs02 0 0 frodo-vs03 0 0 frodo-vs04 0 0 gandalf-vm02 6 6 gandalf-vm03 0 0 gandalf-vm04 0 0 gandalf-vm05 0 0
+:::
 
 The formatting of the table is all boogered up, but that looks like I got 9 nodes, and used something like 9-14 PIDs each, each about 7-6 times. It's a bit confusing, because `sinfo --Node --long` shows that the number of CPUs is different across those nodes. And that seems to be what happened here. I need to change the output so I can better see what I used. But, roughly, that looks about right- it send jobs to CPUs as needed.
 
@@ -212,249 +242,251 @@ If the passing-object overhead really becomes an issue, we might want to just [u
 
 The output using `sbatch batchtools_R.sh testing_future_batchtools.R` (where `batchtools_R.sh` is a lightweight master job) is
 
-    ℹ Using R 4.0.3 (lockfile was generated with R 4.2.2)
+```         
+ℹ Using R 4.0.3 (lockfile was generated with R 4.2.2)
 
-     Plan is:
-    List of future strategies:
-    1. batchtools_slurm:
-       - args: function (expr, envir = parent.frame(), substitute = TRUE, globals = TRUE, label = NULL, template = NULL, resources = list(), workers = NULL, registry = list(), ...)
-       - tweaked: FALSE
-       - call: plan(batchtools_slurm)
+ Plan is:
+List of future strategies:
+1. batchtools_slurm:
+   - args: function (expr, envir = parent.frame(), substitute = TRUE, globals = TRUE, label = NULL, template = NULL, resources = list(), workers = NULL, registry = list(), ...)
+   - tweaked: FALSE
+   - call: plan(batchtools_slurm)
 
-    ### available workers:
-    gandalf-vm01
+### available workers:
+gandalf-vm01
 
 
-    ### total workers:
-    1
+### total workers:
+1
 
-    ### unique workers:
-    gandalf-vm01
+### unique workers:
+gandalf-vm01
 
-    ### available Cores:
+### available Cores:
 
-    #### non-slurm
-    1
+#### non-slurm
+1
 
-    #### slurm method
-    1
+#### slurm method
+1
 
-    ### Main PID:
-    4135554
+### Main PID:
+4135554
 
-    ### Unique processes
-    100
+### Unique processes
+100
 
-    IDs of all cores used
+IDs of all cores used
 
-    241089
-    1528094
-    1522003
-    1503388
-    1516888
-    3269690
-    1522077
-    241160
-    1528170
-    1503459
-    1516963
-    3269759
-    1522156
-    1528243
-    241230
-    3269825
-    1271878
-    1528317
-    1522235
-    241297
-    1503531
-    1528392
-    1517044
-    1522308
-    241367
-    1503606
-    1528471
-    1522380
-    1517120
-    241436
-    3269894
-    1528548
-    1522456
-    1503681
-    1517195
-    241505
-    1522531
-    1528626
-    3269975
-    1271968
-    1503749
-    241573
-    1522605
-    3270042
-    1528703
-    1503817
-    241641
-    1522682
-    1528778
-    1517275
-    3270121
-    1272046
-    241709
-    1528853
-    1522758
-    1503892
-    1517348
-    241778
-    1528932
-    1522829
-    1503961
-    1517420
-    3270199
-    241843
-    1529005
-    1522901
-    1504030
-    241910
-    1529082
-    1517500
-    3270277
-    1522975
-    1504098
-    241978
-    1529157
-    1523051
-    1504167
-    1517581
-    3270355
-    1529231
-    242042
-    1523125
-    1504238
-    1529306
-    1517659
-    3270422
-    242108
-    1523197
-    1529384
-    1504307
-    1517731
-    3270488
-    242173
-    1523272
-    1529459
-    1504376
-    1517812
-    3270555
-    242239
-    1529532
+241089
+1528094
+1522003
+1503388
+1516888
+3269690
+1522077
+241160
+1528170
+1503459
+1516963
+3269759
+1522156
+1528243
+241230
+3269825
+1271878
+1528317
+1522235
+241297
+1503531
+1528392
+1517044
+1522308
+241367
+1503606
+1528471
+1522380
+1517120
+241436
+3269894
+1528548
+1522456
+1503681
+1517195
+241505
+1522531
+1528626
+3269975
+1271968
+1503749
+241573
+1522605
+3270042
+1528703
+1503817
+241641
+1522682
+1528778
+1517275
+3270121
+1272046
+241709
+1528853
+1522758
+1503892
+1517348
+241778
+1528932
+1522829
+1503961
+1517420
+3270199
+241843
+1529005
+1522901
+1504030
+241910
+1529082
+1517500
+3270277
+1522975
+1504098
+241978
+1529157
+1523051
+1504167
+1517581
+3270355
+1529231
+242042
+1523125
+1504238
+1529306
+1517659
+3270422
+242108
+1523197
+1529384
+1504307
+1517731
+3270488
+242173
+1523272
+1529459
+1504376
+1517812
+3270555
+242239
+1529532
 
-    ## Nodes and pids
-    # A tibble: 100 × 3
-    # Groups:   node [7]
-        node             pid n_reps
-        <chr>          <int>  <int>
-      1 bilbo         241089      6
-      2 bilbo         241160      6
-      3 bilbo         241230      7
-      4 bilbo         241297      6
-      5 bilbo         241367      6
-      6 bilbo         241436      6
-      7 bilbo         241505      6
-      8 bilbo         241573      6
-      9 bilbo         241641      7
-     10 bilbo         241709      6
-     11 bilbo         241778      7
-     12 bilbo         241843      6
-     13 bilbo         241910      6
-     14 bilbo         241978      7
-     15 bilbo         242042      6
-     16 bilbo         242108      6
-     17 bilbo         242173      6
-     18 bilbo         242239      6
-     19 frodo-vs01   1528094      6
-     20 frodo-vs01   1528170      6
-     21 frodo-vs01   1528243      6
-     22 frodo-vs01   1528317      6
-     23 frodo-vs01   1528392      6
-     24 frodo-vs01   1528471      7
-     25 frodo-vs01   1528548      6
-     26 frodo-vs01   1528626      6
-     27 frodo-vs01   1528703      6
-     28 frodo-vs01   1528778      6
-     29 frodo-vs01   1528853      7
-     30 frodo-vs01   1528932      6
-     31 frodo-vs01   1529005      6
-     32 frodo-vs01   1529082      6
-     33 frodo-vs01   1529157      6
-     34 frodo-vs01   1529231      6
-     35 frodo-vs01   1529306      6
-     36 frodo-vs01   1529384      6
-     37 frodo-vs01   1529459      6
-     38 frodo-vs01   1529532      6
-     39 frodo-vs02   1522003      7
-     40 frodo-vs02   1522077      7
-     41 frodo-vs02   1522156      6
-     42 frodo-vs02   1522235      7
-     43 frodo-vs02   1522308      6
-     44 frodo-vs02   1522380      6
-     45 frodo-vs02   1522456      6
-     46 frodo-vs02   1522531      6
-     47 frodo-vs02   1522605      7
-     48 frodo-vs02   1522682      6
-     49 frodo-vs02   1522758      6
-     50 frodo-vs02   1522829      6
-     51 frodo-vs02   1522901      7
-     52 frodo-vs02   1522975      6
-     53 frodo-vs02   1523051      6
-     54 frodo-vs02   1523125      7
-     55 frodo-vs02   1523197      6
-     56 frodo-vs02   1523272      7
-     57 frodo-vs03   1503388      6
-     58 frodo-vs03   1503459      6
-     59 frodo-vs03   1503531      6
-     60 frodo-vs03   1503606      6
-     61 frodo-vs03   1503681      6
-     62 frodo-vs03   1503749      6
-     63 frodo-vs03   1503817      6
-     64 frodo-vs03   1503892      6
-     65 frodo-vs03   1503961      6
-     66 frodo-vs03   1504030      6
-     67 frodo-vs03   1504098      6
-     68 frodo-vs03   1504167      6
-     69 frodo-vs03   1504238      6
-     70 frodo-vs03   1504307      7
-     71 frodo-vs03   1504376      6
-     72 frodo-vs04   1516888      6
-     73 frodo-vs04   1516963      7
-     74 frodo-vs04   1517044      7
-     75 frodo-vs04   1517120      6
-     76 frodo-vs04   1517195      7
-     77 frodo-vs04   1517275      7
-     78 frodo-vs04   1517348      6
-     79 frodo-vs04   1517420      7
-     80 frodo-vs04   1517500      7
-     81 frodo-vs04   1517581      7
-     82 frodo-vs04   1517659      6
-     83 frodo-vs04   1517731      6
-     84 frodo-vs04   1517812      6
-     85 gandalf-vm02 3269690      6
-     86 gandalf-vm02 3269759      6
-     87 gandalf-vm02 3269825      6
-     88 gandalf-vm02 3269894      7
-     89 gandalf-vm02 3269975      7
-     90 gandalf-vm02 3270042      6
-     91 gandalf-vm02 3270121      6
-     92 gandalf-vm02 3270199      6
-     93 gandalf-vm02 3270277      6
-     94 gandalf-vm02 3270355      6
-     95 gandalf-vm02 3270422      7
-     96 gandalf-vm02 3270488      6
-     97 gandalf-vm02 3270555      7
-     98 gandalf-vm03 1271878      6
-     99 gandalf-vm03 1271968      6
-    100 gandalf-vm03 1272046      6
+## Nodes and pids
+# A tibble: 100 × 3
+# Groups:   node [7]
+    node             pid n_reps
+    <chr>          <int>  <int>
+  1 bilbo         241089      6
+  2 bilbo         241160      6
+  3 bilbo         241230      7
+  4 bilbo         241297      6
+  5 bilbo         241367      6
+  6 bilbo         241436      6
+  7 bilbo         241505      6
+  8 bilbo         241573      6
+  9 bilbo         241641      7
+ 10 bilbo         241709      6
+ 11 bilbo         241778      7
+ 12 bilbo         241843      6
+ 13 bilbo         241910      6
+ 14 bilbo         241978      7
+ 15 bilbo         242042      6
+ 16 bilbo         242108      6
+ 17 bilbo         242173      6
+ 18 bilbo         242239      6
+ 19 frodo-vs01   1528094      6
+ 20 frodo-vs01   1528170      6
+ 21 frodo-vs01   1528243      6
+ 22 frodo-vs01   1528317      6
+ 23 frodo-vs01   1528392      6
+ 24 frodo-vs01   1528471      7
+ 25 frodo-vs01   1528548      6
+ 26 frodo-vs01   1528626      6
+ 27 frodo-vs01   1528703      6
+ 28 frodo-vs01   1528778      6
+ 29 frodo-vs01   1528853      7
+ 30 frodo-vs01   1528932      6
+ 31 frodo-vs01   1529005      6
+ 32 frodo-vs01   1529082      6
+ 33 frodo-vs01   1529157      6
+ 34 frodo-vs01   1529231      6
+ 35 frodo-vs01   1529306      6
+ 36 frodo-vs01   1529384      6
+ 37 frodo-vs01   1529459      6
+ 38 frodo-vs01   1529532      6
+ 39 frodo-vs02   1522003      7
+ 40 frodo-vs02   1522077      7
+ 41 frodo-vs02   1522156      6
+ 42 frodo-vs02   1522235      7
+ 43 frodo-vs02   1522308      6
+ 44 frodo-vs02   1522380      6
+ 45 frodo-vs02   1522456      6
+ 46 frodo-vs02   1522531      6
+ 47 frodo-vs02   1522605      7
+ 48 frodo-vs02   1522682      6
+ 49 frodo-vs02   1522758      6
+ 50 frodo-vs02   1522829      6
+ 51 frodo-vs02   1522901      7
+ 52 frodo-vs02   1522975      6
+ 53 frodo-vs02   1523051      6
+ 54 frodo-vs02   1523125      7
+ 55 frodo-vs02   1523197      6
+ 56 frodo-vs02   1523272      7
+ 57 frodo-vs03   1503388      6
+ 58 frodo-vs03   1503459      6
+ 59 frodo-vs03   1503531      6
+ 60 frodo-vs03   1503606      6
+ 61 frodo-vs03   1503681      6
+ 62 frodo-vs03   1503749      6
+ 63 frodo-vs03   1503817      6
+ 64 frodo-vs03   1503892      6
+ 65 frodo-vs03   1503961      6
+ 66 frodo-vs03   1504030      6
+ 67 frodo-vs03   1504098      6
+ 68 frodo-vs03   1504167      6
+ 69 frodo-vs03   1504238      6
+ 70 frodo-vs03   1504307      7
+ 71 frodo-vs03   1504376      6
+ 72 frodo-vs04   1516888      6
+ 73 frodo-vs04   1516963      7
+ 74 frodo-vs04   1517044      7
+ 75 frodo-vs04   1517120      6
+ 76 frodo-vs04   1517195      7
+ 77 frodo-vs04   1517275      7
+ 78 frodo-vs04   1517348      6
+ 79 frodo-vs04   1517420      7
+ 80 frodo-vs04   1517500      7
+ 81 frodo-vs04   1517581      7
+ 82 frodo-vs04   1517659      6
+ 83 frodo-vs04   1517731      6
+ 84 frodo-vs04   1517812      6
+ 85 gandalf-vm02 3269690      6
+ 86 gandalf-vm02 3269759      6
+ 87 gandalf-vm02 3269825      6
+ 88 gandalf-vm02 3269894      7
+ 89 gandalf-vm02 3269975      7
+ 90 gandalf-vm02 3270042      6
+ 91 gandalf-vm02 3270121      6
+ 92 gandalf-vm02 3270199      6
+ 93 gandalf-vm02 3270277      6
+ 94 gandalf-vm02 3270355      6
+ 95 gandalf-vm02 3270422      7
+ 96 gandalf-vm02 3270488      6
+ 97 gandalf-vm02 3270555      7
+ 98 gandalf-vm03 1271878      6
+ 99 gandalf-vm03 1271968      6
+100 gandalf-vm03 1272046      6
 
-    Time taken for code: 185
+Time taken for code: 185
+```
 
 So, we can see the lightweight wrapper uses 1 cpu on one node, but spawns 100 workers, each of which gets used 6-7 times.
 

@@ -168,7 +168,9 @@ From within the directory.
 
 The copy-pasted output for sequential, multisession, and multicore plans is:
 
-::: {#Single-machine outputs} ℹ Using R 4.0.3 (lockfile was generated with R 4.2.2)
+::: {#single-machine style="color: gray"}
+
+ℹ Using R 4.0.3 (lockfile was generated with R 4.2.2)
 
 ## sequential
 
@@ -280,7 +282,8 @@ IDs of all cores used
 
 1225561 1225564 1225567 1225570 1225573 1225576 1225581 1225586 1225591 1225596 1225601 1225606
 
-Time taken for code: 15 :::
+Time taken for code: 15
+:::
 
 So, in all cases, the **workers** were seen across all nodes ({parallely} says as much in the help- this uses `scontrol` to find workers), while the **cores** are local. And only 12 cores ever end up getting used here, even with `multisession` and `multicore`.
 

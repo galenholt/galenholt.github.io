@@ -49,7 +49,7 @@ groupchar(mtcars, groupers = 'gear')
 What happens when we try to group by more than one column?
 
 ```{r}
-#| error:false
+#| error: false
 
 # groupbrace(mtcars, groupers = c(gear, carb))
 # 

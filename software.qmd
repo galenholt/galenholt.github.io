@@ -4,6 +4,10 @@ format: html
 bibliography: references.bib
 ---
 
+## [HydroBOT](https://github.com/galenholt/HydroBOT)
+
+An R package providing consistent modelling of response to flows in the Murrray-Darling Basin, incorporating scenario analysis and automated workflows, as well as consistent, safe scaling along space, time, and ecological causal networks. HydroBOT forms the core of the climate adaptation toolkit developed for the [climate adaptation theme](https://www.mdba.gov.au/climate-and-river-health/murray-darling-water-and-environment-research-program/climate-adaptation) of the [*Murray–Darling Water and Environment Research Program*](https://www.mdba.gov.au/climate-and-river-health/murray-darling-water-and-environment-research-program). HydroBOT is described at [(Holt et al. 2025)](https://doi.org/10.1016/j.envsoft.2025.106579), with documentation [here](https://mdbauth.github.io/HydroBOT_website/).
+
 ## [hydrogauge](hydrogauge)
 
 An R package for querying BoM and Australian state water gauge APIs. Useful not only for pulling flow data, but also identifying available parameters and periods of record.
@@ -14,7 +18,7 @@ A workflow and R package for modelling ecological response in flexible but stand
 
 ## [peeler](https://github.com/galenholt/peeler)
 
-An R package implementing the bvstep algorithm from @clarke1998 and provides the ability to 'peel' those outcomes (not recommended).
+An R package implementing the bvstep algorithm from @clarke1998, enabling reproducible and auutomated use. Also provides the ability to 'peel' those outcomes (not recommended).
 
 ## Other
 
